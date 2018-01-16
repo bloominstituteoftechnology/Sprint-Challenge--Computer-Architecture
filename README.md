@@ -29,8 +29,6 @@ Complete the following problems:
 
 One paragraph-ish:
 
-* Explain what hyperthreading is:
-
 * Explain how the CPU provides concurrency:
 
 * Describe assembly language and machine language:
