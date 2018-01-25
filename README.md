@@ -53,7 +53,7 @@ can copy files in here and issue a PR for this one.)
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
 print 1, then 4, then 5.
 
-```javascript
+```assembly
 00000100 # LDI R0,10
 00000000
 00001010
