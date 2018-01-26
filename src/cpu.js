@@ -50,7 +50,7 @@ class CPU {
         
         this.flags = {
             interruptsEnabled: true,
-            isEqual: false,
+            isEqual: false
         }
         this.fanSpeed = 2;
 
@@ -100,19 +100,13 @@ class CPU {
         this.clock = setInterval(() => {
             _this.tick();
         }, 1);
-        /*
-        this.timerHandle = setInterval(() => {
-            
-            this.raiseInterrupt(timerInterrupt)
-        }, 1000);
-        */
     }
     /**
      * Stops the clock
      */
     stopClock() {
         clearInterval(this.clock);
-        clearInterval(this.timerHandle);
+       // clearInterval(this.timerHandle);
     }
     raiseInterrupt(n) {
         this.reg[IS] |= n;
@@ -132,35 +126,19 @@ class CPU {
             case 'ADD':
                 this.reg[regA] = (valA + valB) & 0b11111111;
                 break;
+            case 'CMP':
+                if(this.reg[regA] === this.reg[regB]) {
+                this.flags.isEqual = true;
+                } else {  // use else statement or else 'isEqual' will become false again.
+                this.flags.isEqual = false;
+                }
+                break;
         }
     }
     /**
      * Advances the CPU one cycle
      */
     tick() {
-        /*
-        const maskedInterrupts = this.reg[IS] & this.reg[IM];
-        if(this.flags.interruptsEnabled && maskedInterrupts !== 0 ){
-            for (let i = 0; i <= 7;  i++){
-            if(((maskedInterrupts >> i ) & 1) === 1){
-                this.flags.interruptsEnabled = false;
-                this.reg[IS] &= ~(1 << i);
-                this.reg[7]--;
-                this.ram.write(this.reg[7], this.reg.PC);
-
-                for (let j = 0; j <= 7; j++) {
-                    this.reg[SP]--;
-                    this.ram.write(this.reg[SP], this.reg[j])
-                }
-
-                const vectorTableEntry = 0xf8 + i;
-                const handlerAddress = this.ram.read(vectorTableEntry);
-                this.reg.PC = handlerAddress;
-                break;
-                }
-            }
-        }
-        */
         this.reg.IR = this.ram.read(this.reg.PC);
         const handler = this.branchTable[this.reg.IR];
         if (!handler) {
@@ -255,21 +233,23 @@ class CPU {
     CMP() {
         const regA = this.ram.read(this.reg.PC + 1);
         const regB = this.ram.read(this.reg.PC + 2);
-        if(this.reg[regA] === this.reg[regB]) {
-            this.flags.isEqual = true;
-        } 
-        this.flags.isEqual = false;
+        this.alu('CMP', regA, regB)
+        this.reg.PC += 3;
     }
     JEQ() {
         if(this.flags.isEqual === true) {
             const regA = this.ram.read(this.reg.PC + 1);
             this.reg.PC = this.reg[regA];
+        } else {  // use else statement or else PC wil jump by 2 no matter what 'if' states
+            this.reg.PC += 2;
         }
     }
     JNE() {
         if(this.flags.isEqual === false) {
             const regA = this.ram.read(this.reg.PC + 1);
             this.reg.PC = this.reg[regA];
+        } else {
+            this.reg.PC += 2;
         }
     }
 }
