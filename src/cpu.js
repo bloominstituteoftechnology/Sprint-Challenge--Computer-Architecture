@@ -41,7 +41,6 @@ class CPU {
      */
     constructor(ram) {
         this.ram = ram;
-
         this.reg = new Array(8).fill(0); // General-purpose registers
         this.reg[SP] = I0Vector;
         this.reg[7] = 0xf8;
