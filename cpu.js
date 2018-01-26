@@ -1,5 +1,3 @@
-import { setInterval, clearInterval } from 'timers';
-
 /**
  * LS-8 v2.0 emulator skeleton code
  */
@@ -248,7 +246,7 @@ class CPU {
      */
     PUSH() {
         const regA = this.ram.read(this.reg.PC + 1);
-        this.reg[7--]; // dec R7
+        this.reg[7]--; // dec R7
 
         // Write value in given register to SP
         this.ram.write(this.reg[7], this.reg[regA]);
