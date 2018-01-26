@@ -22,7 +22,7 @@ console.log(binToDec('11001111'));
  const hexToBin = (str) => { return ('00000000' + (parseInt(str, 16)).toString(2)).substr(-8); };
  console.log(hexToBin('4C'));
 ```
-- to decimal: 76
+ - to decimal: 76
     
 ```
 const hexToDec = (str) => { return parseInt(str, 16); };
@@ -31,7 +31,7 @@ console.log(hexToDec(`4C`));
 
 * Convert `68` decimal
 
-- to binary: 1000100
+  - to binary: 1000100
 ```
 const decToBin = (num) => { return num.toString(2); }; 
 console.log(decToBin(68)); 
