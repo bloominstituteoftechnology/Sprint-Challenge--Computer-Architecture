@@ -2,12 +2,12 @@
 
 * Convert `11001111` binary
 
-    to hex: CF
+    - to hex: CF
  
  `const binToHex = (str) => { return parseInt(str, 2).toString(16).toUpperCase(); };
  console.log(binToHex('11001111'));`
  
-    to decimal: 207
+    - to decimal: 207
 
 `const binToDec = (str) => { return parseInt(str, 2); };
 console.log(binToDec('11001111'));`
