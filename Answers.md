@@ -1,6 +1,6 @@
 #Complete the following problems:
 
-* Convert `11001111` binary
+####Convert `11001111` binary
 
 - to hex: CF
  
@@ -15,7 +15,7 @@ const binToDec = (str) => { return parseInt(str, 2); };
 console.log(binToDec('11001111'));
 ```
 
-* Convert `4C` hex
+####Convert `4C` hex
 
 - to binary: 01001100
 ```
@@ -29,7 +29,7 @@ const hexToDec = (str) => { return parseInt(str, 16); };
 console.log(hexToDec(`4C`));
 ```
 
-* Convert `68` decimal
+####Convert `68` decimal
 
   - to binary: 1000100
 ```
