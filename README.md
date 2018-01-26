@@ -6,23 +6,47 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    - `1100` === 12 Decimal   && `1111` === 15 Decimal
 
-    to decimal:
+        12 = C
+        15 = F
+    to hex: `CF`
+
+    128 64 32 16 8  4  2  1
+     V  V  V  V  V  V  V  V
+    `1  1  0  0  1  1  1  1`
+    128 + 64 + 8 + 4 + 2 + 1 = 207
+    to decimal: 207
 
 
 * Convert `4C` hex
+    
+    4 = 0100; 
+    C = 12 = 1100;
 
-    to binary:
+    to binary: `01001100`
 
-    to decimal:
+    128 64 32 16 8  4  2  1
+     V  V  V  V  V  V  V  V
+    `0  1  0  0  1  1  0  0`
+
+    64 + 8 + 4 = 76 Decimal
+    to decimal: `76`
 
 
 * Convert `68` decimal
 
+    `68`
+
+    128 64 32 16 8  4  2  1
+     V  V  V  V  V  V  V  V
+    `0  1  0  0  0  1  0  0`
     to binary:
 
-    to hex:
+    `0100` `0100`
+     `4`   `4`
+
+    to hex: `44`
 
 
 ## Architecture
