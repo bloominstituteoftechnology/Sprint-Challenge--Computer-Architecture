@@ -20,6 +20,10 @@ const POP =  0b00001011;  // pop
 const RET =  0b00010000; // return 
 const CALL = 0b00001111;  // call register
 const CMP = 0b00010110;  // call register
+const JEQ = 0b00010011;  // call register
+const JNE = 0b00010100;  // call register
+const JMP = 0b00010001; // jump
+
 
 //const POP = 0b
 
@@ -66,6 +70,10 @@ class CPU {
         bt[RET] = this.RET;
         bt[CALL] = this.CALL;
         bt[CMP] = this.CMP;
+        bt[JEQ] = this.JEQ;
+        bt[JNE] = this.JNE;
+        bt[JMP] = this.JMP;
+        
 
         
 		this.branchTable = bt;
@@ -189,10 +197,22 @@ class CPU {
         // Jump to the address stored in the given register.        
         // Set the PC to the address stored in the given register.      
         //       00010001 00000rrr
-        console.log(this.reg.PC);
-        this.reg.PC = this.ram.read(this.reg.PC + 1);
+        //console.log(this.reg.PC);
+        const reg = this.ram.read(this.reg.PC + 1);
 
-        //this.reg.PC += 2;
+        this.reg.PC = this.reg[reg];
+    }
+    JEQ() {
+        if ( this.flags.equal == true ) {
+            const reg = this.ram.read(this.reg.PC + 1);
+            this.reg.PC = this.reg[reg];
+        } else this.reg.PC += 2;
+    }
+    JNE() {
+        if ( this.flags.equal == false ) {
+            const reg = this.ram.read(this.reg.PC + 1);
+            this.reg.PC = this.reg[reg];
+        } else this.reg.PC += 2;
     }
     CMP() {
     // CMP registerA registerB
@@ -267,7 +287,7 @@ class CPU {
             const regA = this.ram.read(this.reg.PC + 1);
     
             console.log(this.reg[regA]);
-            console.log(this.reg.PC); //temp test
+            //console.log(this.reg.PC); //temp test
 
             this.reg.PC += 2;
             
