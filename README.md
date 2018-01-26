@@ -6,48 +6,46 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    - `1100` === 12 Decimal   && `1111` === 15 Decimal
+  * `1100` === 12 Decimal && `1111` === 15 Decimal
 
         12 = C
         15 = F
+
     to hex: `CF`
 
-    128 64 32 16 8  4  2  1
-     V  V  V  V  V  V  V  V
-    `1  1  0  0  1  1  1  1`
-    128 + 64 + 8 + 4 + 2 + 1 = 207
-    to decimal: 207
+  128 64 32 16 8 4 2 1
+  V V V V V V V V
+  `1 1 0 0 1 1 1 1`
+  128 + 64 + 8 + 4 + 2 + 1 = 207
+  to decimal: 207
 
+- Convert `4C` hex
 
-* Convert `4C` hex
-    
-    4 = 0100; 
-    C = 12 = 1100;
+  4 = 0100;
+  C = 12 = 1100;
 
-    to binary: `01001100`
+  to binary: `01001100`
 
-    128 64 32 16 8  4  2  1
-     V  V  V  V  V  V  V  V
-    `0  1  0  0  1  1  0  0`
+  128 64 32 16 8 4 2 1
+  V V V V V V V V
+  `0 1 0 0 1 1 0 0`
 
-    64 + 8 + 4 = 76 Decimal
-    to decimal: `76`
-
+  64 + 8 + 4 = 76 Decimal
+  to decimal: `76`
 
 * Convert `68` decimal
 
-    `68`
+  `68`
 
-    128 64 32 16 8  4  2  1
-     V  V  V  V  V  V  V  V
-    `0  1  0  0  0  1  0  0`
-    to binary:
+  128 64 32 16 8 4 2 1
+  V V V V V V V V
+  `0 1 0 0 0 1 0 0`
+  to binary:
 
-    `0100` `0100`
-     `4`   `4`
+  `0100` `0100`
+  `4` `4`
 
-    to hex: `44`
-
+  to hex: `44`
 
 ## Architecture
 
@@ -55,10 +53,14 @@ One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
 
+  * The CPU reads the instructions it's provided and is able to perform the program associated with the action in a order. It is able to be multiprocessing to perform parallel actions and multitask without having to wait for other instructions to finish.
+
 * Describe assembly language and machine language:
 
-* Suggest the role that graphics cards play in machine learning:
+  * Assembly language contains the same instructions as a machine language, but the instructions and variables have names instead of being just numbers. Programs written in high-level languages are translated into assembly language or machine language by a compiler. Assembly language is converted into executable machine code by a utility program referred to as an assembler.
 
+* Suggest the role that graphics cards play in machine learning:
+  * GPU provides a more powerful and efficient parallel computing. A single GPU might have thousands of cores while a CPU usually has no more than 12 cores. Although GPU cores are slower than CPU cores, they more than make up for that with their large number and faster memory if the operations can be parallelized. Sequential code is still faster on CPUs.
 
 ## Coding
 
@@ -77,7 +79,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
 print 1, then 4, then 5.
@@ -155,4 +156,3 @@ print 1, then 4, then 5.
 00000011
 00011011 # HLT
 ```
-
