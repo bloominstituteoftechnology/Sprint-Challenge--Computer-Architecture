@@ -1,3 +1,5 @@
+// import { equal } from 'assert';
+
 /**
  * LS-8 v2.0 emulator skeleton code
  */
@@ -17,6 +19,7 @@ const PUSH = 0b00001010;  // pushit
 const POP =  0b00001011;  // pop
 const RET =  0b00010000; // return 
 const CALL = 0b00001111;  // call register
+const CMP = 0b00010110;  // call register
 
 //const POP = 0b
 
@@ -30,6 +33,10 @@ class CPU {
      */
     constructor(ram) {
         this.ram = ram;
+
+        this.flags = {
+            equal: false
+        };
 
         this.reg = new Array(8).fill(0); // General-purpose registers
         
@@ -58,6 +65,8 @@ class CPU {
         bt[PUSH] = this.PUSH;
         bt[RET] = this.RET;
         bt[CALL] = this.CALL;
+        bt[CMP] = this.CMP;
+
         
 		this.branchTable = bt;
 	}
@@ -100,13 +109,13 @@ class CPU {
         switch (op) {
             case 'MUL':
                 this.reg[regA] = (valA * valB) & 255;
+                break;
+            case 'CMP':
+                if ( valA === valB) {
+                    this.flags.equal = true;
+                }
+               // this.flags[equal] = (valA === valB);
         
-                // !!! IMPLEMENT ME
-            //     return regA = regA * regB ;
-            // case 'ADD':
-            //     return regA = regA + regB;
-           // case 'SUB':
-           //     return regA 
                 break;
             case 'DIV':
                 //console.log(valB);
@@ -176,7 +185,28 @@ class CPU {
         // move the PC
         this.reg.PC += 3;
     }
+    JMP() {
+        // Jump to the address stored in the given register.        
+        // Set the PC to the address stored in the given register.      
+        //       00010001 00000rrr
+        console.log(this.reg.PC);
+        this.reg.PC = this.ram.read(this.reg.PC + 1);
 
+        //this.reg.PC += 2;
+    }
+    CMP() {
+    // CMP registerA registerB
+    // Compare the value in two registers.
+    // If the are equal, set the equal flag to true. If the are not equal, set the equal flag to false.
+    // Machine code:
+    //  00010110 00000aaa 00000bbb
+    const regA = this.ram.read(this.reg.PC + 1);
+    const regB = this.ram.read(this.reg.PC + 2);
+
+    this.alu('CMP', regA, regB);
+    // move the PC
+    this.reg.PC += 3;
+    }
     /**
      * MUL R,R
      */
@@ -237,6 +267,7 @@ class CPU {
             const regA = this.ram.read(this.reg.PC + 1);
     
             console.log(this.reg[regA]);
+            console.log(this.reg.PC); //temp test
 
             this.reg.PC += 2;
             
