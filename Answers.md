@@ -2,13 +2,13 @@
 
 * Convert `11001111` binary
 
-    - to hex: CF
+- to hex: CF
  
 ```
 const binToHex = (str) => { return parseInt(str, 2).toString(16).toUpperCase(); };
 console.log(binToHex('11001111'));
 ```
-    - to decimal: 207
+- to decimal: 207
 
 ```
 const binToDec = (str) => { return parseInt(str, 2); };
@@ -17,12 +17,12 @@ console.log(binToDec('11001111'));
 
 * Convert `4C` hex
 
-    - to binary: 01001100
+- to binary: 01001100
 ```
  const hexToBin = (str) => { return ('00000000' + (parseInt(str, 16)).toString(2)).substr(-8); };
  console.log(hexToBin('4C'));
 ```
-    - to decimal: 76
+- to decimal: 76
     
 ```
 const hexToDec = (str) => { return parseInt(str, 16); };
@@ -31,13 +31,13 @@ console.log(hexToDec(`4C`));
 
 * Convert `68` decimal
 
-   - to binary: 1000100
+- to binary: 1000100
 ```
 const decToBin = (num) => { return num.toString(2); }; 
 console.log(decToBin(68)); 
 ```
    
-   - to hex: 44 
+- to hex: 44 
 
 ```
 const decToHex = (num) => { return num.toString(16); }; 
