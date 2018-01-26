@@ -43,17 +43,17 @@ console.log(binToDec('11001111'));
 One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
-  - Single Core/non-distrubted: threads and bus achictecture divide up the work.
+  - `Single Core/non-distrubted:` threads and bus achictecture divide up the work.
     Absent such hardware, the cpu can interleave a schedule of instructions to
     share and manage resources.
-  - Multicore/distributed systems: threads and servers divide up the work load 
+  - `Multicore/distributed systems:` threads and servers divide up the work load 
     per node or core.
 
 * Describe assembly language and machine language:
-  - Machine language (code): a low level language (consisting of binary or hex) that 
+  - `Machine language (code):` a low level language (consisting of binary or hex) that 
     higher level languages compile down into. Generally this is the level just above 
     vendor based hardware instructions or microcode.
-  - Assembly language: assembles machine code. Uses opcodes to manage and interface
+  - `Assembly language:` assembles machine code. Uses opcodes to manage and interface
     with hardware instructions. Ideal for specialized hardware tasks that removes 
     much of the cruft and safeguards. Generally the lowest level a human programs 
     outside of hacks and analog methods.
