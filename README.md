@@ -6,34 +6,34 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 01000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
 
 One paragraph-ish:
 
-* Explain how the CPU provides concurrency:
+* Explain how the CPU provides concurrency: A CPU provides concurrency through multithreading. Multithreading is a process where one thread runs until it hits an event which would cause a pause in the cycle time, at which point another thread utilizes the system resources. A basic example would be a process that has to access memory, which might take several CPU cycles. At that point another thread would run using those resources. 
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language: Machine language is the language used to issue direct commands to the CPU. Assembly language simply uses mnemonics in order to make the language easier for the programmer to read and write. 
 
-* Suggest the role that graphics cards play in machine learning:
+* Suggest the role that graphics cards play in machine learning: A graphics card's use in machine learning is to offload the huge amount of operations involved from the CPU. The operations in machine learning can be massively parrallelized, and the GPU with it's thousands of cores is better able to process them.
 
 
 ## Coding
@@ -64,7 +64,7 @@ print 1, then 4, then 5.
 00001010
 00000100 # LDI R1,20
 00000001
-00010100
+00001010
 00010110 # CMP R0,R1
 00000000
 00000001
