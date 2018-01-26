@@ -2,7 +2,6 @@
 const fs = require('fs');
 const RAM = require('./ram');
 const CPU = require('./cpu');
-const KEYBOARD = require('./keyboard');
 
 /**
  * Process a loaded file
@@ -80,8 +79,6 @@ function onFileLoaded(cpu) {
 
 let ram = new RAM(256);
 let cpu = new CPU(ram);
-let keyboard = new KEYBOARD();
-keyboard.connectToCPU(cpu);
 
 // Get remaining command line arguments and even include the name of the
 // program you are running. Slice cuts all of that off so we only get what 
