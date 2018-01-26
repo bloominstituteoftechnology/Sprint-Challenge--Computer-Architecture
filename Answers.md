@@ -49,8 +49,8 @@ console.log(decToHex(68));
 ## Architecture
 
 * Explain how the CPU provides concurrency:
-  - `Single Core/non-distrubted:` threads and bus achictecture divide up the work.
-    Absent such hardware, the cpu can interleave a schedule of instructions to
+  - `Single Core/non-distrubted:` threads and bus architecture divide up the work.
+    Absent such hardware, the CPU can interleave a schedule of instructions to
     share and manage resources.
   - `Multicore/distributed systems:` threads and servers divide up the work load 
     per node or core.
