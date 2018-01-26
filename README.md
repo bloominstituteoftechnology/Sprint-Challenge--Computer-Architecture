@@ -29,11 +29,11 @@ Complete the following problems:
 
 One paragraph-ish:
 
-* Explain how the CPU provides concurrency:
+* Explain how the CPU provides concurrency: The CPU provides concurrency by managing operations for more than one process on the single CPU. Many operations may be happening at once but as the CPU can only perform a single calculation at a time it can juggle executing slices of different operations concurrently thereby apearing to perform multiple tasks concurrently. 
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language: Assembly language is a more easily readable version of machine language. As the machine can only read 1/0 these series of commands an assembly language can be used to assign names to operands instead of raw digits.
 
-* Suggest the role that graphics cards play in machine learning:
+* Suggest the role that graphics cards play in machine learning: Graphics cards play a critcal role in machine learning because by thier nature of having large numbers of small cores and large in board cashes they can perform huge numbers of calculations in an equal time compared with even a multicore CPU. GPU is no threat to the CPU for general computing but in regards to AI they offer huge advantages by allowing massive quantities of data to be processed simultaneously. 
 
 
 ## Coding
