@@ -7,8 +7,8 @@
 1) to decimal: 76
 
 * Convert `68` decimal
-1) to binary: 10000100
-1) to hex: 0x84
+1) to binary: 1000100
+1) to hex: 0x44
 
 * Explain how the CPU provides concurrency:
 > The processor reads a sequence of instructions contained in the memory and executes them. 
