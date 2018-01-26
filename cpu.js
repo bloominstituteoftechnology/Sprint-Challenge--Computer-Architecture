@@ -20,6 +20,9 @@ const JMP = 0b00010001; // Jump
 const ST = 0b00001001; // Store R
 const IRET = 0b00011010; // Return from interrupt
 const PRA = 0b00000111; // Print alpha
+const CMP = 0b00010110; // Compare R R
+const JEQ = 0b00010011; // Jump if R = R
+const JNE = 0b00010100; // Jump if !equal R R
 
 const IS = 6;
 const IM = 5;
@@ -44,7 +47,8 @@ class CPU {
         this.reg.IR = 0; // Instruction Register
 
         this.flags = {
-            interruptsEnabled: true
+            interruptsEnabled: true,
+            equal: false
         };
 
         this.setupBranchTable();
@@ -69,6 +73,9 @@ class CPU {
         bt[ST] = this.ST;
         bt[IRET] = this.IRET;
         bt[PRA] = this.PRA;
+        bt[CMP] = this.CMP;
+        bt[JEQ] = this.JEQ;
+        bt[JNE] = this.JNE;
 
         this.branchTable = bt;
     }
@@ -337,6 +344,46 @@ class CPU {
         const regA = this.ram.read(this.reg.PC + 1);
         console.log(String.fromCharCode(this.reg[regA]));
         this.reg.PC += 2;
+    }
+
+    /**
+     * CMP R R
+     */
+    CMP() {
+        const regA = this.ram.read(this.reg.PC + 1);
+        const regB = this.ram.read(this.reg.PC + 2);
+
+        if (this.reg[regA] === this.reg[regB]) {
+            this.flags.equal = true;
+        }
+
+        this.reg.PC += 3;
+    }
+
+    /**
+     * JEQ: If equal flag is set (true), jump to the address stored in the given register.
+     */
+    JEQ() {
+        const regA = this.ram.read(this.reg.PC + 1);
+
+        if (this.flags.equal) {
+            this.reg.PC = this.reg[regA];
+        } else {
+            this.reg.PC += 2;
+        }
+    }
+
+    /**
+     * JNE: If equal flag is clear (false), jump to the address stored in the given register.
+     */
+    JNE() {
+        if (!this.flags.equal) {
+            const regA = this.ram.read(this.reg.PC + 1);
+
+            this.reg.PC = this.reg[regA];
+        } else {
+            this.reg.PC += 2;
+        }
     }
 }
 
