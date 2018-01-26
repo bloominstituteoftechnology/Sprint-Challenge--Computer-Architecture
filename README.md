@@ -31,17 +31,17 @@ One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
 
-The Central Processing Unit works in the order of four steps.  The first step is the Control Unit (CU) to fetch the instruction from memory.  The second step is the CU to determines what the instruction is and directs the data needed to be moved from memory to the arithmetic/logic unit (ALU).  The third step is for ALU to execute the arithmetic or logical instruction.  Then the final step is for ALU to store the result in memory.
+*The Central Processing Unit works in the order of four steps.  The first step is the Control Unit (CU) to fetch the instruction from memory.  The second step is the CU to determines what the instruction is and directs the data needed to be moved from memory to the arithmetic/logic unit (ALU).  The third step is for ALU to execute the arithmetic or logical instruction.  Then the final step is for ALU to store the result in memory.*
 
 * Describe assembly language and machine language:
 
-The assembly language (ASM) is a low-level programming language used for a computer.  How it works is the assembly language is converted into executable machine code by a utility program or assembler.  The assembler purpose is to assembly the source code.
+*The assembly language (ASM) is a low-level programming language used for a computer.  How it works is the assembly language is converted into executable machine code by a utility program or assembler.  The assembler purpose is to assembly the source code.*
 
-The lowest-level programming language is machine language.  Machine language consists of numbers.   Programmers would to use assembly language to work with machine language to accomplish the task on hand.
+*The lowest-level programming language is machine language.  Machine language consists of numbers.   Programmers would to use assembly language to work with machine language to accomplish the task on hand.*
 
 * Suggest the role that graphics cards play in machine learning:
 
-The role that graphics cards play is to provide more processing power up to 200 times.  Graphic cards also support the computer by performing data computation while the CPU does more of render a webpage, drive word processors and other softwares.
+*The role that graphics cards play is to provide more processing power up to 200 times.  Graphic cards also support the computer by performing data computation while the CPU does more of render a webpage, drive word processors and other softwares.*
 
 ## Coding
 
