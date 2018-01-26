@@ -37,7 +37,7 @@ const decToBin = (num) => { return num.toString(2); };
 console.log(decToBin(68)); 
 ```
    
-  - to hex: 44 
+   - to hex: 44 
 
 ```
 const decToHex = (num) => { return num.toString(16); }; 
