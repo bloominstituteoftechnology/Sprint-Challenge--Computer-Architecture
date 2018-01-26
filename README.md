@@ -38,6 +38,14 @@ One paragraph-ish:
 
 ## Coding
 
+Options for submission, whichever is easier for you:
+
+* Copy your source into this repo, or...
+* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
+  you've been using all along.
+
+Sprint Challenge:
+
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture-One/blob/master/LS8-SPEC.md)
 
 Add the `CMP` instruction and `equal` flag to your LS-8.
@@ -45,9 +53,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
-(You can just issue a PR from whichever repo you cloned for LS-8. Or you
-can copy files in here and issue a PR for this one.)
 
 
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
