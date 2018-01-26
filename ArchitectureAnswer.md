@@ -9,4 +9,4 @@ One paragraph-ish:
     Assembly is a low-level computer language and was first written in machine code. It seems to me that it is a more readable language of machine code. Machine code is also a low-level computer language. It only consists of binary and hexadecimal instructions from which it will be stored in the RAM then executed by the CPU. Both are used to create the architecture of the CPU.
 
 * Suggest the role that graphics cards play in machine learning:
-    A role that graphics card play in machine learning is processing data. FOr example, GPU were designed to do math in parallel. They compute extremely fast which is what we would want in machine learning, especially since their main purpose is computing.
+    A role that graphics card play in machine learning is processing data. For example, GPU were designed to do math in parallel. They compute extremely fast which is what we would want in machine learning, especially since their main purpose is computing.
