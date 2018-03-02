@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF // 1100=C , 1111=F = CF
 
-    to decimal:
+    to decimal: 207 // 
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 01000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -30,11 +30,15 @@ Complete the following problems:
 One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
-
+    1. The CPU reads the memory, looking for instructions to execute.
+    2. Once an sequence found, the CPU executes it.
+    3. The order of these commands depends on: address(in memory) for the next command, or if the processor receives a jump command, Or interrupts from input peripherals.  
 * Describe assembly language and machine language:
 
 * Suggest the role that graphics cards play in machine learning:
 
+While CPU executes commands in a sequential manner with its complex but few cores, GPU have thousands of simpler cores and able to run training data in a parallel fashion.
+ 
 
 ## Coding
 
