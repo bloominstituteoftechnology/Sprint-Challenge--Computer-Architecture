@@ -163,7 +163,7 @@ class CPU {
             case 'MUL':
                 // !!! IMPLEMENT ME
                 this.reg[regA] = this.reg[A] * this.reg[B];
-
+                
                 break;
             case 'ADD':
                 // IMPLEMENT ME
@@ -177,21 +177,21 @@ class CPU {
                 regA = regA & regB
                 break;
             case 'OR':
-                this.reg[regA] = valA | valB;
+                this.reg[regA] = reg[regA] | regreg[B]; //reg[regA] | reg[regB]; 
                 break;
         
             case 'NOT':
-                this.reg[regA] = ~valA;
+                this.reg[regA] = ~reg[regA] 
                 break;
     
             case 'XOR':
-                this.reg[regA] = valA ^ valB;
+                this.reg[regA] = reg[regA] ^ reg[regB];
                 break;
 
             case 'CMP':
-                this.setFlag(FLAG_EQ, valA === valB);
-                this.setFlag(FLAG_GT, valA > valB);
-                this.setFlag(FLAG_LT, valA < valB);
+                this.setFlag(FLAG_EQ, reg[regA] === reg[regB]);
+                this.setFlag(FLAG_GT, reg[regA] > reg[regB]);
+                this.setFlag(FLAG_LT, reg[regA] < reg[regB]);
                 break;    
             }
     }
