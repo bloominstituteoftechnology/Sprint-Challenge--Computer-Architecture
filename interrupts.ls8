@@ -1,0 +1,29 @@
+# interrupts.ls8
+
+00000100 # LDI R0,0xF8  R0 holds the interrupt vector for I0 (timer)
+00000000
+11111000
+00000100 # LDI R1,17    R1 holds the address of the handler
+00000001
+00010001
+00001001 # ST R0,R1     Store handler addr in int vector
+00000000
+00000001
+00000100 # LDI R5,1     Enable timer interrupts
+00000101
+00000001
+00000100 # LDI R0,15    Load R0 with the spin loop address
+00000000
+00001111
+# Address 15
+00010001 # JMP R0       Infinite spin loop right here
+00000000
+
+# Interrupt handler
+# Address 17
+00000100 # LDI R0,65    Load R0 with 'A'
+00000000
+01000001
+00000111 # PRA R0       Print it
+00000000
+00011010 # IRET         Return from interrupt
