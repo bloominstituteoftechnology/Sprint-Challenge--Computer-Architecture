@@ -41,8 +41,7 @@ One paragraph-ish:
 Options for submission, whichever is easier for you:
 
 * Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
-  you've been using all along.
+* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo you've been using all along.
 
 Sprint Challenge:
 
