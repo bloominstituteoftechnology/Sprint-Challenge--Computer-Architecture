@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 01000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -30,11 +30,16 @@ Complete the following problems:
 One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
-
+    - Concurrency allows for multiple tasks to be run at the same time. 
+    This can be achieved through the use of multiple threads.
+    The threads run at the same time, can communicate with each other, and may end at different times.
 * Describe assembly language and machine language:
-
+    - Machine language is a set of instructions that tells the CPU what to do.
+    Assembly is an abstraction of machine language that makes writing machine code easier.
+    Machine code is written in binary/hex while assembly can use human readable commands (e.g. JMP, INC, DEC).
 * Suggest the role that graphics cards play in machine learning:
-
+    - GPUs are much better than CPUs for heavy concurrent processing because modern GPUs have many more cores than a modern CPU.
+    The many cores a GPU has allows for potentially hundreds of learning operations at the same time. 
 
 ## Coding
 
