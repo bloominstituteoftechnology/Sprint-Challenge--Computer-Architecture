@@ -63,7 +63,7 @@ class CPU {
         // Special-purpose registers
         this.reg.PC = 0; // Program Counter
         this.reg.IR = 0; // Instruction Register
-        this.reg.FL = 1; // Flags
+        this.reg.FL = 0; // Flags
 
 		this.setupBranchTable();
     }
@@ -304,14 +304,14 @@ class CPU {
     }
 
     JGT(regNum) {
-        if(FL_GT ) {
+        if( FL_GT ) {
             return (this.reg[regNum]);
         }
 
     }
 
     JLT(regNum){
-        if ( FL_LT ) {
+        if (FL_LT ) {
             return (this.reg[regNum]);
         }
     }
