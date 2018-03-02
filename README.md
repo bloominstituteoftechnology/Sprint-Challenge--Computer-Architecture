@@ -9,8 +9,7 @@ Complete the following problems:
     to hex:
 
     to decimal:
-
-
+    
 * Convert `4C` hex
 
     to binary:
