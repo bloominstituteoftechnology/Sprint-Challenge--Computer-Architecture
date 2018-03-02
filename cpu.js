@@ -222,7 +222,7 @@ class CPU {
       case 'CALL':
       case 'PUSH': this.ram.write(--this.reg[SP_ADDR], value); break;
       case 'POP': this.reg[regNum] = this.ram.read(this.reg[SP_ADDR]++); break;
-      case 'RET': this.reg.PC = this.ram.read(this.reg[SP_ADDR]--); console.log(this.reg.PC); break;
+      case 'RET': this.reg.PC = this.ram.read(this.reg[SP_ADDR]++); console.log(this.reg.PC); break;
       default: console.warn('Invalid SP_ADDR operation. See methods: PUSH POP CALL');
     }
   }
@@ -231,11 +231,11 @@ class CPU {
   POP(regNum) { this.stackHelper('POP', this.reg[regNum]) }
   RET() { this.stackHelper('RET') }
 
-  JMP(){}
-  JEQ(){}
-  JGT(){}
-  JLT(){}
-  JNE(){}
+  JMP(regA) {}
+  JEQ(regA) { this.alu('JEQ', regA) }
+  JGT(regA) { this.alu('JGT', regA) }
+  JLT(regA) { this.alu('JLT', regA) }
+  JNE(regA) { this.alu('JNE', regA) }
 
 }
 
