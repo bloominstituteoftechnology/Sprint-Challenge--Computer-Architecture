@@ -1,33 +1,19 @@
 # Sprint-Challenge--Computer-Architecture
 
 ## Binary, Decimal, and Hex
-
-Complete the following problems:
-
-* Convert `11001111` binary
-
-    to hex:
-
-    to decimal:
-
-
-* Convert `4C` hex
-
-    to binary:
-
-    to decimal:
-
-
-* Convert `68` decimal
-
-    to binary:
-
-    to hex:
-
-
+#### Convert '11001111' binary
+* to hex: **CF**
+* to decimal: **207**
+#### Convert '4c' hex
+* to binary: **01001100**
+* to decimal: **76**
+#### Convert '68' decimal
+* to binary: **01000100**
+* to hex: **44**
 ## Architecture
 
 One paragraph-ish:
+- I did not complete the project this week due to me pursuing my personal project further I spent this week in class making sure to watch the comp sci process but more so rewatching older lectures for React Native and Authorization
 
 * Explain how the CPU provides concurrency:
 
