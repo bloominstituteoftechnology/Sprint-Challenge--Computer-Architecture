@@ -59,13 +59,14 @@ class CPU {
 
         
         // Special-purpose registers
+        this.reg.FL = 0;
         this.reg.PC = 0; // Program Counter
         this.reg.IR = 0; // Instruction Register
        // this.reg.FL = 0; // Flags
        // this.interruptsEnabled = true;
-        this.reg[SP] = 0xf4;
-        this.reg[SP] = 0b11110100;
-        this.reg[SP] = 244;
+        // this.reg[SP] = 0xf4;
+        // this.reg[SP] = 0b11110100;
+        // this.reg[SP] = 244;
 
 		this.setupBranchTable();
     }
@@ -88,31 +89,31 @@ class CPU {
         bt[NOT] = this.NOT;
         bt[CALL] = this.CALL;
         bt[CMP]  = this.CMP;
-        bt[DEC]  = this.DEC;
-        bt[DIV]  = this.DIV;
-        bt[INC]  = this.INC;
-        bt[INT]  = this.INT;
-        bt[IRET] = this.IRET;
+       // bt[DEC]  = this.DEC;
+       // bt[DIV]  = this.DIV;
+       // bt[INC]  = this.INC;
+        //bt[INT]  = this.INT;
+       // bt[IRET] = this.IRET;
         bt[JEQ]  = this.JEQ;
-        bt[JGT]  = this.JGT;
-        bt[JLT]  = this.JLT;
+        //bt[JGT]  = this.JGT;
+        //bt[JLT]  = this.JLT;
         bt[JMP]  = this.JMP;
         bt[JNE]  = this.JNE;
-        bt[LD]   = this.LD;
-        bt[MOD]  = this.MOD;
+        //bt[LD]   = this.LD;
+       // bt[MOD]  = this.MOD;
         bt[POP]  = this.POP;
-        bt[PRA]  = this.PRA;
+       // bt[PRA]  = this.PRA;
         bt[PUSH] = this.PUSH;
-        bt[RET]  = this.RET;
-        bt[ST]   = this.ST;
-        bt[SUB]  = this.SUB;
+       // bt[RET]  = this.RET;
+       // bt[ST]   = this.ST;
+       // bt[SUB]  = this.SUB;
       
     // Bind all the functions to this so we can call them later
     
     
-    for (let k of Object.keys(bt)) {
-       bt[k] = bt[k].bind(this)  //
-    }
+    // for (let k of Object.keys(bt)) {
+    //    bt[k] = bt[k].bind(this)  //
+    // }
     this.branchTable = bt;
 
    
@@ -236,9 +237,15 @@ class CPU {
         }
     }
     // INSTRUCTION HANDLER CODE:
+    // _register(cb, n) {
+    //     for (let i =0; i < n; i++) {
+    //         return cb;
+    //     }
+    // }
      /**
        * Internal push helper, doesn't move PC
        */
+    
     _push(value) {
     // Decrement SP, stack grows down from address 0xF7
     this.alu('DEC', SP);
@@ -302,6 +309,9 @@ class CPU {
      */
     LDI(regNum, value) {
         this.reg[regNum] = value & 255;    // !!! IMPLEMENT ME
+        this.reg.PC++;
+        this.reg.PC++;
+        this.reg.PC++;  //todo: refactor this 
     }
 
     /**
@@ -402,6 +412,6 @@ class CPU {
      
     
 
-}
+
 
 module.exports = CPU;
