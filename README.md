@@ -9,11 +9,11 @@ Complete the following problems:
     to decimal: 207
 
 * Convert `4C` hex
-    to binary: 1001100
+    to binary: 0b1001100
     to decimal: 76
 
 * Convert `68` decimal
-    to binary: 1000100
+    to binary: 0b1000100
     to hex: 44
 
 ## Architecture
