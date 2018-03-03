@@ -212,5 +212,4 @@ class CPU {
   JNE(regNum) { if (this.alu('JNE')) this.reg.IR = regNum; }
 }
 
-
 module.exports = CPU;
