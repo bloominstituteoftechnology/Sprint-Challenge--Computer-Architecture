@@ -5,25 +5,16 @@
 Complete the following problems:
 
 * Convert `11001111` binary
-
-    to hex:
-
-    to decimal:
-
+    to hex: CF
+    to decimal: 207
 
 * Convert `4C` hex
-
-    to binary:
-
-    to decimal:
-
+    to binary: 0b1001100
+    to decimal: 76
 
 * Convert `68` decimal
-
-    to binary:
-
-    to hex:
-
+    to binary: 0b1000100
+    to hex: 44
 
 ## Architecture
 
@@ -31,10 +22,21 @@ One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
 
+: 
+
 * Describe assembly language and machine language:
+
+: This example is increadably readable, first two bits describe operation parameters. The following bit is enabled if it belongs in the ALU. The following two bits describe its category. And the remaining three bits are used to identify the specific operation.
+
+It used the parameter bits to recognize the following binary from the parameters and the next operation.
+
+I'd argue that its just as semantic as a functional language.
 
 * Suggest the role that graphics cards play in machine learning:
 
+: They provide fast batch ALU operations. Allowing for delegation of large quantitys of simple operations. If you can identify a chain of operations that facilitate a composition around that ends, the benefits should be apparent in positive speed gains.
+
+CUDA and OpenGL are viable options for clamped operations as I understand the context.
 
 ## Coding
 
