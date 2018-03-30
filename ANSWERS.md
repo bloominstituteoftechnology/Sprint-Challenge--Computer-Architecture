@@ -1,3 +1,5 @@
+[LS-8 Code](https://github.com/juliankohlman/Computer-Architecture-One/tree/master/project/ls8)
+
 ## Binary, Decimal, and Hex
 
 Complete the following problems:
