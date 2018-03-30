@@ -33,9 +33,9 @@ One paragraph-ish:
 
 * Describe assembly language and machine language:
 
-  * Assembly language is made up of instructions that are human readable. Assembly code must be transformed into machine code via an assembler, in order for a computer to understand the instructions. Assembly language instructions like PRN or print are eventually assembled into machine readable code like this (01100100).
+  * Assembly language is made up of instructions that are human readable. Assembly code must be transformed into machine code via an assembler. Once this happens a computer will be able to understand the instructions. Assembly language instructions like PRN or print are eventually assembled into machine readable code like this (01100100).
 
-  * Machine language, or code is what is directly run by a CPU based on it’s instruction set.
+  * Machine language, or code is what is directly run by a CPU based on it’s instruction set. These instructions can vary in byte sizes but a single byte instruction may look like this (11110101).
 
 
 * Suggest the role that graphics cards play in machine learning:
