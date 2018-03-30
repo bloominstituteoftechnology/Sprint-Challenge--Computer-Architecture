@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -32,9 +32,10 @@ One paragraph-ish:
 * Explain how the CPU provides concurrency:
 
 * Describe assembly language and machine language:
+- An assembly language is a low-level programming language for a computer, in which there is a very strong correspondence between the language and the architecture's machine code instructions. (Without interpreting or compiling). Machine language is a set of instructions executed directly by a computer's CPU. Each instruction performs a very specific task, such as a load, a jump, or an ALU operation on a unit of data in a CPU register or memory. Every program directly executed by a CPU is made up of a series of such instructions. 
 
 * Suggest the role that graphics cards play in machine learning:
-
+- GPUs have almost 200 times more processors per chip than a CPU. While a CPU core is more powerful than a GPU core, the vast majority of this power goes unused by ML applications. A CPU core is designed to support an extremely broad variety of tasks in addition to performing computations, whereas a GPU core is optimized exclusively for data computations. Because of this singular focus, a GPU core is simpler and has a smaller die area than a CPU, allowing many more GPU cores to be crammed onto a single chip. Consequently, ML applications, which perform large numbers of computations on a vast amount of data, can see huge performance improvements when running on a GPU versus a CPU.
 
 ## Coding
 
@@ -43,6 +44,7 @@ Options for submission, whichever is easier for you:
 * Copy your source into this repo, or...
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
   you've been using all along.
+- link: https://github.com/LambdaSchool/Computer-Architecture-One/pull/78
 
 Sprint Challenge:
 
