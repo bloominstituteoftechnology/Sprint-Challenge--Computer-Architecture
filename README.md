@@ -6,34 +6,37 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
 
 One paragraph-ish:
 
-* Explain how the CPU provides concurrency:
+* Explain how the CPU provides concurrency: 
+Concurrency is a CPU's ability to use seperate process stacks to allow its threads to process instructions at the same time without having an effect on the other running instructions. By utilizing the stack, the CPU can effectively prioritize processes that can and can not be run concurrently to maximize speed.
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language: 
+Machine Code is exactly what is says it is, code for the machine. It is the code that a computers cpu can understand and process. It is the very bottom of the programming funnel. Assembly Code is representation of Machine Code that is readable for people, so they can do work in it. This code is then fed into an assembler, which boils down the assembly to machine code for the cpu.
 
 * Suggest the role that graphics cards play in machine learning:
+The analogy I like to use is a GPU is a truck and a CPU is a car. A GPU is tuned to handle a lot more parallel instructions than a CPU, and therefore is better suited to pull those bigger data sets. IRL if you wanna get somewhere quickly, you'd take a ferrari(cpu), if you wanted to tow a boat you'd buy a f-150(gpu). A GPU's design is better suited for the machine learning task.
 
 
 ## Coding
