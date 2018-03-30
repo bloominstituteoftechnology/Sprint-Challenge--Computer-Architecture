@@ -30,12 +30,13 @@ Complete the following problems:
 One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
+- Nowadays, CPUs can usually use multi-cores or run virtual cores to double the number of processor devices. This processor runs the calculation thread at the same time as making the computer faster. It can be difficult when various threads need to access the same resource or pass information to other processes.
 
 * Describe assembly language and machine language:
-- An assembly language is a low-level programming language for a computer, in which there is a very strong correspondence between the language and the architecture's machine code instructions. (Without interpreting or compiling). Machine language is a set of instructions executed directly by a computer's CPU. Each instruction performs a very specific task, such as a load, a jump, or an ALU operation on a unit of data in a CPU register or memory. Every program directly executed by a CPU is made up of a series of such instructions. 
+- Assembly language is a low-level programming language for computers, and there is a very strong match between language and architecture's computer code guidelines. (Without interpreting or compiling). A machine language is a set of instructions that are executed directly by the computer's CPU. Each instruction performs very specific tasks such as loading, jumping, or ALU operations on CPU registers or data units in memory. All programs executed directly by the CPU consist of a series of commands.
 
 * Suggest the role that graphics cards play in machine learning:
-- GPUs have almost 200 times more processors per chip than a CPU. While a CPU core is more powerful than a GPU core, the vast majority of this power goes unused by ML applications. A CPU core is designed to support an extremely broad variety of tasks in addition to performing computations, whereas a GPU core is optimized exclusively for data computations. Because of this singular focus, a GPU core is simpler and has a smaller die area than a CPU, allowing many more GPU cores to be crammed onto a single chip. Consequently, ML applications, which perform large numbers of computations on a vast amount of data, can see huge performance improvements when running on a GPU versus a CPU.
+- GPUs have nearly 200 times more processors per chip than CPUs. The CPU core is stronger than the GPU core, but most of this power is not used in most ML applications. In addition to performing calculations, the CPU core is designed to support a wide variety of tasks, while the GPU core is optimized for data calculations only. Because of these drawbacks, the GPU core is simpler and simpler in die area than CPU, allowing more GPU cores to be pushed onto a single chip. As a result, ML applications that do a lot of computations on massive amounts of data can see tremendous performance gains when running CPUs on the GPU.
 
 ## Coding
 
