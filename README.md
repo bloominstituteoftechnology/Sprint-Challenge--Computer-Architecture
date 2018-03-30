@@ -6,24 +6,21 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+  to hex: CF
 
-    to decimal:
+  to decimal: 207 = 128+64+0+0+8+4+2+1
 
+- Convert `4C` hex
 
-* Convert `4C` hex
+  to binary: 1001100
 
-    to binary:
-
-    to decimal:
-
+  to decimal: 76
 
 * Convert `68` decimal
 
-    to binary:
+  to binary: 01000100 = 0+64+0+0+0+4+0
 
-    to hex:
-
+  to hex: 44
 
 ## Architecture
 
@@ -31,10 +28,17 @@ One paragraph-ish:
 
 * Explain how the CPU provides concurrency:
 
+- Concurrency occurs when two processes are running in the same timeframe usually with a dependency between the processes. that can happen with overlapping times. Since CPUs can only perform one action per cycle, most cpus have multiple cores or virtual cores or utilize parallelism.
+
 * Describe assembly language and machine language:
+
+- assembly is a low level language that has a strong relationship to machine language and is complied to machine language. Way easier to read than machine language.
+
+- machine language is usually binary or hex and is the language the CPUs van run.
 
 * Suggest the role that graphics cards play in machine learning:
 
+- GPUs are design for parallelism, so they are able to perform instructions at the same time. They have more CPUs and are able to process more bandwidth from memory. a drawback is they normally have a lower amount of ram
 
 ## Coding
 
@@ -53,7 +57,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
 print 1, then 4, then 5.
@@ -151,4 +154,3 @@ print 1, then 4, then 5.
 # TEST5 (73):
 00000001 # HLT
 ```
-
