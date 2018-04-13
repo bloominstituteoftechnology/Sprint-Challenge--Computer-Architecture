@@ -18,7 +18,7 @@ const PRA = 0b01000010;
 const ST = 0b10011010;
 const POP = 0b01001100;
 const PUSH = 0b01001101;
-const CALL = 0b10010000;
+const CALL = 0b01001000;
 
 const SP = 7;
 
@@ -153,7 +153,8 @@ class CPU {
         this.reg[SP]++;
         break;
       case CALL:
-
+        this.alu('DEC', SP);
+        this.reg[operandA] = this.ram.write(this.reg[SP], operandB);
         break;
       case HLT:
         this.stopClock();
