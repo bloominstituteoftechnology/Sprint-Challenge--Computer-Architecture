@@ -72,13 +72,16 @@ class CPU {
             case 'ADD':
                 this.reg[regA] = this.reg[regA] + this.reg[regB];
                 break;
-            // case 'DIV':
-            //     if (this.reg[regB] === 0) {
-            //         return 'ERROR';
-            //         break;
-            //     }
-            //     this.reg[regA] = this.reg[regA] / this.reg[regB];
-            //     break;
+            case 'CMP':
+                console.log('regA, regB',regA, regB);
+                if(this.reg[regA] === this.reg[regB]) {
+                    this.flags.equal = false;
+                }else if(this.reg[regA] > this.reg[regB]) {
+                    this.flags.equal = false;
+                } else if(this.reg[regA] < this.reg[regB]) {
+                    this.flags.equal = false;
+                }
+                break;
             case 'AND':
                 this.reg[regA] = this.reg[regA] && this.reg[regB];
                 break;
@@ -87,30 +90,6 @@ class CPU {
         }
     }
     tick() {
-        const maskedInterrupts = this.reg[IS] & this.reg[IM];
-        if(this.flags.interrupt && maskedInterrupts) {
-            for(let i=0; i<8; i++) {
-                if(((maskedInterrupts >> i) & 1) == 1) {
-                    this.flags.interrupt = false;
-                    this.reg[IS] = this.reg[IS] & ~(1 << i);
-                    this.reg[SP]--;
-                    this.ram.write(this.reg[SP], this.reg.PC);
-
-                    for(let j =0; j<8; j++) {
-                        this.reg[SP]--;
-                        this.ram.write(this.reg[SP], this.reg[j]);
-                    }
-
-                    const vectorTableEntry = 0xf8 + i;
-                    const handlerAddress = this.ram.read(vectorTableEntry);
-                    this.reg.PC = handlerAddress;
-                    break;
-                }
-            }
-        }
-
-
-
         let IR = this.ram.read(this.reg.PC);
         //console.log(IR);
         
@@ -118,13 +97,12 @@ class CPU {
         let operandB = this.ram.read(this.reg.PC + 2);
 
         //console.log(`${this.reg.PC}: ${IR.toString(2)}`);
-        const handle_CMP = () => {
-            if((this.reg[operandA] & ~this.reg[operandB]) === 0) {
-                this.flags.equal = true;
-            } else this.flags.equal = false;
-            this.reg.PC += 3;
+        const handle_CMP = (operandA, operandB) => {
+            console.log("CMP operands",operandA,operandB);
+           this.alu('CMP', operandA, operandB);
         };
         const handle_LDI = (operandA, operandB) => {
+            console.log("LDI operands",operandA,operandB);
             this.reg[operandA] = operandB;
         };
         const handle_JMP = (operandA) => {
@@ -132,14 +110,14 @@ class CPU {
         };
         const handle_JEQ = (operandA) => {
             if(this.flags.equal) {
-                this.reg.PC = this.reg[operandA];
+                handle_JMP(operandA);
             } else {
                 this.reg.PC += 2;
             }
         };
         const handle_JNE = (operandA) => {
             if(this.flags.equal === false) {
-                this.reg.PC = this.reg[operandA];
+                handle_JMP(operandA);
             } else {
                 this.reg.PC += 2;
             }
@@ -183,7 +161,6 @@ class CPU {
         
 
         const branchTable = {
-            [CMP]: handle_CMP,
             [LDI]: handle_LDI,
             [HLT]: handle_HLT,
             [PRN]: handle_PRN,
@@ -193,11 +170,12 @@ class CPU {
             [PUSH]: handle_PUSH,
             [CALL]: handle_CALL,
             [RET]: handle_RET,
+            [CMP]: handle_CMP,
             [JMP]: handle_JMP,
             [JEQ]: handle_JEQ,
             [JNE]: handle_JNE,
         };
-        console.log(branchTable[IR]);
+       // console.log("branchTable[IR]",branchTable[IR]);
         branchTable[IR](operandA, operandB);
         // const handler = this.branchTable[IR](operandA, operandB);
         // if (!handler) {
@@ -211,11 +189,11 @@ class CPU {
         // }
         // handler.call(this);
       
-        
+        if ( IR !== CALL && IR !== RET && IR !== JMP && IR !== JEQ && IR !== JNE) {
         let operandCount = (IR >>>6) & 0b11;
         let totalInstructionLen = operandCount +1;
         this.reg.PC += totalInstructionLen;
-    
+        }
 
     }
 }

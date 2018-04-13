@@ -12,7 +12,7 @@
     Machine code or machine language is a set of instructions executed by a computer's CPU. Higher-level languages or assembly languages are translated into executable machine code by compilers, assemblers and linkers. Machine code are so unreadable.
 
 3. Why is 3D performance so much higher with a graphics card than without?
-    
+    Graphics card provides a GPU, with thousands of computational cores, it works as a ancillary CPU, which reduces the load of CPU and let CPU to work on its usual tasks.
 
 
 4. Suggest the role that graphics cards play in machine learning:
