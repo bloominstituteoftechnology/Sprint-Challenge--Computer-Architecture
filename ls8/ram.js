@@ -1,6 +1,6 @@
 class RAM {
   constructor(size) {
-    this.mem = Array(size).fill(0);
+    this.mem = new Array(size).fill(0);
   }
   write(MAR, MDR) {
     // Write the value in the MDR to the address MAR
@@ -8,7 +8,7 @@ class RAM {
   }
   read(MAR) {
     // Read the address in MAR and return it
-    return this.mem.[MAR];
+    return this.mem[MAR];
   }
 }
 

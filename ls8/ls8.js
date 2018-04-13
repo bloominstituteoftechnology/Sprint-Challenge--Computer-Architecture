@@ -14,7 +14,8 @@ function loadMemory() {
         return memo.concat(line.slice(0, 8));
       }
       return memo;
-    }, []);
+    }, [])
+    .filter(line => line !== '');
 
     for (let i = 0; i < program.length; i++) {
       cpu.poke(i, parseInt(program[i], 2));
