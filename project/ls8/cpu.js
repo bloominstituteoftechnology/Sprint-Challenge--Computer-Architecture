@@ -1,4 +1,3 @@
-//hex for IM IS and SP
 const IM = 0x05;
 const IS = 0x06;
 const SP = 0x07;
@@ -8,17 +7,16 @@ const equalFlag = 0;
 const greaterThanFlag = 1;
 const lessThanFlag = 2;
 
-//binary code for methods to use
 const LDI = 0b10011001;
 const HLT = 0b00000001;
 const PRN = 0b01000011;
 const MUL = 0b10101010;
 const PUSH = 0b01001101;
 const POP = 0b01001100;
+//machine code for the methods to add today
 const CMP = 0b10100000;
 const JMP = 0b01010000;
 
-//cpu constructor
 class CPU {
 
     constructor(ram) {
@@ -27,7 +25,7 @@ class CPU {
         this.reg = new Array(8).fill(0);
         this.reg[SP] = 0xf4;
         this.reg.PC = 0;
-        this.reg.flags = 0;
+        //variable to determine if the CPU should continue normal functioning and iterate the PC or stop
         this.continueOp = true;
     }
 	
@@ -68,6 +66,7 @@ class CPU {
                 return this.reg[regA] = firstVal * secondVal;
             case 'SUB':
                 return this.reg[regA] = firstVal - secondVal;
+            //case added today
             case 'CMP':
                 equalFlag = (firstVal === secondVal);
                 greaterThanFlag = (firstVal > secondVal);
@@ -88,8 +87,10 @@ class CPU {
         const operandB = this.ram.read(PC + 2);
         console.log("Second potential operand: ", operandB.toString(2));
 
-        const methodHandler = this.opIndex[this.reg.ir];
+        //the method handler is set to the method stored in the branch table that IR is pointing to
+        const methodHandler = this.opIndex[this.reg.IR];
 
+        //checks if the spot in the branch table is undefined
         if (!methodHandler){
             console.log(`The current spot does not have a method stored`);
             this.continueOp = false;
@@ -121,10 +122,16 @@ class CPU {
             this.reg[operandA] = val;
             return;
         };
+
+        //new methods added today
         const execute_CMP = () => {
             this.alu('CMP', operandA, operandB);
             return;
         };
+        const execute_JMP = (val) => {
+            this.PC = this.reg[val];
+            return this.continueOp = false;
+        }
 
         const opIndex = [];
         opIndex[LDI] = execute_LDI;
@@ -133,11 +140,14 @@ class CPU {
         opIndex[MUL] = execute_MUL;
         opIndex[PUSH] = execute_PUSH;
         opIndex[POP] = execute_POP;
+        //methods added to the branch table
         opIndex[CMP]= execute_CMP;
+        opIndex[JMP] = execute_JMP;
         
 
         opIndex[IR]();
 
+        //conditional that decides whether to increment the PC or not depending on the status of continueOp
         if (this.continueOp){
             const operandCount = IR >>> 6
             this.reg.PC++;
