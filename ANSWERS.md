@@ -30,6 +30,8 @@ Complete the following problems:
 
 - Sinlge-core CPUs provide concurrency with timer interrupts that fire one time per second. When the interrupt occurs, CPU executes the interrupt handler. When it completes, the CPU returns to the previous state.
 
+- Right answer: time slicing, multiple cores, multithreading.
+
 2. Describe assembly language and machine language:
 
 Machine language is represented by a sequence of hexadecimal numbers, bytes, the instructions given to CPU as to what to do next.
