@@ -15,7 +15,7 @@ const HLT = 0b00000001;
 //const JEQ = 
 // const JGT =
 //const JLT =
-//const JMP =
+const JMP = 0b01010000;
 //const JNE =
 //const LD =
 const LDI = 0b10011001;
@@ -128,6 +128,10 @@ class CPU {
           case HLT:
             this.stopClock();
             break; 
+					case JMP:
+						advancePC = false;
+						this.reg.PC = this.reg[operandA];
+						break;
           case LDI:
             this.reg[operandA] = operandB;
             break;
