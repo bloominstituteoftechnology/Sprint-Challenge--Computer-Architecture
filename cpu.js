@@ -27,6 +27,8 @@ const DIV = 0b10101011;
 const INC = 0b01111000;
 const SUB = 0b10101001;
 const CMP = 0b10100000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
 
 const SP = 7;
 const IS = 6;
@@ -102,15 +104,6 @@ class CPU {
             case 'SUB':
                 this.reg[regA] = this.reg[regA] - this.reg[regB];
             break;
-            case 'CMP':
-                if (this.reg[regA] < this.reg[regB]) {
-                    this.reg.FL = 0b00000100;
-                } else if (this.reg[regA] > this.reg[regB]) {
-                    this.reg.FL = 0b00000010;
-                } else if (this.reg[regA] === this.reg[regB]) {
-                    this.reg.FL = 0b00000001;
-                }
-            break;
         }
     }
 
@@ -152,6 +145,8 @@ class CPU {
         let callHandler;
         let intHandler;
         let jmpHandler; 
+        let jeqHandler;
+        let jneHandler;
 
         // Debugging output
         // console.log(`${this.reg.PC}: ${IR.toString(2)}`);
@@ -177,6 +172,16 @@ class CPU {
             this.ram.write(this.reg[SP], this.reg.PC + (IR >>> 6) + 1)
             callHandler = this.reg[operandA];
             return callHandler;
+        }
+
+        const handle_CMP = () => {
+            if (this.reg[operandA] < this.reg[operandB]) {
+                this.reg.FL |= 0b00000100;
+            } else if (this.reg[operandA] > this.reg[operandB]) {
+                this.reg.FL |= 0b00000010;
+            } else if (this.reg[operandA] === this.reg[operandB]) {
+                this.reg.FL |= 0b00000001;
+            }
         }
 
         const handle_DEC = () => {
@@ -247,19 +252,35 @@ class CPU {
             this.alu('SUB', operandA, operandB);
         }
 
-        const handle_CMP = () => {
-            this.alu('CMP', operandA, operandB);
+
+        const handle_JEQ = () => {
+            if (this.reg.FL & 0b00000001) {
+                jeqHandler = this.reg[operandA];
+            } else {
+                return;
+            }
+        }
+
+        const handle_JNE = () => {
+            if (!(this.reg.FL & 0b00000001)) {
+                jneHandler = this.reg[operandA];
+            } else {
+                return;
+            }
         }
         
         const branchTable = {
             [ADD]: handle_ADD,
             [CALL]: handle_CALL,
+            [CMP]: handle_CMP,
             [DEC]: handle_DEC,
             [DIV]: handle_DIV,
             [HLT]: handle_HLT,
             [INC]: handle_INC,
             [IRET]: handle_IRET,
+            [JEQ]: handle_JEQ,
             [JMP]: handle_JMP,
+            [JNE]: handle_JNE,
             [LDI]: handle_LDI,
             [MUL]: handle_MUL,
             [POP]: handle_POP,
@@ -269,7 +290,6 @@ class CPU {
             [RET]: handle_RET,
             [ST]: handle_ST,
             [SUB]: handle_SUB,
-            [CMP]: handle_CMP
         }
         
         branchTable[IR](operandA, operandB);
@@ -283,7 +303,11 @@ class CPU {
         } else if (callHandler) {
             this.reg.PC = callHandler;
         } else if (jmpHandler) {
-            this.reg.PC = jmpHandler
+            this.reg.PC = jmpHandler;
+        } else if (jeqHandler) {
+            this.reg.PC = jeqHandler;
+        } else if (jneHandler) {
+            this.reg.PC = jneHandler;
         } else {
             this.reg.PC += (IR >>> 6) + 1;            
         }
