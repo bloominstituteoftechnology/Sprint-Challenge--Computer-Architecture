@@ -41,7 +41,7 @@
 
  const FLAG_E = 0; // Equal
  const FLAG_G = 1; // Greater-than
- const FLAT_L = 2; // Less-than
+ const FLAG_L = 2; // Less-than
 
  const vecTableStart = 0xF8;
 
@@ -286,6 +286,21 @@ class CPU {
         console.log(String.fromCharCode(this.reg[operandA]));
         break;
       case NOP:
+        break;
+      case CMP:
+        this.alu('CMP', operandA, operandB);
+        break;
+      case JEQ:
+        if (this.checkFlag(FLAG_E)) {
+          this.reg.PC = this.reg[operandA];
+          this.busy = true;
+        }
+        break;
+      case JNE:
+        if (!this.checkFlag(FLAG_E)) {
+          this.reg.PC = this.reg[operandA];
+          this.busy = true;
+        }
         break;
       default:
         let instError = this.reg.IR.toString(2);
