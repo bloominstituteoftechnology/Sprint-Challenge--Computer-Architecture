@@ -210,7 +210,7 @@ class CPU {
     };
 
     const handle_JNE = () => {
-      if (this.reg.FL === 0b00000000) {
+      if (this.reg.FL !== 0b00000001) {
         value = this.reg[ operandA ];
         return value;
       }
@@ -243,10 +243,9 @@ class CPU {
     };
 
     const handle_RET = () => {
-      callHandler = this.ram.read(this.reg[ SP ]);
+      value = this.ram.read(this.reg[ SP ]);
       this.reg[ SP ]++;
-
-      return callHandler;
+      return value;
     };
 
     const handle_ST = () => {
