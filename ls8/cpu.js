@@ -214,6 +214,9 @@ class CPU {
       case JEQ:
         if (E) this.ram.read(this.reg[SP]);
         break;
+      case JNE:
+        if (!E) this.rame.read(this.reg[SP]);
+        break;
     }
 
     // Increment the PC register to go to the next instruction. Instructions
