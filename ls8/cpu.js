@@ -2,6 +2,10 @@ const HLT = 0b00000001;
 const LDI = 0b10011001;
 const MUL = 0b10101010;
 const PRN = 0b01000011;
+const POP = 0b01001100;
+const PUSH = 0b01001101;
+
+const SP = 7;
 
 class CPU {
   constructor(ram) {
@@ -9,6 +13,7 @@ class CPU {
     this.reg = new Array(8).fill(0);
 
     this.reg.PC = 0;
+    this.reg[SP] = 0xf4;
   }
   poke(address, value) {
     this.ram.write(address, value);
@@ -44,11 +49,20 @@ class CPU {
       case PRN:
         console.log(this.reg[operandA]);
         break;
+      case PUSH:
+        this.reg[SP]--;
+        this.ram.write(this.reg[SP], this.reg[operandA]);
+        break;
+      case POP:
+        this.reg[operandA] = this.ram.read(this.reg[SP]);
+        this.reg[SP]++;
+        break;
       case HLT:
         this.stopClock();
         break;
       default:
         console.log(`Invalid instruction: ${IR.toString(2)}`);
+        this.stopClock();
     }
 
     let operandCount = (IR >>> 6) & 0b11;
