@@ -6,23 +6,39 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
+    4 = 0100
+    C = 1100
 
-    to decimal:
+    to decimal: 76
+    4 12
+    4 * 16 = 64
+    12 * 1 = 12
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
+    68 / 2 0
+    34 / 2 0
+    17 / 2 1
+    8 / 2  0
+    4 / 2  0
+    2 / 2  0
+    1 / 2  1
 
-    to hex:
+    to hex: 43
+    68 / 16         4.25
+    4 * 16 = 64
+    64 - 16 = 48
+    48 / 16         3
 
 
 ## Architecture
