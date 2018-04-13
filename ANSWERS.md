@@ -28,3 +28,5 @@ Machine code ofter comes in binary or `0/1`'s and is a set of intructions execut
 Graphics card generates images to put on display (e.g. computer monitor) by converting video/image data into electronic signals. This makes it render frames alot more faster in a shorter time than if the computer went without a graphics card. 
 
 4. Suggest the role that graphics cards play in machine learning:
+
+Data visualization --> Since the main purpose of a graphics card is to help quicken the rendering of images and videos on a monitor, it would make sense of it to play a strong role in displaying data on graphs/charts. Having the graphs/chart animate to show distinctions between different elements and their relation with other elements is a good demonstration of 3D performance in the use of graphic cards.
