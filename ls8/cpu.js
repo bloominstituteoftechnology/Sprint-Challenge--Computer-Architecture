@@ -12,7 +12,13 @@ const CALL = 0b01001000;
 const RET  = 0b00001001;
 const ADD  = 0b10101000;
 const JMP  = 0b01010000;
+const CMP  = 0b10100000;
+const JEQ  = 0b01010001;
+const JNE  = 0b01010010;
 
+const G = 0b00000010,
+      E = 0b00000001,
+      L = 0b00000100;
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -30,6 +36,7 @@ class CPU {
         // Special-purpose registers
         this.reg.PC = 0; // Program Counter
         this.flag = false;
+        this.F = 0b00000000;
     }
 	
     /**
@@ -73,6 +80,13 @@ class CPU {
                 break;
             case 'ADD':
                 this.reg[regA] += this.reg[regB];
+                break;
+            case 'CMP':
+                if (this.reg[regA] === this.reg[regB]) this.F = E;
+                if (this.reg[regA] > this.reg[regB]) this.F = G;
+                if (this.reg[regA] < this.reg[regB]) this.F = L;
+                break;
+            default:
                 break;
         }
     }
@@ -142,9 +156,12 @@ class CPU {
                 this.flag = true;
                 this.reg.PC = this.reg[operandA];
                 break;
+            case CMP:
+                this.alu("CMP", operandA, operandB);
+                break;
             case HLT:
                 this.stopClock();
-                break    
+                break;
             default: 
             // console.log("unknownInstruction")
                 break;
