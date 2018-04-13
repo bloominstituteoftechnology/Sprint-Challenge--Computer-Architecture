@@ -11,6 +11,7 @@ const PUSH = 0b01001101;
 const CALL = 0b01001000;
 const RET  = 0b00001001;
 const ADD  = 0b10101000;
+const JMP  = 0b01010000;
 
 
 /**
@@ -136,6 +137,10 @@ class CPU {
                 this.flag = true;
                 this.reg.PC = this.ram.read(this.reg[7]);
                 this.reg[7]++;
+                break;
+            case JMP:
+                this.flag = true;
+                this.reg.PC = this.reg[operandA];
                 break;
             case HLT:
                 this.stopClock();
