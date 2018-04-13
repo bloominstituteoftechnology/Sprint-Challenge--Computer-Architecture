@@ -99,7 +99,7 @@ class CPU {
 						this.reg[regA] = this.reg[regA] + this.reg[regB];
 						break;
 					case CMP:
-						this.reg[regA] === this.reg[regB] ? this.E = 1 : this.E =0;
+						this.reg[regA] === this.reg[regB] ? this.E = 1 : this.E = 0;
 						this.reg[regA] > this.reg[regB] ? this.G = 1 : this.G = 0;
 						this.reg[regA] < this.reg[regB] ? this.L = 1 : this.L = 0;
         }
@@ -113,8 +113,8 @@ class CPU {
         let operandA = this.ram.read(this.reg.PC + 1);
         let operandB = this.ram.read(this.reg.PC + 2); 
 				let advancePC = true;
-
-        switch(IR) { 
+        
+				switch(IR) { 
 					case ADD:
 					case CMP:
           case MUL: 
@@ -129,14 +129,21 @@ class CPU {
             this.stopClock();
             break; 
 					case JEQ:
-						if (this.E === 1) this.reg.PC = this.reg[operandA]; 
+						if (this.E === 1) {
+							advancePC = false;
+							this.reg.PC = this.reg[operandA]; 
+						}
+						this.E = 0;
 						break;
 					case JMP:
 						advancePC = false;
 						this.reg.PC = this.reg[operandA];
 						break;
 					case JNE:
-						if (this.E === 0) this.reg.PC = this.reg[operandA];
+						if (this.E === 0) {
+							advancePC = false;
+							this.reg.PC = this.reg[operandA];
+						}
 						break;
           case LDI:
             this.reg[operandA] = operandB;
