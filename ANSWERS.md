@@ -16,6 +16,8 @@
 
 1. Explain how the CPU provides concurrency:
 
+CPU has the ability to perform multiple tasks through the DMS (Direct Access Memory) bus. The DMA helps CPU link to the Random Access Memory and is also responsible for sending the CPU interrupts. Without DMS, the CPU can only perform task and not be able to work on interrupts.
+
 
 2. Describe assembly language and machine language:
 
