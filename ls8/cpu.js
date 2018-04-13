@@ -17,9 +17,10 @@ const JEQ  = 0b01010001;
 const JNE  = 0b01010010;
 
 // flags
-const G = 2,
-      E = 1,
-      L = 4;
+const L = 0b100,
+      G = 0b010,
+      E = 0b001;
+
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
