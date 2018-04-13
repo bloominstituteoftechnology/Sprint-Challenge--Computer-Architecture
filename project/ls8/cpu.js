@@ -96,13 +96,13 @@ class CPU {
                 break;
             case 'CMP':
                 if (this.reg[regA] === this.reg[regB]) {
-                    this.reg.FL = 0b00000001;
+                    this.reg.FL = 0b00000001; // set E flag to 1
                 }
                 else if (this.reg[regA] > this.reg[regB]) {
-                    this.reg.FL = 0b00000010;
+                    this.reg.FL = 0b00000010; // set G flag to 1
                 }
                 else if (this.reg[regA] < this.reg[regB]) {
-                    this.reg.FL = 0b00000100;
+                    this.reg.FL = 0b00000100; // set L flag to 1
                 }
                 break;
             default:
