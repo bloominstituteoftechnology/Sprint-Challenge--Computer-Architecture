@@ -11,6 +11,9 @@ const PUSH = 0b01001101;
 const POP = 0b01001100;
 const CALL = 0b01001000;
 const RET = 0b00001001;
+const JMP = 0b01010000;
+const JNE = 0b01010010;
+const JEQ = 0b01010001;
 
 const SP = 0b00000111;
 const KEYPRESSEDADDRESS = 0xf4; //address above start of stack
@@ -46,6 +49,9 @@ class CPU {
     bt[CALL] = this.handle_CALL;
     bt[RET] = this.handle_RET;
     bt[CMP] = this.handle_CMP;
+    bt[JMP] = this.handle_JMP;
+    bt[JNE] = this.handle_JNE;
+    bt[JEQ] = this.handle_JEQ;
 
     // Bind all the functions to this so we can call them later
     for (let k of Object.keys(bt)) {
@@ -181,8 +187,9 @@ class CPU {
   }
 
   handle_CALL(regA) {
-    this.reg.PC += 2;
-    this.reg[SP] = regA;
+    this.reg[SP]--;
+    this.ram.write(this.reg[SP], this.reg.PC + 2)
+    this.reg.PC = this.reg[regA];
     this.advancePC = false;
   }
 
@@ -195,5 +202,9 @@ class CPU {
     this.alu(CMP, regA, regB)
   }
 }
+
+  handle_JMP(reqA) {
+    this.reg[SP] = this.regA;
+  }
 
 module.exports = CPU;
