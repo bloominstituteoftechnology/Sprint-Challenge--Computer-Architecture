@@ -207,6 +207,10 @@ class CPU {
         this.reg.PC = this.ram.read(this.reg.PC + 2);
         this.reg[SP]++;
         break;
+      case JMP:
+        this.ram.read(this.reg[SP]);
+        this.reg.PC = this.ram.read(this.reg[SP]);
+        break;
     }
 
     // Increment the PC register to go to the next instruction. Instructions
