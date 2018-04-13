@@ -8,6 +8,7 @@ class CPU {
         this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
         this.SP = 0xf4;
         // Special-purpose registers
+        this.reg.FL = 0b000;
         this.reg.PC = 0; // Program Counter
     }
 
@@ -70,6 +71,9 @@ class CPU {
             case '10101000':
                 this.ADD(operandA, operandB);
                 break;
+            case '10100000':
+                this.CMP(operandA, operandB);
+                break;
             default:
         }
 
@@ -125,6 +129,11 @@ class CPU {
         this.reg[indexA] = (
             parseInt(this.reg[indexA], 2) + parseInt(this.reg[indexB], 2)
         ).toString(2);
+    }
+
+    CMP(registerA, registerB) {
+        const binary = this.reg.FL.toString(2);
+        console.log('binary is', binary);
     }
 }
 
