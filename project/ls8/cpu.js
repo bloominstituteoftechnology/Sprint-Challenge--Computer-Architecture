@@ -121,6 +121,10 @@ class CPU {
               this.reg[byte1] = byte2;
               console.log(this.reg);
               break;
+            case 80: // JMP
+              console.log('JMP ran');
+              this.reg.PC = this.reg[byte1];
+              break;
             case 67: // PRN
               console.log('PRN ran: Print');
               console.log(`Prints the value in ${byte1}: ${this.reg[byte1]}`)
