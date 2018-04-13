@@ -14,6 +14,8 @@ const RET = 0b00001001;
 
 const SP = 0b00000111;
 const KEYPRESSEDADDRESS = 0xf4; //address above start of stack
+const FLAG = 0b00000000;
+const EQUALFLAG = 0b00000001;
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
@@ -44,6 +46,7 @@ class CPU {
     bt[PRN] = this.handle_PRN;
     bt[CALL] = this.handle_CALL;
     bt[RET] = this.handle_RET;
+    bt[CMP] = this.handle_CMP;
 
     // Bind all the functions to this so we can call them later
     for (let k of Object.keys(bt)) {
@@ -95,6 +98,10 @@ class CPU {
       case ADD:
         let addition = this.reg[regA] + this.reg[regB];
         this.reg[regA] = addition;
+        break;
+      case CMP:
+        let comparison = this.reg[regA] === this.reg[regB];
+        if (comparison) FLAG = EQUALFLAG;
         break;
     }
   }
@@ -180,6 +187,10 @@ class CPU {
   handle_RET() {
     this.reg.PC = this.ram.read(this.reg[SP]);
     this.advancePC = false;
+  }
+
+  handle_CMP(regA, regB) {
+    this.alu(CMP, regA, regB)
   }
 }
 
