@@ -4,6 +4,7 @@ const MUL = 0b10101010;
 const PRN = 0b01000011;
 const POP = 0b01001100;
 const PUSH = 0b01001101;
+const CALL = 0b10010000;
 
 const SP = 7;
 
@@ -56,6 +57,9 @@ class CPU {
       case POP:
         this.reg[operandA] = this.ram.read(this.reg[SP]);
         this.reg[SP]++;
+        break;
+      case CALL:
+        
         break;
       case HLT:
         this.stopClock();
