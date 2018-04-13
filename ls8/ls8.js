@@ -17,32 +17,11 @@ function loadMemory() {
         .toString()
         .split('\n')
         .reduce((array, line) => {
-            if(line[0] !== '#' && line[0] !== '\r' && line !== '') {
+            if(line[0] && line[0].match(/0|1/) !== null) {
                 return array.concat(line.slice(0, 8))
             }
             return array;
         }, []);
-    
-    // //[ // print8.ls8
-    //     // "10011001", // LDI R0,8  Store 8 into R0
-    //     // "00000000",
-    //     // "00001000",
-    //     // "01000011", // PRN R0    Print the value in R0
-    //     // "00000000",
-    //     // "00000001"  // HLT       Halt and quit
-    //     '10011001', //# LDI R0,8
-    //     '00000000',
-    //     '00001000',
-    //     '10011001', //# LDI R1,9
-    //     '00000001',
-    //     '00001001',
-    //     '10101010', //# MUL R0,R1 <---
-    //     '00000000',
-    //     '00000001',
-    //     '01000011', //# PRN R0
-    //     '00000000',
-    //     '00000001' //# HLT
-    // ];
 
     // Load the program into the CPU's memory a byte at a time
     for (let i = 0; i < program.length; i++) {
