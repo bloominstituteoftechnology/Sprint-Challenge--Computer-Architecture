@@ -16,9 +16,10 @@ const CMP  = 0b10100000;
 const JEQ  = 0b01010001;
 const JNE  = 0b01010010;
 
-const G = 0b00000010,
-      E = 0b00000001,
-      L = 0b00000100;
+// flags
+const G = 2,
+      E = 1,
+      L = 4;
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -36,7 +37,7 @@ class CPU {
         // Special-purpose registers
         this.reg.PC = 0; // Program Counter
         this.flag = false;
-        this.F = 0b00000000;
+        this.F = 0;
     }
 	
     /**
@@ -159,6 +160,18 @@ class CPU {
             case CMP:
                 this.alu("CMP", operandA, operandB);
                 break;
+            case JEQ:
+                if (this.F === 1) {
+                  this.reg.PC = this.reg[operandA]
+                  this.flag = true;
+                }
+                break;
+            case JNE:
+                if (this.F !== 1) {
+                  this.reg.PC = this.reg[operandA];
+                  this.flag = true;
+                }
+                break;
             case HLT:
                 this.stopClock();
                 break;
@@ -166,7 +179,6 @@ class CPU {
             // console.log("unknownInstruction")
                 break;
         }
-
 
         // Increment the PC register to go to the next instruction. Instructions
         // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
