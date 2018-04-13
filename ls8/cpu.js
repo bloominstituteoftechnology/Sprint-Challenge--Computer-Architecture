@@ -20,6 +20,7 @@ const JMP = 0b01010000;
 const PRA = 0b01000010;
 const IRET = 0b00001011;
 const CMP = 0b10100000;
+const JEQ = 0b01010001;
 
 const IM = 0x05;  // Interrupt mask register R5
 const IS = 0x06;  // Interrupt status register R6
@@ -74,6 +75,7 @@ class CPU {
         bt[PRN] = this.handle_PRN;
         bt[RET] = this.handle_RET;
         bt[CMP] = this.handle_CMP;
+        bt[JEQ] = this.handle_JEQ;
         bt[CALL] = this.handle_CALL;
         bt[IRET] = this.handle_IRET;
         bt[PUSH] = this.handle_PUSH;
@@ -294,6 +296,10 @@ class CPU {
 
     handle_CMP(cpu, registerA, registerB) {
         cpu.alu('CMP', registerA, registerB);
+    }
+
+    handle_JEQ(cpu, register) {
+        return cpu.reg[register];
     }
 
     handle_IRET(cpu) {
