@@ -201,10 +201,21 @@ class CPU {
   handle_CMP(regA, regB) {
     this.alu(CMP, regA, regB)
   }
-}
+
 
   handle_JMP(reqA) {
-    this.reg[SP] = this.regA;
+    this.reg[PC] = this.reg[regA];
+    this.reg.FL = true;
+    this.advancePC = false;
   }
 
+  handle_JNE(regA) {
+    if (this.reg.FL ===0) 
+    this.handle_JMP(regA);
+  }
+  handle_JQE(regA) {
+    if(this.reg.FL ===1)
+    this.handle_JMP(regA);
+  }
+}
 module.exports = CPU;
