@@ -15,7 +15,9 @@ class CPU {
 
         this.reg = new Array(8).fill(0); // General-purpose registers R0-R7 (8 bit)
         this.reg.IR = null;
-
+        this.equal = 0;
+        this.lessthan = 0;
+        this.greaterthan = 0;
         // Special-purpose registers
         this.reg.PC = 0; // Program Counter
     }
@@ -100,19 +102,16 @@ class CPU {
             break;
             case 160: // CMP
               console.log('CMP ran');
-              let equal = 0;
-              let lessthan = 0;
-              let greaterthan = 0;
 
               if (this.reg[byte1] === this.reg[byte2]) {
-                equal = 1;
-                console.log(equal);
+                this.equal = 1;
+                console.log(this.equal);
               } else if (this.reg[byte1] < this.reg[byte2]) {
-                lessthan = 1;
-                console.log(lessthan);
+                this.lessthan = 1;
+                console.log(this.lessthan);
               } else if (this.reg[byte1] > this.reg[byte2]) {
-                greaterthan = 1;
-                console.log(greaterthan);
+                this.greaterthan = 1;
+                console.log(this.greaterthan);
               }
             break;
             case 153: // LDI
@@ -124,6 +123,17 @@ class CPU {
             case 80: // JMP
               console.log('JMP ran');
               this.reg.PC = this.reg[byte1];
+              break;
+            case 81:
+              console.log('JEQ ran');
+              if (this.equal === true) {
+                this.reg.PC = this.reg[byte1];
+              }
+              break;
+            case 82: // JEQ
+              if (this.equal === false) {
+                this.reg.PC = this.reg[byte1];
+              }
               break;
             case 67: // PRN
               console.log('PRN ran: Print');
