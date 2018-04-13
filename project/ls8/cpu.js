@@ -11,10 +11,13 @@ const PUSH = 0b01001101;
 const POP = 0b01001100;
 const CALL = 0b01001000;
 const RET = 0b00001001;
+const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
 
 const SP = 0b00000111;
 const KEYPRESSEDADDRESS = 0xf4; //address above start of stack
-const FLAG = 0b00000000;
+let FLAG = 0b00000000;
 const EQUALFLAG = 0b00000001;
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -47,6 +50,9 @@ class CPU {
     bt[CALL] = this.handle_CALL;
     bt[RET] = this.handle_RET;
     bt[CMP] = this.handle_CMP;
+    bt[JMP] = this.handle_JMP;
+    bt[JEQ] = this.handle_JEQ;
+    bt[JNE] = this.handle_JNE;
 
     // Bind all the functions to this so we can call them later
     for (let k of Object.keys(bt)) {
@@ -102,6 +108,7 @@ class CPU {
       case CMP:
         let comparison = this.reg[regA] === this.reg[regB];
         if (comparison) FLAG = EQUALFLAG;
+        else FLAG = 0b00000000;
         break;
     }
   }
@@ -191,6 +198,20 @@ class CPU {
 
   handle_CMP(regA, regB) {
     this.alu(CMP, regA, regB)
+  }
+
+  handle_JMP(regA) {
+    this.reg[SP] = this.regA;
+  }
+
+  handle_JEQ(regA) {
+    let equal = FLAG & 0b1; // should be 1 if equal is true
+    if (equal = 1) this.handle_JMP(regA); 
+  }
+
+  handle_JNE(regA) {
+    let equal = FLAG & 0b1; // should be 1 if equal is true
+    if (equal = 0) this.handle_JMP(regA);
   }
 }
 
