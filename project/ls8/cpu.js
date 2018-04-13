@@ -63,6 +63,7 @@ class CPU {
     let operandA = this.ram.read(IR + 1);
     let operandB = this.ram.read(IR + 2);
 
+    // console.log(this.ram.read(IR));
     switch (this.ram.read(IR)) {
       case ADD:
         this.alu("ADD", operandA, operandB);
@@ -86,14 +87,14 @@ class CPU {
       case JEQ:
         if (this.reg.FL === 0b00000001) {
           this.reg.PC = this.reg[operandA];          
+          jump = true;
         }
-        jump = true;
         break;
       case JNE:
         if (this.reg.FL !== 0b00000001) {
           this.reg.PC = this.reg[operandA];          
+          jump = true;
         }
-        jump = true;
         break;
       case JMP:
         this.reg.PC = this.reg[operandA];
