@@ -97,15 +97,12 @@ class CPU {
             case 'CMP':
                 if (this.reg[regA] === this.reg[regB]) {
                     this.reg.FL = 0b00000001;
-                    // console.log('EQ', this.reg.FL.toString(2));
                 }
                 else if (this.reg[regA] > this.reg[regB]) {
                     this.reg.FL = 0b00000010;
-                    // console.log('GT', this.reg.FL.toString(2));
                 }
                 else if (this.reg[regA] < this.reg[regB]) {
                     this.reg.FL = 0b00000100;
-                    // console.log('LT', this.reg.FL.toString(2));
                 }
                 break;
             default:
