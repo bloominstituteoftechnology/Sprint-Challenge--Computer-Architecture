@@ -141,6 +141,14 @@ class CPU {
                 console.log(`There was an error executing the JEQ method`);
             }
         }
+        const execute_JNE = val => {
+            if (!equalFlag){
+                this.reg.PC = this.reg[val];
+                this.continueOp = false;
+            } else {
+                console.log(`There was an error executing the JNE method`);
+            }
+        }
 
         const opIndex = [];
         opIndex[LDI] = execute_LDI;
