@@ -17,8 +17,7 @@ const JNE = 0b01010010;
 
 const SP = 0b00000111;
 const KEYPRESSEDADDRESS = 0xf4; //address above start of stack
-let FLAG = 0b00000000;
-const EQUALFLAG = 0b00000001;
+const EQ = 0b00000001;
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
@@ -33,6 +32,7 @@ class CPU {
     // Special-purpose registers
     this.reg.PC = 0; // Program Counter
     this.reg[SP] = KEYPRESSEDADDRESS;
+    this.reg.FL = 0b00000000;
     this.setupBranchTable();
     this.pcAdvance = true;
   }
@@ -107,8 +107,8 @@ class CPU {
         break;
       case CMP:
         let comparison = this.reg[regA] === this.reg[regB];
-        if (comparison) FLAG = EQUALFLAG;
-        else FLAG = 0b00000000;
+        if (comparison) this.reg.FL = EQ;
+        else this.reg.FL = 0b00000000;
         break;
     }
   }
@@ -186,8 +186,9 @@ class CPU {
   }
 
   handle_CALL(regA) {
-    this.reg.PC += 2;
-    this.reg[SP] = regA;
+    this.reg[SP]--;
+    this.ram.write(this.reg[SP], this.reg.PC + 2);
+    this.reg.PC = this.reg[regA];
     this.advancePC = false;
   }
 
@@ -201,17 +202,18 @@ class CPU {
   }
 
   handle_JMP(regA) {
-    this.reg[SP] = this.regA;
+    this.reg.PC = this.reg[regA];
+    this.advancePC = false;
   }
 
   handle_JEQ(regA) {
-    let equal = FLAG & 0b1; // should be 1 if equal is true
-    if (equal = 1) this.handle_JMP(regA); 
+    let equal = this.reg.FL & 0b1; // should be 1 if equal is true
+    if (equal === 1) this.handle_JMP(regA); 
   }
 
   handle_JNE(regA) {
-    let equal = FLAG & 0b1; // should be 1 if equal is true
-    if (equal = 0) this.handle_JMP(regA);
+    let equal = this.reg.FL & 0b1; // should be 1 if equal is true
+    if (equal === 0) this.handle_JMP(regA);
   }
 }
 
