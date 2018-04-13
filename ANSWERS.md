@@ -28,11 +28,20 @@ Complete the following problems:
 
 1. Explain how the CPU provides concurrency:
 
+- Sinlge-core CPUs provide concurrency with timer interrupts that fire one time per second. When the interrupt occurs, CPU executes the interrupt handler. When it completes, the CPU returns to the previous state.
 
 2. Describe assembly language and machine language:
 
+Machine language is represented by a sequence of hexadecimal numbers, bytes, the instructions given to CPU as to what to do next.
+
+Assembly language is a more human readable version of the machine language, where the instructions and registers are represented by abbreviated names such as LDI, PRN, etc.
+
+In `10011001    # LDI R0,8`, `10011001` is machine language and `LDI R0,8` is assembly language.
 
 3. Why is 3D performance so much higher with a graphics card than without?
 
+Graphics Cards (GPUs) are more efficient than CPUs. They process data in parallel, and have a lot more ALUs than CPUs.
 
 4. Suggest the role that graphics cards play in machine learning:
+
+Object recognition for self-driving cars, face recognition, big data analysis, etc. 
