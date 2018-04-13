@@ -34,6 +34,10 @@ const XOR = 0b10110010;
 
 const SP = 7;
 
+let E = 0;
+let L = 0;
+let G = 0;
+
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
@@ -112,7 +116,19 @@ class CPU {
         this.reg[regA] = valA - 1;
         break;
       case CMP:
-        valA === valB;
+        if (valA === valB) {
+          E = 1;
+          L = 0;
+          G = 0;
+        } else if (valA < valB) {
+          E = 0;
+          L = 1;
+          G = 0;
+        } else {
+          E = 0;
+          L = 0;
+          G = 1;
+        }
         break;
     }
   }
