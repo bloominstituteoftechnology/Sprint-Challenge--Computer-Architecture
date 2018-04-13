@@ -2,6 +2,8 @@
 
 1. Explain how the CPU provides concurrency:
 
+The CPU
+
 
 2. Describe assembly language and machine language:
 
