@@ -6,8 +6,6 @@
  * Class for simulating a simple Computer (CPU & memory)
  */
 const ADD = 0b10101000;
-// const AND = 0b10110011;
-// const DIV = 0b10101011;
 const LDI = 0b10011001;
 const MUL = 0b10101010;
 const PRN = 0b01000011;
@@ -17,6 +15,10 @@ const PUSH = 0b01001101;
 const CALL = 0b01001000;
 const RET = 0b00001001;
 const CMP = 0b10100000;
+const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
+
 
 const SP = 7; // Stack Pointer
 const IM = 5; // Interrupt Mask
@@ -37,6 +39,7 @@ class CPU {
 
         this.reg[SP] = 0xf4; // start with empty stack
 
+        this.reg.FL = 0; // Flag Register - 00000LGE
     }
 	
     /**
@@ -70,7 +73,7 @@ class CPU {
     //         // Clear the Flag to 0
     //         this.reg.FL = this.reg.FL & ~flag;
     //     }
-    // } 
+    // }
 
     /**
      * ALU functionality
@@ -90,6 +93,20 @@ class CPU {
                 break;
             case 'ADD':
                 this.reg[regA] = this.reg[regA] + this.reg[regB];
+                break;
+            case 'CMP':
+                if (this.reg[regA] === this.reg[regB]) {
+                    this.reg.FL = 0b00000001;
+                    // console.log('EQ', this.reg.FL.toString(2));
+                }
+                else if (this.reg[regA] > this.reg[regB]) {
+                    this.reg.FL = 0b00000010;
+                    // console.log('GT', this.reg.FL.toString(2));
+                }
+                else if (this.reg[regA] < this.reg[regB]) {
+                    this.reg.FL = 0b00000100;
+                    // console.log('LT', this.reg.FL.toString(2));
+                }
                 break;
             default:
                 break;                
@@ -170,6 +187,30 @@ class CPU {
             this.reg[SP]++;
         };
 
+        const handle_CMP = (operandA, operandB) => {
+            this.alu('CMP', operandA, operandB);
+        };
+
+        const handle_JMP = (operandA) => {
+            this.reg.PC = this.reg[operandA];
+        };
+
+        const handle_JEQ = (operandA) => {
+            if (this.reg.FL === 0b00000001) {
+                handle_JMP(operandA);
+            } else {
+                this.reg.PC += 2;
+            }
+        };
+
+        const handle_JNE = (operandA) => {
+            if (this.reg.FL !== 0b00000001) {
+                handle_JMP(operandA);
+            } else {
+                this.reg.PC += 2;
+            }
+        };
+
         const branchTable = {
             [LDI]: handle_LDI,
             [HLT]: handle_HLT,
@@ -180,6 +221,10 @@ class CPU {
             [PUSH]: handle_PUSH,
             [CALL]: handle_CALL,
             [RET]: handle_RET,
+            [CMP]: handle_CMP,
+            [JMP]: handle_JMP,
+            [JEQ]: handle_JEQ,
+            [JNE]: handle_JNE,
         };
 
         branchTable[IR](operandA, operandB);
@@ -213,7 +258,7 @@ class CPU {
         //         break;
         // }
         // !!! IMPLEMENT ME
-        if ( IR !== CALL && IR !== RET) {
+        if ( IR !== CALL && IR !== RET && IR !== JMP && IR !== JEQ && IR !== JNE) {
             let operandCount = (IR >>>6) & 0b11;
             let totalInstructionLen = operandCount +1;
             this.reg.PC += totalInstructionLen;
