@@ -7,22 +7,34 @@ Complete the following problems:
 * Convert `11001111` binary
 
     to hex:
+    1100 1111
+     C    F
+     CF
 
     to decimal:
+    const dec1 = '0b11001111'
+    const dec2 = parseInt('11001111', 2);
 
 
 * Convert `4C` hex
 
     to binary:
+     4    C
+    0100 1100
+    01001100
 
     to decimal:
-
+    const dec3 = '0x4C';
+    const dec4 = pareseInt('4C', 16)
 
 * Convert `68` decimal
 
     to binary:
+    const dec = 68;
+    const bin = dec.toString(2);
 
     to hex:
+    0x44
 
 
 ## Architecture
