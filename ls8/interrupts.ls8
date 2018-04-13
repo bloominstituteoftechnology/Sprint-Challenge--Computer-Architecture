@@ -1,0 +1,30 @@
+# interrupts.ls8
+
+10011001 # LDI R0,0xF8
+00000000
+11111000
+10011001 # LDI R1,INTHANDLER
+00000001
+00010001
+10011010 # ST R0,R1  Set the interrupt vector at 0xF8 to INTHANDLER
+00000000
+00000001
+10011001 # LDI R5,1  Set the IM register so we receive timer interrupts
+00000101
+00000001
+10011001 # LDI R0,LOOP  Infinite loop forever
+00000000
+00001111
+# LOOP (15):
+01010000 # JMP R0
+00000000
+
+# Timer interrupt Handler
+# When the timer interrupt occurs, output an 'A'
+# INTHANDLER (17):
+10011001 # LDI R0,65   A is 65 in ASCII
+00000000
+01000001
+01000010 # PRA R0      Print it
+00000000
+00001011 # IRET        Return from interrupt
