@@ -211,6 +211,9 @@ class CPU {
         this.ram.read(this.reg[SP]);
         this.reg.PC = this.ram.read(this.reg[SP]);
         break;
+      case JEQ:
+        if (E) this.ram.read(this.reg[SP]);
+        break;
     }
 
     // Increment the PC register to go to the next instruction. Instructions
