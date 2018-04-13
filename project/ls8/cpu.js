@@ -1,6 +1,9 @@
 const IM = 0x05;
 const IS = 0x06;
 const SP = 0x07;
+const equalFlag = 0;
+const greaterThanFlag = 1;
+const lessThanFlag = 2;
 
 class CPU {
 
@@ -10,6 +13,7 @@ class CPU {
         this.reg = new Array(8).fill(0);
         this.reg[SP] = 0xf4;
         this.reg.PC = 0;
+        this.reg.flags = 0;
     }
 	
     poke(address, value) {
@@ -49,6 +53,11 @@ class CPU {
                 return this.reg[regA] = firstVal * secondVal;
             case 'SUB':
                 return this.reg[regA] = firstVal - secondVal;
+            case 'CMP':
+                equalFlag = (firstVal === secondVal);
+                greaterThanFlag = (firstVal > secondVal);
+                lessThanFlag = (firstVal < secondVal);
+                return;
         }
     }
 
@@ -70,6 +79,7 @@ class CPU {
         const MUL = 0b10101010;
         const PUSH = 0b01001101;
         const POP = 0b01001100;
+        const CMP = 0b10100000;
 
         const execute_LDI = () => {
             this.reg[operandA] = operandB;
@@ -92,6 +102,10 @@ class CPU {
             this.alu('INC', SP);
             this.reg[operandA] = val;
             return;
+        };
+        const execute_CMP = () => {
+            this.alu('CMP', operandA, operandB);
+            return;
         }
 
         const opIndex = [];
@@ -101,6 +115,7 @@ class CPU {
         opIndex[MUL] = execute_MUL;
         opIndex[PUSH] = execute_PUSH;
         opIndex[POP] = execute_POP;
+        
 
         opIndex[IR]();
 
