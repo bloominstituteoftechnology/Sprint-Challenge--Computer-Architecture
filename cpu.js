@@ -12,11 +12,11 @@ const HLT = 0b00000001;
 //const INC =
 // const INT =
 //const IRET =
-//const JEQ = 
+const JEQ = 0b01010001;
 // const JGT =
 //const JLT =
 const JMP = 0b01010000;
-//const JNE =
+const JNE = 0b01010010;
 //const LD =
 const LDI = 0b10011001;
 //const MOD =
@@ -128,9 +128,15 @@ class CPU {
           case HLT:
             this.stopClock();
             break; 
+					case JEQ:
+						if (this.E === 1) this.reg.PC = this.reg[operandA]; 
+						break;
 					case JMP:
 						advancePC = false;
 						this.reg.PC = this.reg[operandA];
+						break;
+					case JNE:
+						if (this.E === 0) this.reg.PC = this.reg[operandA];
 						break;
           case LDI:
             this.reg[operandA] = operandB;
