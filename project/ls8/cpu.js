@@ -1,5 +1,6 @@
 const SP = 0b00000111;
 let subroutine = false;
+let jump = false;
 
 class CPU {
   constructor(ram) {
@@ -7,6 +8,7 @@ class CPU {
     this.reg = new Array(8).fill(0);
     this.reg[SP] = 0xf4;
     this.reg.PC = 0;
+    this.reg.FL = 0b00000000;
   }
 
   poke(address, value) {
@@ -95,12 +97,13 @@ class CPU {
         console.log(`Error at position: ${IR}, code: ${this.ram.read(IR)}`);
         this.stopClock();
     }
-    if (!subroutine) {
+    if (!subroutine && !jump) {
       this.reg.PC += 1;
       const num = this.ram.read(IR) >>> 6;
       this.reg.PC += num;
     } else {
       subroutine = false;
+      jump = false;
     }
   }
 }
