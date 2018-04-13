@@ -15,6 +15,11 @@ const PRN = 0b01000011;
 const LD = 0b10011000;
 const NOP = 0b00000000;
 const PRA = 0b01000010;
+const CMP = 0b10100000;
+const JMP = 0b01010000;
+const JNE = 0b01010010;
+const JEQ = 0b01010001;
+const RET = 0b00001001;
 const ST = 0b10011010;
 const POP = 0b01001100;
 const PUSH = 0b01001101;
@@ -152,9 +157,14 @@ class CPU {
         this.reg[operandA] = this.ram.read(this.reg[SP]);
         this.reg[SP]++;
         break;
+      case JMP:
+        return this.reg[operandA];
+        break;
       case CALL:
-        this.alu('DEC', SP);
-        this.reg[operandA] = this.ram.write(this.reg[SP], operandB);
+        // work on it...
+        break;
+      case RET:
+        return this.ram.read(this.reg[SP]);
         break;
       case HLT:
         this.stopClock();
