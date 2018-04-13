@@ -8,8 +8,6 @@
 
 // Add the JEQ and JNE instructions.
 
-
-
 const LDI = 0b10011001;
 const PRN = 0b01000011;
 const HLT = 0b00000001;
@@ -19,12 +17,16 @@ const POP = 0b01001100;
 
 const CMP = 0b10100000;
 const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
 
 const FL_E = 0b00000001;
 const FL_G = 0b00000010;
 const FL_L = 0b00000100;
+const FL_X = 0b00000111;
 
 const SP = 7;
+
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -35,13 +37,14 @@ class CPU {
    */
   constructor(ram) {
     this.ram = ram;
-
+    
     this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
-
+    
     // Special-purpose registers
     this.reg.PC = 0; // Program Counter
     this.reg.FL = 0;
     this.reg[SP] = 0xf4; // start with empty stack
+    this.flag = 0;
   }
 
   /**
@@ -144,11 +147,28 @@ class CPU {
         this.reg[operandA] = this.ram.read(this.reg[SP]);
         this.reg[SP]++;
         break;
+
       case CMP:
         this.alu("CMP", operandA, operandB);
         break;
+
       case JMP:
         this.reg.PC = this.reg[operandA];
+        this.flag = 1;
+        break;
+
+      case JEQ:
+        if (this.reg.FL === FL_E) {
+          this.reg.PC = this.reg[operandA];
+          this.flag = 1;
+        }
+        break;
+        
+        case JNE:
+        if (this.reg.FL !== FL_E) {
+          this.reg.PC = this.reg[operandA];
+          this.flag = 1;
+        }
         break;
 
       default:
@@ -161,9 +181,12 @@ class CPU {
     // instruction byte tells you how many bytes follow the instruction byte
     // for any particular instruction.
 
-    let operandCount = (IR >>> 6) & 0b11;
-    let instructionLength = operandCount + 1;
-    this.reg.PC += instructionLength;
+    if (this.flag === 0) {
+      let operandCount = (IR >>> 6) & 0b11;
+      let instructionLength = operandCount + 1;
+      this.reg.PC += instructionLength;
+    }
+    this.flag = 0;
   }
 }
 

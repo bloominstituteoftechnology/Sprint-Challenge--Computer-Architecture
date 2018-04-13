@@ -15,13 +15,11 @@ function loadMemory() {
       .toString()
       .split('\n')
       .reduce((array, line) => {
-        if (line[0] !== '#' && line[0] !== '') {
+        if (line[0] !== '#' && line[0] !== '' && line[0] !== '\r') {
           return array.concat(line.slice(0, 8));
         }
         return array;
-      }, [])
-      .filter(line => line !== '');
-  
+      }, []);
     // Load the program into the CPU's memory a byte at a time
     for (let i = 0; i < program.length; i++) {
         cpu.poke(i, parseInt(program[i], 2));
