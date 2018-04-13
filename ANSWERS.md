@@ -14,3 +14,16 @@
 
 ## 4. Suggest the role that graphics cards play in machine learning:
   GPU's are built to do the same operation on different sets of data more efficiently and compute the same instructions in parallel. They also have a higher bandwidth to retrive from memory. The strengths of GPU's are ideal for executing the type of computations that machine learning employs.
+
+
+## Convert `11001111`
+- hex: 0xcf
+- decimal: 207
+
+## Convert `4c`
+- binary: 01001100
+- decimal: 77
+
+## Convert `68`
+- binary: 01000100
+- hex: 44
