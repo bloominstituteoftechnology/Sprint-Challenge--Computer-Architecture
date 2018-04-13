@@ -15,7 +15,7 @@ const PUSH = 0b01001101; // Push R
 const RET = 0b00001001; // Return
 const JMP = 0b01010000; // Jump to address
 const JEQ = 0b01010001; // If Flag set to `equal` Jump to address
-const JNE = 0b01010010; // If `Equal` Flag is false `0` to Jump to address
+const JNE = 0b01010010; // If `Equal` Flag is false to Jump to address
 
 // Flags
 const L = 0b00000100; // Flag for Less-Than
