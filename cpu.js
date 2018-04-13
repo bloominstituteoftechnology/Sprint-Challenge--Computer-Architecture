@@ -5,7 +5,7 @@
 const ADD = 0b10101000;
 //const AND = 10110011;
 const CALL = 0b01001000;
-//const CMP =
+const CMP = 0b10100000;
 //const DEC =
 //const DIV =
 const HLT = 0b00000001;
@@ -34,7 +34,9 @@ const ST = 0b10011010;
 //const XOR = 10110010;
 
 const SP = 7;
-
+const E = 0;
+const L = 0;
+const G = 0;
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
@@ -96,6 +98,10 @@ class CPU {
 					case ADD:
 						this.reg[regA] = this.reg[regA] + this.reg[regB];
 						break;
+					case CMP:
+						this.reg[regA] === this.reg[regB] ? this.E = 1 : this.E =0;
+						this.reg[regA] > this.reg[regB] ? this.G = 1 : this.G = 0;
+						this.reg[regA] < this.reg[regB] ? this.L = 1 : this.L = 0;
         }
     }
 
@@ -108,22 +114,23 @@ class CPU {
         let operandB = this.ram.read(this.reg.PC + 2); 
 				let advancePC = true;
 
-        switch(IR) {
+        switch(IR) { 
+					case ADD:
+					case CMP:
+          case MUL: 
+            this.alu(IR, operandA, operandB);
+            break; 
 					case CALL:
 						advancePC = false;
 						this.ram.write(this.reg[SP], this.reg.PC + 2);
 						this.reg.PC = this.reg[operandA];
-						break; 
+						break;
           case HLT:
             this.stopClock();
             break; 
           case LDI:
             this.reg[operandA] = operandB;
             break;
-          case MUL:
-					case ADD:
-            this.alu(IR, operandA, operandB);
-            break; 
           case POP:
             this.reg[operandA] = this.ram.read(this.reg[SP]);
             this.reg[SP] += 1;
