@@ -301,13 +301,13 @@ class CPU {
     }
 
     handle_JEQ(cpu, register) {
-        if(cpu.req.FL) {
+        if(cpu.reg.FL) {
             return cpu.reg[register];
         }
     }
 
     handle_JNE(cpu, register) {
-        if(!cpu.req.FL) {
+        if(!cpu.reg.FL) {
             return cpu.reg[register];
         }
     }
