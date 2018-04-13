@@ -4,7 +4,7 @@
 - In a simple CPU such as the LS-8, I believe it has to do with interrupts. When an interrupt is noted, the entire state of the CPU along with the tasks it's working on is saved, and the instruction inputted by the source of the interrupt is handled. After that, the CPU goes back to the task(s) it was working on before the interrupt took place, allowing for the concurrency.
  
 2. Describe assembly language and machine language:
-- Assembly Language is essentially written instructions for humans to read and reference, as well as being a low-level programming language that computer can understand. They refer to pieces of machine language. For example, if you had a segment of Machine Language that specifies a print, you would write that in Assembly Language as "PRT"
+- Assembly Language is essentially written instructions for humans to read and reference, as well as being a low-level programming language that computer can understand. They refer to pieces of machine language. For example, if you had a segment of Machine Language that specifies a print, you would write that in Assembly Language as "PRN"
 
 On the otherhand, Machine Language refers to instructions that are written explicitly in binary for the computer to understand. They are executed by the CPU and are used to carry out tasks.
 
