@@ -3,9 +3,9 @@ const IS = 0x06;
 const SP = 0x07;
 
 //intializing flags
-const equalFlag = 0;
-const greaterThanFlag = 1;
-const lessThanFlag = 2;
+let equalFlag;
+let greaterThanFlag;
+let lessThanFlag;
 
 const LDI = 0b10011001;
 const HLT = 0b00000001;
@@ -16,6 +16,7 @@ const POP = 0b01001100;
 //machine code for the methods to add today
 const CMP = 0b10100000;
 const JMP = 0b01010000;
+const JEQ = 0b01010001;
 
 class CPU {
 
@@ -129,8 +130,16 @@ class CPU {
             return;
         };
         const execute_JMP = (val) => {
-            this.PC = this.reg[val];
+            this.reg.PC = this.reg[val];
             return this.continueOp = false;
+        }
+        const execute_JEQ = (val) => {
+            if (equalFlag){
+                this.reg.PC = this.reg[val];
+                this.continueOp = false;
+            } else {
+                console.log(`There was an error executing the JEQ method`);
+            }
         }
 
         const opIndex = [];
