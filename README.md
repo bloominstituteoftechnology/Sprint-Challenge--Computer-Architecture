@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: **CF**
 
-    to decimal:
+    to decimal: **207**
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: **1001100**
 
-    to decimal:
+    to decimal: **76**
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: **1000100**
 
-    to hex:
+    to hex: **44**
 
 
 ## Architecture
@@ -30,9 +30,13 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency:
+	
+	The CPU provides concurrency by sharing time among processes. The operating system does the job of timing when processes get sent to the CPU and when they get stopped to run other processes. So I guess wih multiple cores you are getting some concurrency, but most of the "concurrency" is perceived because of the speed and efficiency of process switching. Multiple cores also helps handle more processes.
 
 * Describe assembly language and machine language:
-
+	
+	
+	
 * Why is 3D performance so much higher with a graphics card than
   without?
 
