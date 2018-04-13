@@ -11,6 +11,7 @@ const PUSH = 0b01001101;
 const CALL = 0b01001000;
 const RET = 0b00001001;
 const CMP = 0b00010110;
+const JMP = 0b00010001;
 
 const IM = 5;
 const IS = 6;
@@ -124,7 +125,9 @@ class CPU {
         const handle_LDI = (operandA, operandB) => {
             this.reg[operandA] = operandB;
         };
-
+        const handle_JMP = (operandA) => {
+            this.reg.PC = this.reg[operandA];
+        };
         const handle_HLT = () => {
             this.stopClock();
         };
@@ -174,6 +177,7 @@ class CPU {
             [PUSH]: handle_PUSH,
             [CALL]: handle_CALL,
             [RET]: handle_RET,
+            [JMP]: handle_JMP,
         };
         console.log(branchTable[IR]);
         branchTable[IR](operandA, operandB);
