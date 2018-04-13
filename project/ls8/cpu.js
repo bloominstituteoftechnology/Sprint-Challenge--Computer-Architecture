@@ -74,19 +74,30 @@ class CPU {
         subroutine = true;
         break;
       case CMP:
-      
+        if (this.reg[operandA] === this.reg[operandB]) {
+          this.reg.FL = 0b00000001;
+        } else if (this.reg[operandA] > this.reg[operandB]) {
+          this.reg.FL = 0b00000010;
+        } else this.reg.FL = 0b00000100;
         break;
       case HLT:
         this.stopClock();
         break;
       case JEQ:
-
+        if (this.reg.FL === 0b00000001) {
+          this.reg.PC = this.reg[operandA];          
+        }
+        jump = true;
         break;
       case JNE:
-
+        if (this.reg.FL !== 0b00000001) {
+          this.reg.PC = this.reg[operandA];          
+        }
+        jump = true;
         break;
       case JMP:
-
+        this.reg.PC = this.reg[operandA];
+        jump = true;
         break;
       case LDI:
         this.reg[operandA] = operandB;
