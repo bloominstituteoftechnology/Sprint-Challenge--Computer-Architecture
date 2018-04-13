@@ -1,5 +1,31 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
+## Binary, Decimal, and Hex
+
+Complete the following problems:
+
+* Convert `11001111` binary
+
+    to hex: `CF`
+
+    to decimal: `207`
+
+
+* Convert `4C` hex
+
+    to binary: `1001100`
+
+    to decimal: `76`
+
+
+* Convert `68` decimal
+
+    to binary: `10000100`
+
+    to hex: `44`
+
+## Computer Architecture
+
 1. Explain how the CPU provides concurrency:
     - For single-core CPU's, the CPU can keep track of several running processes, and initialize them in sequence, and by priority, so they can perform their tasks without overlapping their executions, providing their results to the CPU asynchronously (thus preventing blocking). Additionally, some work is performed by other components, such as an arithmetic logic unit, and the results provided to the CPU as needed, which frees the CPU from needing to perform that work. In multi-core systems, processes can also be executed in parallel, though they still make use of concurrency methods as described above.
 
