@@ -47,7 +47,11 @@ class CPU {
   tick() {
     const ADD = 0b10101000;
     const CALL = 0b01001000;
+    const CMP = 0b10100000;
     const HLT = 0b00000001;
+    const JEQ = 0b01010001;
+    const JMP = 0b01010000;
+    const JNE = 0b01010010;
     const LDI = 0b10011001;
     const MUL = 0b10101010;
     const POP = 0b01001100;
@@ -69,8 +73,20 @@ class CPU {
         this.reg.PC = this.reg[1];
         subroutine = true;
         break;
+      case CMP:
+      
+        break;
       case HLT:
         this.stopClock();
+        break;
+      case JEQ:
+
+        break;
+      case JNE:
+
+        break;
+      case JMP:
+
         break;
       case LDI:
         this.reg[operandA] = operandB;
