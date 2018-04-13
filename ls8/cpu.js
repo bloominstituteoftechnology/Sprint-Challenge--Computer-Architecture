@@ -37,6 +37,7 @@ class CPU {
     }
 
     tick() {
+        let skip = false;
         this.reg[7] = this.SP;
         const IR = this.ram.read(this.reg.PC); // binary number
 
@@ -74,10 +75,26 @@ class CPU {
             case '10100000':
                 this.CMP(operandA, operandB);
                 break;
+            case '01010000':
+                this.JMP(operandA);
+                skip = true;
+                break;
+            case '01010001':
+                const JEQv = this.JEQ(operandA);
+                if (JEQv !== 1) skip = true;
+                break;
+            case '01010010':
+                const JNEv = this.JNE(operandA);
+                if (JNEv !== 1) {
+                    skip = true;
+                }
+                break;
             default:
         }
 
-        this.reg.PC = this.reg.PC + parseInt(IR.slice(0, 2), 2) + 1;
+        if (!skip) {
+            this.reg.PC = this.reg.PC + parseInt(IR.slice(0, 2), 2) + 1;
+        }
     }
 
     PRN(register) {
@@ -132,8 +149,27 @@ class CPU {
     }
 
     CMP(registerA, registerB) {
-        const binary = this.reg.FL.toString(2);
-        console.log('binary is', binary);
+        this.reg.FL = 0;
+        const indexA = parseInt(registerA, 2);
+        const indexB = parseInt(registerB, 2);
+        if (this.reg[indexA] === this.reg[indexB]) this.reg.FL++;
+        if (this.reg[indexA] > this.reg[indexB]) this.reg.FL += 2;
+        if (this.reg[indexA] < this.reg[indexB]) this.reg.FL += 4;
+    }
+
+    JMP(register) {
+        const index = parseInt(register, 2);
+        this.reg.PC = parseInt(this.reg[index], 2);
+    }
+
+    JEQ(register) {
+        if (this.reg.FL % 2 === 1) this.JMP(register);
+        else return 1;
+    }
+
+    JNE(register) {
+        if (this.reg.FL % 2 === 0) this.JMP(register);
+        else return 1;
     }
 }
 

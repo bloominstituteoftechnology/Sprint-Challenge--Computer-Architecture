@@ -15,7 +15,7 @@ function loadMemory() {
         else program = program.slice(0, startIndex) + program.slice(endIndex);
     }
     program = program.replace(/' '/g, '').split('\n').filter(each => each !== '').map(each => each.trim());
-    console.log('program is', program);
+
     // Load the program into the CPU's memory a byte at a time
     for (let i = 0; i < program.length; i++) {
         cpu.poke(i, program[i]);
