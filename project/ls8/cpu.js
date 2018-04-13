@@ -1,10 +1,24 @@
+//hex for IM IS and SP
 const IM = 0x05;
 const IS = 0x06;
 const SP = 0x07;
+
+//intializing flags
 const equalFlag = 0;
 const greaterThanFlag = 1;
 const lessThanFlag = 2;
 
+//binary code for methods to use
+const LDI = 0b10011001;
+const HLT = 0b00000001;
+const PRN = 0b01000011;
+const MUL = 0b10101010;
+const PUSH = 0b01001101;
+const POP = 0b01001100;
+const CMP = 0b10100000;
+const JMP = 0b01010000;
+
+//cpu constructor
 class CPU {
 
     constructor(ram) {
@@ -14,6 +28,7 @@ class CPU {
         this.reg[SP] = 0xf4;
         this.reg.PC = 0;
         this.reg.flags = 0;
+        this.continueOp = true;
     }
 	
     poke(address, value) {
@@ -73,13 +88,16 @@ class CPU {
         const operandB = this.ram.read(PC + 2);
         console.log("Second potential operand: ", operandB.toString(2));
 
-        const LDI = 0b10011001;
-        const HLT = 0b00000001;
-        const PRN = 0b01000011;
-        const MUL = 0b10101010;
-        const PUSH = 0b01001101;
-        const POP = 0b01001100;
-        const CMP = 0b10100000;
+        const methodHandler = this.opIndex[this.reg.ir];
+
+        if (!methodHandler){
+            console.log(`The current spot does not have a method stored`);
+            this.continueOp = false;
+            return this.stopClock();
+        } else {
+            console.log(`There was a method in the specified spot and it will be carried out`);
+            return methodHandler(operandA, operandB);
+        }
 
         const execute_LDI = () => {
             this.reg[operandA] = operandB;
@@ -106,7 +124,7 @@ class CPU {
         const execute_CMP = () => {
             this.alu('CMP', operandA, operandB);
             return;
-        }
+        };
 
         const opIndex = [];
         opIndex[LDI] = execute_LDI;
@@ -115,13 +133,16 @@ class CPU {
         opIndex[MUL] = execute_MUL;
         opIndex[PUSH] = execute_PUSH;
         opIndex[POP] = execute_POP;
+        opIndex[CMP]= execute_CMP;
         
 
         opIndex[IR]();
 
-        const operandCount = IR >>> 6
-        this.reg.PC++;
-        this.reg.PC += operandCount;
+        if (this.continueOp){
+            const operandCount = IR >>> 6
+            this.reg.PC++;
+            this.reg.PC += operandCount;
+        }
     }
 }
 
