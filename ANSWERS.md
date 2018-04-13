@@ -25,7 +25,6 @@ Machine code ofter comes in binary or `0/1`'s and is a set of intructions execut
 
 3. Why is 3D performance so much higher with a graphics card than without?
 
-
-
+Graphics card generates images to put on display (e.g. computer monitor) by converting video/image data into electronic signals. This makes it render frames alot more faster in a shorter time than if the computer went without a graphics card. 
 
 4. Suggest the role that graphics cards play in machine learning:
