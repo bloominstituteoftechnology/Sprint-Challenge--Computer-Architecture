@@ -1,0 +1,14 @@
+# add.ls8
+
+10011001 # LDI R0,8  Store 8 into R0
+00000000
+00001000
+10011001 # LDI R0,12  Store 12 into R1
+00000001
+00001100
+10101000 # ADD R0,R1 Add R0 + R1, storing result in R0
+00000000
+00000001
+01000011 # PRN R0    Print the value in R0
+00000000
+00000001 # HLT       Halt and quit
