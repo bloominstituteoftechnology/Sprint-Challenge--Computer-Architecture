@@ -28,6 +28,7 @@ class CPU {
     // Special-purpose registers
     this.reg.PC = 0; // Program Counter
     this.reg[SP] = KEYPRESSEDADDRESS;
+    this.reg.FL = 0;
     this.setupBranchTable();
     this.pcAdvance = true;
   }
@@ -97,6 +98,13 @@ class CPU {
         let addition = this.reg[regA] + this.reg[regB];
         this.reg[regA] = addition;
         break;
+      case CMP:
+        let compare = this.reg[regA] === this.reg[regB];
+        if (compare) {
+          this.reg.Fl = 1;
+        } else {
+          this.reg.Fl = 0;
+        } break;
     }
   }
 
@@ -181,6 +189,10 @@ class CPU {
   handle_RET() {
     this.reg.PC = this.ram.read(this.reg[SP]);
     this.advancePC = false;
+  }
+
+  handle_CMP(regA, regB) {
+    this.alu(CMP, regA, regB)
   }
 }
 
