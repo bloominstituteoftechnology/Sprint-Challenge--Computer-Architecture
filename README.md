@@ -13,17 +13,16 @@ Complete the following problems:
 
 * Convert `4C` hex
 
-    to binary: `1001100`
+    to binary: `01001100`
 
     to decimal: `76`
 
 
 * Convert `68` decimal
 
-    to binary: `10000100`
+    to binary: `01000100`
 
     to hex: `44`
-
 
 ## Architecture
 
