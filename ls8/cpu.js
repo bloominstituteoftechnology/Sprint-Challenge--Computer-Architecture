@@ -10,10 +10,10 @@ const POP = 0b01001100;
 const PUSH = 0b01001101;
 const CALL = 0b01001000;
 const RET = 0b00001001;
-const CMP = 0b00010110;
-const JMP = 0b00010001;
-const JEQ = 0b00010011;
-const JNE = 0b00010100;
+const CMP = 0b10100000;
+const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
 
 const IM = 5;
 const IS = 6;
@@ -35,8 +35,7 @@ class CPU {
         this.reg[SP] = 0xf8;
 
         this.flags = {
-            interrupt: true,
-            equal: null
+            equal: null,
         }
     }
     poke(address, value) {
@@ -51,9 +50,9 @@ class CPU {
             this.tick();
         }, 1); // 1 ms delay == 1 KHz clock == 0.000001 GHz
 
-        this.timer = setInterval(() => {
-            this.reg[IS]= 0b00000001;
-        }, 1000);
+        // this.timer = setInterval(() => {
+        //     this.reg[IS]= 0b00000001;
+        // }, 1000);
     }
 
     /**
@@ -73,9 +72,9 @@ class CPU {
                 this.reg[regA] = this.reg[regA] + this.reg[regB];
                 break;
             case 'CMP':
-                console.log('regA, regB',regA, regB);
+                //console.log('regA, regB',regA, regB);
                 if(this.reg[regA] === this.reg[regB]) {
-                    this.flags.equal = false;
+                    this.flags.equal = true;
                 }else if(this.reg[regA] > this.reg[regB]) {
                     this.flags.equal = false;
                 } else if(this.reg[regA] < this.reg[regB]) {
@@ -98,12 +97,13 @@ class CPU {
 
         //console.log(`${this.reg.PC}: ${IR.toString(2)}`);
         const handle_CMP = (operandA, operandB) => {
-            console.log("CMP operands",operandA,operandB);
+            //console.log("CMP operands",operandA,operandB);
            this.alu('CMP', operandA, operandB);
         };
         const handle_LDI = (operandA, operandB) => {
-            console.log("LDI operands",operandA,operandB);
+            
             this.reg[operandA] = operandB;
+            //console.log("LDI operands",operandA,operandB);
         };
         const handle_JMP = (operandA) => {
             this.reg.PC = this.reg[operandA];
@@ -189,11 +189,11 @@ class CPU {
         // }
         // handler.call(this);
       
-        if ( IR !== CALL && IR !== RET && IR !== JMP && IR !== JEQ && IR !== JNE) {
+       // if ( IR !== CALL && IR !== RET && IR !== JMP && IR !== JEQ && IR !== JNE) {
         let operandCount = (IR >>>6) & 0b11;
         let totalInstructionLen = operandCount +1;
         this.reg.PC += totalInstructionLen;
-        }
+        //}
 
     }
 }
