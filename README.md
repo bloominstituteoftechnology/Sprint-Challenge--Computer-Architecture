@@ -29,7 +29,7 @@ Complete the following problems:
 
 Short answer:
 
-* Explain how the CPU provides concurrency:
+* Explain how the CPU provides concurrency or parallelism:
 
 * Describe assembly language and machine language:
 
