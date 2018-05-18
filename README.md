@@ -6,24 +6,21 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+  to hex: CF
 
-    to decimal:
+  to decimal: 207
 
+- Convert `4C` hex
 
-* Convert `4C` hex
+  to binary: 1001100
 
-    to binary:
-
-    to decimal:
-
+  to decimal: 76
 
 * Convert `68` decimal
 
-    to binary:
+  to binary: 1000100
 
-    to hex:
-
+  to hex: 44
 
 ## Architecture
 
@@ -37,7 +34,6 @@ Short answer:
   without?
 
 * Suggest the role that graphics cards play in machine learning:
-
 
 ## Coding
 
@@ -56,7 +52,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
 print 1, then 4, then 5.
@@ -154,4 +149,3 @@ print 1, then 4, then 5.
 # TEST5 (73):
 00000001 # HLT
 ```
-
