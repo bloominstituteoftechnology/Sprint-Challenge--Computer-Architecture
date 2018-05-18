@@ -29,6 +29,11 @@ const IV_Table = [
   0b11111110,
   0b11111111,
 ];
+
+const JEQ = 0b01010001; // 1 operand
+const JGT = 0b01010100; // 1 operand
+const JLT = 0b01010011; // 1 operand
+
 const JMP = 0b01010000; // 1 operand
 const LD = 0b10011000; // 2 operands
 const MOD = 0b10101100; // 2 operands, ALU OP
@@ -46,9 +51,6 @@ const SUB = 0b10101001; // 2 operands, ALU OP
 
 // TBD implemented
 
-const JEQ = 0b01010001; // 1 operand
-const JGT = 0b01010100; // 1 operand
-const JLT = 0b01010011; // 1 operand
 const JNE = 0b01010010; // 1 operand
 const NOT = 0b01110000; // 1 operand, ALU OP
 const OR = 0b10110001; // 2 operands, ALU OP
@@ -88,6 +90,11 @@ class CPU {
     this.branchTable[INC] = this.handle_INC;
     this.branchTable[INT] = this.handle_INT;
     this.branchTable[IRET] = this.handle_IRET;
+
+    this.branchTable[JEQ] = this.handle_JEQ;
+    this.branchTable[JGT] = this.handle_JGT;
+    this.branchTable[JLT] = this.handle_JLT;
+
     this.branchTable[JMP] = this.handle_JMP;
     this.branchTable[LD] = this.handle_LD;
     this.branchTable[LDI] = this.handle_LDI;
