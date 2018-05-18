@@ -165,9 +165,9 @@ class CPU {
       return value;
     };
     const handle_CMP = () => {
-      this.setFlag("EQF", this.reg[regA] === this.reg[regB]);
-      this.setFlag("GTF", this.reg[regA] > this.reg[regB]);
-      this.setFlag("LTF", this.reg[regA] < this.reg[regB]);
+      this.setFlag("EQF", this.reg[operandA] === this.reg[operandB]);
+      this.setFlag("GTF", this.reg[operandA] > this.reg[operandB]);
+      this.setFlag("LTF", this.reg[operandA] < this.reg[operandB]);
     };
     const handle_JMP = () => {
       this.PC = this.ram.read(this.PC + 1);
