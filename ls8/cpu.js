@@ -14,14 +14,7 @@ const CMP = 0b10100000;
 const JEQ = 0b01010001;
 const JNE = 0b01010010;
 
-const DEC = 0b01111001; // Decrement R
-
 const SP = 7; // Stack Pointer R7
-
-const FL_ZR = 0b00000000;
-const FL_EQ = 0b00000001;
-const FL_GT = 0b00000010;
-const FL_LT = 0b00000100;
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -39,7 +32,7 @@ class CPU {
 
     // Special-purpose registers
     this.PC = 0; // Program Counter
-    this.FL = 0b00000000;
+    this.FL = 0b000;
   }
 
   /**
@@ -139,31 +132,29 @@ class CPU {
         // console.log('FL bef CMP', this.FL.toString(2));
 
         if (this.reg[operandA] === this.reg[operandB]) {
-          this.FL = FL_EQ;
-        } else if (this.reg[operandA] <= this.reg[operandB]) {
-          this.FL = FL_LT;
-        } else if (this.reg[operandA] >= this.reg[operandB]) {
-          this.FL = FL_GT;
-        } else this.FL = FL_ZR;
+          this.FL = 0b001;
+        } else if (this.reg[operandA] < this.reg[operandB]) {
+          this.FL = 0b100;
+        } else if (this.reg[operandA] > this.reg[operandB]) {
+          this.FL = 0b010;
+        } else this.FL = 0b000;
         // console.log('FL aft CMP', this.FL.toString(2));
         break;
 
       case JEQ:
-        // console.log(JEQ.toString(2));
-        if (FL_EQ) {
-          this.reg.PC = this.reg;
+        if (this.FL === 0b001) {
+          return (this.PC = this.reg[operandA]);
         }
         break;
 
       case JNE:
-        // console.log(JNE.toString(2));
-        if (!FL_EQ) {
-          this.reg.PC = this.reg;
+        if (this.FL !== 0b001) {
+          return (this.PC = this.reg[operandA]);
         }
         break;
 
       case JMP:
-        this.PC = this.reg;
+        this.PC = this.reg[operandA];
         break;
 
       case HLT:
