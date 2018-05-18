@@ -1,0 +1,49 @@
+# call.ls8
+#
+# Expected output:
+#
+# 20
+# 30
+# 36
+# 60
+
+# MAIN
+
+10011001 # LDI R1,MULT2PRINT  R1 points to the MULT2PRINT subroutine
+00000001
+00011000
+
+10011001 # LDI R0,10          Load R0 with 10
+00000000
+00001010
+01001000 # CALL R1            Call MULT2PRINT, prints 20
+00000001
+
+10011001 # LDI R0,15          Load R0 with 15
+00000000
+00001111
+01001000 # CALL R1            Call MULT2PRINT, prints 30
+00000001
+
+10011001 # LDI R0,18          Load R0 with 18
+00000000
+00010010
+01001000 # CALL R1            Call MULT2PRINT, prints 36
+00000001
+
+10011001 # LDI R0,30          Load R0 with 30
+00000000
+00011110
+01001000 # CALL R1            Call MULT2PRINT, prints 60
+00000001
+
+00000001 # HLT
+
+# MULT2PRINT (24):
+
+10101000 # ADD R0,R0         Mult R0 by 2 (add it to itself)
+00000000
+00000000
+01000011 # PRN R0            Print R0
+00000000
+00001001 # RET
