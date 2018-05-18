@@ -264,6 +264,24 @@ class CPU {
   }
 
   /**
+   * Handles the JGT operations
+   */
+  handle_JGT(operandA) {
+    if (this.FL === 0b00000010) {
+      this.PC = this.reg[operandA];
+    }
+  }
+
+  /**
+   * Handles the JLT operations
+   */
+  handle_JLT(operandA) {
+    if (this.FL === 0b00000100) {
+      this.PC = this.reg[operandA];
+    }
+  }
+
+  /**
    * Handles the JMP operations
    */
   handle_JMP(operandA) {
