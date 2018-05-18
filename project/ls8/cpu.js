@@ -182,8 +182,8 @@ class CPU {
             this.reg[operandA] === this.reg[operandB]
               ? this.FL = 0b000 | 0b001
               : this.reg[operandA] > this.reg[operandB]
-                  ? this.FL = 0b000 | 0b010
-                  : this.FL = 0b000 | 0b100;
+                ? this.FL = 0b000 | 0b010
+                : this.FL = 0b000 | 0b100;
             break;
           case JMP:
             this.PC = this.reg[operandA];
