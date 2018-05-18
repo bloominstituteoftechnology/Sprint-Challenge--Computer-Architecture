@@ -12,6 +12,9 @@ const CALL = 0b01001000;
 const JMP = 0b01010000;
 const ADD = 0b10101000;
 const RET = 0b00001001;
+const CMP = 0b10100000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -27,6 +30,7 @@ class CPU {
 
     // Special-purpose registers
     this.reg[7] = 0xf4;
+    this.FL = 0;
 
     this.PC = 0; // Program Counter
   }
@@ -131,15 +135,32 @@ class CPU {
         break;
       case JMP:
         this.PC = this.reg[operandA];
-
         break;
       case ADD:
         this.reg[operandA] += this.reg[operandB];
         break;
-
       case RET:
         this.PC = this.ram.read(this.reg[7]);
         ++this.reg[7];
+        break;
+      case CMP:
+        if (this.reg[operandA] === this.reg[operandB]) {
+          this.FL = 0b001;
+        }
+        if (this.reg[operandA] < this.reg[operandB]) {
+          this.FL = 0b100;
+        }
+        if (this.reg[operandA] > this.reg[operandB]) {
+          this.FL = 0b010;
+        }
+        break;
+      case JEQ:
+        if ((this.FL & 0b001) === 0b00000001) {
+          this.PC = this.reg[operandA];
+        }
+        break;
+      case JNE:
+        if ((this.FL & 0b001) === 0b00000000) this.PC = this.reg[operandA];
         break;
       default:
         this.stopClock();
