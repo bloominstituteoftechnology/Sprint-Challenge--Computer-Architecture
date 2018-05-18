@@ -6,7 +6,7 @@ The modern CPU has multiple cores, which allows it to perform tasks in parallel.
 
 2. Describe assembly language and machine language:
 
-Assembly language and machine language are both low-level languages, meaning that they are less expressive to write in, but more performant and closer to the way the machine actually operates, than a high-level language. Machine language is actually the lowest level possible, where CPU instructions are written directly in 1s and 0s. Assembly is a step above that, and has functions that are represented by human readable names.   
+Assembly language and machine language are both low-level languages, meaning that they are less expressive to write in, but more performant, and closer to the way the machine actually operates than a high-level language. Machine language is actually the lowest level of code possible, where CPU instructions are written directly in 1s and 0s. Assembly is a step above that, and has functions that are represented by human readable names.   
 
 3. Why is 3D performance so much higher with a graphics card than without?
 
