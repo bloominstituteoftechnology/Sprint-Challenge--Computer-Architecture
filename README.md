@@ -1,28 +1,30 @@
 # Sprint-Challenge--Computer-Architecture
 
+# LS8 REPO: https://github.com/LambdaSchool/Computer-Architecture-One/pull/117
+
 ## Binary, Decimal, and Hex
 
 Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 1 + 2 + 4 + 8 + 64 + 128 = 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 4 + 8 + 64 = 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
