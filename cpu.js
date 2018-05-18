@@ -10,6 +10,7 @@
 const ADD = 0b10101000; // 2 operands, ALU OP
 const AND = 0b10110011; // 2 operands, ALU OP
 const CALL = 0b01001000; // 1 operand
+const CMP = 0b10100000; // 2 operands, ALU OP
 const DEC = 0b01111001; // 1 operand, ALU OP
 const DIV = 0b10101011; // 2 operands, ALU OP
 const HLT = 0b00000001; // 0 operand
@@ -44,7 +45,7 @@ const ST = 0b10011010; // 2 operands
 const SUB = 0b10101001; // 2 operands, ALU OP
 
 // TBD implemented
-const CMP = 0b10100000; // 2 operands, ALU OP
+
 const JEQ = 0b01010001; // 1 operand
 const JGT = 0b01010100; // 1 operand
 const JLT = 0b01010011; // 1 operand
@@ -69,7 +70,7 @@ class CPU {
     this.PC = 0b00000000; // Program Counter
     this.reg[SP] = 0b11110100; // stack pointer
     this.FL = 0b00000000; // Flags
-    this.interrupt = true;
+    this.interrupt = false; // skip the interrupt implementation for now
 
     // init variables
     this.ALU = 0; // not an ALU OP
@@ -80,6 +81,7 @@ class CPU {
     this.branchTable[ADD] = this.handle_ADD;
     this.branchTable[AND] = this.handle_AND;
     this.branchTable[CALL] = this.handle_CALL;
+    this.branchTable[CMP] = this.handle_CMP;
     this.branchTable[DEC] = this.handle_DEC;
     this.branchTable[DIV] = this.handle_DIV;
     this.branchTable[HLT] = this.handle_HLT;
@@ -176,6 +178,22 @@ class CPU {
   }
 
   /**
+   * Handles the CMP operations
+   */
+  handle_CMP(operandA, operandB) {
+    if (this.reg[operandA] < this.reg[operandB]) {
+      //less than
+      this.FL = 0b00000100;
+    } else if (this.reg[operandA] > this.reg[operandB]) {
+      // greater than
+      this.FL = 0b00000010;
+    } else {
+      // equal
+      this.FL = 0b00000001;
+    }
+  }
+
+  /**
    * Handles the DIV operations
    */
   handle_DEC(operandA) {
@@ -230,10 +248,18 @@ class CPU {
   }
 
   /**
+   * Handles the JEQ operations
+   */
+  handle_JEQ(operandA) {
+    if (this.FL === 0b00000001) {
+      this.PC = this.reg[operandA];
+    }
+  }
+
+  /**
    * Handles the JMP operations
    */
   handle_JMP(operandA) {
-    console.log('JUMMMMM', operandA, this.reg[operandA]);
     this.PC = this.reg[operandA];
   }
 
@@ -361,7 +387,7 @@ class CPU {
   startClock() {
     this.clock = setInterval(() => {
       this.tick();
-    }, 3000); // 1 ms delay == 1 KHz clock == 0.000001 GHz
+    }, 1); // 1 ms delay == 1 KHz clock == 0.000001 GHz
   }
 
   /**
