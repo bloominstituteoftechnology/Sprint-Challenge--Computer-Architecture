@@ -29,12 +29,11 @@ const IV_Table = [
   0b11111110,
   0b11111111,
 ];
-
 const JEQ = 0b01010001; // 1 operand
 const JGT = 0b01010100; // 1 operand
 const JLT = 0b01010011; // 1 operand
-
 const JMP = 0b01010000; // 1 operand
+const JNE = 0b01010010; // 1 operand
 const LD = 0b10011000; // 2 operands
 const MOD = 0b10101100; // 2 operands, ALU OP
 const LDI = 0b10011001; // 2 operands
@@ -50,8 +49,6 @@ const ST = 0b10011010; // 2 operands
 const SUB = 0b10101001; // 2 operands, ALU OP
 
 // TBD implemented
-
-const JNE = 0b01010010; // 1 operand
 const NOT = 0b01110000; // 1 operand, ALU OP
 const OR = 0b10110001; // 2 operands, ALU OP
 const XOR = 0b10110010; // 2 operands, ALU OP
@@ -90,12 +87,11 @@ class CPU {
     this.branchTable[INC] = this.handle_INC;
     this.branchTable[INT] = this.handle_INT;
     this.branchTable[IRET] = this.handle_IRET;
-
     this.branchTable[JEQ] = this.handle_JEQ;
     this.branchTable[JGT] = this.handle_JGT;
     this.branchTable[JLT] = this.handle_JLT;
-
     this.branchTable[JMP] = this.handle_JMP;
+    this.branchTable[JNE] = this.handle_JNE;
     this.branchTable[LD] = this.handle_LD;
     this.branchTable[LDI] = this.handle_LDI;
     this.branchTable[MUL] = this.handle_MUL;
@@ -194,8 +190,11 @@ class CPU {
     } else if (this.reg[operandA] > this.reg[operandB]) {
       // greater than
       this.FL = 0b00000010;
-    } else {
+    } else if (this.reg[operandA] === this.reg[operandB]) {
       // equal
+      this.FL = 0b00000001;
+    } else {
+      // nothing
       this.FL = 0b00000001;
     }
   }
@@ -286,6 +285,15 @@ class CPU {
    */
   handle_JMP(operandA) {
     this.PC = this.reg[operandA];
+  }
+
+  /**
+   * Handles the JNE operations
+   */
+  handle_JNE(operandA) {
+    if (this.FL != 0b00000001) {
+      this.PC = this.reg[operandA];
+    }
   }
 
   /**
