@@ -11,6 +11,7 @@ class CPU {
      * Initialize the CPU
      */
     constructor(ram) {
+        this.flag = 0b00000000
         let returnIndex;
         this.ram = ram;
         const LDI = 0b10011001;
@@ -21,8 +22,14 @@ class CPU {
         const CALL = 0b01001000;
         const RET = 0b00001001;
         const MUL = 0b10101010;
+        const JMP = 0b01010000;
+        const JEQ = 0b01010001;
+        const JNE = 0b01010010;
 
         this.branch = [];
+        this.branch[JMP] = this.JMP.bind(this);
+        this.branch[JEQ] = this.JEQ.bind(this);
+        this.branch[JNE] = this.JNE.bind(this);
         this.branch[LDI] = this.LDI.bind(this);
         this.branch[HLT] = this.HLT.bind(this);
         this.branch[PRN] = this.PRN.bind(this);
@@ -81,6 +88,19 @@ class CPU {
             case 'ADD':
               this.ram.write(regA,(this.ram.read(regA)+this.ram.read(regB)));
               break;
+            case 'CMP':
+              if(this.ram.read(regA) < this.ram.read(regB)){
+                this.flag = 0b00000100;
+              }
+              if(this.ram.read(regA) === this.ram.read(regB)){
+                this.flag = 0b00000001;
+              }
+              if(this.ram.read(regA) > this.ram.read(regB)){
+                this.flag = 0b00000010;
+              }
+
+
+              
         }
     }
 
@@ -113,6 +133,22 @@ class CPU {
     RET(){
       this.PC = this.returnIndex - 1;
       this.POP(this.returnIndex);
+    }
+
+    JMP(register){
+      this.PC = this.ram.read(register) - 1;
+    }
+
+    JEQ(register){
+      if(this.flag === 0b00000001){
+        this.PC = this.ram.read(register) - 1;
+      }
+    }
+
+    JNE(register){
+      if(this.flag !== 0b00000001){
+        this.PC = this.ram.read(register) - 1;
+      }
     }
 
     /**
@@ -157,6 +193,9 @@ class CPU {
             break;
           case 0b10101000:
             this.alu('ADD',operandA,operandB);
+            break;
+          case 0b10100000:
+            this.alu('CMP',operandA,operandB);
             break;
           default:
             this.branch[IR](operandA,operandB);
