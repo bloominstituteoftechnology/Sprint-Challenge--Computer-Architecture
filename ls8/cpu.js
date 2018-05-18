@@ -11,6 +11,10 @@ const PUSH = 0b01001101;
 const CALL = 0b01001000;
 const RET = 0b00001001;
 const ADD = 0b10101000;
+const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
+const CMP = 0b10100000;
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
@@ -25,8 +29,20 @@ class CPU {
 
     // Special-purpose registers
     this.PC = 0; // Program Counter
+    this.FL = 0b00000000;
 
     this.reg[SP] = 0xf4;
+  }
+
+  setFlag(flag) {
+    const flags = {
+      EQF: 0b00000001,
+      GTF: 0b00000010,
+      LTF: 0b00000100
+    };
+    this.FL = 0b00000000;
+    this.FL = this.FL | flags[flag];
+    // console.log("FLAG: ", this.FL);
   }
 
   /**
@@ -148,6 +164,24 @@ class CPU {
       this.reg[SP]++;
       return value;
     };
+    const handle_CMP = () => {
+      this.setFlag("EQF", this.reg[regA] === this.reg[regB]);
+      this.setFlag("GTF", this.reg[regA] > this.reg[regB]);
+      this.setFlag("LTF", this.reg[regA] < this.reg[regB]);
+    };
+    const handle_JMP = () => {
+      this.PC = this.ram.read(this.PC + 1);
+    };
+    const handle_JEQ = () => {
+      if (this.FL === 0b00000001) {
+        return (this.PC = this.reg[operandA]);
+      }
+    };
+    const handle_JNE = () => {
+      if (this.FL !== 0b00000001) {
+        return (this.PC = this.reg[operandA]);
+      }
+    };
 
     const branchTable = {
       [LDI]: handle_LDI,
@@ -158,7 +192,11 @@ class CPU {
       [PUSH]: handle_PUSH,
       [ADD]: handle_ADD,
       [CALL]: handle_CALL,
-      [RET]: handle_RET
+      [RET]: handle_RET,
+      [CMP]: handle_CMP,
+      [JMP]: handle_JMP,
+      [JEQ]: handle_JEQ,
+      [JNE]: handle_JNE
     };
 
     const returnHandler = branchTable[IR](operandA, operandB);
