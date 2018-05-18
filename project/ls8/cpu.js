@@ -19,6 +19,7 @@ class CPU {
     this.ram = ram;
     this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
     this.PC = 0; // Special-purpose register Program Counter
+    this.FL = 000;
     this.handler = [];
     this.handler[LDI] = this.handle_LDI.bind(this);
     this.handler[PRN] = this.handle_PRN.bind(this);
