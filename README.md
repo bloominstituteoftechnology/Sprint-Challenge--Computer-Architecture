@@ -6,16 +6,16 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: `CF`
 
-    to decimal:
+    to decimal: `207`
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: `1001100`
 
-    to decimal:
+    to decimal: `76`
 
 
 * Convert `68` decimal
