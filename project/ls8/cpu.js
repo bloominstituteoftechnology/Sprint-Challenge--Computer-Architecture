@@ -114,11 +114,6 @@ class CPU {
             case 'DEC':
               this.reg[regA] = num1--;
               break;
-            case 'CMP':
-              num1 > num2 ? this.flag = parseInt(2, 2)
-              : num1 < num2 ? this.flag = parseInt(4, 2)
-              : this.flag = parseInt(1, 2);
-              break;
             default:
               this.hlt();
         }
@@ -216,6 +211,7 @@ class CPU {
             }
           case JNE:
             if (this.FL === 0b100 || this.FL === 0b010) {
+              this.FL = this.FL & 0b000;
               this.PC = this.reg[operandA];
               this.JMP = 1;
             }
