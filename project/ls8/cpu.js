@@ -185,37 +185,37 @@ class CPU {
             break;
           case CMP:
             this.reg[operandA] === this.reg[operandB]
-            ? this.FL = 0b00000000 | 0b00000001
+            ? this.FL = 0b000 | 0b001
               : this.reg[operandA] > this.reg[operandB]
-              ? this.FL = 0b00000000 | 0b00000010
-              : this.FL = 0b00000000 | 0b00000100;
+              ? this.FL = 0b000 | 0b010
+              : this.FL = 0b000 | 0b100;
             break;
           case JMP:
             this.PC = this.reg[operandA];
             this.JMP = 1;
             break;
           case JEQ:
-            if (this.FL === 0b00000001) {
-              this.FL = this.FL & 0b00000000;
+            if (this.FL === 0b001) {
+              this.FL = this.FL & 0b000;
               this.PC = this.reg[operandA];
               this.JMP = 1;
             }
             break;
           case JGT:
-            if (this.FL === 0b00000010) {
-              this.FL = this.FL & 0b00000000;
+            if (this.FL === 0b010) {
+              this.FL = this.FL & 0b000;
               this.PC = this.reg[operandA];
               this.JMP = 1;
             }
             break;
           case JLT:
-            if (this.FL === 0b00000100) {
-              this.FL = this.FL & 0b00000000;
+            if (this.FL === 0b100) {
+              this.FL = this.FL & 0b000;
               this.PC = this.reg[operandA];
               this.JMP = 1;
             }
           case JNE:
-            if (this.FL === 0b00000100 || this.FL === 0b00000010) {
+            if (this.FL === 0b100 || this.FL === 0b010) {
               this.PC = this.reg[operandA];
               this.JMP = 1;
             }
