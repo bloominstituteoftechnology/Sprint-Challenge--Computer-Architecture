@@ -14,7 +14,7 @@
 
 * 11001111
 
-- hex: A7DD17
+- hex: CF
 - decimal: 207
 
 * 4C

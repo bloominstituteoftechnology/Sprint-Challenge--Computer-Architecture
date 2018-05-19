@@ -259,6 +259,8 @@ class CPU {
   handle_JEQ(operandA) {
     if (this.FL === 0b00000001) {
       this.PC = this.reg[operandA];
+    } else {
+      this.PC += 2;
     }
   }
 
@@ -268,6 +270,8 @@ class CPU {
   handle_JGT(operandA) {
     if (this.FL === 0b00000010) {
       this.PC = this.reg[operandA];
+    } else {
+      this.PC += 2;
     }
   }
 
@@ -277,6 +281,8 @@ class CPU {
   handle_JLT(operandA) {
     if (this.FL === 0b00000100) {
       this.PC = this.reg[operandA];
+    } else {
+      this.PC += 2;
     }
   }
 
@@ -293,6 +299,8 @@ class CPU {
   handle_JNE(operandA) {
     if (this.FL != 0b00000001) {
       this.PC = this.reg[operandA];
+    } else {
+      this.PC += 2;
     }
   }
 
@@ -490,7 +498,17 @@ class CPU {
     // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
     // instruction byte tells you how many bytes follow the instruction byte
     // for any particular instruction.
-    if (IR !== CALL && IR !== RET && IR !== JMP && IR !== INT && IR !== IRET) {
+    if (
+      IR !== CALL &&
+      IR !== INT &&
+      IR !== IRET &&
+      IR !== JEQ &&
+      IR !== JGT &&
+      IR !== JLT &&
+      IR !== JMP &&
+      IR !== JNE &&
+      IR !== RET
+    ) {
       this.PC += (IR >> 6) + 1;
     }
   }
