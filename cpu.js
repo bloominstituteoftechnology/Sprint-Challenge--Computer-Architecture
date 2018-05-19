@@ -1,12 +1,10 @@
 /**
- * LS-8 v2.0 emulator skeleton code
+ * LS-8 v3.0 emulator Implemented by Edward Manda @https://github.com/LambdaSchool/Sprint-Challenge--Computer-Architecture/pull/102
  */
 
 /**
  * Constants
  */
-// implemented
-
 const ADD = 0b10101000; // 2 operands, ALU OP
 const AND = 0b10110011; // 2 operands, ALU OP
 const CALL = 0b01001000; // 1 operand
@@ -19,6 +17,8 @@ const INT = 0b01001010; // 1 operand,
 const IRET = 0b00001011; // 0 operand
 const IM = 0b00000101; // Interrupt Mask
 const IS = 0b00000110; // Interrupt Status
+const INT_TIMER = 0;
+const INT_KEYBOARD = 1;
 const IV_Table = [
   0b11111000,
   0b11111001,
@@ -39,6 +39,8 @@ const MOD = 0b10101100; // 2 operands, ALU OP
 const LDI = 0b10011001; // 2 operands
 const MUL = 0b10101010; // 2 operands, ALU OP
 const NOP = 0b00000000; // 0 operands
+const NOT = 0b01110000; // 1 operand, ALU OP
+const OR = 0b10110001; // 2 operands, ALU OP
 const POP = 0b01001100; // 1 operand
 const PRA = 0b01000010; // 1 operand
 const PRN = 0b01000011; // 1 operand
@@ -47,10 +49,6 @@ const RET = 0b00001001; // 0 operand
 const SP = 0b00000111; // Stack Pointer
 const ST = 0b10011010; // 2 operands
 const SUB = 0b10101001; // 2 operands, ALU OP
-
-// TBD implemented
-const NOT = 0b01110000; // 1 operand, ALU OP
-const OR = 0b10110001; // 2 operands, ALU OP
 const XOR = 0b10110010; // 2 operands, ALU OP
 
 /**
@@ -69,7 +67,7 @@ class CPU {
     this.PC = 0b00000000; // Program Counter
     this.reg[SP] = 0b11110100; // stack pointer
     this.FL = 0b00000000; // Flags
-    this.interrupt = false; // skip the interrupt implementation for now
+    this.interrupt = true;
 
     // init variables
     this.ALU = 0; // not an ALU OP
@@ -96,6 +94,8 @@ class CPU {
     this.branchTable[LDI] = this.handle_LDI;
     this.branchTable[MUL] = this.handle_MUL;
     this.branchTable[NOP] = this.handle_NOP;
+    this.branchTable[NOT] = this.handle_NOT;
+    this.branchTable[OR] = this.handle_OR;
     this.branchTable[POP] = this.handle_POP;
     this.branchTable[PRN] = this.handle_PRN;
     this.branchTable[PRA] = this.handle_PRA;
@@ -103,6 +103,7 @@ class CPU {
     this.branchTable[RET] = this.handle_RET;
     this.branchTable[ST] = this.handle_ST;
     this.branchTable[SUB] = this.handle_SUB;
+    this.branchTable[XOR] = this.handle_XOR;
   }
 
   /**
@@ -124,21 +125,15 @@ class CPU {
   /**
    * Handles the interrupt sequence operations
    */
-  check_INT(operandA, operandB) {
+  check_INT() {
     // The IM register is bitwise AND-ed with the IS register
     const maskedInterrupts = this.reg[IM] & this.reg[IS];
-
-    const bite = [0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 8; i++) {
-      let temp = bite;
-      temp[7 - i] = 1;
-      // check each Interrupt vector
-      let result = maskedInterrupts & temp;
-      if (result) {
+    for (let i = 0; i < 7; i++) {
+      if (maskedInterrupts & (1 << i)) {
         // disable further interrupts
         this.interrupt = false;
         // clear the IS status
-        this.reg[IS] = 0b00000000;
+        this.reg[IS] &= ~(1 << i);
 
         // PC is pushed onto the stack
         this.push(this.PC);
@@ -151,10 +146,14 @@ class CPU {
           this.push(this.reg[r]);
         }
 
-        // Interrupt vector is lloked up from the interrupt vector
-        this.PC = IV_Table[i - 1];
+        // can do this
+        // this.PC = this.peek(0xf8 + i);
+        // or
+        // Interrupt vector is looked up from the interrupt vector and used to read from memory
+        const IV = IV_Table[i];
+        this.PC = this.peek(IV);
+        break; //done doing the for loop
       }
-      temp[7 - i] = 0; // clear the position
     }
   }
 
@@ -333,6 +332,20 @@ class CPU {
   }
 
   /**
+   * Handles the NOT operations
+   */
+  handle_NOT(operandA) {
+    this.reg[operandA] = ~this.reg[operandA];
+  }
+
+  /**
+   * Handles the OR operations
+   */
+  handle_OR(operandA, operandB) {
+    this.reg[operandA] |= this.reg[operandB];
+  }
+
+  /**
    * Handles the POP operations
    */
   handle_POP(operandA) {
@@ -343,7 +356,7 @@ class CPU {
    * Handles the PRA operations
    */
   handle_PRA(operandA) {
-    console.log(String.fromCharCode(this.reg[this.operandA]));
+    console.log(String.fromCharCode(this.reg[operandA]));
   }
 
   /**
@@ -379,6 +392,13 @@ class CPU {
    */
   handle_SUB(operandA, operandB) {
     this.reg[operandA] -= this.reg[operandB];
+  }
+
+  /**
+   * Handles the XOR operations
+   */
+  handle_XOR(operandA, operandB) {
+    this.reg[operandA] ^= this.reg[operandB];
   }
 
   /**
@@ -429,6 +449,10 @@ class CPU {
     this.clock = setInterval(() => {
       this.tick();
     }, 1); // 1 ms delay == 1 KHz clock == 0.000001 GHz
+
+    this.interruptTimer = setInterval(() => {
+      this.reg[IS] = 1;
+    }, 1000); // 1 s delay == 1Hz clock
   }
 
   /**
@@ -436,6 +460,7 @@ class CPU {
    */
   stopClock() {
     clearInterval(this.clock);
+    clearInterval(this.interruptTimer); // clears interruptTimer
   }
 
   /**
@@ -460,18 +485,7 @@ class CPU {
     const operandB = this.ram.read(this.PC + 2);
 
     // Debugging output
-    /*
-    console.log(`${this.PC}: ${IR.toString(2)}`);
-    console.log(`opA: ${operandA.toString(2)}`);
-    console.log(`opB: ${operandB.toString(2)}`);
-    console.log('at rams:', this.reg[SP], this.peek(this.reg[SP]));
-    // // print out the stack
-    for (let i = 0b11110011; i >= this.reg[SP]; i--) {
-      console.log(`@ram ${i} is ${this.peek(i)}`);
-    }
-    console.log(`=====>: ${this.reg} <======`);
-    console.log('=============================');
-    */
+    // console.log(`${this.PC}: ${IR.toString(2)}`);
 
     // Execute the instruction. Perform the actions for the instruction as
     // outlined in the LS-8 spec.
