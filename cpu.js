@@ -84,19 +84,19 @@ class CPU {
         this.reg[regA] %= this.reg[regB];
         break;
 
-      case "AND":
+      case "AND": // bitwise AND
         this.reg[regA] &= this.reg[regB];
         break;
 
-      case "OR":
+      case "OR": // bitwise OR
         this.reg[regA] |= this.reg[regB];
         break;
 
-      case "NOT":
+      case "NOT": // bitwise NOT
         this.reg[regA] = ~this.reg[regA];
         break;
 
-      case "XOR":
+      case "XOR": // bitwise XOR
         this.reg[regA] ^= this.reg[regB];
         break;
 
@@ -235,7 +235,7 @@ class CPU {
         }
         break;
 
-      case MUL:
+      case MUL: // multiply regA and regB and store the value in regA
         this.ALU("MUL", operandA, operandB);
         break;
 
@@ -251,13 +251,11 @@ class CPU {
         break;
 
       case POP: // pop the value from the top of the stack into the given register ~ 01001100 00000rrr
-        this.reg[operandA] = this.ram.read(this.reg[SP]);
-        this.reg[SP]++;
+        this.reg[operandA] = this.pop();
         break;
 
       case PRA: // print the alpha character value stored in the given register ~ 01000010 00000rrr
-        console.log(`case PRA - ${IR} - has not yet been defined.`);
-        this.stopClock();
+        console.log(String.fromCharCode(this.reg[operandA]));
         break;
       
       case PRN: // print the numeric value stored in the given register ~ 01000011 00000rrr
@@ -269,8 +267,7 @@ class CPU {
         break;
 
       case RET: // return from the subroutine
-        this.PC = this.ram.read(this.reg[SP]);
-        this.reg[SP]++;
+        this.PC = this.pop();
         incrementPC = false;
         break;
 
@@ -327,6 +324,12 @@ class CPU {
   push(value) {
     this.reg[SP]--;
     this.ram.write(this.reg[SP], value);
+  }
+
+  pop() {
+    const value = this.ram.read(this.reg[SP]);
+    this.reg[SP]++;
+    return value;
   }
 }
 
