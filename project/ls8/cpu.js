@@ -147,6 +147,12 @@ class CPU {
       case 'HLT':
         this.stopClock();
         break;
+      case 'JEQ':
+        if (this.FL[9] === '1') {
+          this.PC = this.reg[operandA];
+          this.pcAdvance = false;
+        }
+        break;
       case 'JMP':
         this.PC = this.reg[operandA];
         this.pcAdvance = false;
