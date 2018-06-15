@@ -29,11 +29,16 @@ const HLT = 0b00000001,
       SUB = 0b10101001,
       XOR = 0b10110010;
 
+const FLAG_EQUAL = 0;
+const FLAG_GREAT = 1;
+const FLAG_LESS  = 2;
+
 class CPU {
   constructor(ram) {
     this.ram = ram;
     this.reg = new Array(8).fill(0); // register R0-R7
     this.PC = 0; // program counter - holds the address of the currently executed instruction
+    this.FL = 0; // flags register - holds the current flags status
   }
 
   /* Store a byte of data in the memory address */
@@ -56,6 +61,7 @@ class CPU {
 
   /* Advances the CPU one cycle */
   tick() {
+    let incrementPC = true;
 
     // Instruction Register - contains a copy of the currently executing instruction
     const IR = this.ram.read(this.PC);
@@ -81,8 +87,58 @@ class CPU {
 
       case JMP: // jump to the address stored in the given register ~ 01010000 00000rrr
         this.PC = this.reg[operandA]; // set the PC to the address stored in the given register
+        incrementPC = false;
+        break;
+
+      case JEQ: // if an equal flag is set, jump to the address stored in the given register ~ 01010001 00000rrr
+        if (this.getFlag(FLAG_EQUAL)) {
+          this.PC = this.reg[operandA];
+          incrementPC = false;
+        }
+        break;
+
+      case JNE: // if the equal flag is not set, jump to the address stored in the given register ~ 01010010 00000rrr
+        if (!this.getFlag(FLAG_EQUAL)) {
+          this.PC = this.reg[operandA];
+          incrementPC = false;
+        }
+        break;
+
+      case CMP: // compare the value in two registers ~ 10100000 00000aaa 00000bbb
+        this.compare(operandA, operandB);
         break;
     }
+
+    incrementPC ? this.PC += (IR >> 6) + 1 : null;
+  }
+
+  compare(regA, regB) {
+    const equal   = +(this.reg[regA] === this.reg[regB]);
+    const greater = +(this.reg[regA] > this.reg[regB]);
+    const less    = +(this.reg[regA] < this.reg[regB]);
+
+    const compEQ = eq => {
+      if (eq) this.FL |= (1 << FLAG_EQUAL);
+      else this.FL &= ~(1 << FLAG_EQUAL);
+    }
+
+    const compGT = gt => {
+      if (gt) this.FL |= (1 << FLAG_GREAT);
+      else this.FL &= ~(1 << FLAG_GREAT);
+    }
+
+    const compLT = lt => {
+      if (lt) this.FL |= (1 << FLAG_LESS);
+      else this.FL &= ~(1 << FLAG_LESS);
+    }
+
+    compEQ(equal);
+    compGT(greater);
+    compLT(less);
+  }
+
+  getFlag(flag) {
+    return (this.FL & (1 << flag)) >> flag;
   }
 }
 
