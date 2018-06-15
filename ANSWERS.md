@@ -34,3 +34,7 @@ processing power and can leave the CPU unhindered to continue with it's
 primary tasks.
 
 4. Suggest the role that graphics cards play in machine learning:
+GPUs seems to be such a huge part of machine learning now because of
+their ability to process large sums of data very quickly. This is mainly
+due to their focus on mathmatic calculations and parellel processing.
+All of these things seem to be key factors in developing neural networks.
