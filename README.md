@@ -6,7 +6,7 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex: 0xCF
+    to hex: CF
 
     to decimal: 207
 
@@ -31,12 +31,34 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
+- The cpu can provide concurrency, by utilizing multiple cores. The more cores a cpu has (dual, quad, hexa, etc.) can execute multiple actins or instructions at the same time, giving parrallelism or concurrency because these are running side by side, simultaneously. 
+
+
+
+
+
 * Describe assembly language and machine language:
+
+- An assembly language is a low-level programming language, in which there is a very strong correspondence between the language and the architecture's machine code instructions. They are extremely similar, almost emulating the machine language. 
+
+
+
+
 
 * Why is 3D performance so much higher with a graphics card than
   without?
 
+
+
+
+
+
 * Suggest the role that graphics cards play in machine learning:
+
+
+
+
+
 
 
 ## Coding
