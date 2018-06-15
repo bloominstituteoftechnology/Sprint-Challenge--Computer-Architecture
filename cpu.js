@@ -9,10 +9,20 @@ const PUSH = 0b01001101;
 const POP = 0b01001100;
 const RET = 0b00001001;
 const CALL = 0b01001000;
-
 const ADD = 0b10101000;
 
+// sprint instructions
+const CMP = 0b10100000;
+const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
+
 const SP = 0x07; // Stack Pointer
+
+// Flags
+const FLAG_EQ = 0;
+const FLAG_GT = 1;
+const FLAG_LT = 2;
 
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -29,6 +39,7 @@ class CPU {
     // Special-purpose registers
     this.PC = 0; // Program Counter
     this.reg[SP] = 0xf4; // SP default value set to 0xf4 or 244
+    this.FL = 0; // Flags
   }
   /**
    * Store value in memory address, useful for program loading
@@ -174,6 +185,34 @@ class CPU {
 
       case ADD:
         this.alu("ADD", operandA, operandB);
+        break;
+
+      case CMP:
+        if (operandA === operandB) {
+          FLAG_EQ = 1;
+          FLAG_GT = 0;
+          FLAG_LT = 0;
+        }
+        if (operandA > operandB) {
+          FLAG_EQ = 0;
+          FLAG_GT = 1;
+          FLAG_LT = 0;
+        }
+        if (operandA < operandB) {
+          FLAG_EQ = 0;
+          FLAG_GT = 0;
+          FLAG_LT = 1;
+        }
+        break;
+
+      case JMP:
+        this.PC = this.reg[operandA];
+        break;
+
+      case JEQ:
+        if (this.Equal) break;
+
+      case JNE:
         break;
 
       default:
