@@ -48,7 +48,7 @@ class CPU {
 
   /* Store a byte of data in the memory address */
   writeToRAM(address, value) {
-    this.ram.writeToRAM(address, value);
+    this.ram.write(address, value);
   }
 
   /* Start the clock on the CPU */
@@ -137,7 +137,7 @@ class CPU {
     switch(IR) {
       case CALL: // calls a subroutine at the address stored in the register ~ 01001000 00000rrr
         this.reg[SP]--;
-        this.ram.writeToRAM(this.reg[SP], this.PC + 2);
+        this.ram.write(this.reg[SP], this.PC + 2);
         this.PC = this.reg[operandA];
         incrementPC = false;
         break;
@@ -184,7 +184,7 @@ class CPU {
 
       case PUSH: // push the given register onto the stack ~ 01001101 00000rrr
         this.reg[SP]--;
-        this.ram.writeToRAM(this.reg[SP], this.reg[operandA]);
+        this.ram.write(this.reg[SP], this.reg[operandA]);
         break;
 
       case RET: // return from the subroutine
@@ -194,6 +194,7 @@ class CPU {
         break;
 
       default:
+        console.log(`Instruction ${IR} is not defined in tick().`);
         this.stopClock();
     }
 
