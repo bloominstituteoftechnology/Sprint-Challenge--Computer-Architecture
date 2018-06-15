@@ -36,10 +36,9 @@ Short answer:
 * Describe assembly language and machine language: Assembly language can also be referred to as ASM and is known as a low level programming language. Machine language (also known as machine code) consists of instructions that are executed by a CPU. These specific tasks can range from load, jump or ALU operations within a CPU register or memory.
 
 #STRETCH QUESTIONS
-* Why is 3D performance so much higher with a graphics card than
-  without?
+* Why is 3D performance so much higher with a graphics card than without? A CPU is used to handle all tasks that a computer needs to run - including running the operating system and assisting all the hardware in talking with each other - while a GPU is focused solely on graphics performance.
 
-* Suggest the role that graphics cards play in machine learning:
+* Suggest the role that graphics cards play in machine learning: Due to a GPU's specialization, it can handle single tasks more efficiently as it doesn't have to concern itself with running the OS and can focus on single tasks like gaming or machine learning.
 
 
 ## Coding

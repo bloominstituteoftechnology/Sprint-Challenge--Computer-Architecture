@@ -8,7 +8,7 @@ ANSWER: Assembly language can also be referred to as ASM and is known as a low l
 
 #STRETCH QUESTIONS
 3. Why is 3D performance so much higher with a graphics card than without?
-ANSWER:
+ANSWER: A CPU is used to handle all tasks that a computer needs to run - including running the operating system and assisting all the hardware in talking with each other - while a GPU is focused solely on graphics performance.
 
 4. Suggest the role that graphics cards play in machine learning:
-ANSWER:
+ANSWER: Due to a GPU's specialization, it can handle single tasks more efficiently as it doesn't have to concern itself with running the OS and can focus on single tasks like gaming or machine learning.
