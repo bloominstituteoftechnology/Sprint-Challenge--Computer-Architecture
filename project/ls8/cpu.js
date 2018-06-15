@@ -38,7 +38,7 @@ class CPU {
         // Special-purpose registers
         this.PC = 0; // Program Counter
         
-        this.FL = 0b00000000; //Should be for flags
+        this.FL = 0; //Flags
         
         this.reg[SP] = 0xF4; // Initialized stack pointer
     }
@@ -83,7 +83,15 @@ class CPU {
                 // this.reg[regA] = (this.reg[regB] * this.reg[regA]) & 0xff;
                 break;
 
-                case "DIV":
+            case 'CMP':
+                if (this.reg[regA] === this.reg[regB]) {
+                    this.FL = 0b00000001;
+                } else {
+                    this.FL = 0b00000000;
+                }
+                break;
+
+            case "DIV":
                 if (this.reg[regB] === 0) this.stopClock();
                 else this.reg[regA] /= this.reg[regB];
                 break;
@@ -199,28 +207,28 @@ class CPU {
                 break;
             
             case CMP: 
-                if (this.reg[operandA] === this.reg[operandB]) {
-                    if (!(1 & this.FL)) this.FL |= 1;
-                } else {
-                    if (1 & this.FL) this.FL ^= 1;
+               this.alu("CMP", operandA, operandB);
+                break;
+            
+            case JEQ: 
+                if (this.FL === 0b00000001) {
+                    this.PC = this.reg[operandA];
+                    pcAdvance = false;
                 }
-                pcAdvance = false;
+                break;
+
+            case JNE: 
+                if (this.FL === 0b00000000) {
+                    this.PC = this.reg[operandA];
+                    pcAdvance = false;
+                }
                 break;
 
             case JMP: 
                 this.PC = this.reg[operandA];
+                pcAdvance = false;
                 break;
-
-            case JNE: 
-                if (!(1 & this.FL)) this.PC = this.reg[operandA];
-                else pcAdvance = false;
-                break;
-
-            case JEQ: 
-                if (1 & this.FL) this.PC = this.reg[operandA];
-                else pcAdvance = false;
-                break;
-
+           
             default:
                 console.log("Unknown instruction: " + IR.toString(2));
                 this.stopClock();
