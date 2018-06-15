@@ -4,47 +4,44 @@
 
 Complete the following problems:
 
-* Convert `11001111` binary
+- Convert `11001111` binary
 
-    to hex:
+  to hex: parseInt('11001111', 2).toString(16)
 
-    to decimal:
-
+  to decimal: parseInt('11001111', 2)
 
 * Convert `4C` hex
 
-    to binary:
+  to binary: parseInt('4C', 16).toString(2)
 
-    to decimal:
+  to decimal: parseInt('4C', 16)
 
+- Convert `68` decimal
+  //if it is the int 68 instead of a string and there is no variable name being used for 68 then you have to use parseInt(68) for toString to work on it
 
-* Convert `68` decimal
+      to binary: parseInt(68).toString(2)
 
-    to binary:
-
-    to hex:
-
+      to hex: parseInt(68).toString(18)
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+- Explain how the CPU provides concurrency or parallelism:
 
-* Describe assembly language and machine language:
+- Describe assembly language and machine language:
 
-* Why is 3D performance so much higher with a graphics card than
+- Why is 3D performance so much higher with a graphics card than
   without?
 
-* Suggest the role that graphics cards play in machine learning:
-
+- Suggest the role that graphics cards play in machine learning:
 
 ## Coding
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
+- Copy your source into this repo, or...
+- Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
   you've been using all along.
 
 Sprint Challenge:
@@ -56,7 +53,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
 print 1, then 4, then 5.
@@ -154,4 +150,3 @@ print 1, then 4, then 5.
 # TEST5 (73):
 00000001 # HLT
 ```
-
