@@ -149,6 +149,13 @@ class CPU {
         // this.PC += 1;
         break;
 
+      case JMP:
+        // Jump to address stored in given register
+        // JMP - Register Number
+        // 01010000 00000rrr
+        this.PC = this.reg[operandA]; // set PC to address in given register
+        break;
+
       case LDI:
         // set the value in a register (R0)
         // LDI - Register Number - Immediate Value
