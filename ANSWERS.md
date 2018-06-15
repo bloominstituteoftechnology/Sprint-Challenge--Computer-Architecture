@@ -19,6 +19,12 @@ efficiently and may be put under a more intense buren.
 
 
 2. Describe assembly language and machine language:
+Assembly language is only a small step away from machine language
+while still giving humans a better understanding of what is happening.
+It usually offers key words and memory addresses. Machine language
+on the other hand is comprised of machine readable code, primarily
+binary digits. This translates to positive and negative charges
+within the systems hardware.
 
 
 3. Why is 3D performance so much higher with a graphics card than without?
