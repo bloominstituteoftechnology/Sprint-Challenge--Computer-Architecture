@@ -10,3 +10,5 @@
 
 
 4. Suggest the role that graphics cards play in machine learning:
+
+**Answered in the Readme.md
