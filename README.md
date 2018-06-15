@@ -4,35 +4,38 @@
 
 Complete the following problems:
 
+This site helped me solve for the below: http://coolconversion.com/math/binary-octal-hexa-decimal/Convert_binary__11001111_to_hexadecimal_ 
+
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 0b1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 0b1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+* Explain how the CPU provides concurrency or parallelism: Concurrency takes place when 2 tasks start, run and complete in overlapping time periods such as multitasking on a single core machine. Parallelism takes place when tasks run at the exact same time such as on a multicore processor. 
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language: Assembly language can also be referred to as ASM and is known as a low level programming language. Machine language (also known as machine code) consists of instructions that are executed by a CPU. These specific tasks can range from load, jump or ALU operations within a CPU register or memory.
 
+#STRETCH QUESTIONS
 * Why is 3D performance so much higher with a graphics card than
   without?
 
