@@ -13,7 +13,9 @@ const Op = {
     RET: 0b00001001,
     ADD: 0b10101000,
     CMP: 0b10100000,
-    JMP: 0b01010000
+    JMP: 0b01010000,
+    JNE: 0b01010010,
+    JEQ: 0b01010001
 }
 
 const SP = 7;
@@ -151,6 +153,20 @@ class CPU {
                     if (1 & this.FL) this.FL ^= 1;
                 }
                 this.PC += 3;
+                break;
+
+            case Op.JMP:
+                this.PC = this.reg[IR2];
+                break;
+
+            case Op.JNE:
+                if (!(1 & this.FL)) this.PC = this.reg[IR2];
+                else this.PC += 2;
+                break;
+
+            case Op.JEQ:
+                if (1 & this.FL) this.PC = this.reg[IR2];
+                else this.PC += 2;
                 break;
 
             default:
