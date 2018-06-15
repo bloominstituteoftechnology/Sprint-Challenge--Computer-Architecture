@@ -247,6 +247,15 @@ class CPU {
   jmp(operandA) {
     this.PC = this.reg[operandA] - 2; // temp fix
   }
+
+  // soon to be implemented
+  pop() {
+    return;
+  }
+
+  push() {
+
+  }
 }
 
 module.exports = CPU;
