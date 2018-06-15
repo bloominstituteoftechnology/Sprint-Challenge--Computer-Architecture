@@ -136,8 +136,7 @@ class CPU {
     // for this sprint you need: LDI, CMP, JEQ, PRN, JNE, JMP
     switch(IR) {
       case CALL: // calls a subroutine at the address stored in the register ~ 01001000 00000rrr
-        this.reg[SP]--;
-        this.ram.write(this.reg[SP], this.PC + 2);
+        this.push(this.PC + 2);
         this.PC = this.reg[operandA];
         incrementPC = false;
         break;
@@ -205,8 +204,7 @@ class CPU {
         break;
 
       case PUSH: // push the given register onto the stack ~ 01001101 00000rrr
-        this.reg[SP]--;
-        this.ram.write(this.reg[SP], this.reg[operandA]);
+        this.push(this.reg[operandA]);
         break;
 
       case RET: // return from the subroutine
@@ -254,6 +252,11 @@ class CPU {
 
   getFlag(flag) {
     return (this.FL & (1 << flag)) >> flag;
+  }
+
+  push(value) {
+    this.reg[SP]--;
+    this.ram.write(this.reg[SP], value);
   }
 }
 
