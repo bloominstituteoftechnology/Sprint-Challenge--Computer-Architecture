@@ -28,6 +28,7 @@ class CPU {
 
     this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
     this.reg[SP] = 0xf4;
+    this.reg[FL] = 0;
 
     // Special-purpose registers
     this.PC = 0; // Program Counter
@@ -121,6 +122,22 @@ class CPU {
         this.poke(this.reg[SP], this.PC + 2); // address of next int pushed to stack
         console.log(this.PC + 2);
         this.PC = this.reg[operandA]; // PC set to address in registerA
+        break;
+
+      case CMP:
+        // Compare value in two registers
+        // Equal -> flag E1, R0 < R1 -> flag L1, R0 > R1 -> flag G1
+        // CMP - R0 - R1
+        // 10100000 00000aaa 00000bbb
+        if (this.reg[operandA] === this.reg[operandB]) {
+          this.reg.FL = 0b00000100;
+        }
+        if (this.reg[operandA] < this.reg[operandB]) {
+          this.reg.FL = 0b00000010;
+        }
+        if (this.reg[operandA] > this.reg[operandB]) {
+          this.reg.FL = 0b00000001;
+        }
         break;
 
       case HLT:
