@@ -124,7 +124,6 @@ class CPU {
         // 01001000 00000rrr
         this.reg[SP]--; // decrement SP (next inst)
         this.poke(this.reg[SP], this.PC + 2); // address of next int pushed to stack
-        console.log(this.PC + 2);
         this.PC = this.reg[operandA]; // PC set to address in registerA
         break;
 
@@ -134,14 +133,15 @@ class CPU {
         // CMP - R0 - R1
         // 10100000 00000aaa 00000bbb
         if (this.reg[operandA] === this.reg[operandB]) {
-          this.FL = 0b00000100;
-        }
-        if (this.reg[operandA] < this.reg[operandB]) {
-          this.FL = 0b00000010;
-        }
-        if (this.reg[operandA] > this.reg[operandB]) {
           this.FL = 0b00000001;
         }
+        if (this.reg[operandA] < this.reg[operandB]) {
+          this.FL = 0b00000100;
+        }
+        if (this.reg[operandA] > this.reg[operandB]) {
+          this.FL = 0b00000010;
+        }
+        console.log(this.FL);
         break;
 
       case HLT:
@@ -167,7 +167,7 @@ class CPU {
         // 01010000 00000rrr
         this.PC = this.reg[operandA]; // set PC to address in given register
         break;
-      
+
       case JNE:
         // If equal flag = 0, jump to address stored in given register
         // JNE - Register Number
