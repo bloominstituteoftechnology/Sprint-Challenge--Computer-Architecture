@@ -5,9 +5,42 @@
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
+
+/*
+`LDI register immediate`
+Set the value of a register to an integer.
+Machine code:
+10011001 00000rrr iiiiiiii
+*/
 const LDI = 0b10011001;
+
+
+/*
+`PRN register` pseudo-instruction
+Print numeric value stored in the given register.
+Print to the console the decimal integer value that is stored in the given
+register.
+Machine code:
+01000011 00000rrr
+*/
 const PRN = 0b01000011;
+
+
+/*
+`HLT`
+Halt the CPU (and exit the emulator).
+Machine code:
+00000001 
+*/
 const HLT = 0b00000001;
+
+
+/*
+`MUL registerA registerB`
+Multiply two registers together and store the result in registerA.
+Machine code:
+10101010 00000aaa 00000bbb
+*/
 const MUL = 0b10101010;
 /* 
 PUSH register
@@ -202,10 +235,15 @@ class CPU {
         switch (op) {
             //---------------sprint--------------------------
             case JMP: 
+            // Set the `PC` to the address stored in the given register.
             this.PC = this.ram.read(this.reg[regA]) // (this.PC + 1) will it work? ******
             break; 
             
             case JNE: 
+            // If `E` flag is clear (FL !== 0b00000001), jump to the address stored in the given register.
+                if (this.FL !== 0b00000001) {
+                    return (this.PC = this.reg[regA]);
+                }
             break; 
 
 
@@ -213,10 +251,13 @@ class CPU {
             break; 
 
             case CMP: 
+                // `L` Less-than: during a `CMP`, set to 1 if registerA is less than registerB, zero otherwise. `00000LGE` --> `00000100`
                 if (this.reg[regA] < this.reg[regB]) {
                 this.FL = 0b00000100;
+                // `G` Greater-than: during a `CMP`, set to 1 if registerA is greater than registerB, zero otherwise. `00000LGE` --> `00000010` 
                 } else if (this.reg[regA] > this.reg[regB]) {
                 this.FL = 0b00000010;
+                // If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. `00000LGE` --> `00000001` 
                 } else if (this.reg[regA] === this.reg[regB]) {
                 this.FL = 0b00000001;
                 }
@@ -227,7 +268,7 @@ class CPU {
                 this.reg[regA] = this.reg[regA] + this.reg[regB];
                 break;
 
-            case PUSH:                       // initially --> this.reg[7] = 244, push R0 (2)
+            case PUSH:                                       // initially --> this.reg[7] = 244, push R0 (2)
                 this.reg[SP]--;                              // this.reg[7]-- 
                 this.ram.write(this.reg[SP], this.reg[regA])// ram[243] = this.reg[R0] , (2)
                 break;
@@ -238,31 +279,35 @@ class CPU {
                 break;
 
             case CALL:
+                // Calls a subroutine (function) at the address stored in the register.
                 this.reg[SP]--;
-                this.ram.write(this.reg[SP], this.PC + 2)// next instruction
-                // Set the PC to the address stored in register
-                // this.pushValue(this.PC + 2)
-                this.PC = this.reg[regA]
+                this.ram.write(this.reg[SP], this.PC + 2)// The address of the next instruction that will execute is pushed onto the stack.
+                this.PC = this.reg[regA]; // The PC is set to the address stored in the given register.
                 break;
 
             case RET:
+                // Pop the value from the top of the stack and store it in the PC.
                 this.PC = this.ram.read(this.reg[SP]);
                 break;
 
             case MUL:
+                // Multiply two registers together and store the result in registerA.
                 const result = this.reg[regA] * this.reg[regB];
                 this.reg[regA] = result;
                 break;
 
-            case LDI: // LDI
+            case LDI: 
+                // Set the value of a register to an integer.
                 this.reg[regA] = regB;// this.reg[R0] = 3
                 break;
 
-            case PRN: // PRN
-                console.log(this.reg[regA])// this.reg[R0](2)
+            case PRN: 
+                // Print numeric value stored in the given register.
+                console.log(this.reg[regA])
                 break;
 
-            case HLT: // HLT
+            case HLT: 
+                // Halt the CPU (and exit the emulator).
                 this.stopClock()
                 break;
                 
