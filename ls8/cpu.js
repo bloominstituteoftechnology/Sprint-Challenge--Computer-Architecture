@@ -18,7 +18,7 @@ const ADD = 0b10101000;
 const CMP = 0b10100000;
 const JEQ = 0b01010001;
 const JNE = 0b01010010;
-
+const JMP = 0b01010000;
 
 const index = 7;
 const RAM = require('./ram.js');
@@ -118,7 +118,7 @@ class CPU {
         // !!! IMPLEMENT ME
 
         // Debugging output
-        console.log(`${this.PC}: ${IR.toString(2)}`);
+        // console.log(`${this.PC}: ${IR.toString(2)}`);
 
         // Get the two bytes in memory _after_ the PC in case the instruction
         // needs them.
@@ -164,17 +164,20 @@ class CPU {
                 break;
             case JEQ:
                 if(this.reg.fl === '00000001') {
-                  console.log('i jumped!')
                   this.PC  = this.reg[opA];
                   this.pcAdvance = false;
                 }
                 break;
             case JNE:
-              if(this.reg.fl !== '00000001') {
+                if(this.reg.fl !== '00000001') {
+                  this.PC = this.reg[opA];
+                  this.pcAdvance = false;
+                }
+                break;
+            case JMP:
                 this.PC = this.reg[opA];
                 this.pcAdvance = false;
-              }
-              break;
+                break;
             default:
                 this.alu(IR, opA, opB);
                 break;
