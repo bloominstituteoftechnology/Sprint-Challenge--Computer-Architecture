@@ -234,34 +234,38 @@ class CPU {
         // node ls8.js stack.ls8
         switch (op) {
             //---------------sprint--------------------------
-            case JMP: 
-            // Set the `PC` to the address stored in the given register.
-            this.PC = this.ram.read(this.reg[regA]) // (this.PC + 1) will it work? ******
-            break; 
-            
-            case JNE: 
-            // If `E` flag is clear (FL !== 0b00000001), jump to the address stored in the given register.
+            case JMP:
+                // Set the `PC` to the address stored in the given register.
+                this.PC = this.ram.read(this.reg[regA]) // (this.PC + 1) will it work? ******
+                break;
+
+            case JNE:
+                // If `E` flag is clear (FL !== 0b00000001), jump to the address stored in the given register.
                 if (this.FL !== 0b00000001) {
                     return (this.PC = this.reg[regA]);
                 }
-            break; 
+                break;
 
 
-            case JEQ: 
-            break; 
+            case JEQ:
+                // If `equal` flag is set (true), jump to the address stored in the given register.
+                if (this.FL === 0b00000001) {
+                    return (this.PC = this.reg[regA]);
+                }
+                break;
 
-            case CMP: 
+            case CMP:
                 // `L` Less-than: during a `CMP`, set to 1 if registerA is less than registerB, zero otherwise. `00000LGE` --> `00000100`
                 if (this.reg[regA] < this.reg[regB]) {
-                this.FL = 0b00000100;
-                // `G` Greater-than: during a `CMP`, set to 1 if registerA is greater than registerB, zero otherwise. `00000LGE` --> `00000010` 
+                    this.FL = 0b00000100;
+                    // `G` Greater-than: during a `CMP`, set to 1 if registerA is greater than registerB, zero otherwise. `00000LGE` --> `00000010` 
                 } else if (this.reg[regA] > this.reg[regB]) {
-                this.FL = 0b00000010;
-                // If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. `00000LGE` --> `00000001` 
+                    this.FL = 0b00000010;
+                    // If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. `00000LGE` --> `00000001` 
                 } else if (this.reg[regA] === this.reg[regB]) {
-                this.FL = 0b00000001;
+                    this.FL = 0b00000001;
                 }
-            break; 
+                break;
 
             //---------------sprint--------------------------
             case ADD:
@@ -296,21 +300,21 @@ class CPU {
                 this.reg[regA] = result;
                 break;
 
-            case LDI: 
+            case LDI:
                 // Set the value of a register to an integer.
                 this.reg[regA] = regB;// this.reg[R0] = 3
                 break;
 
-            case PRN: 
+            case PRN:
                 // Print numeric value stored in the given register.
                 console.log(this.reg[regA])
                 break;
 
-            case HLT: 
+            case HLT:
                 // Halt the CPU (and exit the emulator).
                 this.stopClock()
                 break;
-                
+
             default:
                 console.log(`Unrecognized instruction ${op.toString(2)}`)
         }
@@ -355,7 +359,7 @@ class CPU {
         // for any particular instruction.
         // !!! IMPLEMENT ME
 
-        if (![CALL, RET, JMP ].includes(IR)) {
+        if (![CALL, RET, JMP].includes(IR)) {
             const instLen = (IR >> 6) + 1;
             this.PC += instLen;
         }
