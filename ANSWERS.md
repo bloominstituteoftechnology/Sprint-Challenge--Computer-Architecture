@@ -13,6 +13,9 @@ to hex: 44
 <!-- Answers to the Short Answer Essay Questions go here -->
 
 1. Explain how the CPU provides concurrency:
+The CPU can primarily provide concurrency through multiple cores.
+With only one, the CPU cannot handle simultanious tasks as
+efficiently and may be put under a more intense buren.
 
 
 2. Describe assembly language and machine language:
