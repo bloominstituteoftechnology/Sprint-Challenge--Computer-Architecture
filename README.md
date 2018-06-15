@@ -2,6 +2,8 @@
 
 ## Binary, Decimal, and Hex
 
+PR link: https://github.com/LambdaSchool/Computer-Architecture-One/pull/154
+
 Complete the following problems:
 
 * Convert `11001111` binary
