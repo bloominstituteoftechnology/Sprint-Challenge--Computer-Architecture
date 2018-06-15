@@ -31,30 +31,27 @@ Complete the following problems:
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
+    (1) Convert 4 to binary => 0100; convert C to decimal 12 then to binary => 1100 
 
-    to decimal:
-
+    to decimal: 76
+    (1) Find the value of each binary place: (1, 2, 4, 8, 16, 32, 64, 128)    
+        0x 128 =  0
+        1x 64  =  64
+        0x 32  =   0
+        0x 16  =   0
+        1x 8   =   8
+        1x 4   =   4
+        0x 2   =   0
+        0x 1   =   0
+    (2) Foot the total
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 01000100
 
-    to hex:
+    to hex: 44
 
-
-## Architecture
-
-Short answer:
-
-* Explain how the CPU provides concurrency or parallelism:
-
-* Describe assembly language and machine language:
-
-* Why is 3D performance so much higher with a graphics card than
-  without?
-
-* Suggest the role that graphics cards play in machine learning:
 
 
 ## Coding
