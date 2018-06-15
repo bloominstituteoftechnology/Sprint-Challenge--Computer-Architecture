@@ -9,6 +9,5 @@ Machine language is binary numbers that is read by a computer that translates to
 
 
 3. Why is 3D performance so much higher with a graphics card than without?
-3D performance is higher with a graphics card 
 
 4. Suggest the role that graphics cards play in machine learning:
