@@ -1,3 +1,4 @@
+
 /**
  * LS-8 v2.0 emulator skeleton code
  */
@@ -8,6 +9,7 @@
     const CMP = 0b10100000;
     const POP = 0b01001100;
     const PUSH = 0b01001101;
+    const JMP = 0b01010000;
     let E = null;
     let L = null;
     let G = null;
