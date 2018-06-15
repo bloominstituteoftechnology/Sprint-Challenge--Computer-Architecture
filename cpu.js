@@ -33,17 +33,22 @@ const FLAG_EQUAL = 0;
 const FLAG_GREAT = 1;
 const FLAG_LESS  = 2;
 
+const SP = 7;
+const IS = 6;
+const IM = 5;
+
 class CPU {
   constructor(ram) {
     this.ram = ram;
     this.reg = new Array(8).fill(0); // register R0-R7
     this.PC = 0; // program counter - holds the address of the currently executed instruction
     this.FL = 0; // flags register - holds the current flags status
+    this.reg[SP] = 0xF4; // stores the address (in ram) of the most recently pushed item in the stack
   }
 
   /* Store a byte of data in the memory address */
   writeToRAM(address, value) {
-    this.ram.write(address, value);
+    this.ram.writeToRAM(address, value);
   }
 
   /* Start the clock on the CPU */
@@ -106,6 +111,11 @@ class CPU {
       case "INC": // increment
         this.reg[regA]++;
         break;
+
+      default:
+        console.log(`Error. ALU case ${operation} is not defined.`);
+        this.stopClock();
+        break;
     }
   }
 
@@ -125,21 +135,19 @@ class CPU {
     // Execute the instruction. Perform the necessary actions as outlined in the spec.
     // for this sprint you need: LDI, CMP, JEQ, PRN, JNE, JMP
     switch(IR) {
-      case LDI: // set the value of a register to an integer ~ 10011001 00000rrr iiiiiiii
-        this.reg[operandA] = operandB;
+      case CALL: // calls a subroutine at the address stored in the register ~ 01001000 00000rrr
+        this.reg[SP]--;
+        this.ram.writeToRAM(this.reg[SP], this.PC + 2);
+        this.PC = this.reg[operandA];
+        incrementPC = false;
         break;
-      
-      case PRN: // print the numeric value stored in the given register ~ 01000011 00000rrr
-        console.log(this.reg[operandA]);
+
+      case CMP: // compare the value in two registers ~ 10100000 00000aaa 00000bbb
+        this.ALU("CMP", operandA, operandB);
         break;
 
       case HLT: // halt the CPU and exit the emulator
         this.stopClock();
-        break;
-
-      case JMP: // jump to the address stored in the given register ~ 01010000 00000rrr
-        this.PC = this.reg[operandA]; // set the PC to the address stored in the given register
-        incrementPC = false;
         break;
 
       case JEQ: // if an equal flag is set, jump to the address stored in the given register ~ 01010001 00000rrr
@@ -149,6 +157,11 @@ class CPU {
         }
         break;
 
+      case JMP: // jump to the address stored in the given register ~ 01010000 00000rrr
+        this.PC = this.reg[operandA]; // set the PC to the address stored in the given register
+        incrementPC = false;
+        break;
+
       case JNE: // if the equal flag is not set, jump to the address stored in the given register ~ 01010010 00000rrr
         if (!this.getFlag(FLAG_EQUAL)) {
           this.PC = this.reg[operandA];
@@ -156,8 +169,28 @@ class CPU {
         }
         break;
 
-      case CMP: // compare the value in two registers ~ 10100000 00000aaa 00000bbb
-        this.ALU("CMP", operandA, operandB);
+      case LDI: // set the value of a register to an integer ~ 10011001 00000rrr iiiiiiii
+        this.reg[operandA] = operandB;
+        break;
+
+      case POP: // pop the value from the top of the stack into the given register ~ 01001100 00000rrr
+        this.reg[operandA] = this.ram.read(this.reg[SP]);
+        this.reg[SP]++;
+        break;
+      
+      case PRN: // print the numeric value stored in the given register ~ 01000011 00000rrr
+        console.log(this.reg[operandA]);
+        break;
+
+      case PUSH: // push the given register onto the stack ~ 01001101 00000rrr
+        this.reg[SP]--;
+        this.ram.writeToRAM(this.reg[SP], this.reg[operandA]);
+        break;
+
+      case RET: // return from the subroutine
+        this.PC = this.ram.read(this.reg[SP]);
+        this.reg[SP]++;
+        incrementPC = false;
         break;
 
       default:
