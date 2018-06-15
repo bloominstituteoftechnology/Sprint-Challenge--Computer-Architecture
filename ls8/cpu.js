@@ -8,6 +8,7 @@ const ADD = 0b10101000;
 const CALL = 0b01001000;
 const CMP = 0b10100000;
 const HLT = 0b00000001;
+const JMP = 0b01010000;
 const LDI = 0b10011001;
 const MUL = 0b10101010;
 const POP = 0b01001100;
