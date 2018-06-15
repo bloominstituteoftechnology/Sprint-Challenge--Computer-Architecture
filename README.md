@@ -28,12 +28,22 @@ Short answer:
 
 *   Explain how the CPU provides concurrency or parallelism:
 
+    Concurrency allows CPUs to greatly improve its overall speed of execution of computer programs. CPUs provide concurrency by delegating certain operations to its different components. For example, peripherals read and write data to memory using the DAM. This prevents the CPU from being slowed down by having to process potentially large data files.
+
 *   Describe assembly language and machine language:
+
+    Assembly language is a low-level programming language that translates a higher level language's program into machine code instructions.
+
+    Machine language is a programming language that utilizes instructions, hexadecimal or binary, that is executed by a computer's CPU. Each instructions encodes a specific task and every program the CPU executes is made up of multiple instructions.
 
 *   Why is 3D performance so much higher with a graphics card than
     without?
 
+    Graphics cards are a type of processor that are specialized to handle 2D and 3D graphics. Modern cards are very specialized to the point that they can carry out graphical calculations much more efficiently than a CPU.
+
 *   Suggest the role that graphics cards play in machine learning:
+
+    Computer scientists use GPUs to train neural networks at a larger scale and even faster than multi-core CPUs. GPU libraries allowed computer scientists and developers to employ GPUs' parallel processing to implement algorithms traditionally executed by CPUs.
 
 ## Coding
 
