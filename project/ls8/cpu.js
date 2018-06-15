@@ -15,6 +15,10 @@ const RET = 0b00001001;
 const ADD = 0b10101000;
 const SUB = 0b10101001;
 const DIV = 0b10101011;
+const CMP = 0b10100000;
+const JMP = 0b01010000;
+const JNE = 0b01010010;
+const JEQ = 0b01010001;
 
 const SP = 7;
 
@@ -33,6 +37,8 @@ class CPU {
         
         // Special-purpose registers
         this.PC = 0; // Program Counter
+        
+        this.FL = 0b00000000; //Should be for flags
         
         this.reg[SP] = 0xF4; // Initialized stack pointer
     }
@@ -190,6 +196,29 @@ class CPU {
 
             case SUB: 
                 this.alu("SUB", operandA, operandB); 
+                break;
+            
+            case CMP: 
+                if (this.reg[operandA] === this.reg[operandB]) {
+                    if (!(1 & this.FL)) this.FL |= 1;
+                } else {
+                    if (1 & this.FL) this.FL ^= 1;
+                }
+                pcAdvance = false;
+                break;
+
+            case JMP: 
+                this.PC = this.reg[operandA];
+                break;
+
+            case JNE: 
+                if (!(1 & this.FL)) this.PC = this.reg[operandA];
+                else pcAdvance = false;
+                break;
+
+            case JEQ: 
+                if (1 & this.FL) this.PC = this.reg[operandA];
+                else pcAdvance = false;
                 break;
 
             default:
