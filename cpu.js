@@ -157,6 +157,20 @@ class CPU {
         }
         break;
 
+      case JGT: // if the Greater Than flag is set, jump to the address stored in the given register ~ 01010100 00000rrr
+        if (this.getFlag(FLAG_GREAT)) {
+          this.PC = this.reg[operandA];
+          incrementPC = false;
+        }
+        break;
+
+      case JLT: // if the Less Than flag is set, jump to the address stored in the given register ~ 01010011 00000rrr
+        if (this.getFlag(FLAG_LESS)) {
+          this.PC = this.reg[operandA];
+          incrementPC = false;
+        }
+        break;
+
       case JMP: // jump to the address stored in the given register ~ 01010000 00000rrr
         this.PC = this.reg[operandA]; // set the PC to the address stored in the given register
         incrementPC = false;
@@ -169,8 +183,16 @@ class CPU {
         }
         break;
 
+      case LD: // loads regA with the value at the address stored in regB
+        console.log(`case LD - ${IR} - has not yet been defined.`);
+        this.stopClock();
+        break;
+
       case LDI: // set the value of a register to an integer ~ 10011001 00000rrr iiiiiiii
         this.reg[operandA] = operandB;
+        break;
+
+      case NOP: // no operation - do nothing for this instruction ~ 00000000
         break;
 
       case POP: // pop the value from the top of the stack into the given register ~ 01001100 00000rrr
@@ -191,6 +213,10 @@ class CPU {
         this.PC = this.ram.read(this.reg[SP]);
         this.reg[SP]++;
         incrementPC = false;
+        break;
+
+      case ST: // store the value in regB in the address stored in regA ~ 10011010 00000aaa 00000bbb
+        this.ram.write(this.reg[operandA], this.reg[operandB]);
         break;
 
       default:
