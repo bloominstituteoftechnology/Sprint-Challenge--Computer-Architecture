@@ -8,10 +8,10 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex: 0xA7DD17
+    to hex: CF
 
 
-    to decimal: 20
+    to decimal: 207
 
 
 * Convert `4C` hex
