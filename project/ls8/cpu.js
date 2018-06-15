@@ -236,13 +236,16 @@ class CPU {
             //---------------sprint--------------------------
             case JMP:
                 // Set the `PC` to the address stored in the given register.
-                this.PC = this.ram.read(this.reg[regA]) // (this.PC + 1) will it work? ******
+                this.PC = this.reg[regA] // (this.PC + 1) will it work? ******
                 break;
 
             case JNE:
                 // If `E` flag is clear (FL !== 0b00000001), jump to the address stored in the given register.
                 if (this.FL !== 0b00000001) {
-                    return (this.PC = this.reg[regA]);
+                    this.PC = this.reg[regA];
+                } 
+                else {
+                    this.PC += 2; 
                 }
                 break;
 
@@ -250,19 +253,22 @@ class CPU {
             case JEQ:
                 // If `equal` flag is set (true), jump to the address stored in the given register.
                 if (this.FL === 0b00000001) {
-                    return (this.PC = this.reg[regA]);
+                    this.PC = this.reg[regA];
+                } 
+                else {
+                    this.PC += 2; 
                 }
                 break;
 
             case CMP:
-                // `L` Less-than: during a `CMP`, set to 1 if registerA is less than registerB, zero otherwise. `00000LGE` --> `00000100`
+                // `L` Less-than: during a `CMP`, set to 1 if registerA is less than registerB, zero otherwise. `00000LGE` --> `0000100`
                 if (this.reg[regA] < this.reg[regB]) {
                     this.FL = 0b00000100;
                     // `G` Greater-than: during a `CMP`, set to 1 if registerA is greater than registerB, zero otherwise. `00000LGE` --> `00000010` 
                 } else if (this.reg[regA] > this.reg[regB]) {
                     this.FL = 0b00000010;
                     // If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. `00000LGE` --> `00000001` 
-                } else if (this.reg[regA] === this.reg[regB]) {
+                }else if (this.reg[regA] === this.reg[regB]) {
                     this.FL = 0b00000001;
                 }
                 break;
@@ -334,7 +340,7 @@ class CPU {
         const IR = this.ram.read(this.PC);
 
         // Debugging output
-        // console.log(`${this.PC}: ${IR.toString(2)}`);
+        console.log(`${this.PC}: ${IR.toString(2)}`);
 
         // Get the two bytes in memory _after_ the PC in case the instruction
         // needs them.
@@ -359,7 +365,7 @@ class CPU {
         // for any particular instruction.
         // !!! IMPLEMENT ME
 
-        if (![CALL, RET, JMP].includes(IR)) {
+        if (![CALL, RET, JMP , JNE, JEQ].includes(IR)) {
             const instLen = (IR >> 6) + 1;
             this.PC += instLen;
         }
