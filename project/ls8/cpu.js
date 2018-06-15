@@ -186,6 +186,9 @@ class CPU {
         // Execute the instruction. Perform the actions for the instruction as
         // outlined in the LS-8 spec.
 
+        // Store the current PC to see if it is altered by the instruction
+        const PC = this.PC
+
         const instruction = instructions[IR]
         // console.log(instruction)
         this[instruction](b1, b2)
@@ -196,7 +199,7 @@ class CPU {
         // for any particular instruction.
         
         // Implement the PC unless the instruction was CALL or JMP
-        if (!['CALL', 'JMP', 'RET', 'JEQ', 'JNE'].includes(instruction)) {
+        if (this.PC == PC) {
             // Increment PC by 1 + the value of the two leftmost bits of the instruction
             this.PC += (IR >> 6) + 1
         }
