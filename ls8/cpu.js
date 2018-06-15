@@ -6,7 +6,8 @@
  * Class for simulating a simple Computer (CPU & memory)
  */
 
- const SP = 7; // Stack Pointer
+const SP = 7; // Default Stack Pointer
+
 class CPU {
 
     /**
@@ -21,6 +22,8 @@ class CPU {
         
         // Special-purpose registers
         this.PC = 0; // Program Counter
+
+        this.FL = 0b00000000;
     }
     
     /**
@@ -122,6 +125,43 @@ class CPU {
                 this.reg[operandA] = this.ram.read(this.reg[SP]);
                 this.reg[SP]++;
                 this.PC += 2;
+                break;
+
+            // CMP
+            case 0b10100000:
+                if (this.reg[operandA] === this.reg[operandB]) this.FL = 0b00000001;
+                else if (this.reg[operandA] > this.reg[operandB]) this.FL = 0b00000010;
+                else if (this.reg[operandA] < this.reg[operandB]) this.FL = 0b00000100;
+                // console.log('CMP FLAG:', this.FL.toString(2));
+                this.PC += 3;
+                break;
+
+            // JEQ
+            case 0b01010001:
+                // console.log('== JEQ == ');
+                if (this.FL === 0b00000001) {
+                    // console.log('jump');
+                    this.PC = this.reg[operandA];
+                } else {
+                    this.PC += 2;
+                }
+                break;
+
+            // JNE
+            case 0b01010010:
+                // console.log('== JNE == ');
+                if (this.FL !== 0b00000001) {
+                    // console.log('jump');
+                    this.PC = this.reg[operandA];
+                } else {
+                    this.PC += 2;
+                }
+                break;
+
+            // JMP
+            case 0b1010000:
+                // console.log('== JMP == ');
+                this.PC = this.reg[operandA];
                 break;
 
             default:
