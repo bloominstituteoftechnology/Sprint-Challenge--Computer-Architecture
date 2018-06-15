@@ -236,7 +236,7 @@ class CPU {
         break;
 
       case MUL:
-        this.ALU(operandA, operandB);
+        this.ALU("MUL", operandA, operandB);
         break;
 
       case NOP: // no operation - do nothing for this instruction ~ 00000000
