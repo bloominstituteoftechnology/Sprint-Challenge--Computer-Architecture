@@ -6,9 +6,13 @@
     const HLT = 0b00000001;
     const MUL = 0b10101010;
     const CMP = 0b10100000;
+    const POP = 0b01001100;
+    const PUSH = 0b01001101;
     let E = null;
     let L = null;
     let G = null;
+
+    const SP = 7;
     //double check this
 /**
  * Class for simulating a simple Computer (CPU & memory)
@@ -24,6 +28,8 @@ class CPU {
         //below, new Array(8) because there are 8 registers
         this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
         
+        this.reg[SP] = 0xF4; //init stack pointer
+
         // Special-purpose registers
         this.PC = 0; // Program Counter
     }
@@ -146,7 +152,15 @@ class CPU {
                 break;
             //case MUL:
             //    this.alu(MUL)
-
+            case POP:
+                this.reg[operandA] = this.ram.read(this.reg[SP]);
+                this.reg[SP]++;
+                break;
+            case PUSH:
+                this.reg[SP]--;
+                this.ram.write(this.reg[SP], this.reg[operandA]);
+                break;
+                //takes value in given address (operandA) and stores in SP
             default:
                 console.log("Unknown instruction: " + IR.toString(2));
                 this.stopClock();
