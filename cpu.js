@@ -19,7 +19,7 @@ const JNE = 0b01010010;
 
 const SP = 0x07; // Stack Pointer
 
-// Flags
+// Flag value for FL register
 const FLAG_EQ = 0;
 const FLAG_GT = 1;
 const FLAG_LT = 2;
@@ -39,7 +39,7 @@ class CPU {
     // Special-purpose registers
     this.PC = 0; // Program Counter
     this.reg[SP] = 0xf4; // SP default value set to 0xf4 or 244
-    this.FL = 0; // Flags
+    this.FL_EQ = 0; // Flags
   }
   /**
    * Store value in memory address, useful for program loading
@@ -119,8 +119,8 @@ class CPU {
     const IR = this.ram.read(this.PC);
 
     // Debugging output
-    console.log(this.reg);
-    // console.log(`${this.PC}: ${IR.toString(2)}`);
+    // console.log(this.reg);
+    console.log(`${this.PC}: ${IR.toString(2)}`);
 
     // Get the two bytes in memory _after_ the PC in case the instruction
     // needs them.
@@ -188,31 +188,51 @@ class CPU {
         break;
 
       case CMP:
-        if (operandA === operandB) {
-          FLAG_EQ = 1;
-          FLAG_GT = 0;
-          FLAG_LT = 0;
+        if (this.reg[operandA] == this.reg[operandB]) {
+          console.log("this.FL:", this.FL_EQ);
+          console.log("EQ Flag");
+          this.FL_EQ = 1;
+          // FLAG_GT = 0;
+          // FLAG_LT = 0;
         }
-        if (operandA > operandB) {
-          FLAG_EQ = 0;
-          FLAG_GT = 1;
-          FLAG_LT = 0;
+        if (this.reg[operandA] > this.reg[operandB]) {
+          console.log("this.FL:", this.FL_EQ);
+          // console.log("GT Flag");
+          this.FL_EQ = 0;
+          // FLAG_GT = 1;
+          // FLAG_LT = 0;
         }
-        if (operandA < operandB) {
-          FLAG_EQ = 0;
-          FLAG_GT = 0;
-          FLAG_LT = 1;
+        if (this.reg[operandA] < this.reg[operandB]) {
+          console.log("this.FL:", this.FL_EQ);
+          // console.log("LT Flag");
+          this.FL_EQ = 0;
+          // FLAG_GT = 0;
+          // FLAG_LT = 1;
+        } else {
+          this.FL_EQ = 0;
+          // FLAG_GT = 0;
+          // FLAG_LT = 0;
         }
         break;
 
       case JMP:
-        this.PC = this.reg[operandA];
+        console.log("JMP JMP JMP JMP");
+        this.jmp(operandA);
+        console.log("current PC:", this.PC);
         break;
 
       case JEQ:
-        if (this.Equal) break;
+        if (this.FL_EQ == 1) {
+          console.log("JUMPED EQ");
+          this.jmp(operandA);
+        }
+        break;
 
       case JNE:
+        if (this.FL_EQ != 1) {
+          console.log("JUMPED NEQ");
+          this.jmp(operandA);
+        }
         break;
 
       default:
@@ -229,6 +249,10 @@ class CPU {
 
     const instLen = (IR >> 6) + 1;
     this.PC += instLen;
+  }
+
+  jmp(operandA) {
+    this.PC = this.reg[operandA] - 2; // temp fix
   }
 }
 
