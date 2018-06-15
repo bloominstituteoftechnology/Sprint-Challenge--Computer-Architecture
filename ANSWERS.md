@@ -1,6 +1,7 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
 1. Explain how the CPU provides concurrency:
+This can be done using threads or cores depending on how the CPU is design
 
 
 2. Describe assembly language and machine language:

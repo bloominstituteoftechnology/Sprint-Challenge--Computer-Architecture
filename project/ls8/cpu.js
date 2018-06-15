@@ -5,9 +5,6 @@
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
-
-
-
 const LDI = 0b10011001;
 const PRN = 0b01000011;
 const HLT = 0b00000001;
@@ -63,6 +60,70 @@ Machine code:
 */
 const ADD = 0b10101000;
 
+//---------------------------sprint--------------------------------------------
+//*****sprint
+
+/**
+`JMP register`
+Jump to the address stored in the given register.
+Set the `PC` to the address stored in the given register.
+Machine code:
+01010000 00000rrr
+ */
+const JMP = 0b01010000;
+
+
+/*
+`JEQ register`
+If `equal` flag is set (true), jump to the address stored in the given register.
+Machine code:
+01010001 00000rrr
+*/
+const JEQ = 0b01010001;
+
+
+
+/*
+`JNE register`
+If `E` flag is clear (false, 0), jump to the address stored in the given
+register.
+Machine code:
+01010010 00000rrr
+ */
+const JNE = 0b01010010;
+
+
+/*
+`CMP registerA registerB`
+Compare the value in two registers.
+* If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+* If registerA is less than registerB, set the Less-than `L` flag to 1,
+  otherwise set it to 0.
+* If registerA is greater than registerB, set the Greater-than `G` flag
+  to 1, otherwise set it to 0.
+Machine code:
+10100000 00000aaa 00000bbb
+
+## Flags
+
+The flags register `FL` holds the current flags status. These flags
+can change based on the operands given to the `CMP` opcode.
+
+The register is made up of 8 bits. If a particular bit is set, that flag is "true".
+
+`FL` bits: `00000LGE`
+
+* `L` Less-than: during a `CMP`, set to 1 if registerA is less than registerB,
+zero otherwise.
+* `G` Greater-than: during a `CMP`, set to 1 if registerA is greater than
+registerB, zero otherwise.
+* `E` Equal: during a `CMP`, set to 1 if registerA is equal to registerB, zero
+otherwise.
+*/
+const CMP = 0b10100000;
+
+//------------------------------------sprint----------------------------------
+
 
 // R7 is reserved as the stack pointer (SP)
 /*
@@ -102,6 +163,8 @@ class CPU {
         // Special-purpose registers
         this.PC = 0; // Program Counter
         this.reg[SP] = 0xf4; // initialize the SP (F4 --> 244)
+
+        this.FL = 0;//*****sprint
     }
     /**
      * Store value in memory address, useful for program loading
@@ -137,6 +200,29 @@ class CPU {
 
         // node ls8.js stack.ls8
         switch (op) {
+            //---------------sprint--------------------------
+            case JMP: 
+            this.PC = this.ram.read(this.reg[regA]) // (this.PC + 1) will it work? ******
+            break; 
+            
+            case JNE: 
+            break; 
+
+
+            case JEQ: 
+            break; 
+
+            case CMP: 
+                if (this.reg[regA] < this.reg[regB]) {
+                this.FL = 0b00000100;
+                } else if (this.reg[regA] > this.reg[regB]) {
+                this.FL = 0b00000010;
+                } else if (this.reg[regA] === this.reg[regB]) {
+                this.FL = 0b00000001;
+                }
+            break; 
+
+            //---------------sprint--------------------------
             case ADD:
                 this.reg[regA] = this.reg[regA] + this.reg[regB];
                 break;
@@ -224,7 +310,7 @@ class CPU {
         // for any particular instruction.
         // !!! IMPLEMENT ME
 
-        if (![CALL, RET].includes(IR)) {
+        if (![CALL, RET, JMP ].includes(IR)) {
             const instLen = (IR >> 6) + 1;
             this.PC += instLen;
         }
