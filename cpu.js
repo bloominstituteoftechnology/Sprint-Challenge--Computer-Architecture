@@ -1,7 +1,7 @@
-const HLT = 0b00000001,
-      PRN = 0b01000011,
+const HLT = 0b00000001, // 72
+      PRN = 0b01000011, // 67
       LDI = 0b10011001,
-      MUL = 0b10101010,
+      MUL = 0b10101010, // 170
       ADD = 0b10101000,
       AND = 0b10110011,
       CALL= 0b01001000,
@@ -29,13 +29,15 @@ const HLT = 0b00000001,
       SUB = 0b10101001,
       XOR = 0b10110010;
 
+// FLAG - 00000LGE
 const FLAG_EQUAL = 0;
 const FLAG_GREAT = 1;
 const FLAG_LESS  = 2;
+const FLAG_ALU   = 32;
 
-const SP = 7;
-const IS = 6;
-const IM = 5;
+const SP = 7; // Stack Pointer
+const IS = 6; // Interrupt Status
+const IM = 5; // Interrupt Mask
 
 class CPU {
   constructor(ram) {
@@ -64,51 +66,61 @@ class CPU {
   /* ARITHMETIC LOGIC UNIT - the part of the CPU that strictly handles basic arithmetic and comparisions */
   ALU(operation, regA, regB) {
     switch(operation) {
-      case "ADD": // add
+      case ADD: // add
         this.reg[regA] += this.reg[regB];
         break;
 
-      case "SUB": // subtract
+      case SUB: // subtract
         this.reg[regA] -= this.reg[regB];
         break;
 
-      case "MUL": // multiply
+      case MUL: // multiply
         this.reg[regA] *= this.reg[regB];
         break;
 
-      case "DIV": // divide
-        this.reg[regA] /= this.reg[regB];
+      case DIV: // divide
+        if (this.reg[regB] === 0) {
+          console.log("Invalid value. Divide case. Cannot divide by 0.");
+          this.stopClock();
+        } else {
+          this.reg[regA] /= this.reg[regB];
+        }
         break;
 
-      case "MOD": // modulo
-        this.reg[regA] %= this.reg[regB];
+      case MOD: // modulo
+        if (this.reg[operandB] === 0) {
+          console.log("Invalid value. Modulo case. Cannot divide by 0.");
+          this.stopClock();
+        } else {
+          this.reg[regA] %= this.reg[regB];
+        }
         break;
 
-      case "AND": // bitwise AND
+      case AND: // bitwise AND
         this.reg[regA] &= this.reg[regB];
         break;
 
-      case "OR": // bitwise OR
+      case OR: // bitwise OR
         this.reg[regA] |= this.reg[regB];
         break;
 
-      case "NOT": // bitwise NOT
+      case NOT: // bitwise NOT
         this.reg[regA] = ~this.reg[regA];
         break;
 
-      case "XOR": // bitwise XOR
+      case XOR: // bitwise XOR
         this.reg[regA] ^= this.reg[regB];
         break;
 
-      case "CMP": // compare
+      case CMP: // compare
         this.compare(regA, regB);
         break;
 
-      case "DEC": // decrement
+      case DEC: // decrement
         this.reg[regA]--;
         break;
 
-      case "INC": // increment
+      case INC: // increment
         this.reg[regA]++;
         break;
 
@@ -132,46 +144,19 @@ class CPU {
     const operandA = this.ram.read(this.PC + 1);
     const operandB = this.ram.read(this.PC + 2);
 
+    // If the ALU flag is set, send information to ALU method
+    if (IR & FLAG_ALU) this.ALU(IR, operandA, operandB);
+
     // Execute the instruction. Perform the necessary actions as outlined in the spec.
-    // for this sprint you need: LDI, CMP, JEQ, PRN, JNE, JMP
-    switch(IR) {
-      case ADD: 
-        this.ALU("ADD", operandA, operandB);
-        break;
-
-      case AND:
-        this.ALU("AND", operandA, operandB);
-        break;
-
+    else switch(IR) {
       case CALL: // calls a subroutine at the address stored in the register ~ 01001000 00000rrr
         this.push(this.PC + 2);
         this.PC = this.reg[operandA];
         incrementPC = false;
         break;
 
-      case CMP: // compare the value in two registers ~ 10100000 00000aaa 00000bbb
-        this.ALU("CMP", operandA, operandB);
-        break;
-
-      case DEC: // decrement the value by 1 in the given register
-        this.ALU("DEC", operandA);
-        break;
-
-      case DIV: // divide regA by regB and store the result in regA
-        if (this.reg[operandB] === 0) {
-          console.log("Invalid value. Divide case. Cannot divide by 0.");
-          this.stopClock();
-        } else {
-          this.ALU("DIV", operandA, operandB);
-        }
-        break;
-
       case HLT: // halt the CPU and exit the emulator
         this.stopClock();
-        break;
-
-      case INC: // increment the value of regA by 1
-        this.ALU("INC", operandA);
         break;
 
       case INT:
@@ -226,28 +211,7 @@ class CPU {
         this.reg[operandA] = operandB;
         break;
 
-      case MOD:
-        if (this.reg[operandB] === 0) {
-          console.log("Invalid value. Modulo case. Cannot divide by 0.");
-          this.stopClock();
-        } else {
-          this.ALU("MOD", operandA, operandB);
-        }
-        break;
-
-      case MUL: // multiply regA and regB and store the value in regA
-        this.ALU("MUL", operandA, operandB);
-        break;
-
       case NOP: // no operation - do nothing for this instruction ~ 00000000
-        break;
-
-      case NOT: // perform a bitwise-NOT on the value in the given register
-        this.ALU("NOT", operandA, operandB);
-        break;
-
-      case OR: // perform a bitwise-OR between regA and regB, store the result in regA
-        this.ALU("OR", operandA, operandB);
         break;
 
       case POP: // pop the value from the top of the stack into the given register ~ 01001100 00000rrr
@@ -273,14 +237,6 @@ class CPU {
 
       case ST: // store the value in regB in the address stored in regA ~ 10011010 00000aaa 00000bbb
         this.ram.write(this.reg[operandA], this.reg[operandB]);
-        break;
-
-      case SUB: // subtract the value in regB from regA and store it in regA
-        this.ALU("SUB", operandA, operandB);
-        break;
-
-      case XOR: // perform a bitwise-XOR between regA and regB and store the result in regA
-        this.ALU("XOR", operandA, operandB);
         break;
 
       default:

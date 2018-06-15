@@ -4,6 +4,8 @@ class RAM {
   }
 
   write(MAR, MDR) {
+    // MAR - Memory Address Register - holds the memory address for RAM
+    // MDR - Memory Data Register - holds the value to store in RAM
     this.memory[MAR] = MDR;
   }
 
