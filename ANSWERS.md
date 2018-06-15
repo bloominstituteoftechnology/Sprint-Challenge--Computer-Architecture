@@ -28,6 +28,9 @@ within the systems hardware.
 
 <!-- Stretch Questions --->
 3. Why is 3D performance so much higher with a graphics card than without?
-
+The CPU can essentially off-load the task of converting base binary data into
+and image displayed through the monitor. This takes up a huge chunk of
+processing power and can leave the CPU unhindered to continue with it's
+primary tasks.
 
 4. Suggest the role that graphics cards play in machine learning:
