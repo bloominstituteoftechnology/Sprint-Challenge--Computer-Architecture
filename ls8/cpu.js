@@ -28,6 +28,10 @@
  const IRET = 0b00001011;
  const CMP = 0b10100000;
 
+ // Sprint
+ const JEQ = 0b01010001;
+ const JNE = 0b01010010;
+
  // Step 8 progress
     //  const branchTable = [];
 
@@ -67,7 +71,7 @@ class CPU {
         this.SP = 7; // 7 = R7, SP = stack pointer
 
         // Register
-        this.FL = 0; // R0-R7, R5-R7 is reserved
+        this.FL = {E: false, G: false, L: false}; // R0-R7, R5-R7 is reserved
 
         this.reg[this.SP] = 0xF4; // 244 = F4
         this.reg[this.IM] = 0xF8; // 248 = F8
@@ -155,22 +159,31 @@ class CPU {
                 break;
             case ST:
                 this.reg[regA] = this.reg[regB]
-
                 this.PC += 3;
+                break;
+            case PRA:
+                console.log(String.fromCharCode(this.reg[regA])) // String.fromCharCode
+                this.PC += 2;
+                break;
+            case IRET:
                 break;
             case JMP: 
                 this.PC = this.reg[regA];
                 break;
-            case PRA: 
-
-                console.log(String.fromCharCode(this.reg[regA])) // String.fromCharCode
-                this.PC += 2;
-                break;
             case CMP: 
-
+                if (regA === regB) {
+                    this.FL.E = true;
+                }
+                else if (regA > regB) {
+                    this.FL.L = true;
+                } else {
+                    this.FL.G = true;
+                }  
+                this.PC += 3;
                 break;
-            case IRET:
-
+            case JEQ:
+                break;
+            case JNE:
                 break;
             default:
                 this.stopClock();
