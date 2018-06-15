@@ -7,6 +7,10 @@ const HLT = 0b00000001;
 const MUL = 0b10101010;
 const PUSH = 0b01001101;
 const POP = 0b01001100;
+const CMP = 0b10100000;
+const JMP = 0b01010000;
+const JEQ = 0b01010001;
+const JNE = 0b01010010;
 
 const SP = 7;
 //init stack pointer
@@ -28,6 +32,10 @@ class CPU {
         
         // Special-purpose registers
         this.PC = 0; // Program Counter
+
+        this.FL = 0;
+        this.F = 0;
+        this.flag = false;
     }
     
     /**
@@ -139,9 +147,38 @@ class CPU {
                 break;
 
             case POP:
-            this.reg[operandA] = this.ram.read(this.reg[SP]);
-            this.reg[SP]++;
+                this.reg[operandA] = this.ram.read(this.reg[SP]);
+                this.reg[SP]++; // increment
                 break;
+
+            case CMP:
+                if(this.reg[operandA] < this.reg[operandB]) this.FL = 0b100;
+                if(this.reg[operandA] > this.reg[operandB]) this.FL = 0b010;
+                if(this.reg[operandA] === this.reg[operandB]) this.FL = 0b001;
+                break;
+
+            case JMP:
+                this.flag = true;
+                this.PC = this.reg[operandA];
+                break;
+
+            case JEQ:
+                if (this.FL === 1) {
+                    this.PC = this.reg[operandA];
+                    this.flag = true;
+                } //else {
+                //     this.PC += 2;
+                // }
+                break;
+
+            case JNE:
+                if (this.FL !== 1) {
+                    this.PC = this.reg[operandA];
+                    this.flag = true;
+                 }// else {
+                //     this.PC += 2;
+                // }
+                    break;
 
             default:
                 console.log('Unknown instruction: ' + IR.toString());
@@ -154,8 +191,12 @@ class CPU {
         // instruction byte tells you how many bytes follow the instruction byte
         // for any particular instruction.
         // !!! IMPLEMENT ME
-        const instLen = (IR >> 6) + 1;
-        this.PC += instLen;
+        if (!this.flag) {
+            let operandCount = (IR >>> 6) & 0b11;
+            let totalInstructionLen = operandCount + 1;
+            this.PC += totalInstructionLen;  
+          }
+          this.flag = false;
     }
 }
 
