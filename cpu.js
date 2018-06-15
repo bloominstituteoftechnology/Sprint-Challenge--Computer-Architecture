@@ -57,10 +57,62 @@ class CPU {
   }
 
   /* ARITHMETIC LOGIC UNIT - the part of the CPU that strictly handles basic arithmetic and comparisions */
-  ALU(operation, regA, regB) {}
+  ALU(operation, regA, regB) {
+    switch(operation) {
+      case "ADD": // add
+        this.reg[regA] += this.reg[regB];
+        break;
+
+      case "SUB": // subtract
+        this.reg[regA] -= this.reg[regB];
+        break;
+
+      case "MUL": // multiply
+        this.reg[regA] *= this.reg[regB];
+        break;
+
+      case "DIV": // divide
+        this.reg[regA] /= this.reg[regB];
+        break;
+
+      case "MOD": // modulo
+        this.reg[regA] %= this.reg[regB];
+        break;
+
+      case "AND":
+        this.reg[regA] &= this.reg[regB];
+        break;
+
+      case "OR":
+        this.reg[regA] |= this.reg[regB];
+        break;
+
+      case "NOT":
+        this.reg[regA] = ~this.reg[regA];
+        break;
+
+      case "XOR":
+        this.reg[regA] ^= this.reg[regB];
+        break;
+
+      case "CMP": // compare
+        this.compare(regA, regB);
+        break;
+
+      case "DEC": // decrement
+        this.reg[regA]--;
+        break;
+
+      case "INC": // increment
+        this.reg[regA]++;
+        break;
+    }
+  }
 
   /* Advances the CPU one cycle */
   tick() {
+    // If this.PC is not set, incrementPC remains true.
+    // Otherwise, incrementPC will be set to false, and the value of this.PC will be set manually.
     let incrementPC = true;
 
     // Instruction Register - contains a copy of the currently executing instruction
@@ -105,8 +157,11 @@ class CPU {
         break;
 
       case CMP: // compare the value in two registers ~ 10100000 00000aaa 00000bbb
-        this.compare(operandA, operandB);
+        this.ALU("CMP", operandA, operandB);
         break;
+
+      default:
+        this.stopClock();
     }
 
     incrementPC ? this.PC += (IR >> 6) + 1 : null;
