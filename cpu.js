@@ -1,3 +1,34 @@
+const HLT = 0b00000001,
+      PRN = 0b01000011,
+      LDI = 0b10011001,
+      MUL = 0b10101010,
+      ADD = 0b10101000,
+      AND = 0b10110011,
+      CALL= 0b01001000,
+      CMP = 0b10100000,
+      DEC = 0b01111001,
+      DIV = 0b10101011,
+      INC = 0b01111000,
+      INT = 0b01001010,
+      IRET= 0b00001011,
+      JEQ = 0b01010001,
+      JGT = 0b01010100,
+      JLT = 0b01010011,
+      JMP = 0b01010000,
+      JNE = 0b01010010,
+      LD  = 0b10011000,
+      MOD = 0b10101100,
+      NOP = 0b00000000,
+      NOT = 0b01110000,
+      OR  = 0b10110001,
+      POP = 0b01001100,
+      PRA = 0b01000010,
+      PUSH= 0b01001101,
+      RET = 0b00001001,
+      ST  = 0b10011010,
+      SUB = 0b10101001,
+      XOR = 0b10110010;
+
 class CPU {
   constructor(ram) {
     this.ram = ram;
@@ -24,7 +55,35 @@ class CPU {
   ALU(operation, regA, regB) {}
 
   /* Advances the CPU one cycle */
-  tick() {}
+  tick() {
+
+    // Instruction Register - contains a copy of the currently executing instruction
+    const IR = this.ram.read(this.PC);
+
+    // Retrieve the two bytes in memory after the PC (incase the instruction needs them)
+    const operandA = this.ram.read(this.PC + 1);
+    const operandB = this.ram.read(this.PC + 2);
+
+    // Execute the instruction. Perform the necessary actions as outlined in the spec.
+    // for this sprint you need: LDI, CMP, JEQ, PRN, JNE, JMP
+    switch(IR) {
+      case LDI: // set the value of a register to an integer ~ 10011001 00000rrr iiiiiiii
+        this.reg[operandA] = operandB;
+        break;
+      
+      case PRN: // print the numeric value stored in the given register ~ 01000011 00000rrr
+        console.log(this.reg[operandA]);
+        break;
+
+      case HLT: // halt the CPU and exit the emulator
+        this.stopClock();
+        break;
+
+      case JMP: // jump to the address stored in the given register ~ 01010000 00000rrr
+        this.PC = this.reg[operandA]; // set the PC to the address stored in the given register
+        break;
+    }
+  }
 }
 
 module.exports = CPU;
