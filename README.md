@@ -47,6 +47,8 @@ Options for submission, whichever is easier for you:
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
   you've been using all along.
 
+  PR LINK ==> https://github.com/LambdaSchool/Computer-Architecture-One/pull/165
+
 Sprint Challenge:
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture-One/blob/master/LS8-SPEC.md)
