@@ -49,6 +49,7 @@ class CPU {
     // Special-purpose registers
     this.PC = 0; // Program Counter
     this.SP = 244; // Stack Pointer
+    this.FL = '0b00000000'; // CMP Flags(LGE)
   }
   
   /**
@@ -135,6 +136,13 @@ class CPU {
         this.poke(--this.SP, this.PC + 2);
         this.PC = this.reg[operandA];
         this.pcAdvance = false;
+        break;
+      case 'CMP':
+        const a = this.reg[operandA];
+        const b = this.reg[operandB];
+        const cmp = [ a < b, a > b, a === b ]
+          .map(val => String(Number(val))).join('');
+        this.FL = '0b' + cmp.padStart(8, '0');
         break;
       case 'HLT':
         this.stopClock();
