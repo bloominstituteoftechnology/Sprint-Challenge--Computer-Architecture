@@ -157,6 +157,12 @@ class CPU {
         this.PC = this.reg[operandA];
         this.pcAdvance = false;
         break;
+      case 'JNE':
+        if (this.FL[9] === '0') {
+          this.PC = this.reg[operandA];
+          this.pcAdvance = false;
+        }
+        break;
       case 'LDI':
         this.reg[operandA] = operandB;
         break;
