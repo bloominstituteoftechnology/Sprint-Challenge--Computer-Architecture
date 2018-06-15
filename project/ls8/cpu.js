@@ -1,7 +1,3 @@
-/**
- * LS-8 v2.0 emulator skeleton code
- */
-
 // Constant variables associated with intruction bytes
 const instructions = {
   '0b10101000': 'ADD',
@@ -47,7 +43,8 @@ class CPU {
   constructor(ram) {
     this.ram = ram;
 
-    this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
+    // General-purpose registers R0-R7
+    this.reg = new Array(8).fill(0);
     
     // Special-purpose registers
     this.PC = 0; // Program Counter
@@ -108,7 +105,7 @@ class CPU {
     // index into memory of the instruction that's about to be executed
     // right now.)
 
-    // !!! IMPLEMENT ME
+    // Instruction Register
     const IR = this.ram.read(this.PC);
 
     // Debugging output
@@ -116,15 +113,12 @@ class CPU {
 
     // Get the two bytes in memory _after_ the PC in case the instruction
     // needs them.
-
-    // !!! IMPLEMENT ME
     const operandA = this.ram.read(this.PC + 1);
     const operandB = this.ram.read(this.PC + 2);
 
     // Execute the instruction. Perform the actions for the instruction as
     // outlined in the LS-8 spec.
 
-    // !!! IMPLEMENT ME
     const instBin = `0b${IR.toString(2).padStart(8, 0)}`;
     const argNum = Number(instBin) >> 6;
     // const isALU = (instBin && '0b00100000') >> 5;
@@ -176,8 +170,6 @@ class CPU {
     // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
     // instruction byte tells you how many bytes follow the instruction byte
     // for any particular instruction.
-    
-    // !!! IMPLEMENT ME
     if (this.pcAdvance) this.PC += argNum + 1;
   }
 }
