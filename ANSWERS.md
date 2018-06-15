@@ -9,7 +9,7 @@ Machine language is essentially either binary or hexadecimal code that the compu
 
 
 3. Why is 3D performance so much higher with a graphics card than without?
-A graphics card can handle vector math, which is critical in 3D performance.
+GPUs have massively parallel architecture, which can better handle computations like vector math/etc., that are critical in 3D performance.
 
 
 4. Suggest the role that graphics cards play in machine learning:
