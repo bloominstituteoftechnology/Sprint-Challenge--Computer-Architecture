@@ -11,6 +11,7 @@
     const PUSH = 0b01001101;
     const JMP = 0b01010000;
     const JEQ = 0b01010001;
+    const JNE = 0b01010010;
     let E = null;
     let L = null;
     let G = null;
@@ -175,6 +176,11 @@ class CPU {
                     jmp(operandA);
                 } else {
                     console.log(`JEQ did not occur, equals varialbe === false`);
+                }
+                break;
+            case JNE:
+                if (E === false || 0) {
+                    jmp(operandA);
                 }
             default:
                 console.log("Unknown instruction: " + IR.toString(2));
