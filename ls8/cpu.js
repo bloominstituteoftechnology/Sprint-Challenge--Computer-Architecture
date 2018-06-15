@@ -166,6 +166,15 @@ class CPU {
         // 01010000 00000rrr
         this.PC = this.reg[operandA]; // set PC to address in given register
         break;
+      
+      case JNE:
+        // If equal flag = 0, jump to address stored in given register
+        // JNE - Register Number
+        // 01010010 00000rrr
+        if ((this.reg[FL] = 0b00000000)) {
+          this.PC = this.reg[operandA];
+        }
+        break;
 
       case LDI:
         // set the value in a register (R0)
