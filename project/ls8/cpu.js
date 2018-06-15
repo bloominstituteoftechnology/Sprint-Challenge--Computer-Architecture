@@ -6,15 +6,16 @@ const LDI = 0b10011001;
 const PRN = 0b01000011;
 const HLT = 0b00000001;
 
-const MUL = 0b10101010;
 const ADD = 0b10101000;
+const MUL = 0b10101010;
 const SUB = 0b10101001;
 const DIV = 0b10101011;
+const AND = 0b10110011;
 const INC = 0b01111000;
 const DEC = 0b01111001;
+
 const LD = 0b10011000;
 const PRA = 0b01000010;
-const AND = 0b10110011;
 
 const POP = 0b01001100;
 const PUSH = 0b01001101;
@@ -115,6 +116,21 @@ class CPU {
         const operandB = this.ram.read(this.PC + 2);
 
         switch(IR) {
+            case LDI:
+                this.reg[operandA] = operandB;
+                // console.log(this.regs[operandA]);
+                break;
+
+            case PRN:
+                console.log(this.reg[operandA]);
+                // this.PC += 2;
+                break;
+
+            case HLT:
+                this.stopClock();
+                // this.PC += 1;
+                break;
+
             case ADD:
                 this.alu('ADD', operandA, operandB);
                 break;
@@ -143,16 +159,12 @@ class CPU {
                 this.alu('DEC', operandA);
                 break;
 
-            case PRA:
-                console.log(String.fromCharCode(this.reg[operandA]));
-                break;
-
             case LD:
                 this.reg[operandA] = this.reg[operandB];
                 break;
 
-            case JMP:
-                this.PC = this.reg[operandA];
+            case PRA:
+                console.log(String.fromCharCode(this.reg[operandA]));
                 break;
 
             case POP:
@@ -202,21 +214,6 @@ class CPU {
                 } else {
                   this.PC += 1 + (IR >> 6);
                 }
-                break;
-
-            case LDI:
-                this.reg[operandA] = operandB;
-                // console.log(this.regs[operandA]);
-                break;
-
-            case PRN:
-                console.log(this.reg[operandA]);
-                // this.PC += 2;
-                break;
-
-            case HLT:
-                this.stopClock();
-                // this.PC += 1;
                 break;
 
             default:
