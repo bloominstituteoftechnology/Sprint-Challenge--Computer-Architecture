@@ -6,35 +6,34 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex:  CF
 
-    to decimal:
+    to decimal:  207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary:  01001100
 
-    to decimal:
+    to decimal:  76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary:  01000100
 
-    to hex:
+    to hex:  44
 
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+* Explain how the CPU provides concurrency or parallelism:  concurrency is when 2 tasks are performed at the same time (not at the exact same instant --> multitasking on single-core machines) in the cpu of the ls8 we emulated, different registers would hold different information which we could use to track different operations (for example a call/ret with r7 being used to keep track of where we are on the instruction queue) so that we can multitask both following the instructions for the program while executing function calls at the same time.
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language:  the lowest level is machine language where the instructions are all just a sequence of bits. This is the language (binary) used to talk to and understood by the CPU. however for people, this repeated 0s and 1s are very error prone so we made an assembly language that allows to use a more familiar language that can be translated into bits so that we can perform tasks on a machine with fewer errors.
 
-* Why is 3D performance so much higher with a graphics card than
-  without?
+* Why is 3D performance so much higher with a graphics card than without?
 
 * Suggest the role that graphics cards play in machine learning:
 
@@ -43,9 +42,11 @@ Short answer:
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
-  you've been using all along.
+* Copy your source into this repo, or...  
+
+* https://github.com/LambdaSchool/Computer-Architecture-One/pull/183
+
+* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo you've been using all along.
 
 Sprint Challenge:
 
