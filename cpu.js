@@ -120,7 +120,7 @@ class CPU {
 
     // Debugging output
     // console.log(this.reg);
-    console.log(`${this.PC}: ${IR.toString(2)}`);
+    // console.log(`${this.PC}: ${IR.toString(2)}`);
 
     // Get the two bytes in memory _after_ the PC in case the instruction
     // needs them.
@@ -189,48 +189,41 @@ class CPU {
 
       case CMP:
         if (this.reg[operandA] == this.reg[operandB]) {
-          console.log("this.FL:", this.FL_EQ);
-          console.log("EQ Flag");
+          // console.log("EQ Flag");
           this.FL_EQ = 1;
           // FLAG_GT = 0;
           // FLAG_LT = 0;
         }
         if (this.reg[operandA] > this.reg[operandB]) {
-          console.log("this.FL:", this.FL_EQ);
           // console.log("GT Flag");
           this.FL_EQ = 0;
           // FLAG_GT = 1;
           // FLAG_LT = 0;
         }
         if (this.reg[operandA] < this.reg[operandB]) {
-          console.log("this.FL:", this.FL_EQ);
           // console.log("LT Flag");
           this.FL_EQ = 0;
           // FLAG_GT = 0;
           // FLAG_LT = 1;
-        } else {
-          this.FL_EQ = 0;
-          // FLAG_GT = 0;
-          // FLAG_LT = 0;
         }
         break;
 
       case JMP:
-        console.log("JMP JMP JMP JMP");
+          // console.log("JMP JMP");
         this.jmp(operandA);
-        console.log("current PC:", this.PC);
         break;
 
       case JEQ:
+
         if (this.FL_EQ == 1) {
-          console.log("JUMPED EQ");
+          // console.log("JUMPED JEQ");
           this.jmp(operandA);
         }
         break;
 
       case JNE:
         if (this.FL_EQ != 1) {
-          console.log("JUMPED NEQ");
+          // console.log("JUMPED NEQ");
           this.jmp(operandA);
         }
         break;
