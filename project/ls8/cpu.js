@@ -10,6 +10,7 @@
     const POP = 0b01001100;
     const PUSH = 0b01001101;
     const JMP = 0b01010000;
+    const JEQ = 0b01010001;
     let E = null;
     let L = null;
     let G = null;
@@ -101,6 +102,10 @@ class CPU {
         };
     }
 
+    jmp(regA) {
+        this.PC = this.reg[regA];
+    }
+
     /**
      * Advances the CPU one cycle
      */
@@ -163,6 +168,14 @@ class CPU {
                 this.ram.write(this.reg[SP], this.reg[operandA]);
                 break;
                 //takes value in given address (operandA) and stores in SP
+            case JMP:
+                jmp(operandA);
+            case JEQ:
+                if (E === 1) {
+                    jmp(operandA);
+                } else {
+                    console.log(`JEQ did not occur, equals varialbe === false`);
+                }
             default:
                 console.log("Unknown instruction: " + IR.toString(2));
                 this.stopClock();
