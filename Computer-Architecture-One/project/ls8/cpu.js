@@ -110,15 +110,15 @@ class CPU {
                 break;
             case 'CMP':
                 console.log("CMP A: ", regA, " B: ", regB);
-                if(regA === regB) {
+                if(this.reg[regA] === this.reg[regB]) {
                     this.FL.E = 1;
                     this.FL.L = 0;
                     this.FL.G = 0;
-                } else if (regA < regB) {
+                } else if (this.reg[regA] < this.reg[regB]) {
                     this.FL.E = 0;
                     this.FL.L = 1;
                     this.FL.G = 0;
-                } else if (regA > regB) {
+                } else if (this.reg[regA] > this.reg[regB]) {
                     this.FL.E = 0;
                     this.FL.L = 0;
                     this.FL.G = 1;
@@ -228,7 +228,7 @@ class CPU {
             case JEQ:
                 console.log("JEQ");
                 console.log(this.FL);
-                if(this.FL.E === 1) {
+                if(this.FL.E === 0b00000001) {
                     console.log("JEQ JUMP");
                     this.PC = this.reg[operandA];
                     this.pcAdvance = false;
@@ -238,7 +238,7 @@ class CPU {
             case JNE:
                 console.log("JNE");
                 console.log(this.FL);
-                if(this.FL.E === 0) {
+                if(this.FL.E === 0b00000000) {
                     console.log("JNE JUMP");
                     this.PC = this.reg[operandA];
                     this.pcAdvance = false;
