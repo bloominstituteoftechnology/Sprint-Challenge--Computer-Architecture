@@ -151,6 +151,15 @@ class CPU {
         // this.PC += 1;
         break;
 
+      case JEQ:
+        // If equal flag = 1, jump to address stored in given register
+        // JEQ - Register Number
+        // 01010001 00000rrr
+        if ((this.reg[FL] = 0b00000100)) {
+          this.PC = this.reg[operandA];
+        }
+        break;
+
       case JMP:
         // Jump to address stored in given register
         // JMP - Register Number
