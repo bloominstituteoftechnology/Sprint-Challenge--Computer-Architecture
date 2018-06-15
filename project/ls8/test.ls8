@@ -1,0 +1,12 @@
+# MULT2PRINT (24):
+
+10011001 # LDI R0,10         Load R0 with 10
+00000000
+00001010
+10101000 # ADD R0,R0         Mult R0 by 2 (add it to itself)
+00000000
+00000000
+01000011 # PRN R0            Print R0
+00000000
+00001001 # RET
+00000001 # HLT
