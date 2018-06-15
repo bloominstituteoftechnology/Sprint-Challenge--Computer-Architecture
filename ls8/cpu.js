@@ -142,6 +142,8 @@ class CPU {
     if (this.FL === "equal") {
       this.handle_JMP(operandA);
       this.FL = null;
+      const instLen = (81 >> 6) + 1;
+      this.PC -= instLen;
     }
   }
 
@@ -149,13 +151,14 @@ class CPU {
     console.log("JNE");
     if (!this.FL) {
       this.handle_JMP(operandA);
+      const instLen = (82 >> 6) + 1;
+      this.PC -= instLen;
     }
   }
 
   handle_JMP(operandA) {
     console.log("JMP");
-    console.log("operandA", operandA);
-    // this.PC = operandA;
+    this.PC = this.reg[operandA];
   }
 
   handle_RET() {
@@ -207,8 +210,10 @@ class CPU {
     // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
     // instruction byte tells you how many bytes follow the instruction byte
     // for any particular instruction.
-    const instLen = (IR >> 6) + 1;
-    this.PC += instLen;
+    if (IR !== 80) {
+      const instLen = (IR >> 6) + 1;
+      this.PC += instLen;
+    }
   }
 
   subRoutine(call) {
