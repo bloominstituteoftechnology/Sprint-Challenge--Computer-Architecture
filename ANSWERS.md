@@ -26,7 +26,7 @@ on the other hand is comprised of machine readable code, primarily
 binary digits. This translates to positive and negative charges
 within the systems hardware.
 
-
+<!-- Stretch Questions --->
 3. Why is 3D performance so much higher with a graphics card than without?
 
 
