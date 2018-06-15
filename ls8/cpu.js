@@ -31,10 +31,11 @@ class CPU {
 
     this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
     this.reg[SP] = 0xf4;
-    this.reg[FL] = 0;
+    // this.reg[FL] = 0;
 
     // Special-purpose registers
     this.PC = 0; // Program Counter
+    this.FL = 0b00000000;
   }
 
   /**
@@ -96,7 +97,7 @@ class CPU {
     let IR = this.ram.read(this.PC);
 
     // Debugging output
-    // console.log(`${this.PC}: ${IR.toString(2)}`);
+    console.log(`${this.PC}: ${IR.toString(2)}`);
 
     // Get the two bytes in memory _after_ the PC in case the instruction
     // needs them.
@@ -133,13 +134,13 @@ class CPU {
         // CMP - R0 - R1
         // 10100000 00000aaa 00000bbb
         if (this.reg[operandA] === this.reg[operandB]) {
-          this.reg.FL = 0b00000100;
+          this.FL = 0b00000100;
         }
         if (this.reg[operandA] < this.reg[operandB]) {
-          this.reg.FL = 0b00000010;
+          this.FL = 0b00000010;
         }
         if (this.reg[operandA] > this.reg[operandB]) {
-          this.reg.FL = 0b00000001;
+          this.FL = 0b00000001;
         }
         break;
 
@@ -155,7 +156,7 @@ class CPU {
         // If equal flag = 1, jump to address stored in given register
         // JEQ - Register Number
         // 01010001 00000rrr
-        if ((this.reg[FL] = 0b00000100)) {
+        if ((this.FL = 0b00000100)) {
           this.PC = this.reg[operandA];
         }
         break;
@@ -171,7 +172,7 @@ class CPU {
         // If equal flag = 0, jump to address stored in given register
         // JNE - Register Number
         // 01010010 00000rrr
-        if ((this.reg[FL] = 0b00000000)) {
+        if ((this.FL = 0b00000000)) {
           this.PC = this.reg[operandA];
         }
         break;
