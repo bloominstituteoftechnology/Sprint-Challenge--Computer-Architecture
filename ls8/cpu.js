@@ -171,19 +171,29 @@ class CPU {
                 this.PC = this.reg[regA];
                 break;
             case CMP: 
-                if (regA === regB) {
-                    this.FL.E = true;
+                if (this.reg[regA] === this.reg[regB]) {
+                    this.FL["E"] = true;
                 }
-                else if (regA > regB) {
-                    this.FL.L = true;
+                else if (this.reg[regA] > this.reg[regB]) {
+                    this.FL["L"] = true;
                 } else {
-                    this.FL.G = true;
+                    this.FL["G"] = true;
                 }  
                 this.PC += 3;
                 break;
             case JEQ:
+                if (this.FL["E"] === true) {
+                    this.PC = this.reg[regA];
+                } else {
+                    this.PC += 2;
+                }
                 break;
             case JNE:
+                if (this.FL["E"] === false ) {
+                    this.PC = this.reg[regA];
+                } else {
+                    this.PC +=2;
+                }
                 break;
             default:
                 this.stopClock();
