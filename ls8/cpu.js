@@ -97,7 +97,7 @@ class CPU {
     let IR = this.ram.read(this.PC);
 
     // Debugging output
-    console.log(`${this.PC}: ${IR.toString(2)}`);
+    //console.log(`${this.PC}: ${IR.toString(2)}`);
 
     // Get the two bytes in memory _after_ the PC in case the instruction
     // needs them.
@@ -141,7 +141,8 @@ class CPU {
         if (this.reg[operandA] > this.reg[operandB]) {
           this.FL = 0b00000010;
         }
-        console.log(this.FL);
+        //console.log(this.FL);
+        //console.log(this.PC);
         break;
 
       case HLT:
@@ -156,9 +157,10 @@ class CPU {
         // If equal flag = 1, jump to address stored in given register
         // JEQ - Register Number
         // 01010001 00000rrr
-        if ((this.FL = 0b00000100)) {
+        if ((this.FL = 0b00000001)) {
           this.PC = this.reg[operandA];
-        }
+        } 
+        //console.log(this.PC);
         break;
 
       case JMP:
@@ -183,6 +185,7 @@ class CPU {
         // 10011001 00000rrr iiiiiiii
         this.reg[operandA] = operandB; // register array[register number] = value
         // this.PC += 3; // next instruction
+        // console.log(this.PC);
         break;
 
       case MUL:
@@ -236,7 +239,7 @@ class CPU {
     // for any particular instruction.
 
     // !!! IMPLEMENT ME
-    if (IR !== CALL) {
+    if (IR !== CALL && IR !== JEQ) {
       const instLen = (IR >> 6) + 1; // operands + opcode
       this.PC += instLen;
     }
