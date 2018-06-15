@@ -22,6 +22,8 @@ Complete the following problems:
 
     to hex: 0044
 
+LINK TO COMPUTER-ARCHITECTURE-ONE PR: https://github.com/LambdaSchool/Computer-Architecture-One/pull/173
+
 ## Architecture
 
 Short answer:
