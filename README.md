@@ -4,48 +4,56 @@
 
 Complete the following problems:
 
-* Convert `11001111` binary
+*   Convert `11001111` binary
 
-    to hex:
+    to hex: 00CF
 
-    to decimal:
+    to decimal: 207
 
+-   Convert `4C` hex
 
-* Convert `4C` hex
+    to binary: 1001100
 
-    to binary:
+    to decimal: 76
 
-    to decimal:
+*   Convert `68` decimal
 
+    to binary: 1000100
 
-* Convert `68` decimal
+    to hex: 0044
 
-    to binary:
-
-    to hex:
-
+LINK TO COMPUTER-ARCHITECTURE-ONE PR: https://github.com/LambdaSchool/Computer-Architecture-One/pull/173
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+*   Explain how the CPU provides concurrency or parallelism:
 
-* Describe assembly language and machine language:
+    Concurrency allows CPUs to greatly improve its overall speed of execution of computer programs. CPUs provide concurrency by delegating certain operations to its different components. For example, peripherals read and write data to memory using the DAM. This prevents the CPU from being slowed down by having to process potentially large data files.
 
-* Why is 3D performance so much higher with a graphics card than
-  without?
+*   Describe assembly language and machine language:
 
-* Suggest the role that graphics cards play in machine learning:
+    Assembly language is a low-level programming language that translates a higher level language's program into machine code instructions.
 
+    Machine language is a programming language that utilizes instructions, hexadecimal or binary, that is executed by a computer's CPU. Each instructions encodes a specific task and every program the CPU executes is made up of multiple instructions.
+
+*   Why is 3D performance so much higher with a graphics card than
+    without?
+
+    Graphics cards are a type of processor that are specialized to handle 2D and 3D graphics. Modern cards are very specialized to the point that they can carry out graphical calculations much more efficiently than a CPU.
+
+*   Suggest the role that graphics cards play in machine learning:
+
+    Computer scientists use GPUs to train neural networks at a larger scale and even faster than multi-core CPUs. GPU libraries allowed computer scientists and developers to employ GPUs' parallel processing to implement algorithms traditionally executed by CPUs.
 
 ## Coding
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
-  you've been using all along.
+*   Copy your source into this repo, or...
+*   Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
+    you've been using all along.
 
 Sprint Challenge:
 
@@ -56,7 +64,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions. It should
 print 1, then 4, then 5.
@@ -154,4 +161,3 @@ print 1, then 4, then 5.
 # TEST5 (73):
 00000001 # HLT
 ```
-
