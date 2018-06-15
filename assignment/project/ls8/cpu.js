@@ -11,7 +11,9 @@ const Op = {
     POP: 0b01001100,
     CALL: 0b01001000,
     RET: 0b00001001,
-    ADD: 0b10101000
+    ADD: 0b10101000,
+    CMP: 0b10100000,
+    JMP: 0b01010000
 }
 
 const SP = 7;
@@ -31,6 +33,7 @@ class CPU {
         
         // Special-purpose registers
         this.PC = 0; // Program Counter
+        this.FL = 0b00000000; // Flags
 
         this.reg[SP] = 244;
     }
@@ -139,6 +142,15 @@ class CPU {
             case Op.RET:
                 this.PC = this.ram.read(this.reg[SP]);
                 this.reg[SP]++;
+                break;
+
+            case Op.CMP:
+                if (this.reg[IR2] === this.reg[IR3]) {
+                    if (!(1 & this.FL)) this.FL |= 1;
+                } else {
+                    if (1 & this.FL) this.FL ^= 1;
+                }
+                this.PC += 3;
                 break;
 
             default:
