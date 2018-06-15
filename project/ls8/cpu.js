@@ -147,6 +147,10 @@ class CPU {
       case 'HLT':
         this.stopClock();
         break;
+      case 'JMP':
+        this.PC = this.reg[operandA];
+        this.pcAdvance = false;
+        break;
       case 'LDI':
         this.reg[operandA] = operandB;
         break;
