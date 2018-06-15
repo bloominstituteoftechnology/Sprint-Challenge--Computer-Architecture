@@ -6,37 +6,36 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: 0xCF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 0b1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 0b1000100
 
-    to hex:
+    to hex: 0x44
 
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+* Explain how the CPU provides concurrency or parallelism: A cpu has multiple cores and therefore can complete multiple tasks in the same timeframe. There is also hyperthreading allows for multiple pseudocores on a single core.
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language: Assembly language is a more readable version of Machine Language that can use mnemonics instead of pure numbers. They both perform very low level operations.
 
-* Why is 3D performance so much higher with a graphics card than
-  without?
+* Why is 3D performance so much higher with a graphics card than without? Basically a GPU has more computing power but at a cost. Where a cpu typically has 4 -8 cores a gpu can have many more(read 500x more) processing units of equal capability(cuda cores). The gpu needs commands from the cpu and cannot act of its own volition but it greatly increases the amount of information that the computer can process. 
 
-* Suggest the role that graphics cards play in machine learning:
+* Suggest the role that graphics cards play in machine learning: Graphics cards are a faster way to process all the data that is in machine learning. They calculate at a level far superior to a CPU but still need its directives. So the heavy data load is placed on the gpu for time and energy constraints as it is more efficient.
 
 
 ## Coding
