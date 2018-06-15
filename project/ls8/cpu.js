@@ -97,6 +97,14 @@ class CPU {
     }
   }
 
+  // Tick helper method
+  jumpIf(condition, operand) {
+    if (condition) {
+      this.PC = this.reg[operand];
+      this.pcAdvance = false;
+    }
+  }
+
   /**
    * Advances the CPU one cycle
    */
@@ -140,6 +148,7 @@ class CPU {
       case 'CMP':
         const a = this.reg[operandA];
         const b = this.reg[operandB];
+        // Check conditions and change to binary
         const cmp = [ a < b, a > b, a === b ]
           .map(val => String(Number(val))).join('');
         this.FL = '0b' + cmp.padStart(8, '0');
@@ -148,20 +157,13 @@ class CPU {
         this.stopClock();
         break;
       case 'JEQ':
-        if (this.FL[9] === '1') {
-          this.PC = this.reg[operandA];
-          this.pcAdvance = false;
-        }
+        this.jumpIf(this.FL[9] === '1', operandA);
         break;
       case 'JMP':
-        this.PC = this.reg[operandA];
-        this.pcAdvance = false;
+        this.jumpIf(true, operandA);
         break;
       case 'JNE':
-        if (this.FL[9] === '0') {
-          this.PC = this.reg[operandA];
-          this.pcAdvance = false;
-        }
+        this.jumpIf(this.FL[9] === '0', operandA);
         break;
       case 'LDI':
         this.reg[operandA] = operandB;
