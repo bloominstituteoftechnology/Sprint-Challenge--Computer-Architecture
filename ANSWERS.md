@@ -41,9 +41,12 @@
   ```
 
 **2.** Explain how the CPU provides concurrency:
+  * concurrency occurs when two tasks can execute, run, and complete in overlapping time periods. for example, loading multiple browser tabs at the same time. the cpu provides this added benefit by working independently of other cpu's within the same machine. alternatively, interrupts seem to provide this advantage to cpu's as well.
 
 
 **3.** Describe assembly language and machine language:
+  * machine language is essentially just a bunch of binary numbers that a computer can read then execute the corresponding action.
+  * assembly language provides a more intuitive way to read and write machine language. the instructions and registers are given labels for simplified future reference. assembly language is fairly comparable to machine language.
 
 
 **4.** Why is 3D performance so much higher with a graphics card than without?
