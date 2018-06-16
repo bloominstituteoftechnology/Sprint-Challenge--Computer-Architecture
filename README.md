@@ -4,39 +4,67 @@
 
 Complete the following problems:
 
-* Convert `11001111` binary
+* **A.** Convert `11001111` binary
+  ```
+  128 + 64 + 0 + 0 + 8 + 4 + 2 + 1 = 207
 
-    to hex:
+  HEX: CF
 
-    to decimal:
+  DECIMAL: 207
+  ```
 
+* **B.** Convert `4C` hex
+  ```
+  4 = 4, C = 12
 
-* Convert `4C` hex
+  4 + 12 = 16
 
-    to binary:
+  4 * 16^1 = 64
+  C * 16^0 = 12
 
-    to decimal:
+  64 + 12 = 76
 
+  BINARY: 1001100
 
-* Convert `68` decimal
+  DECIMAL: 76
+  ```
 
-    to binary:
+* **C.** Convert `68` decimal
+  ```
+  BINARY: 1000100
 
-    to hex:
+  HEX: 44
+    1. divide 68 by 16 (base16) until the quotient is 0
+        68 / 16 = 4 (remainer 4)
+        4 / 16 = 0  (remainer 4)
+
+    2. get the hex values for each remainder 
+        decimal 4 = hex 4
+        decimal 4 = hex 4
+
+    3. combine the hex values in reverse order (last to first)
+        hex 4 combined with hex 4 = hex 44
+  ```
 
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+**1.** Explain how the CPU provides concurrency or parallelism:
+  * Concurrency occurs when two tasks can execute, run, and complete in overlapping time periods. For example, loading multiple browser tabs at the same time. The cpu provides this added benefit by working independently of other cpu's within the same machine. 
+  * Interrupts provide concurrency for CPU's as well. This allows the CPU to temporarily pause the execution of incoming instructions to handle a new event. 
 
-* Describe assembly language and machine language:
+**2.** Describe assembly language and machine language:
+  * Machine language is essentially a series of binary numbers that represent instructions and data for the computer to read and execute.
+  * Assembly language provides a more intuitive way to read and write machine language. The instructions and registers are given labels for simplified future reference. Assembly language translates directly to machine language.
 
-* Why is 3D performance so much higher with a graphics card than
-  without?
+**3.** Why is 3D performance so much higher with a graphics card than without?
+  * "A CPU is used to handle all tasks that a computer needs to run - including running the operating system and assisting all the hardware in talking with each other - while a GPU is focused solely on graphics performance." -Kaitlyn
+  * 3D cards utilize a Graphics Processing Unit, which is designed specifically for graphics-rendering computations. 
 
-* Suggest the role that graphics cards play in machine learning:
+**4.** Suggest the role that graphics cards play in machine learning:
+  * "Graphics cards allow rapid processing of visual data, which greatly accelerates machine learning when using data sets composed of pictures of real-world objects and situations." -Jared
 
 
 ## Coding
