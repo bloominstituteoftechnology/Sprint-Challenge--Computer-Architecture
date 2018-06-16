@@ -3,9 +3,13 @@
 1.  Explain how the CPU provides concurrency:
     Subroutines/interrupts?
 
+    <!-- Multiple processors/multiple cores/multiple cores. Multitasking by timesharing via interrupts. -->
+
 2)  Describe assembly language and machine language:
     Machine language is the language the machine will actually read, and it is in binary.
     Assembly language is just a close copy of machine language but instructions are instead written in a human readable format that is then translated into binary when read by the machine.
+
+    <!-- Assemble language describes machine language -->
 
 3.  Why is 3D performance so much higher with a graphics card than without?
     Because graphics cards can do a bunch of stuff at the same time which is good for rendering complex graphics, while CPUs work much more linearly and can't keep up with the speed of GPUs.
