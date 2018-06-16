@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -30,14 +30,16 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+* * The cpu is able to run multiple tasks at the same time. I don't exactly know how it does it. It moves quickly.
 
 * Describe assembly language and machine language:
+* * Assembly language is very low-level language that can be read and understood by humans, though not easily. It is taken and translated into machine code for the CPU to do its thing.
 
-* Why is 3D performance so much higher with a graphics card than
-  without?
+* Why is 3D performance so much higher with a graphics card than without?
+* * I think because the graphics card is a specialied processing unit that is made for 3D performance whereas a general processing unit would be less efficient, but perhaps more apt in different situations.
 
 * Suggest the role that graphics cards play in machine learning:
-
+* * I have no idea. 
 
 ## Coding
 
