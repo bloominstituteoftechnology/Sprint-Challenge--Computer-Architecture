@@ -1,7 +1,7 @@
-const HLT = 0b00000001, // 72
-      PRN = 0b01000011, // 67
+const HLT = 0b00000001,
+      PRN = 0b01000011,
       LDI = 0b10011001,
-      MUL = 0b10101010, // 170
+      MUL = 0b10101010,
       ADD = 0b10101000,
       AND = 0b10110011,
       CALL= 0b01001000,
@@ -30,9 +30,9 @@ const HLT = 0b00000001, // 72
       XOR = 0b10110010;
 
 // FLAG - 00000LGE
-const FLAG_EQUAL = 0;
-const FLAG_GREAT = 1;
-const FLAG_LESS  = 2;
+const FLAG_EQUAL = 1;
+const FLAG_GREAT = 2;
+const FLAG_LESS  = 4;
 const FLAG_ALU   = 32;
 
 const SP = 7; // Stack Pointer
@@ -46,6 +46,7 @@ class CPU {
     this.PC = 0; // program counter - holds the address of the currently executed instruction
     this.FL = 0; // flags register - holds the current flags status
     this.reg[SP] = 0xF4; // stores the address (in ram) of the most recently pushed item in the stack
+    this.interruptsEnabled = true; // interrupts are enabled
   }
 
   /* Store a byte of data in the memory address */
@@ -55,12 +56,17 @@ class CPU {
 
   /* Start the clock on the CPU */
   startClock() {
-    this.clock = setInterval(() => this.tick(), 1);
+    // Every millisecond, perform one cpu cycle
+    this.clock = setInterval(() => this.tick(), 1); // 1 ms delay == 1 KHz clock == 0.000001 GHz
+
+    // Fire interrupt timer at a cycle of once per second
+    this.interrupt = setInterval(() => this.reg[IS] |= 1, 1000); // every second, set the bit 0 of IS to 1
   }
 
   /* Stop the clock. Halt everything. */
   stopClock() {
     clearInterval(this.clock);
+    clearInterval(this.interrupt);
   }
 
   /* ARITHMETIC LOGIC UNIT - the part of the CPU that strictly handles basic arithmetic and comparisions */
@@ -113,7 +119,9 @@ class CPU {
         break;
 
       case CMP: // compare
-        this.compare(regA, regB);
+        if (this.reg[regA] < this.reg[regB]) this.FL = FLAG_LESS; // set the L flag
+        if (this.reg[regA] > this.reg[regB]) this.FL = FLAG_GREAT; // set the G flag
+        if (this.reg[regA] === this.reg[regB]) this.FL = FLAG_EQUAL; // set the E flag
         break;
 
       case DEC: // decrement
@@ -125,7 +133,7 @@ class CPU {
         break;
 
       default:
-        console.log(`Error. ALU case ${operation} is not defined.`);
+        console.log(`Error. ALU case ${operation.toString(2)} is not defined.`);
         this.stopClock();
         break;
     }
@@ -133,6 +141,24 @@ class CPU {
 
   /* Advances the CPU one cycle */
   tick() {
+    /* Interrupts */
+    let maskedInterrupts = this.reg[IM] & this.reg[IS];
+
+    // step through each bit of `interrupts` and see which interrupts are set
+    for (let i = 0; i < 8; i++) {
+      // Right shift interrupts down by i, then mask with 1 to see if that bit was set
+      let interruptSet = ((maskedInterrupts >> i) & 1) == 1;
+
+      // If a bit is set...
+      if (interruptSet) {
+        this.interruptsEnabled = false; // disable further interrupts
+        this.reg[IS] &= ~(1 << i); // clear the bit in the IS register
+        this.pushState(); // push the PC, FL, and R0-R7 registers on the stack in that order
+        this.PC = this.ram.read(0xF8 + i); // set the PC to the appropriate interrupt handler address
+        break;
+      }
+    }
+
     // If this.PC is not set, incrementPC remains true.
     // Otherwise, incrementPC will be set to false, and the value of this.PC will be set manually.
     let incrementPC = true;
@@ -146,8 +172,8 @@ class CPU {
 
     // If the ALU flag is set, send information to ALU method
     if (IR & FLAG_ALU) this.ALU(IR, operandA, operandB);
-
-    // Execute the instruction. Perform the necessary actions as outlined in the spec.
+    // Else, execute the instruction. 
+    // Perform the necessary actions as outlined in the spec.
     else switch(IR) {
       case CALL: // calls a subroutine at the address stored in the register ~ 01001000 00000rrr
         this.push(this.PC + 2);
@@ -159,32 +185,32 @@ class CPU {
         this.stopClock();
         break;
 
-      case INT:
-        console.log(`case INT - ${IR} - has not yet been defined.`);
-        this.stopClock();
+      case INT: // set the Nth bit in the IS register to the value in the given register ~ 01001010 00000rrr
+        this.reg[IS] |= Math.pow(2, this.reg[operandA]);
         break;
 
-      case IRET:
-        console.log(`case IRET - ${IR} - has not yet been defined.`);
-        this.stopClock();
+      case IRET: // return from an interrupt handler
+        this.PC = this.popState(); // the return address is popped off the stack and stored in PC
+        incrementPC = false;
+        this.interruptsEnabled = true; // interrupts are re-enabled
         break;
 
       case JEQ: // if an equal flag is set, jump to the address stored in the given register ~ 01010001 00000rrr
-        if (this.getFlag(FLAG_EQUAL)) {
+        if (this.FL & FLAG_EQUAL) { 
           this.PC = this.reg[operandA];
           incrementPC = false;
         }
         break;
 
       case JGT: // if the Greater Than flag is set, jump to the address stored in the given register ~ 01010100 00000rrr
-        if (this.getFlag(FLAG_GREAT)) {
+        if (this.FL & FLAG_GREAT) {
           this.PC = this.reg[operandA];
           incrementPC = false;
         }
         break;
 
       case JLT: // if the Less Than flag is set, jump to the address stored in the given register ~ 01010011 00000rrr
-        if (this.getFlag(FLAG_LESS)) {
+        if (this.FL & FLAG_LESS) {
           this.PC = this.reg[operandA];
           incrementPC = false;
         }
@@ -196,15 +222,15 @@ class CPU {
         break;
 
       case JNE: // if the equal flag is not set, jump to the address stored in the given register ~ 01010010 00000rrr
-        if (!this.getFlag(FLAG_EQUAL)) {
+        if (~this.FL & FLAG_EQUAL) {
           this.PC = this.reg[operandA];
           incrementPC = false;
         }
         break;
 
-      case LD: // loads regA with the value at the address stored in regB
-        console.log(`case LD - ${IR} - has not yet been defined.`);
-        this.stopClock();
+      case LD: // loads regA with the value at the address stored in regB ~ 10011000 00000aaa 00000bbb
+        this.ram.write(this.reg[operandB], this.ram.read(operandA));
+        // this.reg[operandA] = this.ram.read(this.reg[operandB]); 
         break;
 
       case LDI: // set the value of a register to an integer ~ 10011001 00000rrr iiiiiiii
@@ -240,41 +266,12 @@ class CPU {
         break;
 
       default:
-        console.log(`Instruction ${IR} is not defined in tick().`);
+        console.log(`Instruction ${IR.toString(2)} is not defined in tick().`);
         this.stopClock();
         break;
     }
 
     incrementPC ? this.PC += (IR >> 6) + 1 : null;
-  }
-
-  compare(regA, regB) {
-    const equal   = +(this.reg[regA] === this.reg[regB]);
-    const greater = +(this.reg[regA] > this.reg[regB]);
-    const less    = +(this.reg[regA] < this.reg[regB]);
-
-    const compEQ = eq => {
-      if (eq) this.FL |= (1 << FLAG_EQUAL);
-      else this.FL &= ~(1 << FLAG_EQUAL);
-    }
-
-    const compGT = gt => {
-      if (gt) this.FL |= (1 << FLAG_GREAT);
-      else this.FL &= ~(1 << FLAG_GREAT);
-    }
-
-    const compLT = lt => {
-      if (lt) this.FL |= (1 << FLAG_LESS);
-      else this.FL &= ~(1 << FLAG_LESS);
-    }
-
-    compEQ(equal);
-    compGT(greater);
-    compLT(less);
-  }
-
-  getFlag(flag) {
-    return (this.FL & (1 << flag)) >> flag;
   }
 
   push(value) {
@@ -286,6 +283,23 @@ class CPU {
     const value = this.ram.read(this.reg[SP]);
     this.reg[SP]++;
     return value;
+  }
+
+  pushState() {
+    this.push(this.PC); // the PC register is pushed on the stack
+    this.push(this.FL); // the FL register is pushed on the stack
+
+    // registers R0 - R6 are pushed on the stack in that order
+    for (let i = 0; i <= 6; i++) this.push(this.reg[i]);
+  }
+
+  popState() {
+    // registers R6 - R0 are popped off the stack in that order
+    for (let i = 6; i >= 0; i--) this.reg[i] = this.pop();
+
+    this.FL = this.pop(); // FL register is popped off the stack
+
+    return this.pop(); // the return address is popped off the stack
   }
 }
 
