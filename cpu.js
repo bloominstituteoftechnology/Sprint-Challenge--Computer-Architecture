@@ -10,12 +10,11 @@ const PUSH = 0b01001101;
 const POP = 0b01001100;
 const CALL = 0b01001000;
 const RET = 0b00001001;
-const CMP = 0b00001001;
-const JMP = 0b01010000;
+const ADD = 0b10101000;
+const CMP = 0b10100000;
 const JEQ = 0b01010001;
-const JNE = 0b10100010;
-const FLAG = 0;
-
+const JMP = 0b01010000;
+const JNE = 0b01010010;
 
 let SP = 0x07;
 // let IS = 0x06;
@@ -37,7 +36,9 @@ class CPU {
        // Special-purpose registers
        this.PC = 0; // Program Counter
        this.reg[SP] = 0xf4 // Point register 7 to register 4 which is empty
-
+       
+       // Flag
+       this.flag = 0;
    }
    
    /**
@@ -74,8 +75,18 @@ class CPU {
    alu(op, regA, regB) {
        switch (op) {
            case 'MUL':
-               // !!! IMPLEMENT ME
-               break;
+           this.reg[regA] = this.reg[regA] * this.reg[regB];
+           this.PC += 3;
+           break;
+
+           case ADD:
+           this.reg[regA] = this.reg[regA] + this.reg[regB];
+           this.PC += 3;
+           break;
+
+           default:
+           this.stopClock();
+           break;
        }
    }
 
@@ -90,7 +101,7 @@ class CPU {
 
        // !!! IMPLEMENT ME
        const IR = this.ram.read(this.PC);
-
+       console.log(`${this.PC}: ${IR.toString(2)}`);
    
        // Get the two bytes in memory _after_ the PC in case the instruction
        // needs them.
@@ -101,11 +112,6 @@ class CPU {
        switch(IR) {
            case LDI:
                this.reg[operandA] = operandB;
-               this.PC += 3;
-               break;
-
-           case MUL:
-               this.reg = this.reg[0] *  this.reg[1];
                this.PC += 3;
                break;
            
@@ -138,36 +144,41 @@ class CPU {
                this.PC = this.popValue();
                break;
 
-            case CMP:
-                if (this.reg[operandA] === this.reg[operandB]) {
-                    this.FLAG = 1;
-                    this.PC += 3;
-                } else {
-                    this.FLAG = 0;
-                    this.PC += 3;
-                }
-                break;
-
-            case JMP:
-                this.PC = this.reg[operandA];
-                break;
-            
-            case JEQ: 
-                if (this.FLAG === 1) {
-                    this.PC = this.reg[operandA];
-                } else {
-                    this.PC += 2;
-                } 
-                break;
-            
-            case JNE:
-                if (this.FLAG === 0) {
-                    this.PC = this.reg[operandA];
-                } else {
-                    this.PC += 2;
-                }
-           default: 
+           case CMP:
+               if (this.reg[operandA] === this.reg[operandB]) {
+                   this.flag = 1;
+                   this.PC += 3;
+               } else {
+                   this.flag = 0;
+                   this.PC += 3;
+               }
                break;
+
+           case JMP:
+               this.PC = this.reg[operandA];
+               break;
+              
+           case JEQ:
+               if (this.flag === 1) {
+                   this.PC = this.reg[operandA];
+               } else {
+                   this.PC += 2;
+               }
+               break;
+           
+           case JNE:
+               if (this.flag === 0) {
+                   this.PC = this.reg[operandA];
+               } else {
+                   this.PC += 2;
+               }
+               break;
+
+           default: 
+               this.alu(IR, operandA, operandB);
+               break;
+
+
        };
        
    }
