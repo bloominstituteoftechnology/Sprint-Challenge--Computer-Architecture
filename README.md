@@ -5,38 +5,53 @@
 Complete the following problems:
 
 * Convert `11001111` binary
+        
+    to hex: CF
+   
+    (1) Snip the 8 digit binary code into 2 snips of 4 digits: 1100 & 1111
+    (2) Fing the value of each binary place: (1, 2, 4, 8)
+    (3) Sum up the values for both snipits & convert total to hex
+        1100 = 8 + 4 + 0 + 0 = 12 => C
+        1111 = 8 + 4 + 2 + 1 = 15 => F
 
-    to hex:
+    to decimal: 207
+    (1) Find the value of each binary place: (1, 2, 4, 8, 16, 32, 64, 128)    
+        1x 128 = 128
+        1x 64  =  64
+        0x 32  =   0
+        0x 16  =   0
+        1x 8   =   8
+        1x 4   =   4
+        1x 2   =   2
+        1x 1   =   1
+    (2) Foot the total
+        
 
-    to decimal:
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
+    (1) Convert 4 to binary => 0100; convert C to decimal 12 then to binary => 1100 
 
-    to decimal:
-
+    to decimal: 76
+    (1) Find the value of each binary place: (1, 2, 4, 8, 16, 32, 64, 128)    
+        0x 128 =  0
+        1x 64  =  64
+        0x 32  =   0
+        0x 16  =   0
+        1x 8   =   8
+        1x 4   =   4
+        0x 2   =   0
+        0x 1   =   0
+    (2) Foot the total
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 01000100
 
-    to hex:
+    to hex: 44
 
-
-## Architecture
-
-Short answer:
-
-* Explain how the CPU provides concurrency or parallelism:
-
-* Describe assembly language and machine language:
-
-* Why is 3D performance so much higher with a graphics card than
-  without?
-
-* Suggest the role that graphics cards play in machine learning:
 
 
 ## Coding
