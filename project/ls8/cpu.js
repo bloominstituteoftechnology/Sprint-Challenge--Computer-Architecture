@@ -1,3 +1,4 @@
+const { createTickDictionary } = require('./createDictionary');
 /**
  * LS-8 v2.0 emulator skeleton code
  */
@@ -10,21 +11,21 @@ class CPU {
    * Initialize the CPU
    */
   constructor(ram) {
-    this.ram = ram
+    this.ram = ram;
 
-    this.reg = new Array(8).fill(0) // General-purpose registers R0-R7
-    this.reg[7] = 0xf4
+    this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
+    this.reg[7] = 0xf4;
 
     // Special-purpose registers
-    this.PC = 0 // Program Counter
-    this.SP = this.reg[7]
+    this.PC = 0; // Program Counter
+    this.SP = this.reg[7];
   }
 
   /**
    * Store value in memory address, useful for program loading
    */
   poke(address, value) {
-    this.ram.write(address, value)
+    this.ram.write(address, value);
   }
 
   /**
@@ -32,15 +33,15 @@ class CPU {
    */
   startClock() {
     this.clock = setInterval(() => {
-      this.tick()
-    }, 1) // 1 ms delay == 1 KHz clock == 0.000001 GHz
+      this.tick();
+    }, 1); // 1 ms delay == 1 KHz clock == 0.000001 GHz
   }
 
   /**
    * Stops the clock
    */
   stopClock() {
-    clearInterval(this.clock)
+    clearInterval(this.clock);
   }
 
   /**
@@ -61,8 +62,8 @@ class CPU {
     switch (op) {
       case 'MUL':
         // !!! IMPLEMENT ME
-        return this.reg[regA] * this.reg[regB]
-        break
+        return this.reg[regA] * this.reg[regB];
+        break;
     }
   }
 
@@ -76,7 +77,7 @@ class CPU {
     // right now.)
 
     // !!! IMPLEMENT ME
-    const IR = this.ram.read(this.PC)
+    const IR = this.ram.read(this.PC);
 
     // Debugging output
     // console.log(`${this.PC}: ${IR.toString(2)}`)
@@ -88,53 +89,19 @@ class CPU {
     const [first, second] = [
       this.ram.read(this.PC + 1),
       this.ram.read(this.PC + 2)
-    ]
+    ];
 
     // Execute the instruction. Perform the actions for the instruction as
     // outlined in the LS-8 spec.
-    const instruction = {
-      HLT: 1,
-      MUL: 170,
-      PRN: 67,
-      LDI: 153,
-      PUSH: 0b001001101,
-      POP: 0b001001100
-    }
+
+    const cpu = this;
+
+    const instructionDictionary = createTickDictionary(cpu, first, second);
 
     // !!! IMPLEMENT ME
 
-    switch (IR) {
-      case instruction.HLT:
-        this.stopClock()
-        this.PC += 1
-        break
-      case instruction.LDI:
-        this.reg[first] = second
-        this.PC += 3
-        break
-      case instruction.MUL:
-        // TODO: Implement this
-        console.log(this.alu('MUL', first, second))
-        this.stopClock()
-        break
-      case instruction.PRN:
-        console.log(this.reg[first])
-        this.PC += 2
-        break
-      case instruction.PUSH:
-        this.SP--
-        this.poke(this.SP, second)
-        break
-      case instruction.POP:
-        this.reg[first] = this.ram.read(this.SP)
-        this.SP++
-        console.log(this.reg[first])
-        break
-      default:
-        console.log('Unknown Instruction:', IR.toString(2))
-        this.stopClock()
-        return
-    }
+    const handleIt = instructionDictionary[IR];
+    handleIt();
 
     // Increment the PC register to go to the next instruction. Instructions
     // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
@@ -145,4 +112,4 @@ class CPU {
   }
 }
 
-module.exports = CPU
+module.exports = CPU;

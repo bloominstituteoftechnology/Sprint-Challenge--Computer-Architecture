@@ -10,7 +10,7 @@ async function runProcedure() {
     .map(str => (str.indexOf('#') > -1 ? str.substr(0, 8) : str))
     .filter(str => str.indexOf('#') === -1)
     .filter(str => str !== '')
-  console.log(program[0])
+    
   /**
    * Main
    */
