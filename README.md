@@ -53,8 +53,14 @@ Add the `JMP` instruction.
 Add the `JEQ` and `JNE` instructions.
 
 
-[Here is some code](sctest.ls8) that exercises the above instructions. It should
-print 1, then 4, then 5.
+[Here is some code](sctest.ls8) that exercises the above instructions.
+It should print:
+
+```
+1
+4
+5
+```
 
 ```
 # Code to test the Sprint Challenge
