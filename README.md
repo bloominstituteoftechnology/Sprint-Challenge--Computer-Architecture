@@ -33,11 +33,6 @@ Short answer:
 
 * Describe assembly language and machine language:
 
-* Why is 3D performance so much higher with a graphics card than
-  without?
-
-* Suggest the role that graphics cards play in machine learning:
-
 
 ## Coding
 
