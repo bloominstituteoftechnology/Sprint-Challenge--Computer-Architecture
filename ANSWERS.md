@@ -171,8 +171,57 @@ Hex:        44
 
 1. Explain how the CPU provides concurrency:
 
-
+Concurrency is established through *multi-threading*.
 
 2. Describe assembly language and machine language:
 
+Machine language is the pure binary code that the CPU can understand and process. The `0`'s and `1`s can be converted to equivalent electrical signals that can be received from the CPU and sent to various components of the computer.
 
+However, we don't process data that way, so reading `0`'s and `1`s is a little crazy. This is where assembly comes in. The assembly language is one abstraction level up from machine language.
+
+What makes assembly language different from other languages like C or JS is that it's a direct and faithful translation of machine code. Basically, each machine code instruction is translated into simple commands, values, and register addresses that we can better understand. But that's it: it's only human-readable machine code.
+
+In contrast, most other programming languages further abstract and simplify common patterns of operation. For example:
+
+```c
+void mult2print(int x)
+{
+    printf("%i\n", x + x);
+}
+
+void main()
+{
+    int num = 10;
+    mult2print(num);
+
+    num = 15;
+    mult2print(num);
+
+    num = 18;
+    mult2print(num);
+
+    num= 30;
+    mult2print(nm);
+}
+```
+
+This is (*my best guess of*) the C approximation of `call.ls8`. Compare this to assembly language:
+
+```
+LDI     R1,MULT2PRINT
+LD1     R0,10
+CALL    R1
+LDI     R0,15
+CALL    R1
+LDI     R0,18
+CALL    R1
+LDI     R0,30
+CALL    R1
+HLT
+#MULT2PRINT
+ADD     R0,R0
+PRN     R0
+RET
+```
+
+In the C language, the language is structured to allow programmers to better read and reason about the program, whereas in the assembly version, you'd have to pretend you're the CPU for a bit to get a handle of what this thing is doing. But the C program would need more (perhaps many more) steps for this human-readable program to be converted to machine code, whereas the assembly language is much more straightfoward in translating this to machine code.
