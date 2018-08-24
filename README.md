@@ -80,8 +80,11 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
+  [See ANSWERS.md](ANSWERS.md)
+
 * Describe assembly language and machine language:
 
+  [See ANSWERS.md](ANSWERS.md)
 
 ## Coding
 
