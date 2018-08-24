@@ -25,3 +25,69 @@ POP R1
 
 
 
+```
+------------------------
+
+Convert `11001111` binary
+
+to hex:
+```md
+`1100` `1111`
+
+ 12     15
+
+ C      F
+
+ hex = 0xCF
+```
+to decimal:
+```
+`11001111`
+
+-------------------------
+1 + 2 + 4 + 8 + 64 + 128
+
+-------------------------
+decimal = 207
+
+```
+* Convert 4C hex
+
+    * to binary:
+
+        ```
+        _4_  == 0100
+
+        _C_ == 1100
+
+        binary = `01001100`
+        ```
+
+to decimal:
+    
+    4C = (4 × 16¹) + (12 × 16⁰)
+       = 64 + 12
+    decimal = 76
+    
+
+Convert 68 decimal
+
+to binary:
+```
+68 = 0 + 64 + 0 + 0 + 0 + 4 + 0 + 0
+binary = `01000100`
+```
+to hex:
+```
+
+68/16 = 4 R 4
+First hex digit = 4
+
+4/16 = 0 R 4
+
+Second hex digit = 4
+
+hex = 0x44
+
+```
+
