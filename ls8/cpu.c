@@ -165,7 +165,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Zero registers and RAM
   memset(cpu->reg, 0, sizeof(cpu->reg));
   cpu->reg[SP] = 0xF3;
-  cpu->reg[IM] = 1; // Temporarily hardcoded until I implement the timer.
+  // cpu->reg[IM] = 1; // Temporarily hardcoded until I implement the timer.
   memset(cpu->ram, 0, sizeof(cpu->ram));
 }
 
