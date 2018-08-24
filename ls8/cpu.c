@@ -136,6 +136,11 @@ void cpu_run(struct cpu *cpu)
         else cpu->FL = 1;
         break;
 
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
+        autoset = 0;
+        break;
+
       default:
         running = 0;
         break;
