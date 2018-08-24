@@ -171,7 +171,39 @@ void cpu_run(struct cpu *cpu)
         // printf("%d\n", poppen);
         cpu->PC = poppen;
         continue;
+      case CMP:
+        // printf("this\n");
+        if (cpu->reg[operandA] == cpu->reg[operandB])
+        {
+          cpu->FL = 1;
+        }else if (cpu->reg[operandA] > cpu->reg[operandB])
+        {
+          cpu->FL = 0;
+        }else
+        {
+          cpu->FL = 0;
+        }
+        // printf("%d\n", cpu->FL);
+        break;
+      case JMP:
+        cpu->PC = cpu->reg[operandA];
+        continue;
+      case JEQ:
+        if(cpu->FL == 1)
+        {
+          cpu->PC = cpu->reg[operandA];
+          continue;
+        }
+        break;
+      case JNE:
+        if(cpu->FL == 0)
+        {
+          cpu->PC = cpu->reg[operandA];
+          continue;
+        }
+        break;
     }
+
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     // 2. switch() over it to decide on a course of action.
@@ -194,6 +226,7 @@ void cpu_init(struct cpu *cpu)
   memset(cpu->ram, 0, sizeof cpu->ram);
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0;
 
   // TODO: Zero registers and RAM
   cpu->reg[SP] = 0xF4;
