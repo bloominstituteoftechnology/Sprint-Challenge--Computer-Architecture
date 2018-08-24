@@ -10,13 +10,16 @@ struct cpu {
     unsigned char flag; // FLAG 
 }; 
 
+// Flags 
+#define FLAG_EQ (1 << 0) 
+#define FLAG_GT (1 << 1) 
+#define FLAG_LT (1 << 2) 
+
 // Other General Purpose Register Names 
 #define SP 7 
 
 // Arithmetic Logic Unit Operations 
 enum alu_op {
-    ALU_ADD,
-    ALU_MUL,
     ALU_CMP 
 }; 
 
@@ -38,17 +41,17 @@ enum alu_op {
 
 // Program Counter Mutators 
 
-#define CALL 01010000
-#define RET  00010001
-#define INT  01010010 
-#define IRET 00010011
-#define JMP  01010100 
-#define JEQ  01010101 
-#define JNE  01010110 
-#define JGT  01010111 
-#define JLT  01011000 
-#define JLE  01011001 
-#define JGE  01011010 
+#define CALL 0b01010000
+#define RET  0b00010001
+#define INT  0b01010010 
+#define IRET 0b00010011
+#define JMP  0b01010100 
+#define JEQ  0b01010101 
+#define JNE  0b01010110 
+#define JGT  0b01010111 
+#define JLT  0b01011000 
+#define JLE  0b01011001 
+#define JGE  0b01011010 
 
 // Other 
 
