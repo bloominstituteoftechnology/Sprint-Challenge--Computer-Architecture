@@ -7,6 +7,7 @@ Complete the following problems:
 * Convert `11001111` binary
     1100   1111
      C      F
+     
     to hex: CF
     
     128+64+0+0+8+4+2+1 = 207
