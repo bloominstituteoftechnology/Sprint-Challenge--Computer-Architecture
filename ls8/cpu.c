@@ -63,53 +63,145 @@ void cpu_run(struct cpu *cpu)
     // True until we get a HLT instruction
     int running = 1;
     // determines how much we will increment our PC after each iteration
+    unsigned char in_call = 0;
 
     unsigned char program_counter;
     unsigned char instruction_register;
     unsigned char operandA;
     unsigned char operandB;
+    unsigned int next_instruction;
 
     while (running)
     {
         program_counter = cpu->pc;
         // printf("\nPC: %d\n\n", program_counter);
         instruction_register = cpu_ram_read(cpu, program_counter);
-        operandA = cpu_ram_read(cpu, program_counter + 1);
-        operandB = cpu_ram_read(cpu, program_counter + 2);
 
-        switch(instruction_register)
+        switch (instruction_register >> 6)
         {
-            case HLT:
-                printf("\nHLT\n\n");
-                running = 0;
-                break;
+            case 1:
+                next_instruction = 2;
+                operandA = cpu_ram_read(cpu, program_counter + 1);
 
-            case LDI:
-                printf("\nLDI: R[%d] = %d\n\n", operandA, operandB);
-                cpu->registers[ operandA ] = operandB;
-                break;
-            
-            case MUL:
-                printf("\nMUL: %d * %d = %d\n\n", cpu->registers[ operandA ], cpu->registers[ operandB ], cpu->registers[ operandA ] * cpu->registers[ operandB ]);
-                cpu->registers[ operandA ] = cpu->registers[ operandA ] * cpu->registers[ operandB ];
-                break;
-            
-            case POP:
-                printf("\nPOP: %d from RAM[%d] into R%d\n\n", cpu->ram[ cpu->sp ], cpu->sp, operandA);
-                cpu->registers[ operandA ] = cpu->ram[ cpu->sp++ ];
-                break;
-            
-            case PRN:
-                printf("\nPRN: %d\n\n", cpu->registers[ operandA ]);
-                break;
+                switch (instruction_register)
+                {
+                    /**
+                     * CALL
+                     */
+                    case CALL:
+                        in_call                       = 1;
+                        cpu->registers[7]             = --cpu->sp;
+                        cpu->ram[ cpu->registers[7] ] = program_counter + next_instruction;
+                        cpu->pc                       = cpu->registers[ operandA ];
+                        program_counter               = cpu->pc;
+                        // printf("\nCALL: Saving %d into RAM[%d]\nJumping to RAM[%d]\n\n", cpu->ram[ cpu->registers[7] ], cpu->registers[7], program_counter);
 
-            case PUSH:
-                printf("\nPUSH: %d from R%d into RAM[%d]\n\n", cpu->registers[ operandA ], operandA, cpu->sp - 1);
-                cpu->ram[ --cpu->sp ] = cpu->registers[ operandA ];
-                break;
+                        break;
+                    
+                    /**
+                     * POP
+                     */
+                    case POP:
+                        // set the value where `stack pointer` is pointing to in to the given register
+                        cpu->registers[ operandA ] = cpu->ram[ cpu->registers[7] ];
+                        // increase where our stack pointer is pointing to on RAM
+                        cpu->registers[7] = ++cpu->sp;
+                        break;
+                    
+                    /**
+                     * PRN
+                     */
+                    case PRN:
+                        printf("\nPRN: %d\n\n", cpu->registers[ operandA ]);
+                        break;
+
+                    /**
+                     * PUSH
+                     */
+                    case PUSH:
+                        // decrease `stack pointer` by 1
+                        cpu->registers[7] = --cpu->sp;
+                        // set the value of `R1` to wherever our `stack pointer`, `R7`, is pointing to
+                        cpu->ram[ cpu->registers[7] ] = cpu->registers[ operandA ];
+                        break;
+
+                    /**
+                     * default
+                     */
+                    default:
+                        break;
+                    }
+
+                break;  // case 1
+
+            case 2:
+                next_instruction = 3;
+                operandA = cpu_ram_read(cpu, program_counter + 1);
+                operandB = cpu_ram_read(cpu, program_counter + 2);
+
+                switch (instruction_register)
+                {
+                    case ADD:
+                        // printf("\nADD: %d + %d = ", cpu->registers[ operandA ], cpu->registers[ operandB ]);
+                        cpu->registers[ operandA ] += cpu->registers[ operandB ];
+                        // printf("%d\n\n", cpu->registers[ operandA ]);
+                        break;
+
+                    case CMP:
+                        printf("\nCMP: %d || %d = ", cpu->registers[ operandA ], cpu->registers[ operandB ]);
+
+                        if (cpu->registers[ operandA ] > cpu->registers[ operandB ])
+                            cpu->fl = 0b01;
+                        else if (cpu->registers[ operandA ] < cpu->registers[ operandB ])
+                            cpu->fl = 0b100;
+                        else
+                            cpu->fl = 0b1;
+
+                        printf("%d\n\n", cpu->fl);
+                        break;
+                    
+                    case LDI:
+                        cpu->registers[ operandA ] = operandB;
+                        printf("\nLDI: Saving %d into R[%d]\n\n", operandB, operandA);
+                        break;
+
+                    case MUL:
+                        cpu->registers[ operandA ] = cpu->registers[ operandA ] * cpu->registers[ operandB ];
+                        break;
+
+                    default:
+                        break;
+                }
+
+                break;  // case 2
+
+            default:
+                switch(instruction_register)
+                {
+                    case HLT:
+                        printf("\nHLT\n\n");
+                        running = 0;
+                        break;
+
+                    case RET:
+                        cpu->pc = cpu->ram[ cpu->sp++ ];
+                        cpu->registers[7] = cpu->pc;
+                        // printf("\nRETURNING TO RAM[%d]\n\n", cpu->pc);
+                        continue;
+                        break;
+
+                    default:
+                        fprintf(stderr, "\n=====\nINSTRUCTION DOES NOT EXIST\n=====\n\n");
+                }
         }
 
-        cpu->pc = (instruction_register >> 6) + cpu->pc + 1;
+        if (in_call == 0)
+            cpu->pc = cpu->pc + next_instruction;
+        else if (in_call == 1)
+        {
+            cpu->pc++;
+            in_call = 0;
+        }
     }
 }
 
@@ -119,114 +211,10 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
     // TODO: Initialize the PC and other special registers
+    cpu->fl = 00000000;
     cpu->pc = 0;
     cpu->sp = 244;
     cpu->registers[7] = cpu->sp;
 
     // TODO: Zero registers and RAM
 }
-
-        // switch (instruction_register >> 6)
-        // {
-        //     case 1:
-        //         next_instruction = 2;
-        //         operandA = cpu_ram_read(cpu, program_counter + 1);
-
-        //         switch (instruction_register)
-        //         {
-        //             /**
-        //              * CALL
-        //              */
-        //             case CALL:
-        //                 in_call                       = 1;
-        //                 cpu->registers[7]             = --cpu->sp;
-        //                 cpu->ram[ cpu->registers[7] ] = program_counter + next_instruction;
-        //                 cpu->pc                       = cpu->registers[ operandA ];
-        //                 program_counter               = cpu->pc;
-        //                 // printf("\nCALL: Saving %d into RAM[%d]\nJumping to RAM[%d]\n\n", cpu->ram[ cpu->registers[7] ], cpu->registers[7], program_counter);
-
-        //                 break;
-                    
-        //             /**
-        //              * POP
-        //              */
-        //             case POP:
-        //                 // set the value where `stack pointer` is pointing to in to the given register
-        //                 cpu->registers[ operandA ] = cpu->ram[ cpu->registers[7] ];
-        //                 // increase where our stack pointer is pointing to on RAM
-        //                 cpu->registers[7] = ++cpu->sp;
-        //                 break;
-                    
-        //             /**
-        //              * PRN
-        //              */
-        //             case PRN:
-        //                 printf("\nPRN: %d\n\n", cpu->registers[ operandA ]);
-        //                 break;
-
-        //             /**
-        //              * PUSH
-        //              */
-        //             case PUSH:
-        //                 // decrease `stack pointer` by 1
-        //                 cpu->registers[7] = --cpu->sp;
-        //                 // set the value of `R1` to wherever our `stack pointer`, `R7`, is pointing to
-        //                 cpu->ram[ cpu->registers[7] ] = cpu->registers[ operandA ];
-        //                 break;
-
-        //             /**
-        //              * default
-        //              */
-        //             default:
-        //                 break;
-        //             }
-
-        //         break;  // case 1
-
-        //     case 2:
-        //         next_instruction = 3;
-        //         operandA = cpu_ram_read(cpu, program_counter + 1);
-        //         operandB = cpu_ram_read(cpu, program_counter + 2);
-
-        //         switch (instruction_register)
-        //         {
-        //             case ADD:
-        //                 // printf("\nADD: %d + %d = ", cpu->registers[ operandA ], cpu->registers[ operandB ]);
-        //                 cpu->registers[ operandA ] += cpu->registers[ operandB ];
-        //                 // printf("%d\n\n", cpu->registers[ operandA ]);
-        //                 break;
-                    
-        //             case LDI:
-        //                 cpu->registers[ operandA ] = operandB;
-        //                 // printf("\nLDI: Saving %d into R[%d]\n\n", operandB, operandA);
-        //                 break;
-
-        //             case MUL:
-        //                 cpu->registers[ operandA ] = cpu->registers[ operandA ] * cpu->registers[ operandB ];
-        //                 break;
-
-        //             default:
-        //                 break;
-        //         }
-
-        //         break;  // case 2
-
-        //     default:
-        //         switch(instruction_register)
-        //         {
-        //             case HLT:
-        //                 printf("\nHLT\n\n");
-        //                 running = 0;
-        //                 break;
-
-        //             case RET:
-        //                 cpu->pc = cpu->ram[ cpu->sp++ ];
-        //                 cpu->registers[7] = cpu->pc;
-        //                 // printf("\nRETURNING TO RAM[%d]\n\n", cpu->pc);
-        //                 continue;
-        //                 break;
-
-        //             default:
-        //                 fprintf(stderr, "\n=====\nINSTRUCTION DOES NOT EXIST\n=====\n\n");
-        //         }
-        // }
