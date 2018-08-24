@@ -75,14 +75,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     // printf("~Reg-index %d, set to %d + %d = %d\n", cpu->ram[cpu->PC + 1], regA, regB, cpu->reg[cpu->ram[cpu->PC + 1]]);
     break;
   case ALU_CMP:
-    printf("~ALU_CMP: HANDLER FOUND\n");
+    // printf("~ALU_CMP: HANDLER FOUND\n");
     if (regA < regB)
       cpu->FL = (cpu->FL & 0b0) | 4;
     if (regA > regB)
       cpu->FL = (cpu->FL & 0b0) | 2;
     if (regA == regB)
       cpu->FL = (cpu->FL & 0b0) | 1;
-    printf("~ALU_CMP: cpu->FL set to %d\n", cpu->FL);
+    // printf("~ALU_CMP: cpu->FL set to %d\n", cpu->FL);
     break;
   default:
     printf("ALU instruction handler was no found.");
@@ -95,7 +95,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
  */
 void cpu_run(struct cpu *cpu)
 {
-  printf("~CPU_RUN running\n");
+  // printf("~CPU_RUN running\n");
   int running = 1; // True until we get a HLT instruction
 
   unsigned char *rgstr = cpu->reg;
@@ -188,8 +188,8 @@ void cpu_init(struct cpu *cpu)
 */
 void handle_instruction(struct cpu *cpu)
 {
-  printf("~\n\n~CURRENT PC: %d\n", cpu->PC);
-  printf("~CURRENT IR: %d\n", cpu->IR);
+  // printf("~\n\n~CURRENT PC: %d\n", cpu->PC);
+  // printf("~CURRENT IR: %d\n", cpu->IR);
   switch (cpu->IR)
   {
     /* ALU */
@@ -207,7 +207,7 @@ void handle_instruction(struct cpu *cpu)
   // case INC:
   // case DEC:
   case CMP: // **
-    printf("~CMP. HANDLER FOUND\n");
+    // printf("~CMP. HANDLER FOUND\n");
     alu(cpu, ALU_CMP, cpu->reg[cpu->ram[cpu->PC + 1]], cpu->reg[cpu->ram[cpu->PC + 2]]);
     break;
   // case AND:
@@ -246,11 +246,11 @@ void handle_instruction(struct cpu *cpu)
     // printf("~PC set to %d\n", cpu->PC);
     break;
   case JEQ: // **
-    printf("~JEQ. HANDLER FOUND\n");
+    // printf("~JEQ. HANDLER FOUND\n");
     if ((cpu->FL & 0b1) == 1)
     {
       cpu->PC = cpu->reg[cpu->ram[cpu->PC + 1]];
-      printf("cpu->PC set to %d", cpu->PC);
+      // printf("~cpu->PC set to %d", cpu->PC);
     }
     else
     {
@@ -258,11 +258,11 @@ void handle_instruction(struct cpu *cpu)
     }
     break;
   case JNE: // **
-    printf("~JNE. HANDLER FOUND\n");
+    // printf("~JNE. HANDLER FOUND\n");
     if ((cpu->FL & 0b1) == 0)
     {
       cpu->PC = cpu->reg[cpu->ram[cpu->PC + 1]];
-      printf("cpu->PC set to %d", cpu->PC);
+      // printf("~cpu->PC set to %d", cpu->PC);
     }
     else
     {
