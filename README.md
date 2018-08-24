@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -31,8 +31,11 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
+- Concurrency is when the CPU performs two or more tasks at the same time. This can be multitasking on a single core or splitting the tasks onto separate cores in a multicore processor.
+
 * Describe assembly language and machine language:
 
+- Assembly language is a low level human readable language. Machine language is not human readable - it contains the instructions for the computer to read and execute tasks, written in binary.
 
 ## Coding
 
