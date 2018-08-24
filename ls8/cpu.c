@@ -74,26 +74,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       reg[regA] += reg[regB];
       break;
-    case ALU_CMP:
-      printf("FL: %d\n", cpu->FL);
-      if ((regA - regB) < 0)
-      {
-          cpu->FL = 4;
-      }
-      else if ((regA - regB) == 0)
-      {
-          cpu->FL = 1;
-      }
-      else if ((regA - regB) > 0)
-      {
-          cpu->FL = 2;
-      }
-      else
-      {
-          cpu->FL = 0;
-      }
-      printf("FL: %d\n", cpu->FL);
-      break;
     default:
       break;
   }
@@ -161,15 +141,39 @@ void cpu_run(struct cpu *cpu)
 			cpu->registers[7] += 1;
             break;
         case CMP:
-            alu(cpu, ALU_CMP, operandA, operandB);
+            // compare values of reg at operand A vs B
+            // if same, FL = 1
+            if (cpu->registers[operandA] == cpu->registers[operandB])
+            {
+                cpu->FL = 1;
+            }
             cpu->PC += 3;
             break;
         case JMP:
+            // jump to address stored in given register
             cpu->PC = cpu->registers[operandA];
             break;
         case JEQ:
+            // if FL is 1, jump
+            if (cpu->FL == 1)
+            {
+                cpu->PC = cpu->registers[operandA];
+            }
+            else
+            {
+                cpu->PC += 2;
+            }
             break;
+            // if FL is 0, jump
         case JNE:
+            if (cpu->FL == 0)
+            {
+                cpu->PC = cpu->registers[operandA];
+            }
+            else
+            {
+                cpu->PC += 2;
+            }
             break;
         default:
             fprintf(stderr, "wtf\n");
