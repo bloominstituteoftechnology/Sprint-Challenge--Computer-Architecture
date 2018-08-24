@@ -4,42 +4,63 @@
 
 Complete the following problems:
 
-* Convert `11001111` binary
+- Convert `11001111` binary
 
-    to hex:
+  to hex:
+  1100 1111 = CF
+  8*1 + 4*1 + 2*0 + 1*0 + 8*1 + 4*1 + 2*1 + 1*1 = CF
 
-    to decimal:
-
+  to decimal:
+  11001111 = 207
+  128*1 + 64*1 + 32*0 + 16*0 + 8*1 + 4*1 + 2*1 + 1*1 = 207
 
 * Convert `4C` hex
 
-    to binary:
+  to binary:
+  4 C = 01001100
+  0100 1100 = 01001100
 
-    to decimal:
+  to decimal:
+  4 C
+  16*4 + 1*12 = 76
+  64 + 12 = 76
 
+- Convert `68` decimal
 
-* Convert `68` decimal
+  to binary:
 
-    to binary:
+  1. 68 / (2^6 = 64) = 1,06.. -> 68 is CONTAINED in a 7-digit binary number -> 0b1000000
+  2. 68 % (2^6 = 64) = 4
+  3. 4 / (2^2 = 4) = 0 -> 4 is CONTAINED in a 3-digit binary number -> 0b100
+  4. 4 % (2^2 = 4) = 0
+  5. 0b1000000 & 0b100 = 0b1000100 (RESULT)
 
-    to hex:
+to hex:
 
+1. 68 / (16^1 = 16) = 4,25 -> 68 is CONTAINED in a 2-digit hex number -> 0x40
+2. 68 % (16^1 = 16) = 4
+3. 4 / (16^0 = 1) = 4 -> 4 is CONTAINED in a 1-digit hex number -> 0x4
+4. 0x40 & 0x4 = 0x44 (RESULT)
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+- Explain how the CPU provides concurrency or parallelism:
 
-* Describe assembly language and machine language:
+* CPU in conjunction with the RAM is able to manage several processes (of course the Scheduler has an important role), CPU by itself is amnesic, it only knows what it is doing at the current instance of time (current cycle), no more far away. In order to provide some mnemonic help, the CPU get help from the RAM's big mnemonic capabilities. At the time the CPU has to handle a totally different Process/Thread, it passes 'all its current execution state' to the RAM, and trust blindly the RAM will take care of that information/state. The RAM puts that info pilled down into the Stack queue (a general queue or at the Stack that belongs to that specific Process/Thread that the CPU was running). This architecture enables a single-tasking CPU to run several numbers of different Processes/Threads.
 
+- Describe assembly language and machine language:
+
+* Machine Language: Is a non human-friendly representation of tasks to be performed sequentially, one after the other. Just 1's and 0's with an specific meaning.
+* Assembly Language: Is a layer of abstraction on top of Machine Lnaguage (ML) that makes the ML more human-friendly, in a way the we as developers can 'write' instruction using the symbols we are confortable with (Alphabeth, in that case), representational symbols we can understand in an easy way.
 
 ## Coding
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
+- Copy your source into this repo, or...
+- Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
   you've been using all along.
 
 Sprint Challenge:
@@ -51,7 +72,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions.
 It should print:
@@ -155,4 +175,3 @@ It should print:
 # TEST5 (73):
 00000001 # HLT
 ```
-
