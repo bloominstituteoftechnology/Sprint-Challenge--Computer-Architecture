@@ -94,6 +94,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char operandA = cpu_read(cpu, cpu->pc+1);
     unsigned char operandB = cpu_read(cpu, cpu->pc+2);
     // 2. switch() over it to decide on a course of action.
+    int inst_set_pc = (IR >> 4) & 1;
 
     switch (IR)
     {
@@ -125,7 +126,6 @@ void cpu_run(struct cpu *cpu)
 
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
-        cpu->pc += 2;
         break;
 
       case JMP:
@@ -136,16 +136,18 @@ void cpu_run(struct cpu *cpu)
         if(cpu->fl == 1) {
           cpu_jump(cpu, operandA);
         }
-        cpu->pc++;
-
+        else {
+          inst_set_pc = 0;
+        }  
         break;
 
       case JNE:
-        if(cpu->fl == 0) {
+        if(cpu->fl != 1) {
           cpu_jump(cpu, operandA);
         }
-        cpu->pc++;
-
+        else  { 
+          inst_set_pc = 0;
+        }
         break;
 
       default:
@@ -154,7 +156,11 @@ void cpu_run(struct cpu *cpu)
     }
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
-    cpu->pc += (IR >> 6) + 1;
+    
+    if (!inst_set_pc) {
+      cpu->pc += (IR >> 6) + 1;
+    }
+    
 
   }
 }
