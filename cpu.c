@@ -252,7 +252,7 @@ void cpu_load(struct cpu *cpu, char *program)
 
   while (getline(&line, &len, fp) != -1)
   {
-    if (line[0] != '#')
+    if (line[0] != '#' && strlen(line) > 1)
       data[data_len++] = strtoul(line, NULL, 2);
   }
 
