@@ -28,16 +28,20 @@ unsigned char pop(struct cpu *cpu)
   cpu_ram_write(cpu, cpu->registers[7], cpu->registers[reg]);
 }
  void compare(struct cpu *cpu, unsigned char regA, unsigned char regB) {
-  cpu->fl = 0x00;
+  cpu->flag = 0x00;
   unsigned char valA = cpu->registers[regA];
   unsigned char valB = cpu->registers[regB];
   if (valA == valB) {
-    cpu->fl += 1;
+    cpu->flag += 1;
   } else if (valA > valB) {
-    cpu->fl += 2;
+    cpu->flag += 2;
   } else {
-    cpu->fl += 4;
+    cpu->flag += 4;
   }
+}
+
+void jump(struct cpu *cpu, unsigned char reg) {
+  cpu->pc = cpu->registers[reg];
 }
 
 void cpu_load(struct cpu *cpu, char *file)
@@ -139,7 +143,13 @@ void cpu_run(struct cpu *cpu)
         break;
 
         case JMP:
-        cpu->pc = cpu->registers[operandA];
+         jump(cpu, operandA);
+        break;
+
+       case JEQ:
+        if(cpu->flag == 00000001) {
+          jump(cpu, operandA);
+        }
         break;
 
       default:
@@ -160,6 +170,6 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
   cpu->registers[7] = 0xF4;
-  cpu->fl = 0x00;
+  cpu->flag = 0x00;
   // TODO: Zero registers and RAM
 }
