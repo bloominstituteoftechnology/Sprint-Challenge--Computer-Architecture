@@ -1,5 +1,7 @@
 # Sprint-Challenge--Computer-Architecture
 
+# https://github.com/LambdaSchool/Computer-Architecture/pull/33
+
 ## Binary, Decimal, and Hex
 
 Complete the following problems:
@@ -41,6 +43,8 @@ Options for submission, whichever is easier for you:
 * Copy your source into this repo, or...
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture-One` repo
   you've been using all along.
+
+  # https://github.com/LambdaSchool/Computer-Architecture/pull/33
 
 Sprint Challenge:
 
