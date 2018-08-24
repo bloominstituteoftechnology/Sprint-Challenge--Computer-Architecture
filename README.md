@@ -30,9 +30,13 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+Even single core processors can perform multiple operations simultaneously. They can have multiple pipelines that operate concurrently. One could be doing an add while another is doing a load from memory. Hyperthreading for example allows different pipelines in a single core can not only be executing instructions concurrently, but those operations can be for separate threads. The CPU can issue instructions for different threads on the same clock tick.
+
 
 * Describe assembly language and machine language:
+Assembly language: any low-level programming language in which there is a very strong correspondence between the program's statements and the architecture's machine code instructions.
 
+Machine language: Programs written in high-level languages are translated into assembly language or machine language by a compiler. Assembly language programs are translated into machine language by a program called an assembler. Every CPU has its own unique machine language.
 
 ## Coding
 
