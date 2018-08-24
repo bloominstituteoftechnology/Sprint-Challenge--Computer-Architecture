@@ -37,6 +37,8 @@ void cpu_load(struct cpu *cpu, char* filename)
     while (fgets(line, sizeof(line), file) != NULL)
     {
         // save the content of each line as an `unsigned long` into `cpu->ram`
+        // if (point == line)
+        //     continue;
         cpu->ram[ index++ ] = strtoul(line, &point, 2);
     }
 }
@@ -99,6 +101,48 @@ void cpu_run(struct cpu *cpu)
                         break;
                     
                     /**
+                     * JEQ
+                     */
+                    case JEQ:
+                        // printf("\nJEQ\n\n");
+                        if (cpu->fl == 1)
+                        {
+                            // printf("JEQ: JUMP TO RAM[%d]\n\n", cpu->registers[ operandA ]);
+                            cpu->pc = cpu->registers[ operandA ];
+                            cpu->fl = 0b0;
+                        }
+
+                        cpu->fl = 0b0;
+                        break;
+
+                    /**
+                     * JMP
+                     */
+                    case JMP:
+                        // printf("\nJMP\n\n");
+                        // printf("\nJUMPING TO RAM[%d]\n\n", cpu->registers[ operandA ]);
+                        cpu->pc = cpu->registers[ operandA ] + 1;
+                        // printf("\nPC: %d\n\n", cpu->pc);
+                        // continue;
+                        break;
+
+                    /**
+                     * JNE
+                     */
+                    case JNE:
+                        // printf("\nJNE: CPU->FL = %d\n\n", cpu->fl);
+
+                        if (cpu->fl > 1 || cpu->fl == 0)
+                        {
+                            // printf("\nJUMPING TO RAM[%d]\n\n", cpu->registers[ operandA ]);
+                            cpu->pc = cpu->registers[ operandA ];
+                            // printf("\nRAM[%d]\n\n", cpu->pc);
+                            continue;
+                        }
+                        
+                        break;
+                    
+                    /**
                      * POP
                      */
                     case POP:
@@ -148,7 +192,7 @@ void cpu_run(struct cpu *cpu)
                         break;
 
                     case CMP:
-                        printf("\nCMP: %d || %d = ", cpu->registers[ operandA ], cpu->registers[ operandB ]);
+                        // printf("\nCMP: %d || %d = ", cpu->registers[ operandA ], cpu->registers[ operandB ]);
 
                         if (cpu->registers[ operandA ] > cpu->registers[ operandB ])
                             cpu->fl = 0b01;
@@ -157,12 +201,12 @@ void cpu_run(struct cpu *cpu)
                         else
                             cpu->fl = 0b1;
 
-                        printf("%d\n\n", cpu->fl);
+                        // printf("%d\n\n", cpu->fl);
                         break;
                     
                     case LDI:
                         cpu->registers[ operandA ] = operandB;
-                        printf("\nLDI: Saving %d into R[%d]\n\n", operandB, operandA);
+                        // printf("\nLDI: Saving %d into R[%d]\n\n", operandB, operandA);
                         break;
 
                     case MUL:
@@ -179,7 +223,7 @@ void cpu_run(struct cpu *cpu)
                 switch(instruction_register)
                 {
                     case HLT:
-                        printf("\nHLT\n\n");
+                        // printf("\nHLT\n\n");
                         running = 0;
                         break;
 
@@ -191,7 +235,7 @@ void cpu_run(struct cpu *cpu)
                         break;
 
                     default:
-                        fprintf(stderr, "\n=====\nINSTRUCTION DOES NOT EXIST\n=====\n\n");
+                        in_call = 1;
                 }
         }
 
@@ -211,7 +255,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
     // TODO: Initialize the PC and other special registers
-    cpu->fl = 00000000;
+    cpu->fl = 0b00000000;
     cpu->pc = 0;
     cpu->sp = 244;
     cpu->registers[7] = cpu->sp;
