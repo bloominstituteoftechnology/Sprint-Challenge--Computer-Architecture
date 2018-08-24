@@ -30,20 +30,24 @@ void push(struct cpu *cpu, unsigned char reg)
 }
 
 void compare(struct cpu *cpu, unsigned char regA, unsigned char regB) {
-  cpu->fl = 0x00;
   unsigned char valA = cpu->registers[regA];
   unsigned char valB = cpu->registers[regB];
+  
   if (valA == valB) {
-    cpu->fl += 1;
+    cpu->fl = 1;
+    printf("%d == %d\nflag is set to: %d\n\n", valA, valB, cpu->fl);
   } else if (valA > valB) {
-    cpu->fl += 2;
+    cpu->fl = 2;
+    printf("%d > %d\nflag is set to: %d\n\n", valA, valB, cpu->fl);
   } else {
-    cpu->fl += 4;
+    cpu->fl = 4;
+    printf("%d < %d\nflag is set to: %d\n\n", valA, valB, cpu->fl);
   }
 }
 
-void jump(struct cpu *cpu, unsigned char reg) {
-  cpu->pc = cpu->registers[reg];
+void jump(struct cpu *cpu, unsigned char reg, unsigned char IR) {
+  cpu->pc = cpu->registers[reg] - ((IR >> 6) + 1);
+  printf("jumped to address: %d\n\n", cpu->registers[reg]);
 }
 
 void cpu_load(struct cpu *cpu, char *file)
@@ -66,7 +70,7 @@ void cpu_load(struct cpu *cpu, char *file)
     }
 
     cpu->ram[address++] = new_line;
-    printf("%lu\n", new_line);
+    //printf("%lu\n", new_line);
   }
 
   fclose(f);
@@ -103,11 +107,12 @@ void cpu_run(struct cpu *cpu)
 
     switch(IR) {
       case LDI:
+        printf("LDI called\n----------\nregister %d set to %d\n\n", operandA, operandB);
         cpu->registers[operandA] = operandB;
         break;
 
       case PRN:
-        printf("%d\n", cpu->registers[operandA]);
+        printf("##########\nPRINT: %d\n##########\n\n", cpu->registers[operandA]);
         break;
 
       case HLT:
@@ -140,16 +145,28 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case CMP:
+      printf("CMP called\n----------\n");
         compare(cpu, operandA, operandB);
         break;
 
       case JMP:
-        jump(cpu, operandA);
+        printf("JMP called\n----------\n");
+        jump(cpu, operandA, IR);
         break;
 
       case JEQ:
+        printf("JEQ called\n----------\n");
         if(cpu->fl == 00000001) {
-          jump(cpu, operandA);
+          printf("flag = %d\njumping to %d\n\n", cpu->fl, operandA);
+          jump(cpu, operandA, IR);
+        }
+        break;
+
+      case JNE:
+        printf("JNE called\n----------\n");
+        if(cpu->fl != 00000001) {
+          printf("flag = %d\njumping to address in register %d...\n", cpu->fl, operandA);
+          jump(cpu, operandA, IR);
         }
         break;
 
