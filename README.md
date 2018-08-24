@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex:CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -30,9 +30,13 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+Even single core processors can perform multiple operations simultaneously. They can have multiple pipelines that operate concurrently. One could be doing an add while another is doing a load from memory. Hyperthreading for example allows different pipelines in a single core can not only be executing instructions concurrently, but those operations can be for separate threads. The CPU can issue instructions for different threads on the same clock tick.
+
 
 * Describe assembly language and machine language:
+Assembly language: any low-level programming language in which there is a very strong correspondence between the program's statements and the architecture's machine code instructions.
 
+Machine language: Programs written in high-level languages are translated into assembly language or machine language by a compiler. Assembly language programs are translated into machine language by a program called an assembler. Every CPU has its own unique machine language.
 
 ## Coding
 
