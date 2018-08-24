@@ -155,4 +155,3 @@ It should print:
 # TEST5 (73):
 00000001 # HLT
 ```
-
