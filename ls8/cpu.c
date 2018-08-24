@@ -141,6 +141,22 @@ void cpu_run(struct cpu *cpu)
         autoset = 0;
         break;
 
+      case JEQ:
+        if (cpu->FL == 1)
+        {
+          cpu->PC = cpu->registers[operandA];
+          autoset = 0;
+        }
+        break;
+
+      case JNE:
+        if (cpu->FL != 1)
+        {
+          cpu->PC = cpu->registers[operandA];
+          autoset = 0;
+        }
+        break;
+
       default:
         running = 0;
         break;
