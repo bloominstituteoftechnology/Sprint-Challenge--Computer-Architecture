@@ -257,7 +257,18 @@ void handle_instruction(struct cpu *cpu)
       cpu->PC = cpu->PC + 2;
     }
     break;
-  // case JNE:  // **
+  case JNE: // **
+    printf("~JNE. HANDLER FOUND\n");
+    if ((cpu->FL & 0b1) == 0)
+    {
+      cpu->PC = cpu->reg[cpu->ram[cpu->PC + 1]];
+      printf("cpu->PC set to %d", cpu->PC);
+    }
+    else
+    {
+      cpu->PC = cpu->PC + 2;
+    }
+    break;
   // case JGT:
   // case JLT:
   // case JLE:
