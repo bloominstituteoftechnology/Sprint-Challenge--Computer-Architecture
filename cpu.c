@@ -329,7 +329,7 @@ void cpu_run(struct cpu *cpu)
         cpu->PC+=difference;
         break;
       case PRA:
-        printf("%c\n", reg[operandA]);
+        printf("%c", cpu->ram[reg[operandA]]);
         cpu->PC+=difference;
         break;
       case PRN:
