@@ -42,6 +42,10 @@ void compare(struct cpu *cpu, unsigned char regA, unsigned char regB) {
   }
 }
 
+void jump(struct cpu *cpu, unsigned char reg) {
+  cpu->pc = cpu->registers[reg];
+}
+
 void cpu_load(struct cpu *cpu, char *file)
 {
   FILE * f;
@@ -140,7 +144,13 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case JMP:
-        cpu->pc = cpu->registers[operandA];
+        jump(cpu, operandA);
+        break;
+
+      case JEQ:
+        if(cpu->fl == 00000001) {
+          jump(cpu, operandA);
+        }
         break;
 
       default:
