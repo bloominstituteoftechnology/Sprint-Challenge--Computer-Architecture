@@ -6,24 +6,73 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: 0xCF
 
-    to decimal:
+    **WHY:**
 
+        1100 1111
+        12   15
+        C    F
+
+    to decimal: 207
+
+    **WHY:**
+
+        +---------- 128 place: 128 * 1 => 128
+        |+--------- 64 place: 64 * 1    +  64
+        ||+-------- 32 place: 32 * 0    +   0
+        |||+------- 16 place: 16 * 0    +   0
+        ||||+------ 8 place: 8 * 1      +   8
+        |||||+----- 4 place: 4 * 1      +   4
+        ||||||+---- 2 place: 2 * 1      +   2
+        |||||||+--- 1 place: 1 * 1      +   1
+        ||||||||                       ------
+        11001111                          207 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 0b1001100
 
-    to decimal:
+    **WHY:**
 
+        4    C
+        4    16
+        0100 1100
+        
+    to decimal: 76
 
+    **WHY:**
+
+        +---- 16 place: 16 * 4 => 64
+        |+--- 1 place: 1 * 12   + 12
+        ||                     -----
+        4C                        76
+        
 * Convert `68` decimal
 
-    to binary:
+    to binary: 0b1000100
 
-    to hex:
+    **WHY:**
 
+        +---------- 128 place: 0 128's in 68 => 68
+        |+--------- 64 place: 1 64 in 68     => 4
+        ||+-------- 32 place: 0 32's in 4    => 4
+        |||+------- 16 place: 0 16's in 4    => 4
+        ||||+------ 8 place: 0 8's in 4      => 4
+        |||||+----- 4 place: 1 4 in 4        => 0
+        ||||||+---- 2 place: 0 2's in 2      => 0
+        |||||||+--- 1 place: 0 1's in 0      => 0
+        ||||||||
+        01000100
+
+    to hex: 0x44
+
+    **WHY:**
+
+        +---- 16 place: 4 16's in 68 => 4
+        |+--- 1 place: 4 1's in 4    => 0
+        ||
+        44
 
 ## Architecture
 
