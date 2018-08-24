@@ -118,7 +118,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char operandB = cpu_ram_read(cpu, cpu->PC + 2);
     // some operations need the two bytes after PC to perform operations
     // so we're creating variables just in case
-    printf("IR %d\n PC %d\n", IR, cpu->PC);
+    //printf("IR %d\n PC %d\n", IR, cpu->PC);
     switch (IR)
     {
         case MUL:
@@ -165,6 +165,7 @@ void cpu_run(struct cpu *cpu)
             cpu->PC += 3;
             break;
         case JMP:
+            cpu->PC = cpu->registers[operandA];
             break;
         case JEQ:
             break;
