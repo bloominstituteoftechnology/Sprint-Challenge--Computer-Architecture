@@ -231,6 +231,7 @@ void cpu_init(struct cpu *cpu)
 {
     // TODO: Initialize the PC and other special registers
     cpu->PC = 0;
+    cpu->FL = 0;
 
     // TODO: Zero registers and RAM
     // for loop to put 0 value into every position ..... or just use memset
