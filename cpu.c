@@ -99,11 +99,13 @@ void cpu_run(struct CPU *cpu)
         
         case CMP:
             if(reg[operandA] == reg[operandB]) {
-            cpu->FL = 1;
+            cpu->FL = 0x01;
             }
             else {
-            cpu->FL = 0;
+            cpu->FL = E_FLAG;
             }
+            PC +=bitshift;
+            break;
 
         case DEC:
             reg[operandA]--;
