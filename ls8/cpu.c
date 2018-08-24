@@ -139,6 +139,10 @@ void cpu_run(struct cpu *cpu)
         compare(cpu, operandA, operandB);
         break;
 
+      case JMP:
+        cpu->pc = cpu->registers[operandA];
+        break;
+
       default:
         printf("unknown instruction: %02x, %02x", cpu->pc, IR);
         exit(2);
