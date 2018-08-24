@@ -29,6 +29,7 @@ enum alu_op {
 #define ADD  0b10100000
 #define POP  0b01000110
 #define PUSH 0b01000101
+#define AND  0b10101000
 #define CALL 0b01010000
 #define RET  0b00010001
 

@@ -30,7 +30,10 @@ void cpu_load(struct cpu *cpu, char *file)
     unsigned long int new_line;
 
     new_line = strtoul(line, &endptr, 2);
-    cpu->ram[address++] = new_line;
+
+    if (endptr != line) {
+      cpu->ram[address++] = new_line;
+    }
   }
 
   fclose(f);
@@ -52,10 +55,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   }
 }
 
-void pop(struct cpu *cpu, unsigned char reg) 
+unsigned char pop(struct cpu *cpu) 
 {
-  cpu->registers[reg] = cpu->registers[7];
+  unsigned char val = cpu->registers[7];
   cpu->registers[7] ++;
+  return val;
 }
 
 void push(struct cpu *cpu, unsigned char reg) 
@@ -98,8 +102,17 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_ADD, operandA, operandB);
         break;
       
+      case CALL:
+        push(cpu, cpu->pc + 2);
+        cpu->pc = cpu->registers[operandA];
+        break;
+
+      case RET:
+        cpu->pc = pop(cpu);
+        break;
+
       case POP:
-        pop(cpu, operandA);
+        cpu->registers[operandA] = pop(cpu);
         break;
 
       case PUSH:
