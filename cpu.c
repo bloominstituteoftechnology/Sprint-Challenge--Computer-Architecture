@@ -102,7 +102,7 @@ void cpu_run(struct CPU *cpu)
             cpu->FL = 0x01;
             }
             else {
-            cpu->FL = E_FLAG;
+            cpu->FL = 0x00;
             }
             PC +=bitshift;
             break;
@@ -135,7 +135,6 @@ void cpu_run(struct CPU *cpu)
             }
             break;
         case JMP:
-            reg[SP] = reg[SP - 1];
             PC = reg[operandA];
             break;
         
