@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     
     struct cpu cpu; 
 
-    if (arc != 2) {
+    if (argc != 2) {
         fprintf(stderr, "Usage: main filename.\n"); 
         exit(1); 
     }

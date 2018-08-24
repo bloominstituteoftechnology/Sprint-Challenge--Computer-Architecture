@@ -4,9 +4,10 @@
 
 // Holds all information about the CPU 
 struct cpu {
-    unsigned char pc; // Program Counter 
+    unsigned char pc; // Program Counter, address of the currently executing instruction
     unsigned char reg[8];  // Registers Array 
     unsigned char ram[256]; // RAM Array 
+    unsigned char flag; // FLAG 
 }; 
 
 // Other General Purpose Register Names 
@@ -14,8 +15,9 @@ struct cpu {
 
 // Arithmetic Logic Unit Operations 
 enum alu_op {
-    ALU_MUL, 
-    ALU_ADD
+    ALU_ADD,
+    ALU_MUL,
+    ALU_CMP 
 }; 
 
 // Arithmetic Logic Unit Operations 
