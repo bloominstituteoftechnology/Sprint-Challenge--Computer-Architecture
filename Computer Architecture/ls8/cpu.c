@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cpu.h"
+#include <string.h>
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address)
 {
@@ -46,7 +47,7 @@ void cpu_load(struct cpu *cpu, char *file)
   {
     unsigned char *endptr;
     unsigned long int new_line;
-    new_line = strtoul(line, &endpts, 2);
+    new_line = strtoul(line, &endptr, 2);
     if (line == endptr)
     {
       continue;
@@ -84,7 +85,8 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
-
+  int address;
+  int IR_size;
   while (running)
   {
     // TODO
@@ -143,6 +145,40 @@ void cpu_run(struct cpu *cpu)
       cpu->pc = cpu_ram_read(cpu, cpu->reg[7]);
       cpu->reg[7]++;
       break;
+    
+    case CMP:
+      if(cpu->reg[operandA] == cpu->reg[operandB])
+      {
+        cpu->FL = 1;
+      }
+      cpu->pc += 3;
+      break;
+
+    case JMP:
+      cpu->pc = cpu->reg[operandA];
+      break;
+
+    case JEQ:
+      if (cpu->FL == 1)
+      {
+        cpu->pc = cpu->reg[operandA];
+      }
+      else 
+      {
+        cpu->pc += 2;
+      }
+      break;
+    
+    case JNE:
+      if(cpu->FL == 0)
+      {
+        cpu->pc = cpu->reg[operandA];
+      }
+      else
+      {
+        cpu->pc += 2;
+      }
+      break;
 
     default:
       printf("unknown instruction at %02x: %02x\n", cpu->pc, IR);
@@ -159,7 +195,10 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
-  cpu->reg[7] = 0xF4;
+  // cpu->reg[7] = 0xF4;
+  memset(cpu->reg, 0, sizeof(cpu->reg));
+  memset(cpu->ram, 0, sieof(cpu->ram));
+  cpu->FL = 00000000;
   // TODO: Zero registers and RAM
   for (int i = 0; i < 256; i++){
     cpu->reg[i] = 0;
