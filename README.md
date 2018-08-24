@@ -96,7 +96,7 @@ Options for submission, whichever is easier for you:
 
 Sprint Challenge:
 
-[See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture-One/blob/master/LS8-SPEC.md)
+[See the LS-8 spec for details](https://github.com/d-vail/Computer-Architecture/blob/master/LS8-spec.md)
 
 Add the `CMP` instruction and `equal` flag to your LS-8.
 
@@ -105,7 +105,7 @@ Add the `JMP` instruction.
 Add the `JEQ` and `JNE` instructions.
 
 
-[Here is some code](sctest.ls8) that exercises the above instructions.
+[Here is some code](./ls8/test/sctest.ls8) that exercises the above instructions.
 It should print:
 
 ```
