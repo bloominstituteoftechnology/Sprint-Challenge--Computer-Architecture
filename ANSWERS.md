@@ -67,8 +67,8 @@ Let's do a table. I love tables!
 |-|16<sup>1</sup>|16<sup>0</sup>|
 |:--:|:--:|:--:|
 |*Hex*|4|C|
-|*Binary*|(`100 * 10000`)|(`1101 * 1`)|
-|*Decimal*|(`4 * 16`)|(`13 * 1`)|
+|*Binary*|(`100 * 10000`)|(`1100 * 1`)|
+|*Decimal*|(`4 * 16`)|(`12 * 1`)|
 
 In decimal, the hex number can be parsed as
 
@@ -79,16 +79,16 @@ Specifically, the first digit shows how many `16s` are there in the number, whil
 So, let's get it:
 
 ```
-(4 * 16) + (13 * 1) = x
-    64   +     13   = x
-        77          = x
+(4 * 16) + (12 * 1) = x
+    64   +     12   = x
+        76          = x
 ```
 
 **Decimal**: **`77`**
 
 Binary is similar in process:
 
-"`100` (4) `10000` (`16`'s) and `1101` (13) `1`'s"
+"`100` (4) `10000` (`16`'s) and `1100` (12) `1`'s"
 
 This might be a harder way to do it, but I can't think of an easier one, so let's get this out of the way:
 
@@ -104,16 +104,16 @@ This might be a harder way to do it, but I can't think of an easier one, so let'
  1000000
 
  (Binary 13 * Binary 1)
-   1101
+   1100
       1
  x_____
-   1101
+   1100
 
 (Binary 64 + Binary 13)
  1000000
-    1101
+    1100
  +______
- 1001101
+ 1001100
 ```
 
 **Binary**: **`1001101`**
@@ -122,8 +122,8 @@ This might be a harder way to do it, but I can't think of an easier one, so let'
 
 ```
 Hex:        4C
-Decimal:    77
-Binary:     1001101
+Decimal:    76
+Binary:     1001100
 ```
 
 ---
@@ -142,7 +142,7 @@ To convert `68` to binary, we can think about what powers of two are in the numb
 |In there?|Yes|No|No|No|Yes|No|No|
 |Binary |1|0|0|0|1|0|0|
 
-To break it down, we think of the highest power of two we can divide into the decimal number that equals 1 or more. 64, or 2<sup>6</sup>, can go into `68`, but not 128, or 2<sup>7</sup>. So in our table, we'll set the highest power of two to 2<sup>6</sup>. Then we say `Yes` in our table, as in `Yes`, there's a 2<sup>6</sup> in there.
+To break it down, we think of the highest power of two we can divide into the decimal and get a result that equals 1 or more. 64, or 2<sup>6</sup>, can go into `68`, but not 128, or 2<sup>7</sup>. So in our table, we'll set the highest power of two to 2<sup>6</sup>. Then we say `Yes` in our table, as in `Yes`, there's a 2<sup>6</sup> in there.
 
 Then we subtract 64 from our `68`, leaving us with `4` left over. Then we do the process for each preceding power of 2. So is 2<sup>5</sup>/32 in `4`? Nope. Put `No` then move on. Is 2<sup>4</sup>/16 in `4`? Nope. Put `No` then move on. We do this until reach 2<sup>0</sup>.
 
@@ -171,41 +171,41 @@ Hex:        44
 
 1. Explain how the CPU provides concurrency:
 
-Concurrency is established through *multi-threading*.
+Concurrency is established through *multi-threading*. In multi-threading, threads share the resources of a core(s) in a CPU. A thread is "the smallest thread of execution that can be managed by a scheduler [in the OS]". 
+
+From the little that I read, and even less of what I understand, multi-threading seems to be try to maximise the utilisation of the CPU by performing other instructions while another instruction is pending. A possible example might be if a given instruction needs to access something in RAM, which takes a relatively long time. Perhaps during that time, the CPU can do another instruction or two while that is resolving. (*I might be totally wrong though.*)
+
+![multithreadimg](https://upload.wikimedia.org/wikipedia/commons/a/a5/Multithreaded_process.svg)
+
+As we discussed last week, the CPU can give a _feeling_ of processes running at the same time through scheduling, which the OS takes care of. To my understanding, the CPU isn't necessarily doing multiple things at the same time, but is rather rapidly switching the one thing it is working on, doing a bit of work on each many many times per second.
+
+*Resource used*: [Multithreading (computer architecture)](https://en.wikipedia.org/wiki/Multithreading_(computer_architecture))
 
 2. Describe assembly language and machine language:
 
-Machine language is the pure binary code that the CPU can understand and process. The `0`'s and `1`s can be converted to equivalent electrical signals that can be received from the CPU and sent to various components of the computer.
+Machine language is the pure binary code that the CPU can understand and process. The `0`'s and `1`s can be converted to equivalent electrical signals that can be received by the CPU and can be sent to various components of the computer.
 
 However, we don't process data that way, so reading `0`'s and `1`s is a little crazy. This is where assembly comes in. The assembly language is one abstraction level up from machine language.
 
-What makes assembly language different from other languages like C or JS is that it's a direct and faithful translation of machine code. Basically, each machine code instruction is translated into simple commands, values, and register addresses that we can better understand. But that's it: it's only human-readable machine code.
+What makes assembly language different from other languages like C or JS is that it's a direct and faithful translation of machine code. Basically, each machine code instruction is directly translated into simple commands, values, and register addresses that we can better understand. But that's it: it's only human-readable machine code.
 
 In contrast, most other programming languages further abstract and simplify common patterns of operation. For example:
 
-```c
-void mult2print(int x)
-{
-    printf("%i\n", x + x);
+```js
+function mult2print(x) {
+    console.log(x + x);
 }
 
-void main()
-{
-    int num = 10;
-    mult2print(num);
+mult2print(10);
 
-    num = 15;
-    mult2print(num);
+mult2print(15);
 
-    num = 18;
-    mult2print(num);
+mult2print(18);
 
-    num= 30;
-    mult2print(nm);
-}
+mult2print(30);
 ```
 
-This is (*my best guess of*) the C approximation of `call.ls8`. Compare this to assembly language:
+This is (*my best guess of*) the JS approximation of `call.ls8`. Compare this to assembly language:
 
 ```
 LDI     R1,MULT2PRINT
@@ -224,4 +224,4 @@ PRN     R0
 RET
 ```
 
-In the C language, the language is structured to allow programmers to better read and reason about the program, whereas in the assembly version, you'd have to pretend you're the CPU for a bit to get a handle of what this thing is doing. But the C program would need more (perhaps many more) steps for this human-readable program to be converted to machine code, whereas the assembly language is much more straightfoward in translating this to machine code.
+In the JS language, the language is structured to allow programmers to better read, write, and reason about the program. However, in the assembly version, you'd have to pretend you're the CPU for a bit to get a handle of what this thing is doing. But the C program would need more (perhaps many more) steps for this human-readable program to be converted to machine code, whereas the assembly language is much more straightfoward in translating this to machine code.

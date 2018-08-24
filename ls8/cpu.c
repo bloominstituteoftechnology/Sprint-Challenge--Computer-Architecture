@@ -7,7 +7,7 @@
 #include "cpu.h"
 #include "handlers.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
@@ -21,6 +21,7 @@ void throwHandsUpAndGiveUp(void)
 void cpu_load(struct cpu *cpu, char *argv[])
 {
   FILE *fp = fopen(argv[1], "r");
+  if (!fp) throwHandsUpAndGiveUp();
   char line[255];
   int address = 0;
 
@@ -86,11 +87,6 @@ void alu(struct cpu *cpu, enum alu_op op)
 void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
-  // Time Measurement
-  // Src: http://www.cs.loyola.edu/~jglenn/702/S2008/Projects/P3/time.html
-  struct timeval start, end;
-  gettimeofday(&start, NULL);
-
   unsigned char IR;
 
   #if DEBUG
@@ -103,14 +99,6 @@ void cpu_run(struct cpu *cpu)
     // 2. switch() over it to decide on a course of action.
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
-
-    gettimeofday(&end, NULL);
-    if ((end.tv_sec - start.tv_sec) >= 1) {
-      #if DEBUG
-      printf("\nAt least 1 second has elasped.\n");
-      #endif
-      gettimeofday(&start, NULL);
-    }
 
     IR = cpu_ram_read(cpu, cpu->PC);
 
@@ -187,7 +175,7 @@ void cpu_run(struct cpu *cpu)
   }
   // Print current stack pointer
   // At 0th place, SP should be 0xF4/244;
-  printf("current stack pointer: %i\n", cpu->SP);
+  printf("current stack pointer: %i\n\n", cpu->SP);
   #endif
 
   free(cpu->registers);
