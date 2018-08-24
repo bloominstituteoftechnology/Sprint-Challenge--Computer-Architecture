@@ -1,3 +1,15 @@
+Convert `11001111` binary to
+hex: `CF`
+decimal: `207`
+
+Convert `4C` hex to
+binary: `1001100`
+decimal: `76`
+
+Convert `68` decimal to
+binary: `1000100`
+hex: `44`
+
 <!-- Answers to the Short Answer Essay Questions go here -->
 
 1. Explain how the CPU provides concurrency:
