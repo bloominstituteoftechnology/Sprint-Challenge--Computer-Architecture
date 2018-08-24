@@ -32,6 +32,7 @@ enum alu_op
 {
   ALU_MUL,
   ALU_ADD,
+  ALU_CMP
 };
 
 #define WORD 8

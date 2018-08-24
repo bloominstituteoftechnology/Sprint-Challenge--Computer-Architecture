@@ -73,6 +73,20 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     // printf("~regA = %d and regB = %d\n", regA, regB);
     cpu->reg[cpu->ram[cpu->PC + 1]] = regA + regB;
     // printf("~Reg-index %d, set to %d + %d = %d\n", cpu->ram[cpu->PC + 1], regA, regB, cpu->reg[cpu->ram[cpu->PC + 1]]);
+    break;
+  case ALU_CMP:
+    printf("~ALU_ADD: HANDLER FOUND\n");
+    if (regA < regB)
+      cpu->FL = (cpu->FL & 0b0) | 4;
+    if (regA > regB)
+      cpu->FL = (cpu->FL & 0b0) | 2;
+    if (regA == regB)
+      cpu->FL = (cpu->FL & 0b0) | 1;
+    printf("~ALU_ADD: cpu->FL set to %d\n", cpu->FL);
+    break;
+  default:
+    printf("ALU instruction handler was no found.");
+    exit(2);
   }
 }
 
@@ -81,7 +95,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
  */
 void cpu_run(struct cpu *cpu)
 {
-  // printf("~CPU_RUN running\n");
+  printf("~CPU_RUN running\n");
   int running = 1; // True until we get a HLT instruction
 
   unsigned char *rgstr = cpu->reg;
@@ -174,8 +188,8 @@ void cpu_init(struct cpu *cpu)
 */
 void handle_instruction(struct cpu *cpu)
 {
-  // printf("~\n\nCURRENT PC: %d\n", cpu->PC);
-  // printf("~CURRENT IR: %d\n", cpu->IR);
+  printf("~\n\n~CURRENT PC: %d\n", cpu->PC);
+  printf("~CURRENT IR: %d\n", cpu->IR);
   switch (cpu->IR)
   {
     /* ALU */
@@ -192,7 +206,10 @@ void handle_instruction(struct cpu *cpu)
   // case MOD:
   // case INC:
   // case DEC:
-  // case CMP:
+  case CMP: // **
+    printf("~ALU-CMP. HANDLER FOUND\n");
+    alu(cpu, ALU_CMP, cpu->reg[cpu->ram[cpu->PC + 1]], cpu->reg[cpu->ram[cpu->PC + 2]]);
+    break;
   // case AND:
   // case NOT:
   // case OR:
@@ -228,8 +245,8 @@ void handle_instruction(struct cpu *cpu)
     cpu->PC = cpu->reg[cpu->ram[cpu->PC + 1]];
     // printf("~PC set to %d\n", cpu->PC);
     break;
-  // case JEQ:
-  // case JNE:
+  // case JEQ:  // **
+  // case JNE:  // **
   // case JGT:
   // case JLT:
   // case JLE:
@@ -269,7 +286,7 @@ void handle_instruction(struct cpu *cpu)
     printf("%c\n", cpu->reg[cpu->ram[cpu->PC + 1]]);
     break;
   default:
-    // printf("~The IR %d-instruction has no handler\n", cpu->IR);
+    printf("~The IR %d-instruction has no handler\n", cpu->IR);
     exit(2);
   }
 };

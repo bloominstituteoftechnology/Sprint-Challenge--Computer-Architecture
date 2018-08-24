@@ -1,2 +1,6 @@
-something no interesting
-end
+10100111 # CMP R0,R1
+00000000
+00000001
+00000001 # HLT
+
+10100111
