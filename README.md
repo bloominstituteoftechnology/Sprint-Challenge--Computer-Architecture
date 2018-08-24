@@ -1,7 +1,7 @@
 # Sprint-Challenge--Computer-Architecture
 
 ## Binary, Decimal, and Hex
-
+ 
 Complete the following problems:
 
 * Convert `11001111` binary
