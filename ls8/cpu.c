@@ -79,6 +79,21 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
         registers[regA] += registers[regB];
         break;
+    case ALU_CMP:;
+        int result = cpu->registers[regA] - cpu->registers[regB];
+        if (result == 0)
+        {
+            cpu->FL = 1;
+        }
+        else if (result > 0)
+        {
+            cpu->FL = 2;
+        }
+        else
+        {
+            cpu->FL = 4;
+        }
+        break;
     }
 }
 
@@ -175,6 +190,26 @@ void cpu_run(struct cpu *cpu)
             *PC = cpu_ram_read(cpu, *SP);
             // Move SP up one now that that value is now useless and should be reused
             *SP += 1;
+            break;
+
+        // STEP SPRINT ====
+        case CMP:
+            alu(cpu, ALU_CMP, *MAR, *MDR);
+            break;
+        case JEQ:
+            if ((cpu->FL & 0b1) == 0b1)
+            {
+                *PC = registers[*MAR] - numArgs;
+            }
+            break;
+        case JMP:
+            *PC = registers[*MAR] - numArgs;
+            break;
+        case JNE:
+            if ((cpu->FL & 0b1) == 0b0)
+            {
+                *PC = registers[*MAR] - numArgs;
+            }
             break;
 
         default:
