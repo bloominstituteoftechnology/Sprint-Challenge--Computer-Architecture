@@ -16,6 +16,30 @@ void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
   cpu->ram[address] = value;
 }
 
+unsigned char pop(struct cpu *cpu) 
+{
+  unsigned char val = cpu_ram_read(cpu, cpu->registers[7]);
+  cpu->registers[7] ++;
+  return val;
+}
+ void push(struct cpu *cpu, unsigned char reg) 
+{
+  cpu->registers[7] --;
+  cpu_ram_write(cpu, cpu->registers[7], cpu->registers[reg]);
+}
+ void compare(struct cpu *cpu, unsigned char regA, unsigned char regB) {
+  cpu->fl = 0x00;
+  unsigned char valA = cpu->registers[regA];
+  unsigned char valB = cpu->registers[regB];
+  if (valA == valB) {
+    cpu->fl += 1;
+  } else if (valA > valB) {
+    cpu->fl += 2;
+  } else {
+    cpu->fl += 4;
+  }
+}
+
 void cpu_load(struct cpu *cpu, char *file)
 {
   FILE * f;
@@ -31,10 +55,14 @@ void cpu_load(struct cpu *cpu, char *file)
 
     new_line = strtoul(line, &endptr, 2);
 
-    if (endptr != line) {
-      cpu->ram[address++] = new_line;
+    if (endptr == line) {
+      continue;
     }
+
+    cpu->ram[address++] = new_line;
+    printf("%lu\n", new_line);
   }
+
 
   fclose(f);
 }
@@ -53,19 +81,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->registers[regA] = cpu->registers[regA] + cpu->registers[regB];
       break;
   }
-}
-
-unsigned char pop(struct cpu *cpu) 
-{
-  unsigned char val = cpu->registers[7];
-  cpu->registers[7] ++;
-  return val;
-}
-
-void push(struct cpu *cpu, unsigned char reg) 
-{
-  cpu->registers[7] --;
-  cpu->registers[7] = cpu->registers[reg];
 }
 
 /**
@@ -119,6 +134,10 @@ void cpu_run(struct cpu *cpu)
         push(cpu, operandA);
         break;
 
+        case CMP:
+        compare(cpu, operandA, operandB);
+        break;
+
       default:
         printf("unknown instruction: %02x, %02x", cpu->pc, IR);
         exit(2);
@@ -136,5 +155,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
+  cpu->registers[7] = 0xF4;
+  cpu->fl = 0x00;
   // TODO: Zero registers and RAM
 }

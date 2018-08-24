@@ -32,6 +32,7 @@ enum alu_op {
 #define AND  0b10101000
 #define CALL 0b01010000
 #define RET  0b00010001
+#define CMP  0b10100111
 
 // Function declarations
 
