@@ -125,7 +125,7 @@ void cpu_run(struct cpu *cpu)
 
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
-        cpu->pc++;
+        cpu->pc += 2;
         break;
 
       case JMP:
@@ -136,18 +136,16 @@ void cpu_run(struct cpu *cpu)
         if(cpu->fl == 1) {
           cpu_jump(cpu, operandA);
         }
-        else {
-          cpu->pc++;
-        }  
+        cpu->pc++;
+
         break;
 
       case JNE:
         if(cpu->fl == 0) {
           cpu_jump(cpu, operandA);
         }
-        else  { 
-          cpu->pc++;
-        }
+        cpu->pc++;
+
         break;
 
       default:
