@@ -10,6 +10,8 @@ struct cpu {
   unsigned char reg[8];
   // ram (array)
   unsigned char ram[256];
+  // flag
+  unsigned char fl;
 };
 
 #define SP 7
@@ -18,7 +20,8 @@ struct cpu {
 
 enum alu_op {
   ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_CMP
 };
 
 // These use binary literals. If these aren't available with your compiler, hex

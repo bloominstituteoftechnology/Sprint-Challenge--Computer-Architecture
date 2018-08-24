@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 /**
  * CPU Read
  */
@@ -55,9 +56,27 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_MUL:
       cpu->reg[regA] *= cpu->reg[regB];
       break;
+    case ALU_ADD:
+      break;
+    case ALU_CMP:
+      
+      if (cpu->reg[regA] - cpu->reg[regB] > 0) {
+        cpu->fl = 4;
+      } else if (cpu->reg[regA] - cpu->reg[regB] < 0) {
+        cpu->fl = 2;
+      } else {
+        cpu->fl = 1;
+      }
+      
+      break;
 
     // TODO: implement more ALU ops
   }
+}
+
+void cpu_jump(struct cpu *cpu, unsigned char address)
+{
+  cpu->pc = cpu->reg[address];
 }
 
 
@@ -104,6 +123,33 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[SP]++;
         break;
 
+      case CMP:
+        alu(cpu, ALU_CMP, operandA, operandB);
+        cpu->pc++;
+        break;
+
+      case JMP:
+        cpu_jump(cpu, operandA);
+        break;
+
+      case JEQ:
+        if(cpu->fl == 1) {
+          cpu_jump(cpu, operandA);
+        }
+        else {
+          cpu->pc++;
+        }  
+        break;
+
+      case JNE:
+        if(cpu->fl == 0) {
+          cpu_jump(cpu, operandA);
+        }
+        else  { 
+          cpu->pc++;
+        }
+        break;
+
       default:
         printf("unknown instruction at %02x: %02x\n", cpu->pc, IR);
         exit(2);
@@ -123,6 +169,9 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
   cpu->reg[SP] = 0xf4;
+  cpu->fl = 00000000;
   // TODO: Zero registers and RAM
+  memset(cpu->reg, 0, sizeof(cpu->reg));
+  memset(cpu->ram, 0, sizeof(cpu->ram));
   
 }
