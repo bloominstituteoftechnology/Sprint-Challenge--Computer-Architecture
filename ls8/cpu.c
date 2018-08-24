@@ -74,6 +74,26 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       reg[regA] += reg[regB];
       break;
+    case ALU_CMP:
+      printf("FL: %d\n", cpu->FL);
+      if ((regA - regB) < 0)
+      {
+          cpu->FL = 4;
+      }
+      else if ((regA - regB) == 0)
+      {
+          cpu->FL = 1;
+      }
+      else if ((regA - regB) > 0)
+      {
+          cpu->FL = 2;
+      }
+      else
+      {
+          cpu->FL = 0;
+      }
+      printf("FL: %d\n", cpu->FL);
+      break;
     default:
       break;
   }
@@ -98,7 +118,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char operandB = cpu_ram_read(cpu, cpu->PC + 2);
     // some operations need the two bytes after PC to perform operations
     // so we're creating variables just in case
-    //printf("IR %d\n PC %d\n", IR, cpu->PC);
+    printf("IR %d\n PC %d\n", IR, cpu->PC);
     switch (IR)
     {
         case MUL:
@@ -128,22 +148,27 @@ void cpu_run(struct cpu *cpu)
             cpu->PC += 2;
             break;
         case ADD:
-        //    printf ("what is up with the add?");
             alu(cpu, ALU_ADD, operandA, operandB);
             cpu->PC += 3;
-        //    printf ("add %d\n", cpu->PC);
             break;
         case CALL:
             cpu->registers[7] -= 1;
             cpu->ram[cpu->registers[7]] = cpu->PC + 2;
-        //    printf ("call1 %d\n", cpu->PC);
             cpu->PC = cpu->registers[operandA];
-        //    printf ("call %d\n", cpu->PC);
             break;
         case RET:
             cpu->PC = cpu->ram[cpu->registers[7]];
 			cpu->registers[7] += 1;
-		//	printf ("ret %d\n", cpu->PC);
+            break;
+        case CMP:
+            alu(cpu, ALU_CMP, operandA, operandB);
+            cpu->PC += 3;
+            break;
+        case JMP:
+            break;
+        case JEQ:
+            break;
+        case JNE:
             break;
         default:
             fprintf(stderr, "wtf\n");
@@ -160,9 +185,10 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
-  cpu->registers[7] = 0xF4;
+//  cpu->registers[7] = 0xF4;
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));
+  cpu->FL = 00000000;
 // tried doing this a different way that made more sense to me
 // https://stackoverflow.com/questions/23778404/clear-a-c-array
 

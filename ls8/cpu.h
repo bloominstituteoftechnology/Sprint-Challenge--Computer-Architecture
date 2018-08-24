@@ -7,12 +7,14 @@ struct cpu {
   unsigned char PC; //PC has address of next instruction to be executed
   unsigned char registers[8];
   unsigned char ram[256];
+  unsigned char FL; //for flag in CMP
 };
 
 enum alu_op
 {
     ALU_MUL,
     ALU_ADD,
+    ALU_CMP
 };
 
 // Instructions
