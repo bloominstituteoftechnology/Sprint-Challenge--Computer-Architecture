@@ -30,8 +30,19 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+    - having multiple cores
+    - pipelining or hyperthreading
+    - by using interrupts
+        - a single CPU can execute one program for a while (like 50 ms), and then 
+          switch to running another program for a while. 
 
 * Describe assembly language and machine language:
+    -A computer programming language consisting of binary or hexadecimal 
+     instructions that a computer can respond to directly.
+
+    -An assembly language contains the same instructions as a machine language, 
+     but the instructions and variables have names instead of being just numbers which
+     makes it more human-readable
 
 
 ## Coding
