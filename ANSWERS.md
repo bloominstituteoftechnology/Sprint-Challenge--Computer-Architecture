@@ -68,4 +68,4 @@ The CPU provides concurrency when the Operating System's kernel allows multiple 
 
 2. Describe assembly language and machine language:
 
-An assembly language is a low-level programming language that humans can understand, such as LDI (which stands for "Load Immediate"), PRN ("Print"), and HLT ("Halt"). Machine language, on the other hand, is programming language that only machines or computers can understand, such as codes like 1111000, and etc.
+An assembly language is a low-level programming language that humans can understand, such as LDI (which stands for "Load Immediate"), PRN ("Print"), and HLT ("Halt"). Machine language, on the other hand, is programming language that only machines or computers can understand, such as codes like 1111000, and etc. They both contain the same instruction/command but they're expressed in different ways.
