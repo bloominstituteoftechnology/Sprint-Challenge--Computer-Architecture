@@ -6,23 +6,41 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
+    11001111 = 1 + 2 + 4 + 8 + 64 + 128 = 207 = 12*16 + 15 = CF
+
     to hex:
 
+    CF
+
     to decimal:
+
+    207
 
 
 * Convert `4C` hex
 
+    4C = 4*16 + 12 = 76 = 64 + 8 + 4 = 01001100
+
     to binary:
 
+    01001100
+
     to decimal:
+
+    76
 
 
 * Convert `68` decimal
 
+    68 = 4*16 + 4 = 0x44 = 0b01000100
+
     to binary:
 
+    01000100
+
     to hex:
+
+    44
 
 
 ## Architecture
@@ -30,9 +48,19 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+  The same way film provides motion: an illusion.  Just as film makes a series of still pictures appear to be a single moving
+  picture by showing them in rapid succesion, a CPU appears to run many processes concurrently by rapidly switching between
+  them using a scheduling algorithm.
 
 * Describe assembly language and machine language:
 
+  Machine language is the raw numeric language that is actually dealt with by the computer hardware directly;
+  it's just numbers between 0 and 255 represented as 8 bits of charge or no charge.
+
+  Assembly is the lowest level of abstraction added for human readability.  It assigns names to the machine language
+  instructions.
+
+  sctest.ls8 in this repo is machine language with assembly in the comments.
 
 ## Coding
 
@@ -155,4 +183,3 @@ It should print:
 # TEST5 (73):
 00000001 # HLT
 ```
-
