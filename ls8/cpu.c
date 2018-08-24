@@ -75,14 +75,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     // printf("~Reg-index %d, set to %d + %d = %d\n", cpu->ram[cpu->PC + 1], regA, regB, cpu->reg[cpu->ram[cpu->PC + 1]]);
     break;
   case ALU_CMP:
-    printf("~ALU_ADD: HANDLER FOUND\n");
+    printf("~ALU_CMP: HANDLER FOUND\n");
     if (regA < regB)
       cpu->FL = (cpu->FL & 0b0) | 4;
     if (regA > regB)
       cpu->FL = (cpu->FL & 0b0) | 2;
     if (regA == regB)
       cpu->FL = (cpu->FL & 0b0) | 1;
-    printf("~ALU_ADD: cpu->FL set to %d\n", cpu->FL);
+    printf("~ALU_CMP: cpu->FL set to %d\n", cpu->FL);
     break;
   default:
     printf("ALU instruction handler was no found.");
@@ -194,12 +194,12 @@ void handle_instruction(struct cpu *cpu)
   {
     /* ALU */
   case ADD:
-    // printf("~ALU-ADD. HANDLER FOUND\n");
+    // printf("~ADD. HANDLER FOUND\n");
     alu(cpu, ALU_ADD, cpu->reg[cpu->ram[cpu->PC + 1]], cpu->reg[cpu->ram[cpu->PC + 2]]);
     break;
   // case SUB:
   case MUL:
-    // printf("~ALU-MUL. HANDLER FOUND\n");
+    // printf("~MUL. HANDLER FOUND\n");
     alu(cpu, ALU_MUL, cpu->reg[cpu->ram[cpu->PC + 1]], cpu->reg[cpu->ram[cpu->PC + 2]]);
     break;
   // case DIV:
@@ -207,7 +207,7 @@ void handle_instruction(struct cpu *cpu)
   // case INC:
   // case DEC:
   case CMP: // **
-    printf("~ALU-CMP. HANDLER FOUND\n");
+    printf("~CMP. HANDLER FOUND\n");
     alu(cpu, ALU_CMP, cpu->reg[cpu->ram[cpu->PC + 1]], cpu->reg[cpu->ram[cpu->PC + 2]]);
     break;
   // case AND:
@@ -254,7 +254,7 @@ void handle_instruction(struct cpu *cpu)
   /* Other */
   // case NOP:
   case HLT:
-    // printf("~HLT. HANDLER FOUND\n");
+    printf("~HLT. HANDLER FOUND\n");
     cpu->IR = '\0';
     break;
   case LDI:
