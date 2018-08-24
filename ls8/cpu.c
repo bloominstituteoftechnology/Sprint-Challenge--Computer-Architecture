@@ -32,16 +32,16 @@ unsigned char pop(struct cpu *cpu)
   unsigned char valA = cpu->registers[regA];
   unsigned char valB = cpu->registers[regB];
   if (valA == valB) {
-    cpu->flag += 1;
+    cpu->flag = 1;
   } else if (valA > valB) {
-    cpu->flag += 2;
+    cpu->flag = 2;
   } else {
-    cpu->flag += 4;
+    cpu->flag = 4;
   }
 }
 
-void jump(struct cpu *cpu, unsigned char reg) {
-  cpu->pc = cpu->registers[reg];
+void jump(struct cpu *cpu, unsigned char reg, unsigned char IR) {
+  cpu->pc = cpu->registers[reg] - ((IR >> 6) + 1);  
 }
 
 void cpu_load(struct cpu *cpu, char *file)
@@ -143,12 +143,18 @@ void cpu_run(struct cpu *cpu)
         break;
 
         case JMP:
-         jump(cpu, operandA);
+         jump(cpu, operandA, IR);
         break;
 
-       case JEQ:
+        case JEQ:
         if(cpu->flag == 00000001) {
-          jump(cpu, operandA);
+           jump(cpu, operandA, IR);
+        }
+        break;
+
+         case JNE:
+        if(cpu->flag != 00000001) {
+        jump(cpu, operandA, IR);
         }
         break;
 
