@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: ```1100= 8+4 = 12=C  1111= 8+4+2+1= 15 = F  Answer = 0xCF ```
 
-    to decimal:
+    to decimal:  ```128+64+0+0+8+4+2+1 = 207 Answer = 207```
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: ```4= 0100 C= 1100 answer 0b01001100```
 
-    to decimal:
+    to decimal: ```64+0+0+8+4+0+0 = 76 answer = 76```
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: ```64 + 4 = 01000100 answer = 0b01000100```
 
-    to hex:
+    to hex: ```0100 =4 0100=4 answer = 0x44```
 
 
 ## Architecture
