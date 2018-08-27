@@ -30,8 +30,11 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+  The CPU provides concurrency by using system clock, the system clock keeps track of the begining time and when a program is done running and using this info the cpu runs the program for the alloted time, which gives is 
+  an illusion of concurrency, in the real sense the CPU runs one instruction at a time. 
 
 * Describe assembly language and machine language:
+  Assembly language is a human readable view of the machine code, whereas the machine code is all 0's and 1's easily readable by the computer. 
 
 
 ## Coding
