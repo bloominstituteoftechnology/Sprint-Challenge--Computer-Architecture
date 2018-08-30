@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: 1100 1111 --> CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 4 in binary and 12 in binary : 0100 1100 --> 01001100
 
-    to decimal:
+    to decimal: 64 + 8 + 4 = 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 64 + 4 = 01000100 
 
-    to hex:
+    to hex: 0100 0100 --> 44 
 
 
 ## Architecture
@@ -30,8 +30,19 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+    - having multiple cores
+    - pipelining or hyperthreading
+    - by using interrupts
+        - a single CPU can execute one program for a while (like 50 ms), and then 
+          switch to running another program for a while. 
 
 * Describe assembly language and machine language:
+    -A computer programming language consisting of binary or hexadecimal 
+     instructions that a computer can respond to directly.
+
+    -An assembly language contains the same instructions as a machine language, 
+     but the instructions and variables have names instead of being just numbers which
+     makes it more human-readable
 
 
 ## Coding
@@ -156,3 +167,4 @@ It should print:
 00000001 # HLT
 ```
 
+.
