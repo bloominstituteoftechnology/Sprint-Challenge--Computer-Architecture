@@ -43,7 +43,7 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address)
   return cpu->ram[address];
 }
 
-void cpu_ram_write(struct cpu *cpu, unsigned char value) 
+void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value) 
 {
   cpu->ram[address] = value;
 }
@@ -69,13 +69,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
+  unsigned char SP = cpu->reg[7];
 
   while (running) {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     unsigned char IR = cpu_ram_read(cpu, cpu->PC);
     unsigned char operandA = cpu_ram_read(cpu, cpu->PC+1);
-    unsigned char operandB = cpu_ram_read(cpu, cpu->PC+2)
+    unsigned char operandB = cpu_ram_read(cpu, cpu->PC+2);
     // 2. switch() over it to decide on a course of action.
     switch(IR)
     {
@@ -160,6 +161,6 @@ void cpu_init(struct cpu *cpu)
   cpu->PC = 0;
 
   // TODO: Zero registers and RAM
-  cpu->reg[7] = 0fx4;
+  cpu->reg[7] = 0xf4;
   cpu->FL = 0;
 }
