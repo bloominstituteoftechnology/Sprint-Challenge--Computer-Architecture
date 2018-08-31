@@ -29,10 +29,10 @@ Complete the following problems:
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+* Explain how the CPU provides concurrency or parallelism: In a multicore cpu a program is executed parallel as it is being run in segments that may be out of order or partial order instead of running one part at a time
 
 * Describe assembly language and machine language:
-
+assembly language is human readable but very low level whereas machine language is numbers and is not easily readable by humans.
 
 ## Coding
 
