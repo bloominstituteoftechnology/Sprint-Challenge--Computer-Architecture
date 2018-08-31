@@ -42,7 +42,8 @@ struct CPU {
 
     unsigned char PC;
 
-    unsigned char FL;
+    unsigned char FL;// flags register
+
 
     unsigned char reg[8];
 
@@ -119,7 +120,10 @@ struct CPU {
 #define SUB 0b10100001
 
 #define XOR 0b10101011
-
+//flags
+#define FL_EQ (1 << 0)
+#define FL_GT (1<<1)
+#define Fl_LT (1<<2)
 
 
 

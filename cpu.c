@@ -81,7 +81,8 @@ void cpu_load(char* arg, struct CPU *cpu)
 void alu(struct CPU *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 
 {
-
+    //unsigned char valA = cpu->reg[regA];
+    //unsigned char VAlB = cpu->reg[regB];
     unsigned char *reg = cpu->reg; 
 
     switch (op) {
