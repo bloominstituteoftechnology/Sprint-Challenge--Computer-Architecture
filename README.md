@@ -1,7 +1,7 @@
 # Sprint-Challenge--Computer-Architecture
 
 ## Binary, Decimal, and Hex
-
+getting started
 Complete the following problems:
 
 * Convert `11001111` binary
@@ -155,4 +155,3 @@ It should print:
 # TEST5 (73):
 00000001 # HLT
 ```
-
