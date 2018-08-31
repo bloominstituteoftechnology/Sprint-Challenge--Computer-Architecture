@@ -140,6 +140,48 @@ void cpu_run(struct cpu *cpu)
       reg[operandA] = cpu_pop(cpu);
       break;
 
+    //Compare the values in two registers.
+    //If they are equal, set the flag to 1, otherwise set it to 0.
+    case CMP:
+      if (cpu->reg[operandA] == cpu->reg[operandB])
+      {
+        cpu->fl = 1;
+      }
+      else
+      {
+        cpu->fl = 0;
+      }
+      break;
+
+    //JMP register - Set the program counter (PC) to the address stored in the given register.
+    case JMP:
+      cpu->PC = cpu->reg[operandA];
+      break;
+
+    // If `equal` flag is set (true), jump to the address stored in the given register.
+    case JEQ:
+      if (cpu->fl == 1)
+      {
+        cpu->PC = cpu->reg[operandA];
+      }
+      else
+      {
+        cpu->PC += 2;
+      }
+      break;
+
+    // If flag is clear (false, 0), jump to the address stored in the given register.
+    case JNE:
+      if (cpu->fl == 0)
+      {
+        cpu->PC = cpu->reg[operandA];
+      }
+      else
+      {
+        cpu->PC += 2;
+      }
+      break;
+
     default:
       fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
       exit(3);
@@ -165,4 +207,5 @@ void cpu_init(struct cpu *cpu)
 
   // Initialize SP
   cpu->reg[SP] = ADDR_EMPTY_STACK;
+  cpu->fl = 0; //initialize the flag to start at 0
 }
