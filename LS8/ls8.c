@@ -5,11 +5,12 @@
 // the individual arguments, starting with the command name itself
 int main(int argc, char *argv[])
 {
+  // pull in CPU from cpu.h
   struct cpu cpu;
 
   if (argc != 2)
   {
-    // check to make sure the user has put a command line argument where 
+    // ^ check to make sure the user has put a command line argument where 
     // you expect, and print an error and exit if they didn't
     fprintf(stderr, "usage: ./ls8 [filename].ls8\n");
     return 1;

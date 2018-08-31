@@ -1,6 +1,7 @@
 #ifndef _CPU_H_
 #define _CPU_H_
 
+
 // Holds all the information about the CPU
 struct cpu {
     // PC-Program Counter
@@ -11,18 +12,19 @@ struct cpu {
     unsigned char reg[8];
     // RAM (array)
     unsigned char ram[256];
-
-
 };
+
 
 //flags
 #define FL_EQ 1 // (1<<0)
 #define FL_GT 2 // (1<<1)
 #define FL_LT 4 // (1<<2)
 
+
 // special register values
 // SP = STACK POINTER
 #define SP 5
+
 
 // ALU operations
 enum alu_op {
@@ -54,13 +56,10 @@ enum alu_op {
 #define JEQ  0b01010101
 #define JNE  0b01010110
 
-// Function declarations
 
+// Function declaration
 extern void cpu_load(char *filename, struct cpu *cpu);
 extern void cpu_init(struct cpu *cpu);
 extern void cpu_run(struct cpu *cpu);
-
-// extern unsigned char cpu_ram_read(struct cpu *cpu, unsigned char MAR);
-// extern unsigned char cpu_ram_read(struct cpu *cpu, unsigned char MAR, unsigned char MDR)
 
 #endif

@@ -77,8 +77,8 @@ void cpu_load(char *filename, struct cpu *cpu)
 
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
+    // variable declarations
     unsigned char *reg = cpu->reg;
-
     unsigned char valA = reg[regA];
     unsigned char valB = reg[regB];
 
@@ -93,6 +93,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
             break;
 
         case ALU_CMP:
+            // compares values
             if (valA == valB) 
             {
                 cpu->fl = cpu->fl | FL_EQ; // could be written |=
@@ -101,7 +102,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
             {
                 cpu->fl = cpu->fl & (~FL_EQ);  // could be written &=
             }
-
             break;
     }
 }
