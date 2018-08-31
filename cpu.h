@@ -10,8 +10,11 @@ struct cpu {
   unsigned char reg[8];
   // ram (array)
   unsigned char ram[256];
+  // flag
+  unsigned char fl;
 };
 
+// Stack Pointer Register
 #define SP 7
 
 // ALU operations
@@ -36,13 +39,21 @@ enum alu_op {
 #define MUL 0b10100010
 #define ADD 0b10100000
 
-// ADD Push and Pop instructions
+// Push and Pop instructions
 #define PUSH 0b01000101
 #define POP 0b01000110
 
-// ADD CALL and RET
+// CALL and RET
 #define CALL 0b01010000
 #define RET 0b00010001
+
+// CMP JMP JEQ
+#define CMP 0b10100111
+#define JMP 0b10100111
+#define JEP 0b10100111
+
+
+
 
 // Function declarations
 
@@ -50,10 +61,10 @@ extern void cpu_load(struct cpu *cpu, char *filename);
 extern void cpu_init(struct cpu *cpu);
 extern void cpu_run(struct cpu *cpu);
 
-extern unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address);
-extern void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value);
+// extern unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address);
+// extern void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value);
 
-extern void cpu_push(struct cpu *cpu, unsigned char val);
-extern unsigned char cpu_pop(struct cpu *cpu);
+// extern void cpu_push(struct cpu *cpu, unsigned char val);
+// extern unsigned char cpu_pop(struct cpu *cpu);
 
 #endif
