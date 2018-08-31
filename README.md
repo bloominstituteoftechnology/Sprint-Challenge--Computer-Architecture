@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: 0xA7DD17
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
-
-    to hex:
+    to binary: 1000100
+ 
+    to hex: 44
 
 
 ## Architecture
@@ -30,8 +30,10 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+- Tasks are broken down into subtasks that are then assigned to separate processors to perform simultaneously, instead of sequentially as they would have to be carried out by a single processor
 
 * Describe assembly language and machine language:
+- an assembly language(asm) is any low-level programming language in which there is a strong correspondence between the program's statements and the architcture's machine code instructions. Machine code is a program that has instructions(written in "machine langague") that can be executed directly by a computer's CPU.
 
 
 ## Coding
