@@ -14,27 +14,23 @@ void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
-void cpu_load(struct cpu *cpu)
+void cpu_load(struct cpu *cpu, char *file)
 {
-  //const int DATA_LEN = 6;
-  char data[DATA_LEN] = {
-      // From print8.ls8
-      0b10000010, // LDI R0,8
-      0b00000000,
-      0b00001000,
-      0b01000111, // PRN R0
-      0b00000000,
-      0b00000001 // HLT
-  };
+  FILE *f;
+  f = fopen(file, "r");
 
   int address = 0;
 
-  for (int i = 0; i < DATA_LEN; i++)
+  char line[256];
+
+  while (fgets(line, sizeof(line), f))
   {
-    cpu->ram[address++] = data[i];
+    int i = 0;
+    printf("%s", line);
+    cpu->ram[address++] = line;
   }
 
-  // TODO: Replace this with something less hard-coded
+  fclose(f);
 }
 
 /**
@@ -90,6 +86,8 @@ void cpu_run(struct cpu *cpu)
       printf("unknown instructions at %02x: %02x\n", cpu->pc, IR);
       exit(2);
     }
+    // move to next instruction
+    cpu->pc += (IR >> 6) + 1;
   }
 }
 
