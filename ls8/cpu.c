@@ -84,7 +84,7 @@ void cpu_run(struct cpu *cpu)
       running = 0;
       break;
     default:
-      printf("unknown instructions at %02x: %02\n", cpu->pc, IR);
+      printf("unknown instructions at %02x: %02x\n", cpu->pc, IR);
       exit(2);
     }
   }
