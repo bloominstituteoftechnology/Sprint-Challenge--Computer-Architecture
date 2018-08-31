@@ -28,7 +28,10 @@ void cpu_load(struct cpu *cpu, char *file)
     char *endpntr;
     unsigned long int new_line;
     new_line = strtoul(line, &endpntr, 2);
-    cpu->ram[address++] = new_line;
+    if (endpntr != line)
+    {
+      cpu->ram[address++] = new_line;
+    }
   }
 
   fclose(f);
@@ -48,21 +51,48 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_ADD:
     cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
     break;
+  case ALU_DIV:
+    cpu->reg[regA] /= cpu->reg[regB];
+    break;
+  case ALU_SUB:
+    cpu->reg[regA] -= cpu->reg[regB];
+    break;
+  case ALU_MOD:
+    cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
+    break;
 
     // TODO: implement more ALU ops
   }
 }
-void pop(struct cpu *cpu, unsigned char registers)
+unsigned char pop(struct cpu *cpu)
 {
-  cpu->reg[registers] = cpu->reg[7];
+  unsigned char value = cpu->reg[7];
   cpu->reg[7]++;
+  return value;
 }
 void push(struct cpu *cpu, unsigned char registers)
 {
   cpu->reg[7]--;
-  cpu->reg[7] = cpu->reg[registers];
+  cpu_ram_write(cpu, cpu->reg[7], cpu->reg[registers]);
 }
-
+void compare(struct cpu *cpu, unsigned char regA, unsigned char regB)
+{
+  cpu->fl = 0x00;
+  unsigned char valA = cpu->reg[regA];
+  unsigned char valB = cpu->reg[regB];
+  if (valA == valB)
+  {
+    cpu->fl += 1;
+  }
+  else if (valA > valB)
+  {
+    cpu->fl += 2;
+  }
+  else
+  {
+    cpu->fl += 4;
+  }
+}
 /**
  * Run the CPU
  */
@@ -100,14 +130,24 @@ void cpu_run(struct cpu *cpu)
     case MUL:
       alu(cpu, ALU_MUL, operandA, operandB);
       break;
+    case CALL:
+      push(cpu, cpu->pc + 2);
+      cpu->pc = cpu->reg[operandA];
+      break;
+    case RET:
+      cpu->pc = pop(cpu);
+      break;
     case POP:
-      pop(cpu, operandA);
+      cpu->reg[operandA] = pop(cpu);
       break;
     case PUSH:
       push(cpu, operandA);
       break;
     case ADD:
       alu(cpu, ALU_ADD, operandA, operandB);
+      break;
+    case CMP:
+      compare(cpu, operandA, operandB);
       break;
     default:
       printf("unknown instructions at %02x: %02x\n", cpu->pc, IR);
@@ -126,5 +166,6 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
   cpu->reg[7] = 0xF4;
+  cpu->fl = 0x00;
   // TODO: Zero registers and RAM
 }
