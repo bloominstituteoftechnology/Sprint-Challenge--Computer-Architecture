@@ -48,7 +48,6 @@ void cpu_load(struct cpu *cpu, char *filename)
   // Open file
   FILE *fp = fopen(filename, "r");
 
-
   int address = ADDR_PROGRAM_ENTRY;
 
   if(fp == NULL)
@@ -153,6 +152,31 @@ void cpu_run(struct cpu *cpu)
         cpu->pc = cpu_pop(cpu);
         break;
 
+      case CMP:
+      // CMP registerA registerB
+      // Compare the values in two registers.
+      // If they are equal, set the Equal E flag to 1, otherwise set it to 0.
+      // If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
+      // If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+
+
+        break;
+
+      // case JMP:
+      // // JMP register
+      // // Jump to the address stored in the given register.
+      // // Set the PC to the address stored in the given register.
+      //   break;
+
+      // case JEQ:
+      // // JEQ register
+      // // If equal flag is set (true), jump to the address stored in the given register.
+      //   break;
+
+      // case JNE:
+      // // JNE register
+      // // If E flag is clear (false, 0), jump to the address stored in the given register.
+      //   break;
       
       default:
         printf("unknown instruction at %02x: %02x\n", cpu->pc, IR);
