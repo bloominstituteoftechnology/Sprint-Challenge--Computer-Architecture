@@ -6,11 +6,15 @@
 // cpu struct
 typedef struct cpu
 {
-  int fl;
+  unsigned char fl;
   unsigned char pc; // unsigned makes sure value is positive
   unsigned char reg[8]; // registers (array)
   unsigned ram[MAX_ADDR + 1]; // ram (array)nb
 } CPU;
+// Flags
+#define FL_EQ (1<<0)
+#define FL_GT (1<<1)
+#define FL_LT (1<<2)
 
 //Other general purpose register names
 #define SP 7
@@ -45,6 +49,7 @@ enum alu_op
 #define POP 0b01000110
 #define PRN 0b01000111
 #define PUSH 0b01000101
+#define JMP 0b01000110
 
 // TODO: more instructions here. These can be used in cpu_run().
 

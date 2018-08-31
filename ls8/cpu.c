@@ -144,8 +144,12 @@ void cpu_run(CPU *cpu)
 
     case PUSH:
       // TODO
-      cpu_push(cpu, cpu->reg[operandA]);
+      cpu_   push(cpu, cpu->reg[operandA]);
       break;
+
+    case JMP:
+    cpu->pc = cpu->reg[operandA];
+    break;
 
     default:
       printf("unknown instruction at %02x: %02x\n", cpu->pc, IR);
