@@ -82,16 +82,20 @@ void compare(struct cpu *cpu, unsigned char regA, unsigned char regB)
   unsigned char valB = cpu->reg[regB];
   if (valA == valB)
   {
-    cpu->fl += 1;
+    cpu->fl = 1;
   }
   else if (valA > valB)
   {
-    cpu->fl += 2;
+    cpu->fl = 2;
   }
   else
   {
-    cpu->fl += 4;
+    cpu->fl = 4;
   }
+}
+void jump(struct cpu *cpu, unsigned char registers, unsigned char IR)
+{
+  cpu->pc = cpu->reg[registers] - ((IR >> 6) + 1);
 }
 /**
  * Run the CPU
@@ -148,6 +152,21 @@ void cpu_run(struct cpu *cpu)
       break;
     case CMP:
       compare(cpu, operandA, operandB);
+      break;
+    case JMP:
+      jump(cpu, operandA, IR);
+      break;
+    case JEQ:
+      if (cpu->fl == 00000001)
+      {
+        jump(cpu, operandA, IR);
+      }
+      break;
+    case JNE:
+      if (cpu->fl != 00000001)
+      {
+        jump(cpu, operandA, IR);
+      }
       break;
     default:
       printf("unknown instructions at %02x: %02x\n", cpu->pc, IR);
