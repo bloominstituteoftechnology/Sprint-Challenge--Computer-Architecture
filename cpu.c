@@ -1,4 +1,4 @@
-#include "cpu.h"
+#include "cpu.h" // importing the librarys needed for program to work
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,19 +12,20 @@ void cpu_load(char* arg, struct CPU * cpu){
     int line_no = 0;
     char *pointer;
 
-    fp = fopen(arg, "r");// open file and read
+    fp = fopen(arg, "r");  //open file and read
 
-    if (fp == Null){
+    if {
         fprint(stderr, "Failed to open %s\n", arg);
         exit(1);// error message if it doesnt open if message and exit
     }
+
     else{
         while(fgets(line, sizeof(line), fp) != NULL) {
             unsigned char vlue = strtoul(line, & pointer, 2);
             if (pointer == line){
                 continue;
             }
-            cpu_ram-write(cpu, line_no++, value);
+            cpu_ram_write(cpu, line_no++, value);
 
         }
         fclose(fp);//close file
@@ -33,14 +34,14 @@ void cpu_load(char* arg, struct CPU * cpu){
 /**
 *ALU
 */
-void alu(struct CPU *cpu, enum alu_op op, unsigned char regA, insigned char regB){
+void alu(struct CPU *cpu, enum alu_op op, unsigned char regA, unsigned char regB){
     unsigned char *reg = cpu -> reg;
     switch (op){
         case ALU_MUL:
         reg[regA] *= reg[regB];
         break;
         case ALU_ADD:
-        reg[rega] += reg[regb];
+        reg[regA] += reg[regB];
         break;
 
         case ALU_DIV:

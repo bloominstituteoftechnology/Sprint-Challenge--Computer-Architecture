@@ -8,17 +8,18 @@
 #define IM 5 
 
 //holds all information about the CPU
-enum alu op{
+enum aluop {
     ALU_MUL,
     ALU_ADD,
     ALU_DIV,
     ALU_SUB,
     ALU_MOD,
+};
 struct CPU{
     unsigned char PC;
     unsigned char FL;
     unsigned char reg[8];
-    unsigned char ram[MAX_ADDRESS + 1;]
+    unsigned char ram[MAX_ADDRESS + 1];
 
 };
 
