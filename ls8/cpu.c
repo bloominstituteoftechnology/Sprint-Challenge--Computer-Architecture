@@ -8,7 +8,7 @@
  */
 void cpu_load(struct cpu *cpu, char *file)
 {
-  FILE * fp = fopen(file, "r");
+  FILE *fp = fopen(file, "r");
   if (fp == NULL) {
     fprintf(stderr, "There was an error opening the file \n");
     exit(1);

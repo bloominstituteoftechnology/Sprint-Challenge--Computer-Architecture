@@ -7,13 +7,14 @@
 int main(int argc, char *argv[])
 {
   struct cpu cpu;
-  char *file = "examples/print8.ls8";
-  if (argc == 2) {
-    file == argv[1];
+  
+  if (argc != 2) {
+    fprintf(stderr, "Usage: ./ls8 filename.ls8\n");
+    return 1;
   }
 
   cpu_init(&cpu);
-  cpu_load(&cpu, file);
+  cpu_load(&cpu, argv[1]);
   cpu_run(&cpu);
 
   return 0;
