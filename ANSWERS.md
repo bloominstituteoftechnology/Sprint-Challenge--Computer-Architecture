@@ -1,6 +1,7 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
 1. Explain how the CPU provides concurrency:
+
 CPU give the illustion of being concurent by switching between proccess really quickly using a scheduling algorithm. 
 
 2. Describe assembly language and machine language:
