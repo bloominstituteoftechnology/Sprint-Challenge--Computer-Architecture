@@ -1,3 +1,6 @@
+Please refer to this repo
+https://github.com/LambdaSchool/Computer-Architecture/pull/20
+
 # Sprint-Challenge--Computer-Architecture
 
 ## Binary, Decimal, and Hex
