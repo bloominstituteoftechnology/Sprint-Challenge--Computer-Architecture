@@ -53,7 +53,10 @@ enum alu_op {
 #define JEQ 0b01010101
 #define JNE 0b01010110
 
-
+// Flags
+#define flag_L 0b00000100
+#define flag_G 0b00000010
+#define flag_E 0b00000001
 
 
 // Function declarations
@@ -62,10 +65,10 @@ extern void cpu_load(struct cpu *cpu, char *filename);
 extern void cpu_init(struct cpu *cpu);
 extern void cpu_run(struct cpu *cpu);
 
-// extern unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address);
-// extern void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value);
+extern unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address);
+extern void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value);
 
-// extern void cpu_push(struct cpu *cpu, unsigned char val);
-// extern unsigned char cpu_pop(struct cpu *cpu);
+extern void cpu_push(struct cpu *cpu, unsigned char val);
+extern unsigned char cpu_pop(struct cpu *cpu);
 
 #endif

@@ -158,38 +158,61 @@ void cpu_run(struct cpu *cpu)
       // If they are equal, set the Equal E flag to 1, otherwise set it to 0.
       // If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
       // If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
-
-
+        if (cpu->reg[operandA] == cpu->reg[operandB])
+        {
+          cpu-> fl = 1; // set equal flag
+        }
+        else
+        {
+          cpu->fl = 0; // clear flag
+        } 
         break;
 
-      // case JMP:
-      // // JMP register
-      // // Jump to the address stored in the given register.
-      // // Set the PC to the address stored in the given register.
-      //   break;
+      case JMP:
+      // JMP register
+      // Jump to the address stored in the given register.
+      // Set the PC to the address stored in the given register.
+        cpu->pc = cpu->reg[operandA];
+        break;
 
-      // case JEQ:
-      // // JEQ register
-      // // If equal flag is set (true), jump to the address stored in the given register.
-      //   break;
+      case JEQ:
+      // JEQ register
+      // If equal flag is set (true), jump to the address stored in the given register.
+        if (cpu->fl & flag_E)
+        {
+          cpu->pc = cpu->reg[operandA];
+        }
+        else
+        {
+          cpu->pc += 2;
+        }
+        break;
 
-      // case JNE:
-      // // JNE register
-      // // If E flag is clear (false, 0), jump to the address stored in the given register.
-      //   break;
-      
+      case JNE:
+      // JNE register
+      // If E flag is clear (false, 0), jump to the address stored in the given register.
+        if (! (cpu->fl & flag_E))
+        {
+          cpu->pc = cpu->reg[operandA];
+        }
+        else
+        {
+          cpu->pc += 2;
+        }
+        break;
+        
+
       default:
         printf("unknown instruction at %02x: %02x\n", cpu->pc, IR);
         exit(2); 
     }
-    // 4. Move the PC to the next instruction.
 
-      int instruction_set_pc = (IR >> 4) & 1;
+    // 4. Move the PC to the next instruction.
+      
+      int instruction_set_pc = (IR >> 4) & 1; 
       if (!instruction_set_pc)
         {
-          // right shift it 6 places
-          // & (Bitwise And)
-          cpu->pc += (IR >> 6 & 0x3) + 1;
+          cpu->pc += (IR >> 6) + 1;
         }
 
   }
@@ -202,8 +225,8 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
-  // Initialize Stack Pointer
   cpu->reg[SP] = ADDR_EMPTY_STACK;
+  cpu->fl = 0;
 
   // TODO: Zero registers and RAM
   // memset() is like fill() in JS
