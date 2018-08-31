@@ -7,7 +7,7 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address)
 {
   return cpu->ram[address];
 }
-unsigned char cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
+void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
 {
   cpu->ram[address] = value;
 }
@@ -16,6 +16,7 @@ unsigned char cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned cha
  */
 void cpu_load(struct cpu *cpu)
 {
+  //const int DATA_LEN = 6;
   char data[DATA_LEN] = {
       // From print8.ls8
       0b10000010, // LDI R0,8
@@ -68,6 +69,8 @@ void cpu_run(struct cpu *cpu)
     unsigned char IR = cpu_ram_read(cpu, cpu->pc);
     unsigned char operandA = cpu_ram_read(cpu, cpu->pc + 1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->pc + 2);
+
+    //printf("TRACE: %02x: %02x\n", cpu->pc, IR);
 
     switch (IR)
     {
