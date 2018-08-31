@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "retyped_cpu.h"
+#include "cpu.h"
 
 // argc is the argument count, and argv is an array of strings that hold 
 // the individual arguments, starting with the command name itself

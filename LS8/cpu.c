@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "retyped_cpu.h"
+#include "cpu.h"
 
 // push a value to the CPU stack
 void cpu_push(struct cpu *cpu, unsigned char val)
@@ -79,16 +79,29 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 {
     unsigned char *reg = cpu->reg;
 
+    unsigned char valA = reg[regA];
     unsigned char valB = reg[regB];
 
     switch (op)
     {
         case ALU_MUL:
-            reg[regA] *= valB;
+            valA *= valB;
             break;
-        //TODO: implement more ALU ops
+
         case ALU_ADD:
-            reg[regA] += valB;
+            valA += valB;
+            break;
+
+        case ALU_CMP:
+            if (valA == valB) 
+            {
+                cpu->fl = cpu->fl | FL_EQ; // could be written |=
+            }
+            else
+            {
+                cpu->fl = cpu->fl & (~FL_EQ);  // could be written &=
+            }
+
             break;
     }
 }
@@ -110,7 +123,7 @@ void cpu_run(struct cpu *cpu)
         unsigned char operandA = cpu_ram_read(cpu, cpu->pc+1);
         unsigned char operandB = cpu_ram_read(cpu, cpu->pc+2);
 
-        // True if this instruction might set the pc;
+        // True if this instruction might set the counter;
         int instruct_set_pc = (IR >> 4) & 1;
 
 
@@ -152,6 +165,36 @@ void cpu_run(struct cpu *cpu)
                 cpu->pc = cpu_pop(cpu);
                 break;
 
+            case JMP:
+                cpu->pc = cpu->reg[operandA];
+                break;
+
+            case CMP:
+                alu(cpu, ALU_CMP, operandA, operandB);
+                break;
+
+            case JEQ:
+                if (cpu->fl & FL_EQ)
+                {
+                    cpu->pc = cpu->reg[operandA];
+                }
+                else
+                {
+                    instruct_set_pc = 0;
+                }
+                break;
+            
+            case JNE:
+                if(!(cpu->fl & FL_EQ))
+                {
+                    cpu->pc = cpu->reg[operandA];
+                }
+                else
+                {
+                    instruct_set_pc = 0;   
+                }
+                break;
+
             case HLT:
                 running = 0;
                 break;
@@ -175,6 +218,7 @@ void cpu_init(struct cpu *cpu)
 {
     // init the PC and other special registers
     cpu->pc = 0;
+    cpu->fl = 0;
 
     // zero registers and RAM
     memset(cpu->reg, 0, sizeof cpu->reg);
