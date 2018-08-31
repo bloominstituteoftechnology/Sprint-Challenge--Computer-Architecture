@@ -1,11 +1,21 @@
-SRC = $(wildcard *.c)
+SRC=$(wildcard *.c)
+
 HEADERS=$(wildcard *.h)
-DEP=$(src) $(HEADERS)
+
+DEPS=$(SRC) $(HEADERS)
+
+
 
 ls8: $(DEPS)
-        gcc -wall -wextra -g -o $@ $(SRC)
+
+	gcc -Wall -Wextra -g -o $@ $(SRC)
+
+
 
 .PHONY: clean
 
+
+
 clean:
-        rm -rf ls8 *.dSYM
+
+	rm -rf ls8 *.dSYM

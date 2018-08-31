@@ -1,11 +1,12 @@
-
 #include <stdio.h>
-
-#include <string.h>
 
 #include <stdlib.h>
 
 #include "cpu.h"
+
+
+
+extern int errno;
 
 
 
@@ -15,40 +16,44 @@
 
  */
 
-//int main(void)
-
 int main(int argc, char **argv)
 
 {
 
-  struct CPU cpu;
+    if (argc < 2)
 
-  if (argc < 2) {
+    {
 
-    fprintf(stderr, "usage: ./ls8 + example/<programfile> \n");
+        fprintf(stderr, "\n\n=============================================================================================\n\n");
 
-    exit(2);
+        fprintf(stderr, "#############\n##  Error  ##\n#############\n\n");
 
-  }
+        fprintf(stderr, "Two arguments are required when attempting to run this program\n");
 
-  else {
+        fprintf(stderr, "\nExample: $ ./ls8 ./examples/print8.ls8\n\n");
 
-    char *filename = argv[1];
+        fprintf(stderr, "This is envoke the ls8 program and run the commands specified inside of the print8.ls8 file\n\n");
+
+        fprintf(stderr, "=============================================================================================\n\n");
+
+        exit(0);
+
+    }
+
+    
+
+    struct cpu cpu;
+
+
 
     cpu_init(&cpu);
 
-    cpu_load(filename, &cpu);
+    cpu_load(&cpu, argv[1]);
 
     cpu_run(&cpu);
 
-  }
 
 
-
-
-
-
-
-  return 0;
+    return 0;
 
 }

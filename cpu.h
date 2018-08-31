@@ -4,56 +4,35 @@
 
 
 
-#define E_FLAG 0x00
-
-#define MAX_ADDRESS 0xFF
-
-#define SP 7
-
-#define IS 6
-
-#define IM 5
-
-
-
 // Holds all information about the CPU
 
-enum alu_op {
+struct cpu
 
-    ALU_MUL,
+{
 
-    ALU_ADD,
+    unsigned char fl;
 
-    ALU_DIV,
+    unsigned char pc;
 
-    ALU_SUB,
+    unsigned char sp;
 
-    ALU_MOD,
+    unsigned char registers[8];
 
-};
-
-
-
-
-
-struct CPU {
-
-
-
-    unsigned char PC;
-
-    unsigned char FL;// flags register
-
-
-    unsigned char reg[8];
-
-    unsigned char ram[MAX_ADDRESS + 1];
+    unsigned char ram[256];
 
 };
 
 
 
-#define LDI  0b10000010 
+// Instructions
+
+
+
+// These use binary literals. If these aren't available with your compiler, hex
+
+// literals should be used.
+
+
 
 #define ADD 0b10100000
 
@@ -91,6 +70,8 @@ struct CPU {
 
 #define LD 0b10000011
 
+#define LDI 0b10000010
+
 #define MOD 0b10100100
 
 #define MUL 0b10100010
@@ -120,23 +101,20 @@ struct CPU {
 #define SUB 0b10100001
 
 #define XOR 0b10101011
-//flags
-#define FL_EQ (1 << 0) 00000001
-#define FL_GT (1<<1) 11111110
-#define Fl_LT (1<<2)
+
+// TODO: more instructions here. These can be used in cpu_run().
 
 
 
+// Function declarations
 
-extern void cpu_load(char *arg, struct CPU *cpu);
 
-extern void cpu_init(struct CPU *cpu);
 
-extern void cpu_run(struct CPU *cpu);
+extern void cpu_load(struct cpu *cpu, char *filename);
 
-extern unsigned char cpu_ram_read(struct CPU *cpu, unsigned char index);
+extern void cpu_init(struct cpu *cpu);
 
-extern void cpu_ram_write(struct CPU *cpu, unsigned char index, unsigned char value);
+extern void cpu_run(struct cpu *cpu);
 
 
 
