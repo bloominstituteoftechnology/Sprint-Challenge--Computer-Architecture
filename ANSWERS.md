@@ -21,22 +21,43 @@ POP R1
 
 Complete the following problems:
 
-* Convert `11001111` binary
+* Convert `1100 1111` binary // divide into two parts
+         1100//12//C  1111// when you see all 1 //F
+         #FF00FF
+         #11111111 00000000 11111111
 
     to hex: CF
-
+//11001111
+ //128/    //8421 
     to decimal:207
+    128 + 64 + 15
 
 
 * Convert `4C` hex
-
-    to binary: 1001100
+//half it agaim
+//0100 1100
+    to binary: 01001100
+//01= 64
+//1 =8
+//1= 4
 
     to decimal: 76
 
 
 * Convert `68` decimal
-
+//power of 2
+68
+64 + 4
+1=0 128 PLACE
+2= 1 IN THE 64THPLACE
+3= 0 IN THE 32TH PLACE
+4= 0 IN 16TH PLACE 
+5=0 IN 8TH PLACE
+6 = 1 IN 4TH
+7= 0 IN 2'S PLACE
+8 = 0 IN ONE PLACE
+// IF A 1 IS IN THE LAST IT MUST BE ODD
+01000100 
     to binary:01000100
 
     to hex: 44
