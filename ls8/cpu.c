@@ -45,9 +45,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     // TODO
     cpu->reg[regA] = cpu->reg[regA] * cpu->reg[regB];
     break;
+  case ALU_ADD:
+    cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
+    break;
 
     // TODO: implement more ALU ops
   }
+}
+void pop(struct cpu *cpu, unsigned char registers)
+{
+  cpu->reg[registers] = cpu->reg[7];
+  cpu->reg[7]++;
+}
+void push(struct cpu *cpu, unsigned char registers)
+{
+  cpu->reg[7]--;
+  cpu->reg[7] = cpu->reg[registers];
 }
 
 /**
@@ -86,6 +99,15 @@ void cpu_run(struct cpu *cpu)
       break;
     case MUL:
       alu(cpu, ALU_MUL, operandA, operandB);
+      break;
+    case POP:
+      pop(cpu, operandA);
+      break;
+    case PUSH:
+      push(cpu, operandA);
+      break;
+    case ADD:
+      alu(cpu, ALU_ADD, operandA, operandB);
       break;
     default:
       printf("unknown instructions at %02x: %02x\n", cpu->pc, IR);
