@@ -70,6 +70,9 @@ void cpu_load(CPU *cpu, char *filename)
  */
 void alu(CPU *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
+  unsigned char valA = cpu->reg[regA];
+  unsigned char valB = cpu->reg[regB];
+
   switch (op)
   {
   case ALU_ADD:
@@ -84,12 +87,20 @@ void alu(CPU *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
     cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
     break;
 
-  case ALU_MUL:
+  case ALU_MUT:
     cpu->reg[regA] *= cpu->reg[regB];
     break;
 
   case ALU_SUB:
     cpu->reg[regA] -= cpu->reg[regB];
+
+  case ALU_CMP:
+    if(valA == valB){
+      cpu->fl = cpu->fl | FL_EQ;
+    } else {
+      cpu->fl = cpu->fl & (~FL_EQ);
+    }
+    break;
 
   default:
     printf("unknown ALU instruction at %02x: %02x\n", cpu->pc, op);
@@ -115,6 +126,9 @@ void cpu_run(CPU *cpu)
 
     unsigned char operandA = cpu_ram_read(cpu, (cpu->pc + 1) & MAX_ADDR);
     unsigned char operandB = cpu_ram_read(cpu, (cpu->pc + 2) & MAX_ADDR);
+
+    int inst_set_pc = (IR >> 4) & 1;
+
     switch (IR)
     {
     case PRN:
@@ -140,48 +154,53 @@ void cpu_run(CPU *cpu)
     case POP:
       // TODO
       cpu->reg[operandA] = cpu_pop(cpu);
+      cpu->reg[SP]++;
       break;
 
     case PUSH:
       // TODO
-      cpu_   push(cpu, cpu->reg[operandA]);
+      cpu->reg[SP]--;
+      cpu_push(cpu, cpu->reg[operandA]);
       break;
 
     case JMP:
-    cpu->pc = cpu->reg[operandA];
-    break;
+      cpu->pc = cpu->reg[operandA];
+      break;
+
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+
+    case JEQ:
+      if (cpu->fl)
+      {
+        cpu->pc = cpu->reg[operandA];
+      }
+      else
+      {
+        cpu->pc += 2;
+      }
+      break;
+
+    case JNE:
+      if (!cpu->fl)
+      {
+        cpu->pc = cpu->reg[operandA];
+      }
+      else
+      {
+        cpu->pc += 2;
+      }
+
+      break;
 
     default:
       printf("unknown instruction at %02x: %02x\n", cpu->pc, IR);
       exit(2);
     }
-
-    /*
-    // Increment the PC register to go to the next instruction. Instructions
-    // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
-    // instruction byte tells you how many bytes follow the instruction byte
-    // for any particular instruction.
-    if (
-      IR != CALL &&
-      IR != INT &&
-      IR != IRET &&
-      IR != JEQ &&
-      IR != JGT &&
-      IR != JLT &&
-      IR != JMP &&
-      IR != JNE &&
-      IR != RET
-    ){
+    if (!inst_set_pc){
       // right shift it 6 places
-      cpu->pc += (IR >> 6) + 1;
-    }
-    */
-    int instruction_sets_the_pc = (IR >> 4) & 1;
-
-    if (!instruction_sets_the_pc)
-    {
-      // right shift it 6 places
-      cpu->pc += ((IR >> 6) & 0x3) + 1;
+      cpu->pc += ((IR >> 6) + 1);
     }
   }
 }
@@ -196,7 +215,8 @@ void cpu_init(CPU *cpu)
   memset(cpu->ram, 0, sizeof cpu->ram);
 
   // TODO: Initialize the PC and other special registers
-  cpu->pc = START_OF_PROGRAM_ADDR;
+  cpu->pc = 0;
+  cpu->fl = 0;
   cpu->reg[SP] = START_OF_STACK_ADDR;
   cpu->fl = CPU_FLAG;
 }
