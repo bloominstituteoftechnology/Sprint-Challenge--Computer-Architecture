@@ -124,8 +124,14 @@ void alu(struct CPU *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         fprintf(stderr, "ALU_switch instruction error");
 
     }
+//case ALU_CMP:
+//if(valA == valB){
+//cpu->fl = cpu->fl | fl_EQ:{
+//}else{    
+//cpu->fl = cpu->fl & (`FL_EQ);
 
 }
+
 
 
 

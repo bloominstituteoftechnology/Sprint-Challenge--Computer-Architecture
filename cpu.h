@@ -121,8 +121,8 @@ struct CPU {
 
 #define XOR 0b10101011
 //flags
-#define FL_EQ (1 << 0)
-#define FL_GT (1<<1)
+#define FL_EQ (1 << 0) 00000001
+#define FL_GT (1<<1) 11111110
 #define Fl_LT (1<<2)
 
 
