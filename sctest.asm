@@ -49,4 +49,3 @@ PRN R3      ; Skipped-does not print
 Test5:
 
 HLT
-
