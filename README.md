@@ -6,23 +6,26 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
 
-    to decimal:
+    1100 C
+    1111 F
+    to hex: CF
+
+    to decimal: 128+64+0+0+8+4+2+1 = 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -31,8 +34,13 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
+    Since CPU can process only one task at the time, to provide concurrency the CPU switch processes, it saves the state in the stack, then update the state with the new instructions until it completes and in the end reprocesses the previous CPU state and resumes processing.
+
 * Describe assembly language and machine language:
 
+    Machine language is just binary which is the lowest level. It carries instructions for CPU.
+
+    Assembly language carries the same instructions in a different level so humans can read nad interpret, too.
 
 ## Coding
 
