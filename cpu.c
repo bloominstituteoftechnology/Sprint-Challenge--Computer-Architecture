@@ -182,6 +182,9 @@ void cpu_run(struct cpu *cpu)
       case HLT:
         running = 0;
         break;
+      case JMP:
+        cpu->PC = cpu->reg[operandA];
+        break;
       case LDI:
         reg[operandA] = operandB;
         cpu->PC+=difference;
