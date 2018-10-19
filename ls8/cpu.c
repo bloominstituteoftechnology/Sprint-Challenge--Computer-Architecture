@@ -139,6 +139,13 @@ void cpu_run(struct cpu *cpu)
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
         break;
+      case JMP:
+        cpu->PC = cpu->reg[operandA];
+        break;
+      case JEQ:
+        break;
+      case JNE:
+        break;
       default:
         fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
         exit(3);
