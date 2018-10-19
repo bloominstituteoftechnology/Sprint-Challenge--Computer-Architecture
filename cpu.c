@@ -175,6 +175,10 @@ void cpu_run(struct cpu *cpu)
         printf("Value of PC after call: %d\n", cpu->PC);
         #endif
         break;
+      case CMP:
+        alu(cpu, ALU_CMP, cpu->reg[operandA], cpu->reg[operandB]);
+        cpu->PC+=difference;
+        break;
       case HLT:
         running = 0;
         break;
