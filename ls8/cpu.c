@@ -70,6 +70,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char IR = cpu_ram_read(cpu, cpu->pc);
     unsigned char operandA = cpu_ram_read(cpu, cpu->pc + 1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->pc + 2);
+    
 
     void (*handler)(struct cpu * cpu, unsigned char, unsigned char);
 
@@ -172,15 +173,63 @@ void handle_RET(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
 
 }
 
+void handle_JMP(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  // printf("%d in returnjmp\n");
+  cpu->pc = cpu->registers[operandA];
+  
+}
+void handle_CMP(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  // printf("%d in returncmp\n");
+  // 00000LGE
+  // If they are equal, set the Equal E flag to 1, otherwise set it to 0.
+if (cpu->registers[operandA] == cpu->registers[operandB]) {
+  cpu->fl = 1;
+}
+else if(cpu->registers[operandA] < cpu->registers[operandB]){
+  cpu->fl = 4;
+}
+else if(cpu->registers[operandA] > cpu->registers[operandB]){
+  cpu->fl = 2;
+}
+// If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
+
+// If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+}
+void handle_JNE(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  // If E flag is clear (false, 0), jump to the address stored in the given register.
+  // printf("%d in returnjne\n");
+  if(cpu->fl != 1){
+  cpu->pc = cpu->registers[operandA];
+  }
+  else cpu->pc = cpu->pc += 2;
+  
+  
+}
+void handle_JEQ(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  // If equal flag is set (true), jump to the address stored in the given register.
+  if(cpu->fl = 1){
+    cpu->pc = cpu->registers[operandA];
+  }
+  else cpu->pc +=2;
+  // printf("%d in returnjmp\n");
+  // cpu->pc = cpu->registers[operandA];
+}
+
 /**
  * Initialize a CPU struct
  */
+
 void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->pc = 0;
   cpu->running = 1;
   cpu->registers[7] = 0xF4;
+  cpu->fl = 0;
 
   // TODO: Zero registers and RAM
   memset(cpu->ram, 0, sizeof cpu->ram);
@@ -195,4 +244,8 @@ void cpu_init(struct cpu *cpu)
   branchTable[CALL] = handle_CALL;
   branchTable[RET] = handle_RET;
   branchTable[ADD] = handle_ADD;
+  branchTable[JMP] = handle_JMP;
+  branchTable[CMP] = handle_CMP;
+  branchTable[JNE] = handle_JNE;
+  branchTable[JEQ] = handle_JEQ;
 }
