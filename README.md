@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 76
 
-    to decimal:
+    to decimal: 1001100
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 0100 0100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -31,8 +31,13 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
+    The cpu can run one program for a some period of time and then change to running another program for some period of time using interrupts.
+
 * Describe assembly language and machine language:
 
+    Assembly language is human readable version of machine language. Uses short codes that contain instruction and sometimes operands.
+    
+    Machine language is computer readable, low level version of assembly language. Uses binary codes.
 
 ## Coding
 
