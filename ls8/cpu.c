@@ -140,6 +140,27 @@ void cpu_run(struct cpu *cpu)
             cpu->reg[SP]++;
             break;
 
+        case CMP:
+            //if A<B
+            if (cpu->reg[operandA] < cpu->reg[operandB])
+            {
+                printf("CMP: %d < %d\n", cpu->reg[operandA], cpu->reg[operandB]);
+                FL = 4; //set FL to 00000100 (LGE = 100)
+            }
+            //if A>B
+            else if (cpu->reg[operandA] > cpu->reg[operandB])
+            {
+                printf("CMP: %d > %d\n", cpu->reg[operandA], cpu->reg[operandB]);
+                FL = 2; //set FL to 00000010 (LGE = 010)
+            }
+            //if A==B
+            else
+            {
+                printf("CMP: %d = %d\n", cpu->reg[operandA], cpu->reg[operandB]);
+                FL = 1; //set FL to 00000001 (LGE = 001)
+            }
+            break;
+
         default:
             fprintf(stderr, "PC %02x: unknown instruction %02X\n", cpu->PC, IR);
             exit(3);
