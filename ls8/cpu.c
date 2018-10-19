@@ -112,14 +112,14 @@ void cpu_run(struct cpu *cpu)
         if ((cpu->FL & 1) == 1) {
           cpu->PC = cpu->registers[argv[0]];
         } else {
-          cpu->PC += argc + 2;
+          cpu->PC += argc + 1;
         }
         break;
       case JNE:
         if ((cpu->FL & 1) == 0) {
           cpu->PC = cpu->registers[argv[0]];
         } else {
-          cpu->PC += argc + 2;
+          cpu->PC += argc + 1;
         }
         break;
       default:
