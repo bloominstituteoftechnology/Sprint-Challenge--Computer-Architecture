@@ -48,11 +48,13 @@ Options for submission, whichever is easier for you:
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along.
 
+  Used repo: https://github.com/DirupT/Computer-Architecture
+
 Sprint Challenge:
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-SPEC.md)
 
-Add the `CMP` instruction and `equal` flag to your LS-8.
+Add the `CMP` instruction and `equa l` flag to your LS-8.
 
 Add the `JMP` instruction.
 
