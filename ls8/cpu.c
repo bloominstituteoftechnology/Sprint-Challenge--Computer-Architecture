@@ -134,17 +134,16 @@ void cpu_run(struct cpu *cpu)
         case POP:
             cpu->registers[operandA & 7] = cpu_ram_read(cpu, cpu->registers[7]);
             cpu->registers[7]++;
-            /* cpu->reg[operandA] = handle_PoP(cpu); */
             break;
 
         case PUSH:
             push(cpu, operandA);
             break;
-
+        //jump
         case JMP:
             cpu->pc = cpu->registers[operandA];
             break;
-        //jump not equal
+        //jump equal
         case JEQ:
             if (cpu->fl & FL_EQ){
                 cpu->pc = cpu->registers[operandA];
@@ -152,7 +151,7 @@ void cpu_run(struct cpu *cpu)
                 instruct_set_pc = 0;
             }
             break;
-
+        //jump not equal
         case JNE:
             if (!(cpu->fl & FL_EQ))
             {
