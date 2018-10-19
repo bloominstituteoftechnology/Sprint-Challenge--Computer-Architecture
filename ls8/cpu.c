@@ -107,7 +107,11 @@ void cpu_run(struct cpu *cpu)
         case PUSH:
             push(cpu, operandA);
             break;
-        
+
+        case JMP:
+            cpu->pc = cpu->registers[operandA];
+            break;
+
         case CMP:
             comp(cpu, operandA, operandB);
             break;

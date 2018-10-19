@@ -31,6 +31,7 @@ enum alu_op
 #define PUSH 0b01000101
 #define CALL 0b01010000
 #define RET 0b00010001
+#define JMP 0b01010100
 #define CMP 0b10100111
 
 // Function declarations
