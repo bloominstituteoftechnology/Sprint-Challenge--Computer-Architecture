@@ -6,6 +6,9 @@ struct cpu
 {
   // PC
   unsigned char PC;
+
+  unsigned char FL;
+
   // registers (array)
   unsigned char registers[8];
   // ram (array)
@@ -15,8 +18,9 @@ struct cpu
 // ALU operations
 enum alu_op
 {
-  ALU_MUL
+  ALU_MUL,
   // Add more here
+  ALU_CMP
 };
 
 // Instructions
@@ -28,6 +32,7 @@ enum alu_op
 #define PRN 0b01000111
 #define HLT 0b00000001
 #define MUL 0b10100010
+#define CMP 0b10100111
 
 // TODO: more instructions here. These can be used in cpu_run().
 
