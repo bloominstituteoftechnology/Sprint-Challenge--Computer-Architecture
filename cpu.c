@@ -152,6 +152,13 @@ void cpu_run(struct cpu *cpu)
         cpu->pc = pop(cpu);
         break;
 
+      case CMP:
+        if (cpu->registers[operandA] == cpu->registers[operandB]) {
+          cpu->fl = 1;
+        } else {
+          cpu->fl = 0;
+        }
+
       default:
         printf("Invalid instruction");
         exit(2);
@@ -179,5 +186,6 @@ void cpu_init(struct cpu *cpu)
   }
 
   cpu->registers[7] = 0xF4;
+  cpu->fl = 0x00;
 
 }
