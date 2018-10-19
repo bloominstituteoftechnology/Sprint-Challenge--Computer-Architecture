@@ -1,6 +1,6 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
-1. Explain how the CPU provides concurrency:
+1. Explain how the CPU provides concurrency or parallelism:
 
 > The CPU can do multiple things at once through a variety of mechanisms, including having multiple cores, or other features such as pipelining or hyperthreading. Additionally, by using interrupts, a single CPU can execute one program for a while (like 50 ms), and then switch to running another program for a while. While not true parallelism, this is how modern operating systems appear to do so much at once.
 
