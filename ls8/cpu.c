@@ -89,7 +89,7 @@ void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
  */
 void cpu_run(struct cpu *cpu)
 {
-  int running = 1; // True until we get a HLT instruction
+  int running = 1;
 
   char SP = 0XF4;
   cpu->registers[7] = SP;
@@ -139,40 +139,20 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP:
         alu(cpu, ALU_CMP, argv[0], argv[1]);
-
-        // if (cpu->registers[argv[0]] == cpu->registers[argv[1]]) {
-        //   cpu->fl = (cpu->fl & ~(1<<6)) |  (0<<6);
-        //   cpu->fl = (cpu->fl & ~(1<<7)) |  (0<<7);
-        //   cpu->fl = (cpu->fl & ~(1<<8)) |  (1<<8);
-        // } else if (cpu->registers[argv[0]] < cpu->registers[argv[1]]) {
-        //   cpu->fl = (cpu->fl & ~(1<<6)) |  (1<<6);
-        //   cpu->fl = (cpu->fl & ~(1<<7)) |  (0<<7);
-        //   cpu->fl = (cpu->fl & ~(1<<8)) |  (0<<8);
-        // } else if (cpu->registers[argv[0]] > cpu->registers[argv[1]]) {
-        //   cpu->fl = (cpu->fl & ~(1<<6)) |  (0<<6);
-        //   cpu->fl = (cpu->fl & ~(1<<7)) |  (1<<7);
-        //   cpu->fl = (cpu->fl & ~(1<<8)) |  (0<<8);
-        // }
         break;
       case JEQ:
-        if (cpu->fl == 0b00000000) {
-          cpu->pc = cpu->registers[argv[0] & 7];
-          // you still need to Prevent PC from moving...
-        }
-
-        // if (cpu->fl >> 8 == 1) {
-        //   cpu->pc = cpu->registers[argv[0] & 7];
-        // }
-        break;
-      case JNE:
         if (cpu->fl == 0b00000001) {
           cpu->pc = cpu->registers[argv[0] & 7];
-          // you still need to Prevent PC from moving...
+        } else {
+          cpu->pc += 2;
         }
-
-        // if (cpu->fl >> 8 == 0) {
-        //   cpu->pc = cpu->registers[argv[0] & 7];
-        // }
+        break;
+      case JNE:
+        if (cpu->fl != 0b00000001) {
+          cpu->pc = cpu->registers[argv[0] & 7];
+        } else {
+          cpu->pc += 2;
+        }
         break;
       default:
         printf("incorrect instruction\n");
