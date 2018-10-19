@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: 0xCF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 0b01001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 0b01000100
 
-    to hex:
+    to hex: 0x44
 
 
 ## Architecture
@@ -30,9 +30,10 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+    Multiple core cpus allow for parallelism, timesharing allows for the appearance of concurrency. Using interrupts, a single CPU can jump between running different programs quickly enough to where we barely notice they aren't operating concurrently.
 
 * Describe assembly language and machine language:
-
+    Machine languages are languages understood by computers, the lowest level programming languages. Assembly language converts the same instructions as machine language into variables and names that humans can easily recognize and use to communicate with machines.
 
 ## Coding
 
