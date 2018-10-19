@@ -4,6 +4,7 @@
 // Holds all information about the CPU
 struct cpu {
   unsigned char PC;
+  unsigned char FL; //Flag is defined here
   unsigned char reg[8];
   unsigned char ram[256];
   int halted;

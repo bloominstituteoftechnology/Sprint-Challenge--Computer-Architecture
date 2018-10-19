@@ -173,6 +173,60 @@ void handle_JMP(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
   (void)operandB;
   cpu->PC = cpu->reg[operandA];
 }
+
+void handle_CMP(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  if (cpu->reg[operandA] == cpu->reg[operandB])
+  {
+    cpu->FL = cpu->FL | (0x1 << 0); //Operands being equal too sets the flag to the rightmost index of the register 00000LG[E]
+
+    //Clear the LG bits in the register
+    cpu->FL = cpu->FL & ~(0x1 << 1);
+    cpu->FL = cpu->FL & ~(0x1 << 2);
+  }
+  else if (cpu->reg[operandA] > cpu->reg[operandB])
+  {
+    cpu->FL = cpu->FL | (0x1 << 1); // If First operand greater than second sets flag to register index 00000L[G]E
+
+    //Clear the 00000[L]G[E] bits in the register
+    cpu->FL = cpu->FL & ~(0x1 << 2);
+    cpu->FL = cpu->FL & ~(0x1 << 0);
+  }
+  else {
+    cpu->FL = cpu->FL | (0x1 << 2);
+
+    //Clear the 00000L[G][E] bits in the register
+    cpu->FL = cpu->FL & ~(0x1 <<1);
+    cpu->FL = cpu->FL & ~(0x1 <<0);
+  }
+}
+
+void handle_JNE(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  (void)operandB;
+
+  if ((cpu->FL & (0x1 << 0)) == 0)
+  {
+    cpu->PC = cpu->reg[operandA];
+  }
+  else{
+    cpu->PC += 2;
+  }
+}
+
+void handle_JEQ(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  (void)operandB;
+
+  if ((cpu->FL & (0x1 << 0)) == 1)
+  {
+    cpu->PC = cpu->reg[operandA];
+  }
+  else {
+    cpu->PC += 2;
+  }
+}
+
 void init_branchtable(void)
   {
     branchtable[LDI] = handle_LDI;
@@ -184,6 +238,9 @@ void init_branchtable(void)
     branchtable[CALL] = handle_CALL;
     branchtable[RET] = handle_RET;
     branchtable[ADD] = handle_ADD;
+    branchtable[CMP] = handle_CMP;
+    branchtable[JEQ] = handle_JEQ;
+    branchtable[JNE] = handle_JNE;
   }
 
 /**
@@ -193,6 +250,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0; //Initialize our CMP flag to 0
   // Zero registers and RAM
   memset(cpu->reg, 0, sizeof cpu->reg);
   memset(cpu->ram, 0, sizeof cpu->ram);
