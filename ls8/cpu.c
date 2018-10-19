@@ -219,6 +219,7 @@ void handle_JEQ(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
   // cpu->pc = cpu->registers[operandA];
 }
 
+
 /**
  * Initialize a CPU struct
  */
