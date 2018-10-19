@@ -156,10 +156,10 @@ void cpu_run(struct cpu *cpu)
         printf("CMP\n");
         if (cpu->registers[operandA] == cpu->registers[operandB]) {
           cpu->fl = 1;
-        } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
-          cpu->fl = 2;
-        } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
-          cpu->fl = 4;
+        // } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
+        //   cpu->fl = 2;
+        // } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
+        //   cpu->fl = 4;
         } else {
           cpu->fl = 0;
         }
@@ -179,7 +179,7 @@ void cpu_run(struct cpu *cpu)
 
       case JNE:
         printf("JNE\n");
-        if (cpu->fl == 0){
+        if (cpu->fl != 1){
           cpu->pc = cpu->registers[operandA];
         }
         break;
