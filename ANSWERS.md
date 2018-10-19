@@ -36,4 +36,4 @@ CPU can provide concurrency by using interrupts (switching between tasks).
 
 2. Describe assembly language and machine language:
 
-
+assembly language is the binary instructions the cpu executes, makes machine code language readable.
