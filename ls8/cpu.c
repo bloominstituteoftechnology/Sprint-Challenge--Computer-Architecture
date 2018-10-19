@@ -163,6 +163,16 @@ void handle_RET(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
   cpu->PC = cpu_pop(cpu);
 }
 
+void handle_ADD(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  alu(cpu, ALU_ADD, operandA, operandB);
+}
+
+void handle_JMP(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
+{
+  (void)operandB;
+  cpu->PC = cpu->reg[operandA];
+}
 void init_branchtable(void)
   {
     branchtable[LDI] = handle_LDI;
@@ -173,6 +183,7 @@ void init_branchtable(void)
     branchtable[POP] = handle_POP;
     branchtable[CALL] = handle_CALL;
     branchtable[RET] = handle_RET;
+    branchtable[ADD] = handle_ADD;
   }
 
 /**
