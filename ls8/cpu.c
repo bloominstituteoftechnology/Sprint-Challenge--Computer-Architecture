@@ -29,7 +29,13 @@ void cpu_load(struct cpu *cpu, char *filename)
     exit(2);
   }
   while(fgets(line, sizeof line, fp)!=NULL) {
-    unsigned char b = strtoul(line, NULL, 2);
+    char *endptr = NULL;
+
+    unsigned char b = strtoul(line, &endptr, 2);
+
+    if(endptr == line) {
+      continue;
+    }
 
     cpu_ram_write(cpu, addr++, b);
   }
@@ -65,6 +71,13 @@ void cpu_run(struct cpu *cpu)
   operandA = cpu_ram_read(cpu, cpu->pc+1);
   operandB = cpu_ram_read(cpu, cpu->pc+2);
   sp = cpu->registers[7];
+
+  printf("TRACE: %d | %d %d %d |", cpu->pc, IR, operandA, operandB);
+
+  for(int i=0; i<8; i++) {
+    printf("%02X", cpu->registers[i]);
+  }
+  printf("\n");
 
   int add_to_pc = (IR >> 6) +1;
 
@@ -147,6 +160,10 @@ void cpu_run(struct cpu *cpu)
       case HLT:
         running = 0;
         break;
+
+      default:
+        fprintf(stderr, "Unknown instruction\n");
+        exit(3);
     }
     cpu->pc += add_to_pc;
   }
