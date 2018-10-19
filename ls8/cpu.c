@@ -127,6 +127,13 @@ void cpu_run(struct cpu *cpu)
       case HLT:
         running = 0;
         break;
+
+      case JEQ:
+        if (cpu->eq_fl == 1) {
+          cpu->PC = cpu->reg[operandA];
+          add_to_pc = 0;
+        }
+        break;
       
       default: 
       printf("ERROR\n");
