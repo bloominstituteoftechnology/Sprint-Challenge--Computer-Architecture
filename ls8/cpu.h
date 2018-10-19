@@ -13,8 +13,8 @@ struct cpu
     unsigned char fl;
 };
 
-//Flags here for compare
-
+//Flags here for JEQ, JNE
+#define fl_eq (1<<0)
 
 // ALU operations
 enum alu_op

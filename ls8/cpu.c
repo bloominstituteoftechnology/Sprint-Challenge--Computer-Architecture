@@ -146,10 +146,16 @@ void cpu_run(struct cpu *cpu)
             break;
 
         case JEQ:
-
+            if (cpu->fl & fl_eq){
+                cpu->pc = cpu->registers[operandA];
+            }
             break;
 
         case JNE:
+            if (!(cpu->fl & fl_eq))
+            {
+                cpu->pc = cpu->registers[operandA];
+            }
             break;
 
         case CMP:
