@@ -153,11 +153,36 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case CMP:
+        printf("CMP\n");
         if (cpu->registers[operandA] == cpu->registers[operandB]) {
           cpu->fl = 1;
+        } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
+          cpu->fl = 2;
+        } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
+          cpu->fl = 4;
         } else {
           cpu->fl = 0;
         }
+        break;
+
+      case JMP:
+        printf("JMP\n");
+        cpu->pc = cpu->registers[operandA];
+        break;
+
+      case JEQ:
+        printf("JEQ\n");
+        if (cpu->fl == 1) {
+          cpu->pc = cpu->registers[operandA];
+        }
+        break;
+
+      case JNE:
+        printf("JNE\n");
+        if (cpu->fl == 0){
+          cpu->pc = cpu->registers[operandA];
+        }
+        break;
 
       default:
         printf("Invalid instruction");
