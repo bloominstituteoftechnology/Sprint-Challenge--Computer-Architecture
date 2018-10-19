@@ -6,33 +6,33 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex:CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary:1001100
 
-    to decimal:
+    to decimal:114
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary:1000100
 
-    to hex:
+    to hex:44
 
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+* Explain how the CPU provides concurrency or parallelism: In a multicore cpu a program is executed parallel as it is being run in segments that may be out of order or partial order instead of running one part at a time
 
 * Describe assembly language and machine language:
-
+assembly language is human readable but very low level whereas machine language is numbers and is not easily readable by humans.
 
 ## Coding
 
