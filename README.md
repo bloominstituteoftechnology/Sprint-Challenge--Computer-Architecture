@@ -13,7 +13,7 @@ Complete the following problems:
 
 * Convert `4C` hex
 
-    to binary: 00101100
+    to binary: 01001100
 
     to decimal: 44
 
