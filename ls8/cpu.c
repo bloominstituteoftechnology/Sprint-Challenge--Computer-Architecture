@@ -23,7 +23,10 @@ void cpu_load(struct cpu *cpu, char *file)
         char *endptr;
         unsigned long int new_line;
         new_line = strtoul(line, &endptr, 2);
+
+        if (endptr!= line){
         cpu->ram[address++] = new_line;
+        }
     }
     fclose(f);
 }
@@ -41,11 +44,26 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         cpu->registers[regA] = cpu->registers[regA] + cpu->registers[regB];
         break;
     
-  
+    case ALU_CMP:
+        cpu->fl = 0x00;
+        unsigned char valueA = cpu->registers[regA];
+        unsigned char valueB = cpu->registers[regB];
 
+        if (valueA == valueB)
+        {
+            cpu->fl += 1;
+        }
+        else if (valueA > valueB)
+        {
+            cpu->fl += 2;
+        }
+        else
+        {
+            cpu->fl += 4;
+        }
     }
 }
-void pop(struct cpu *cpu, unsigned char reg)
+unsigned char pop(struct cpu *cpu)
 {
     unsigned char value = cpu_ram_read(cpu, cpu->registers[7]);
     cpu->registers[7]++;
@@ -56,8 +74,8 @@ void push(struct cpu *cpu, unsigned char reg)
     cpu->registers[7]--;
     cpu_ram_write(cpu, cpu->registers[7], cpu->registers[reg]);
 }
-//CMP (compare)
-void comp(struct cpu *cpu, unsigned char regA, unsigned char regB)
+//CMP (compare)  (i just set in alu instead)
+/* void comp(struct cpu *cpu, unsigned char regA, unsigned char regB)
 {
     cpu->fl = 0x00;
     unsigned char valueA = cpu->registers[regA];
@@ -70,7 +88,7 @@ void comp(struct cpu *cpu, unsigned char regA, unsigned char regB)
     } else {
         cpu->fl += 4;
     }
-}
+} */
 /**
  * Run the CPU
  */
@@ -83,6 +101,9 @@ void cpu_run(struct cpu *cpu)
         unsigned char IR = cpu_ram_read(cpu, cpu->pc);
         unsigned char operandA = cpu_ram_read(cpu, cpu->pc + 1);
         unsigned char operandB = cpu_ram_read(cpu, cpu->pc + 2);
+
+        int add_to_pc = (IR >> 6) + 1;
+
         switch (IR)
         {
         case LDI:
@@ -101,9 +122,21 @@ void cpu_run(struct cpu *cpu)
             alu(cpu, ALU_ADD, operandA, operandB);
             break;
 
-        case POP:
-            pop(cpu, operandA);
+        case CALL:
+            push(cpu, cpu->pc + 2);
+            cpu->pc = cpu->registers[operandA];
             break;
+
+        case RET:
+            cpu->pc = pop(cpu);
+            break;
+
+        case POP:
+            cpu->registers[operandA & 7] = cpu_ram_read(cpu, cpu->registers[7]);
+            cpu->registers[7]++;
+            /* cpu->reg[operandA] = handle_PoP(cpu); */
+            break;
+
         case PUSH:
             push(cpu, operandA);
             break;
@@ -112,8 +145,15 @@ void cpu_run(struct cpu *cpu)
             cpu->pc = cpu->registers[operandA];
             break;
 
+        case JEQ:
+
+            break;
+
+        case JNE:
+            break;
+
         case CMP:
-            comp(cpu, operandA, operandB);
+            alu(cpu, ALU_CMP, operandA, operandB);
             break;
 
         default:
@@ -121,7 +161,7 @@ void cpu_run(struct cpu *cpu)
             exit(2);
         }
         // Move the PC to the next instruction.
-        cpu->pc += (IR >> 6) + 1;
+        cpu->pc += add_to_pc;
     }
 }
 /**
