@@ -113,6 +113,11 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu->registers[regA];
       add_to_pc = 0;
       break;
+    case JNE:
+    // If E flag is clear (false, 0), jump to the address stored in the given register.
+      cpu->PC = cpu->registers[regA];
+      add_to_pc = 0;
+      break;
     case LDI:
       printf("\nLDI: R%d: stored value: %d\n\n", operand_a, operand_b);
       cpu->registers[operand_a] = operand_b;
