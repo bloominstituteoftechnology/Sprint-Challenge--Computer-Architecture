@@ -33,6 +33,7 @@ enum alu_op
 #define HLT 0b00000001
 #define MUL 0b10100010
 #define CMP 0b10100111
+#define JMP 0b01010100
 
 // TODO: more instructions here. These can be used in cpu_run().
 
