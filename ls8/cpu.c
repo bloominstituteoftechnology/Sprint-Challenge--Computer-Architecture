@@ -144,11 +144,20 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu->reg[operand_a];
       break;
 
-    case JMP:
+    case CMP:   // Compare the values in two registers A & B
+        if (cpu->reg[operand_a] == cpu->reg[operand_b]) { // If they are equal,
+          cpu->FL = 1;   //set the flag to 1.
+        }
+          else {
+          cpu->FL = 0;  // Else set it to 0.
+        }
+        break;
+
+    case JMP:  //Jump to the address stored in the given register.
       cpu->PC = cpu->reg[operand_a & 7];
       add_to_pc = 0;
 
-   case JEQ:
+   case JEQ:  //If equal flag is set (true), jump to the address stored in the given register.
         if (cpu->FL) {
           cpu->PC = cpu->reg[operand_a];
         }
@@ -157,7 +166,7 @@ void cpu_run(struct cpu *cpu)
           }
         break;
 
-      case JNE:
+      case JNE:  //If E flag is clear (false, 0), jump to the address stored in the given register
         if (!cpu->FL){
           cpu->PC = cpu->reg[operand_a];
         }
