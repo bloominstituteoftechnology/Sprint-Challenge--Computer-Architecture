@@ -143,6 +143,22 @@ void trace(struct cpu *cpu)
     sprintf(instruction, "%s", "HLT");
     break;
 
+  case CMP:
+    sprintf(instruction, "%s R%d R%d", "CMP", operandA, operandB);
+    break;
+
+  case JMP:
+    sprintf(instruction, "%s R%d", "JMP", operandA);
+    break;
+
+  case JEQ:
+    sprintf(instruction, "%s R%d", "JEQ", operandA);
+    break;
+
+  case JNE:
+    sprintf(instruction, "%s R%d", "JNE", operandA);
+    break;
+
   default:
     sprintf(instruction, "%s", "unknown");
     break;
@@ -226,12 +242,54 @@ void cpu_run(struct cpu *cpu, _Bool show_trace)
       cpu->PC = cpu_pop(cpu);
       break;
 
+    case CMP:
+      // FL bits: 00000LGE
+      if (cpu->reg[operandA] == cpu->reg[operandB])
+      {
+        cpu->FL = 0b1;
+      }
+      else if (cpu->reg[operandA] > cpu->reg[operandB])
+      {
+        cpu->FL = 0b10;
+      }
+      else
+      {
+        cpu->FL = 0b100;
+      }
+      break;
+
+    case JMP:
+      cpu->PC = cpu->reg[operandA];
+      break;
+
+    case JEQ:
+      if (cpu->FL == 0b1)
+      {
+        cpu->PC = cpu->reg[operandA];
+      }
+      else
+      {
+        // not equal, so move on
+        cpu->PC += 2;
+      }
+      break;
+
+    case JNE:
+      if (cpu->FL != 0b1)
+      {
+        cpu->PC = cpu->reg[operandA];
+      }
+      else
+      {
+        // not "not equal", so move on
+        cpu->PC += 2;
+      }
+      break;
+
     default:
       printf("\nBad code: %02X\n\n", IR);
       exit(1);
     }
-    // 4. Move the PC to the next instruction.
-    // cpu->PC += add_to_pc;
   }
 }
 
@@ -246,6 +304,9 @@ void cpu_init(struct cpu *cpu)
   // TODO: Zero registers and RAM
   memset(cpu->reg, 0, sizeof cpu->reg);
   memset(cpu->ram, 0, sizeof cpu->ram);
+
+  // Zero the flag registers
+  cpu->FL = 0;
 
   // set initial address of stack pointer
   cpu->reg[7] = 0xF4;
