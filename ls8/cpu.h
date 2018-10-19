@@ -7,12 +7,14 @@ struct cpu {
   unsigned char PC; // PC
   unsigned char reg[8]; // registers (array)
   unsigned char ram[256]; // ram (array)
+  unsigned char eq_fl; //equal flag
 };
 
 // ALU operations
 enum alu_op {
 	ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_CMP
 	// Add more here
 };
 
@@ -27,6 +29,7 @@ enum alu_op {
 
 #define ADD  0b10100000
 #define CALL 0b01010000
+#define CMP  0b10100111
 #define HLT  0b00000001
 #define LDI  0b10000010
 #define MUL  0b10100010
