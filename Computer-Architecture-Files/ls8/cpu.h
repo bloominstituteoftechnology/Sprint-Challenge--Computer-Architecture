@@ -2,6 +2,8 @@
 #define _CPU_H_
 
 // Holds all information about the CPU
+
+
 struct cpu {
   // TODO
   // PC

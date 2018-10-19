@@ -2,8 +2,33 @@
 #include <stdio.h>
 
 #define DATA_LEN 6
-
-
+struct flags {
+  unsigned char E;
+  unsigned char G;
+  unsigned char L;
+};
+void flags_init(struct flags *flags) {
+  flags->E = 0;
+  flags->G = 0;
+  flags->L = 0;
+}
+void set_flag(struct flags *flags) {
+  flags->E = 1;
+}
+void set_other_flags(struct flags *flags) {
+  if(flags->E == 1) {
+    flags->G = 0;
+    flags->L = 0;
+  }
+  else if (flags->G == 1) {
+    flags->E = 0;
+    flags->L = 0;
+  }
+  else if (flags->L == 1) {
+    flags->G = 0;
+    flags->E = 0;
+  }
+}
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char mar)
 {
   return cpu->ram[mar];
@@ -65,6 +90,8 @@ void cpu_run(struct cpu *cpu)
   unsigned char stack_p = 0xF4;
   cpu->registers[7] = stack_p;
   unsigned char prev_loc = 0;
+
+  unsigned char E = 0;
   while (running)
   {
 
@@ -90,33 +117,42 @@ void cpu_run(struct cpu *cpu)
     switch (IR)
     {
     case CMP:
-      printf("CMP");
+      printf("CMP\n");
       unsigned char regA = cpu->registers[operand_a];
       unsigned char regB = cpu->registers[operand_b];
       if(regA == regB) {
         // If they are equal, set the Equal E flag to 1, otherwise set it to 0.
+        // flags->E = 1;
+        // set_other_flags(&flags);
+        E = 1;
       }
       else if (regA > regB) {
-        // If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+        E = 0;
       }
       else {
-        // If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
-
+        E = 0;
       }
       break;
     case JMP:
-      cpu->PC = cpu->registers[regA];
+      printf("JMP\n");
+      cpu->PC = cpu->registers[operand_a];
       add_to_pc = 0;
       break;
     case JEQ:
+      printf("JEQ\n");
     // If equal flag is set (true), jump to the address stored in the given register.
-      cpu->PC = cpu->registers[regA];
+      if(E == 1) {
+      cpu->PC = cpu->registers[operand_a];
       add_to_pc = 0;
+      }
       break;
     case JNE:
+      printf("JNE\n");
     // If E flag is clear (false, 0), jump to the address stored in the given register.
-      cpu->PC = cpu->registers[regA];
+      if(E != 1) {
+      cpu->PC = cpu->registers[operand_a];
       add_to_pc = 0;
+      }
       break;
     case LDI:
       printf("\nLDI: R%d: stored value: %d\n\n", operand_a, operand_b);
