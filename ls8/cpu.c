@@ -115,13 +115,16 @@ void cpu_run(struct cpu *cpu)
         // Compare the values in two registers.
         if(cpu->reg[operandA & 7] == cpu->reg[operandB & 7]) {
           cpu->FL = 0b00000001;
-        }
-        else if (cpu->reg[operandA & 7] > cpu->reg[operandB & 7]) {
-          cpu->FL = 0b00000010;
-        }
-        else if (cpu->reg[operandA & 7] < cpu->reg[operandB & 7]) {
-          cpu->FL = 0b00000100;
-        }
+        } 
+        else {
+          cpu->FL = 0b00000000;
+        }        
+        // if (cpu->reg[operandA & 7] > cpu->reg[operandB & 7]) {
+        //   cpu->FL = 0b00000010;
+        // }
+        // if (cpu->reg[operandA & 7] < cpu->reg[operandB & 7]) {
+        //   cpu->FL = 0b00000100;
+        // }
         break;
 
       case JMP:
@@ -163,7 +166,7 @@ void cpu_init(struct cpu *cpu)
   cpu->PC = 0;
   memset(cpu->ram, 0, sizeof cpu->ram);
   memset(cpu->reg, 0, sizeof cpu->reg);
-  cpu->FL = 0;
+  cpu->FL = 0b00000000;
 
   cpu->reg[STACK_POINTER] = 0xF4; // <-- Where SP is on an empty stack
 }
