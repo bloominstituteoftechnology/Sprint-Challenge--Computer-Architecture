@@ -71,13 +71,13 @@ void cpu_run(struct cpu *cpu)
         cpu->registers[argv[0]] = argv[1];
         break;
       case LD:
-        cpu->registers[argv[0]] = cpu->registers[argv[1]];
+        cpu->registers[argv[0]] =  cpu_ram_read(cpu, cpu->registers[argv[1]]);
         break;
       case PRN:
         printf("%d\n", cpu->registers[argv[0]]);
         break;      
       case PRA:
-        printf("%c, %d\n", cpu->registers[argv[0]], cpu->registers[argv[0]]);
+        printf("%c", cpu->registers[argv[0]]);
         break;      
       case HLT:
         printf("Halting...\n");
