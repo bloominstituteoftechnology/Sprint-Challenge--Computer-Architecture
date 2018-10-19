@@ -128,7 +128,7 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[opA];
         cpu->reg[SP]++;
         break;
-/*
+
       case CMP:
         if (cpu->reg[opA] == cpu->reg[opB])
         {
@@ -149,17 +149,26 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case JMP:
-        cpu->PC = cpu->reg[opA]; 
+        cpu->PC = cpu->reg[opA & 7];
+        add_to_pc = 0;
         break;
 
       case JEQ:
-        cpu->PC = cpu->reg[opA]; 
+        if (cpu->FL == 0b00000001)
+        {
+          cpu->PC = cpu->reg[opA & 7];
+          add_to_pc = 0;
+        }
         break;
 
       case JNE:
-        cpu->PC = cpu->reg[opA]; 
+        if (cpu->FL == 0b00000000)
+        {
+          cpu->PC = cpu->reg[opA & 7];
+          add_to_pc = 0;
+        }
         break;
-*/
+
       case PRN:
         printf("%d\n", cpu->reg[opA]);
         break;
@@ -172,6 +181,7 @@ void cpu_run(struct cpu *cpu)
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
     cpu->PC += add_to_pc;
+    cpu->PC &= 0xff;
   }
 }
 
