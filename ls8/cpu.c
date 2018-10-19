@@ -161,12 +161,46 @@ void cpu_run(struct cpu *cpu)
             }
             break;
 
+        case JMP:
+            //Perform a jump: Set PC to new location
+            cpu->PC = cpu->reg[operandA];
+            break;
+
+        case JEQ:
+            //If FL == 1 then perform the jump and change PC count to the new location
+            if (FL == 1)
+            {
+                printf("JEQ: Jumping to %02X\n", cpu->reg[operandA]);
+                cpu->PC = cpu->reg[operandA];
+            }
+            else //If not equal then do not perform the jump, but still update PC to the next instruction
+            {
+                printf("JEQ: Not Jumping\n");
+                cpu->PC += 2;
+            }
+            break;
+
+        case JNE:
+            //If FL == 2 or 4 (not equal) then perform the jump and change PC count to the new location
+            if (FL == 2 || FL == 4)
+            {
+                printf("JNE: Jumping to %02X\n", cpu->reg[operandA]);
+                cpu->PC = cpu->reg[operandA];
+            }
+            else //If equal then do not perform the jump, but still update PC to the next instruction
+            {
+                printf("JNE: Not Jumping\n");
+                cpu->PC += 2;
+            }
+            break;
+
         default:
             fprintf(stderr, "PC %02x: unknown instruction %02X\n", cpu->PC, IR);
             exit(3);
         }
 
-        if (!instruction_set_pc)
+        //Only run if instruction is not PC changing type or not JMP, JEQ, JNE
+        if (!instruction_set_pc && IR != JMP && IR != JEQ && IR != JNE)
         {
             cpu->PC += (IR >> 6) + 1;
         }
