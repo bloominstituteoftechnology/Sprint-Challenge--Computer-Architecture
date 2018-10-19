@@ -9,12 +9,15 @@ struct cpu
     unsigned char registers[8];
     // ram (array)
     unsigned char ram[256];
+    //flag register
+    unsigned char fl;
 };
 // ALU operations
 enum alu_op
 {
     ALU_MUL,
-    ALU_ADD
+    ALU_ADD,
+    ALU_CMP
 };
 // Instructions
 // These use binary literals. If these aren't available with your compiler, hex
@@ -28,6 +31,7 @@ enum alu_op
 #define PUSH 0b01000101
 #define CALL 0b01010000
 #define RET 0b00010001
+#define CMP 0b10100111
 
 // Function declarations
 extern void cpu_load(struct cpu *cpu, char *file);

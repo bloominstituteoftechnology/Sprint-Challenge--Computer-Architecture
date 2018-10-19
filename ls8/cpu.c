@@ -40,17 +40,36 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
         cpu->registers[regA] = cpu->registers[regA] + cpu->registers[regB];
         break;
+    
+  
+
     }
 }
 void pop(struct cpu *cpu, unsigned char reg)
 {
-    cpu->registers[reg] = cpu->registers[7];
+    unsigned char value = cpu_ram_read(cpu, cpu->registers[7]);
     cpu->registers[7]++;
+    return value;
 }
 void push(struct cpu *cpu, unsigned char reg)
 {
     cpu->registers[7]--;
-    cpu->registers[7] = cpu->registers[reg];
+    cpu_ram_write(cpu, cpu->registers[7], cpu->registers[reg]);
+}
+//CMP (compare)
+void comp(struct cpu *cpu, unsigned char regA, unsigned char regB)
+{
+    cpu->fl = 0x00;
+    unsigned char valueA = cpu->registers[regA];
+    unsigned char valueB = cpu->registers[regB];
+
+    if(valueA == valueB){
+        cpu->fl += 1;
+    } else if (valueA > valueB){
+        cpu->fl += 2;
+    } else {
+        cpu->fl += 4;
+    }
 }
 /**
  * Run the CPU
@@ -88,6 +107,11 @@ void cpu_run(struct cpu *cpu)
         case PUSH:
             push(cpu, operandA);
             break;
+        
+        case CMP:
+            comp(cpu, operandA, operandB);
+            break;
+
         default:
             printf("unknown instruction: %02x, %02x", cpu->pc, IR);
             exit(2);
@@ -103,5 +127,7 @@ void cpu_init(struct cpu *cpu)
 {
     // TODO: Initialize the PC and other special registers
     cpu->pc = 0;
+    cpu->registers[7] = 0xF4;
+    cpu->fl = 0x00;
     // TODO: Zero registers and RAM
 }
