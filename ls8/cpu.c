@@ -70,8 +70,14 @@ void cpu_run(struct cpu *cpu)
       case LDI:
         cpu->registers[argv[0]] = argv[1];
         break;
+      case LD:
+        cpu->registers[argv[0]] = cpu->registers[argv[1]];
+        break;
       case PRN:
         printf("%d\n", cpu->registers[argv[0]]);
+        break;      
+      case PRA:
+        printf("%c, %d\n", cpu->registers[argv[0]], cpu->registers[argv[0]]);
         break;      
       case HLT:
         printf("Halting...\n");
@@ -83,6 +89,12 @@ void cpu_run(struct cpu *cpu)
       case ADD:
         alu(cpu, ALU_ADD, argv[0], argv[1]);
         break;      
+      case INC:
+        cpu->registers[argv[0]] += 1;
+        break;
+      case DEC:
+        cpu->registers[argv[0]] -= 1;
+        break;
       case PUSH:
         cpu_ram_write(cpu, --cpu->registers[7], cpu->registers[argv[0]]);
         break;      
