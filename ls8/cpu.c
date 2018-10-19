@@ -99,7 +99,7 @@ void cpu_run(struct cpu *cpu)
             break;
 
         case PRN:
-            printf("\nValue at register %d: %d\n", operandA, cpu->reg[operandA]);
+            printf("Value at register %d: %d\n", operandA, cpu->reg[operandA]);
             break;
 
         case MUL:
