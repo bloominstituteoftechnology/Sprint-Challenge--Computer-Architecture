@@ -103,6 +103,11 @@ void cpu_run(struct cpu *cpu)
         // If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
 
       }
+      break;
+    case JMP:
+      cpu->PC = cpu->registers[regA];
+      add_to_pc = 0;
+      break;
     case LDI:
       printf("\nLDI: R%d: stored value: %d\n\n", operand_a, operand_b);
       cpu->registers[operand_a] = operand_b;
