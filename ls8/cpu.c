@@ -101,7 +101,8 @@ void cpu_run(struct cpu *cpu)
 
     unsigned char opA = cpu->ram[cpu->PC + 1];
     unsigned char opB = cpu->ram[cpu->PC + 2];
-
+    unsigned char index = cpu->reg[7];
+    int pcLoad = (IR >> 6) + 1;
     switch (IR)
     {
     case LDI:
@@ -113,13 +114,75 @@ void cpu_run(struct cpu *cpu)
     case MUL:
       alu(cpu, ALU_MUL, opA, opB);
       break;
+    case PUSH:
+      index--;
+      cpu->ram[index] = cpu->reg[opA & 7];
+      break;
+    case POP:
+      cpu->reg[opA & 7] = cpu->ram[index];
+      index++;
+      break;
+    case JMP:
+      cpu->PC = cpu->reg[opA & 7];
+      pcLoad = 0;
+      break;
+    case CALL:
+      index--;
+      cpu->ram[index] = cpu->reg[opA];
+      cpu->PC = cpu->reg[opA & 7];
+      pcLoad = 0;
+      break;
+    case RET:
+      cpu->PC = cpu->ram[index];
+      index++;
+      break;
+    case CMP:
+      if (cpu->reg[opA] < cpu->reg[opB])
+      {
+        cpu->FL[2] = 1;
+      }
+      else
+      {
+        cpu->FL[2] = 0;
+      }
+      if (cpu->reg[opA] > cpu->reg[opB])
+      {
+        cpu->FL[1] = 1;
+      }
+      else
+      {
+        cpu->FL[1] = 0;
+      }
+      if (cpu->reg[opA] == cpu->reg[opB])
+      {
+        cpu->FL[0] = 1;
+      }
+      else
+      {
+        cpu->FL[0] = 0;
+      }
+      break;
+
+    case JEQ:
+      if (cpu->FL[0] == 1)
+      {
+        cpu->PC = cpu->reg[opA];
+        pcLoad = 0;
+      }
+      break;
+    case JNE:
+      if (cpu->FL[0] == 0)
+      {
+        cpu->PC = cpu->reg[opA];
+        pcLoad = 0;
+      }
+      break;
+
     case HLT:
       running = 0;
       break;
-    default:
-      fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
-      exit(0);
     }
+    cpu->PC += pcLoad;
   }
 }
 
@@ -134,6 +197,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Zero registers and RAM
   memset(cpu->reg, 0, sizeof cpu->reg);
   memset(cpu->ram, 0, sizeof cpu->ram);
+  memset(cpu->FL, 0, sizeof(cpu->FL));
 
   // Initialize SP
   cpu->reg[SP] = ADDR_EMPTY_STACK;
