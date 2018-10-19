@@ -6,4 +6,3 @@
 2. Describe assembly language and machine language:
 - Assembly language is a slightly higher level language than machine language that provides labels for writing instructions to the cpu.
 - Machine language is the lowest level language where all cpu instructions are written in binary.
-
