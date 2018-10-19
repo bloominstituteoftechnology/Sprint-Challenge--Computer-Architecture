@@ -134,9 +134,39 @@ void cpu_run(struct cpu *cpu)
     case PUSH:
       push(cpu, operand_a);
       break;
+
+    case CALL:
+      push(cpu, cpu->PC + 2);
+      cpu->PC = cpu->reg[operand_a];
+      break;
+
+    case RET:
+      cpu->PC = cpu->reg[operand_a];
+      break;
+
     case JMP:
       cpu->PC = cpu->reg[operand_a & 7];
       add_to_pc = 0;
+
+   case JEQ:
+        if (cpu->FL) {
+          cpu->PC = cpu->reg[operand_a];
+        }
+          else {
+            cpu->PC += 2;
+          }
+        break;
+
+      case JNE:
+        if (!cpu->FL){
+          cpu->PC = cpu->reg[operand_a];
+        }
+          else {
+            cpu->PC += 2;
+          }
+        break;
+
+
 
     default:
       printf("Does not exist\n\n");
@@ -155,6 +185,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
   cpu->reg[7] = 0xF4;
+  cpu->FL = 0x00;
   // TODO: Zero registers and RAM
   memset(cpu->reg, 0, sizeof cpu->reg);
   memset(cpu->ram, 0, sizeof cpu->ram);
