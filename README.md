@@ -7,23 +7,23 @@ Complete the following problems:
 * Convert `11001111` binary
 
     to hex:
-
+    0xA7DD17
     to decimal:
-
+    207
 
 * Convert `4C` hex
 
     to binary:
-
+    1001100
     to decimal:
-
+    76
 
 * Convert `68` decimal
 
     to binary:
-
+    1000100
     to hex:
-
+    0x44
 
 ## Architecture
 
@@ -150,4 +150,3 @@ It should print:
 # TEST5 (address 73):
 00000001 # HLT
 ```
-
