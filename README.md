@@ -4,42 +4,50 @@
 
 Complete the following problems:
 
-* Convert `11001111` binary
+- Convert `11001111` binary
 
-    to hex:
+  to hex:
 
-    to decimal:
+  > `CF`
 
+  to decimal:
+
+  > `207`
 
 * Convert `4C` hex
 
-    to binary:
+  to binary:
 
-    to decimal:
+  > `1001100`
 
+  to decimal:
 
-* Convert `68` decimal
+  > `76`
 
-    to binary:
+- Convert `68` decimal
 
-    to hex:
+  to binary:
 
+  > `1000100`
+
+  to hex:
+
+  > `44`
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+- Explain how the CPU provides concurrency or parallelism:
 
-* Describe assembly language and machine language:
-
+- Describe assembly language and machine language:
 
 ## Coding
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
+- Copy your source into this repo, or...
+- Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along.
 
 Sprint Challenge:
@@ -51,7 +59,6 @@ Add the `CMP` instruction and `equal` flag to your LS-8.
 Add the `JMP` instruction.
 
 Add the `JEQ` and `JNE` instructions.
-
 
 [Here is some code](sctest.ls8) that exercises the above instructions.
 It should print:
@@ -155,4 +162,3 @@ It should print:
 # TEST5 (73):
 00000001 # HLT
 ```
-
