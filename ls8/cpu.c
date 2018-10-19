@@ -201,17 +201,17 @@ void handle_JNE(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
 {
   // If E flag is clear (false, 0), jump to the address stored in the given register.
   // printf("%d in returnjne\n");
-  if(cpu->fl != 1){
+  if(cpu->fl == 2 || cpu->fl == 4){
   cpu->pc = cpu->registers[operandA];
   }
   else cpu->pc = cpu->pc += 2;
   
-  
 }
 void handle_JEQ(struct cpu *cpu, unsigned char operandA, unsigned char operandB)
 {
+  
   // If equal flag is set (true), jump to the address stored in the given register.
-  if(cpu->fl = 1){
+  if(cpu->fl == 1){
     cpu->pc = cpu->registers[operandA];
   }
   else cpu->pc +=2;
