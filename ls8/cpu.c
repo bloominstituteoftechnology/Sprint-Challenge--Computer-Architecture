@@ -39,7 +39,6 @@ void cpu_load(char *filename, struct cpu *cpu)
     unsigned char b = strtoul(line, &endptr, 2);
 
 		if (endptr == line) {
-			printf("Ignoring this line.\n");
 			continue;
 		}
 
@@ -72,8 +71,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         cpu->FL += 0b010;
       if(cpu->reg[regA] == cpu->reg[regB])
         cpu->FL += 0b001;
-      else
+      else{
         cpu->FL = 0;
+      }
       break;
 
     // TODO: implement more ALU ops
@@ -104,7 +104,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char operandA = cpu_ram_read(cpu, cpu->PC + 1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->PC + 2);
 
-    int inst_len = (IR >> 6) + 1;
+    int inst_len = (IR >> 4) & 1;
     // 2. switch() over it to decide on a course of action.
     switch(IR){
       // 3. Do whatever the instruction should do according to the spec.
@@ -124,7 +124,7 @@ void cpu_run(struct cpu *cpu)
         stack_push(cpu, cpu->reg[operandA]);
         break;
       case POP:
-        cpu->reg[operandA] = cpu_pop(cpu);
+        cpu->reg[operandA] = stack_pop(cpu);
         break;
       case ADD:
         alu(cpu, ALU_ADD, operandA, operandB);
@@ -134,7 +134,7 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[operandA];
         break;
       case RET:
-        cpu->PC = cpu_pop(cpu);
+        cpu->PC = stack_pop(cpu);
         break;
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
@@ -143,8 +143,16 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[operandA];
         break;
       case JEQ:
+        if(cpu->FL == 0b001)
+          cpu->PC = cpu->reg[operandA];
+        else
+          cpu->PC += 2;
         break;
       case JNE:
+        if(cpu->FL == 0)
+          cpu->PC = cpu->reg[operandA];
+        else
+          cpu->PC += 2;
         break;
       default:
         fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
@@ -155,8 +163,6 @@ void cpu_run(struct cpu *cpu)
     if(!inst_len) {
       cpu->PC += ((IR >> 6) & 0x3) + 1;
     }
-    else
-     cpu->PC += inst_len;
 
   }
 }
