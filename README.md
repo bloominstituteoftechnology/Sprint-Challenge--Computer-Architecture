@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: ```1100= 8+4 = 12=C  1111= 8+4+2+1= 15 = F  Answer = 0xCF ```
 
-    to decimal:
+    to decimal:  ```128+64+0+0+8+4+2+1 = 207 Answer = 207```
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: ```4= 0100 C= 1100 answer 0b01001100```
 
-    to decimal:
+    to decimal: ```64+0+0+8+4+0+0 = 76 answer = 76```
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: ```64 + 4 = 01000100 answer = 0b01000100```
 
-    to hex:
+    to hex: ```0100 =4 0100=4 answer = 0x44```
 
 
 ## Architecture
@@ -30,8 +30,11 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
+  The CPU provides concurrency by using system clock, the system clock keeps track of the begining time and when a program is done running and using this info the cpu runs the program for the alloted time, which gives is 
+  an illusion of concurrency, in the real sense the CPU runs one instruction at a time. 
 
 * Describe assembly language and machine language:
+  Assembly language is a human readable view of the machine code, whereas the machine code is all 0's and 1's easily readable by the computer. 
 
 
 ## Coding
