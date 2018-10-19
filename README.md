@@ -7,22 +7,28 @@ Complete the following problems:
 * Convert `11001111` binary
 
     to hex:
+    CF
 
     to decimal:
+    207
 
 
 * Convert `4C` hex
 
     to binary:
+    01001100
 
     to decimal:
+    76
 
 
 * Convert `68` decimal
 
     to binary:
+    01000100
 
     to hex:
+    44
 
 
 ## Architecture
@@ -42,11 +48,13 @@ Options for submission, whichever is easier for you:
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along.
 
+  Used repo: https://github.com/DirupT/Computer-Architecture
+
 Sprint Challenge:
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-SPEC.md)
 
-Add the `CMP` instruction and `equal` flag to your LS-8.
+Add the `CMP` instruction and `equa l` flag to your LS-8.
 
 Add the `JMP` instruction.
 
