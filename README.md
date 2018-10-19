@@ -7,22 +7,35 @@ Complete the following problems:
 * Convert `11001111` binary
 
     to hex:
+            `C F`  
+     <!-- 1100 1111 -->  
+     <!--  12   15  -->  
 
     to decimal:
+            `207`  
+        <!--  1  1  0 0 1 1 1 1 -->  
+        <!-- 128 64 0 0 8 4 2 1 -->  
 
 
 * Convert `4C` hex
 
     to binary:
+            `0100 1100`  
+           <!-- 4 C -->  
 
     to decimal:
+            `76`  
+        <!-- 0 1  0 0 1 1 0 0 -->  
+        <!-- 0 64 0 0 8 4 0 0 -->  
 
 
 * Convert `68` decimal
 
     to binary:
+            `0100 0100`  
 
     to hex:
+               `4 4`  
 
 
 ## Architecture
