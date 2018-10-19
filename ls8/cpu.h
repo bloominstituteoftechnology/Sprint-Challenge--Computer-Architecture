@@ -14,7 +14,7 @@ struct cpu
 };
 
 //Flags here for JEQ, JNE
-#define fl_eq (1<<0)
+#define FL_EQ (1<<0)
 
 // ALU operations
 enum alu_op

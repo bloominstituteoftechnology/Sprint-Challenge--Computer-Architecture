@@ -103,7 +103,7 @@ void cpu_run(struct cpu *cpu)
         unsigned char operandB = cpu_ram_read(cpu, cpu->pc + 2);
 
         int add_to_pc = (IR >> 6) + 1;
-
+        int instruct_set_pc = (IR >> 4) & 1;
         switch (IR)
         {
         case LDI:
@@ -144,17 +144,21 @@ void cpu_run(struct cpu *cpu)
         case JMP:
             cpu->pc = cpu->registers[operandA];
             break;
-
+        //jump not equal
         case JEQ:
-            if (cpu->fl & fl_eq){
+            if (cpu->fl & FL_EQ){
                 cpu->pc = cpu->registers[operandA];
+            } else {
+                instruct_set_pc = 0;
             }
             break;
 
         case JNE:
-            if (!(cpu->fl & fl_eq))
+            if (!(cpu->fl & FL_EQ))
             {
                 cpu->pc = cpu->registers[operandA];
+            } else {
+                instruct_set_pc = 0;
             }
             break;
 
@@ -167,7 +171,9 @@ void cpu_run(struct cpu *cpu)
             exit(2);
         }
         // Move the PC to the next instruction.
+        if (!instruct_set_pc ){
         cpu->pc += add_to_pc;
+        }
     }
 }
 /**
