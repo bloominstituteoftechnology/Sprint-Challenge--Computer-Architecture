@@ -30,10 +30,8 @@ Complete the following problems:
 Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
-  Concurrency is when two tasks run at the same time, and complete in overlapping time periods, but not at the same instant. Like a single core machine multitasking. Parallelism is a multicore machine running multiple tasks at the same time and instant.
 
 * Describe assembly language and machine language:
-  Machine language is the lowest level programming language and is the only language understood by computers. Its really just numbers. An assembly language is basically machine language, only with human readable variable in place of just numbers.
 
 ## Coding
 
