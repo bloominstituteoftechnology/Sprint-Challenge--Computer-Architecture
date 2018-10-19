@@ -134,7 +134,14 @@ void cpu_run(struct cpu *cpu)
           add_to_pc = 0;
         }
         break;
-      
+
+      case JNE: 
+        if (cpu->eq_fl != 1) {
+          cpu->PC = cpu->reg[operandA];
+          add_to_pc = 0;
+        }
+        break;
+        
       default: 
       printf("ERROR\n");
       exit(1);
