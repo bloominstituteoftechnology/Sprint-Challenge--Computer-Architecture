@@ -76,6 +76,10 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 void cpu_run(struct cpu *cpu)
 {
     int running = 1; // True until we get a HLT instruction
+
+    //Add FLAG Register
+    int FL = 0; //00000LGE (LGE = 000)
+
     while (running)
     {
         int PC = cpu->PC;
