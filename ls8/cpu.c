@@ -86,7 +86,7 @@ void cpu_run(struct cpu *cpu)
 
     printf("TRACE: %02X: %02X %02X %02X\n", cpu->PC, IR, operandA, operandB);
     for (int i = 0; i < 8; i++) {
-      printf("%02X", cpu->reg[i]);
+      printf("%02X ", cpu->reg[i]);
     }
     printf("\n");
 
