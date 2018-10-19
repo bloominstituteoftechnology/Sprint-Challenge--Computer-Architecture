@@ -108,7 +108,9 @@ void cpu_run(struct cpu *cpu)
 
     // 2. switch() over it to decide on a course of action.
     // 3. Do whatever the instruction should do according to the spec.
+    int add_to_pc = (ir >> 6) + 1;
     switch (ir) {
+      printf("%d\n", ir);
       case LDI:
         //printf("Loading\n");
         cpu->registers[operandA] = operandB;
@@ -146,6 +148,7 @@ void cpu_run(struct cpu *cpu)
       case CALL:
         push(cpu, cpu->pc + 2);
         cpu->pc = cpu->registers[operandA];
+        add_to_pc = 0;
         break;
 
       case RET:
@@ -168,19 +171,22 @@ void cpu_run(struct cpu *cpu)
       case JMP:
         printf("JMP\n");
         cpu->pc = cpu->registers[operandA];
+        add_to_pc = 0;
         break;
 
       case JEQ:
         printf("JEQ\n");
         if (cpu->fl == 1) {
           cpu->pc = cpu->registers[operandA];
+          add_to_pc = 0;
         }
         break;
 
       case JNE:
         printf("JNE\n");
-        if (cpu->fl != 1){
+        if (cpu->fl == 1){
           cpu->pc = cpu->registers[operandA];
+          add_to_pc = 0;
         }
         break;
 
@@ -190,7 +196,7 @@ void cpu_run(struct cpu *cpu)
     }
 
     // 4. Move the PC to the next instruction.
-    cpu->pc += (ir >> 6) + 1;
+    cpu->pc += add_to_pc;
   }
 }
 
