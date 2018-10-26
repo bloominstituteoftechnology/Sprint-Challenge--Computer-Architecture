@@ -1,3 +1,9 @@
+**********
+
+https://github.com/LambdaSchool/Computer-Architecture/compare/master...ari7946:master
+
+**********
+
 Complete the following problems:
 
 Convert 11001111 binary
