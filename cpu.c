@@ -1,64 +1,63 @@
+#include "cpu.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "cpu.h"
-
-unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address)
-{
-    return cpu->ram[address];
-}
-
-void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value)
-{
-    cpu->ram[address] = value;
-}
-
-void cpu_push(struct cpu *cpu, unsigned char value)
-{
-    cpu->reg[SP]--;
-    cpu_ram_write(cpu, cpu->reg[SP], value);
-}
-
-unsigned char cpu_pop(struct cpu *cpu)
-{
-    unsigned char value = cpu_ram_read(cpu, cpu->reg[SP]);
-    cpu->reg[SP]++;
-
-    return value;
-}
 
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
-void cpu_load(struct cpu *cpu, char *filename)
+void cpu_load(char *filename, struct cpu *cpu)
 {
-    FILE *fp = fopen(filename, "r");
-
+    FILE *fp;
     char line[1024];
+    int index = 0;
 
-    int address = cpu->PC;
-
-    if (fp == NULL)
+    if ((fp = fopen(filename, "r")) == NULL)
     {
-        fprintf(stderr, "Can't open file. %s\n", filename);
+        fprintf(stderr, "Cannot open file %s\n", filename);
         exit(2);
     }
 
-    char *endchar;
-
     while (fgets(line, sizeof line, fp) != NULL)
     {
-        unsigned char byte = strtol(line, &endchar, 2);
+        char *endptr = NULL;
+        // note that strtol 2nd parameter is **endptr
+        // this is the address to the pointer
+        // we have that so strtol can update endptr
+        unsigned char code = strtol(line, &endptr, 2);
 
-        if (endchar == line)
+        // check for weirdness
+        if (line == endptr)
         {
             continue;
         }
 
-        cpu_ram_write(cpu, address++, byte);
+        cpu->ram[index++] = code;
     }
+    fclose(fp);
 }
 
+/**
+ * Push a value to the stack
+ */
+void cpu_push(struct cpu *cpu, unsigned char value)
+{
+    // decrement the value in register 7 (SP), then put it in SP
+    unsigned char SP = --cpu->reg[7];
+
+    // put the value into ram at the index pointed to by R7
+    cpu->ram[SP] = value;
+}
+
+/**
+ * Pop a value from the stack
+ */
+unsigned char cpu_pop(struct cpu *cpu)
+{
+    // get value from ram pointed at by R7, then increment
+    // unsigned char value = cpu->ram[cpu->reg[7]++];
+    return cpu->ram[cpu->reg[7]++];
+}
 /**
  * ALU
  */
@@ -74,69 +73,151 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         cpu->reg[regA] += cpu->reg[regB];
         break;
 
-    default:
-        printf("Unknown ALU case @ %02x: %02x\n", cpu->PC, op);
-        exit(3);
+        // TODO: implement more ALU ops
     }
+}
+
+// index would traditionally be called mar - memory address register
+unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index)
+{
+    return cpu->ram[index];
+}
+
+// value would traditionally be called mdr - memory data register
+void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value)
+{
+    cpu->ram[index] = value;
+}
+
+/**
+* Trace function
+*/
+void trace(struct cpu *cpu)
+{
+    unsigned char operandA = cpu_ram_read(cpu, (cpu->PC + 1)) & 0xff;
+    unsigned char operandB = cpu_ram_read(cpu, (cpu->PC + 2)) & 0xff;
+    unsigned char IR = IR = cpu_ram_read(cpu, cpu->PC);
+    char instruction[50];
+
+    printf("\tTRACE: %02X | %02X %02X %02X |", cpu->PC, IR, operandA, operandB);
+
+    for (int i = 0; i < 8; i++)
+    {
+        printf(" %02X", cpu->reg[i]);
+    }
+    switch (IR)
+    {
+    case LDI:
+        sprintf(instruction, "%s R%d %02X", "LDI", operandA, operandB);
+        break;
+
+    case PRN:
+        sprintf(instruction, "%s R%d", "PRN", operandA);
+        break;
+
+    case MUL:
+        sprintf(instruction, "%s R%d R%d", "MUL", operandA, operandB);
+        break;
+
+    case ADD:
+        sprintf(instruction, "%s R%d R%d", "ADD", operandA, operandB);
+        break;
+
+    case PUSH:
+        sprintf(instruction, "%s R%d", "PUSH", operandA);
+        break;
+
+    case POP:
+        sprintf(instruction, "%s R%d", "POP", operandA);
+        break;
+
+    case CALL:
+        sprintf(instruction, "%s R%d", "CALL", operandA);
+        break;
+
+    case RET:
+        sprintf(instruction, "%s R%d", "RET", operandA);
+        break;
+
+    case HLT:
+        sprintf(instruction, "%s", "HLT");
+        break;
+
+    default:
+        sprintf(instruction, "%s", "unknown");
+        break;
+    }
+    printf(" | %s", instruction);
+    printf("\n");
 }
 
 /**
  * Run the CPU
  */
-void cpu_run(struct cpu *cpu)
+void cpu_run(struct cpu *cpu, _Bool show_trace)
 {
-    int running = 1;
+    int running = 1; // True until we get a HLT instruction
+    unsigned char IR, operandA, operandB;
 
     while (running)
     {
         // 1. Get the value of the current instruction (in address PC).
-        unsigned char IR = cpu_ram_read(cpu, cpu->PC);
 
-        unsigned char operandA = cpu_ram_read(cpu, (cpu->PC + 1) & MAX_ADDR);
-        unsigned char operandB = cpu_ram_read(cpu, (cpu->PC + 2) & MAX_ADDR);
+        // PC: Program Counter, address of the currently executing instruction
+        // IR: Instruction Register, contains a copy of the currently executing instruction
+        IR = cpu_ram_read(cpu, cpu->PC);
+        operandA = cpu_ram_read(cpu, (cpu->PC + 1)) & 0xff; // incase PC > 0xFF
+        operandB = cpu_ram_read(cpu, (cpu->PC + 2)) & 0xff; // incase PC > 0xFF
+
+        if (show_trace)
+            trace(cpu);
+
+        // check to see if PC is being set by the instruction
+        _Bool pc_is_set = (IR >> 4) & 1;
+
+        if (!pc_is_set)
+            // get the number of operands and add 1 (for the opcode)
+            // AABCDDDD AA is # of operands
+            cpu->PC += (IR >> 6) + 1;
 
         // 2. switch() over it to decide on a course of action.
-        // 3. Do whatever the instruction should do according to the spec.
-
         switch (IR)
         {
-
-        case PRN:
-            printf("%d\n", cpu->reg[operandA]);
-            break;
-
-        case LDI:
-            cpu->reg[operandA] = operandB;
-            break;
-
+        // 3. Do whatever the instruction should do according to the spec.
         case HLT:
             running = 0;
             break;
 
-        case MUL:
-            cpu->reg[operandA] *= cpu->reg[operandB];
-            cpu->PC += 3;
+        case LDI:
+            // & 7 will keep it from 0 - 7 (because 7 = 2^3 - 1)
+            // this works for 2^x - 1 values (1, 11, 111, 1111, ...)
+            cpu->reg[operandA & 7] = operandB;
+            break;
 
+        case PRN:
+            printf("%d\n", cpu->reg[operandA & 7]);
+            break;
+
+        case MUL:
+            alu(cpu, ALU_MUL, operandA, operandB);
             break;
 
         case ADD:
-            cpu->reg[operandA] += cpu->reg[operandB];
-            cpu->PC += 3;
+            alu(cpu, ALU_ADD, operandA, operandB);
             break;
 
         case PUSH:
-            cpu_push(cpu, cpu->reg[operandA]);
+            cpu_push(cpu, cpu->reg[operandA & 7]);
             break;
 
         case POP:
             cpu->reg[operandA] = cpu_pop(cpu);
             break;
 
-        case PRA:
-            printf("%c\n", cpu->reg[operandA]);
-            break;
-
         case CALL:
+            // The address of the instruction directly after the
+            // CALL instruction is pushed onto the stack.
+            // so increment PC by 2
             cpu_push(cpu, cpu->PC + 2);
             cpu->PC = cpu->reg[operandA];
             break;
@@ -145,58 +226,12 @@ void cpu_run(struct cpu *cpu)
             cpu->PC = cpu_pop(cpu);
             break;
 
-            // Sprint Challenge:
-
-        case CMP:
-            if (cpu->reg[operandA] == cpu->reg[operandB])
-            {
-                cpu->FL = 1;
-            }
-            else
-            {
-                cpu->FL = 0;
-            }
-            break;
-
-        case JMP:
-            cpu->PC = cpu->reg[operandA];
-            break;
-
-        case JEQ:
-            if (cpu->FL)
-            {
-                cpu->PC = cpu->reg[operandA];
-            }
-            else
-            {
-                cpu->PC += 2;
-            }
-            break;
-
-        case JNE:
-            if (!cpu->FL)
-            {
-                cpu->PC = cpu->reg[operandA];
-            }
-            else
-            {
-                cpu->PC += 2;
-            }
-            break;
-
         default:
-            printf("Unknown instruction at %02x: %02x\n", cpu->PC, IR);
-            exit(2);
+            printf("\nBad code: %02X\n\n", IR);
+            exit(1);
         }
-
         // 4. Move the PC to the next instruction.
-
-        int instruction_set_PC = (IR >> 4) & 1;
-
-        if (!instruction_set_PC)
-        {
-            cpu->PC += ((IR >> 6) & 0x3) + 1;
-        }
+        // cpu->PC += add_to_pc;
     }
 }
 
@@ -205,13 +240,13 @@ void cpu_run(struct cpu *cpu)
  */
 void cpu_init(struct cpu *cpu)
 {
-    cpu->PC = START_OF_PROGRAM_ADDR;
-    cpu->FL = CPU_FLAG;
+    // TODO: Initialize the PC and other special registers
+    cpu->PC = 0;
 
-    cpu->reg[SP] = START_OF_STACK_ADDR;
-    cpu->reg[IM] = INTERRUPT_MASK;
-    cpu->reg[IS] = INTERRUPTS;
-
+    // TODO: Zero registers and RAM
     memset(cpu->reg, 0, sizeof cpu->reg);
     memset(cpu->ram, 0, sizeof cpu->ram);
+
+    // set initial address of stack pointer
+    cpu->reg[7] = 0xF4;
 }
