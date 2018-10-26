@@ -5,33 +5,34 @@
 Complete the following problems:
 
 * Convert `11001111` binary
+        128,64,32,16,8,4,2,1
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
 
 Short answer:
 
-* Explain how the CPU provides concurrency or parallelism:
+* Explain how the CPU provides concurrency or parallelism:  See Answers.md
 
-* Describe assembly language and machine language:
+* Describe assembly language and machine language:  See Answers.md
 
 
 ## Coding
@@ -44,7 +45,7 @@ Options for submission, whichever is easier for you:
 
 Sprint Challenge:
 
-[See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
+[See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)c
 
 Add the `CMP` instruction and `equal` flag to your LS-8.
 
