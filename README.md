@@ -2,9 +2,11 @@
 
 ## Binary, Decimal, and Hex
 
+Need to continue --
+
 Complete the following problems:
 
-* Convert `11001111` binary
+* Convert `11001111` binary 
 
     to hex:
 
