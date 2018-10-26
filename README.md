@@ -45,7 +45,7 @@ Options for submission, whichever is easier for you:
 
 Sprint Challenge:
 
-[See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
+[See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)c
 
 Add the `CMP` instruction and `equal` flag to your LS-8.
 
