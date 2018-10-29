@@ -1,0 +1,19 @@
+# print8.ls8: Print the number 8 on the screen
+
+# LDI `LDI register immediate` "Set the value of a register to an intenger."
+10000010 # LDI R0,8 
+
+# NOP "No operation. Do nothing for this instruction." 
+00000000 
+
+# The binary number of the argument (aka the operand) - the value 8. 
+00001000 
+
+# PRN `PRN register` pseudo-instruction "Print numeric value stored in the given register. Print to the console the decimal integer value that is stored in the given register."
+01000111 # PRN R0
+
+# NOP "No operation. Do nothing for this instruction." 
+00000000
+
+# HLT `HLT` "Halt the CPU (and exit the emulator)."
+00000001 # HLT
