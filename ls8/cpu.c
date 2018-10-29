@@ -85,6 +85,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       // TODO
       cpu->reg[regA] *= cpu->reg[regB];
       break;
+    
+    case ALU_CMP:
+      if (cpu->reg[regA] == cpu->reg[regB]) {
+          cpu->FL = 0b00000001;
+        } else {
+          cpu->FL = 0b00000000;
+        }
+      break;
 
     // TODO: implement more ALU ops
   }
@@ -140,16 +148,21 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[7]++;
         break;
       
+      // // NOTE: Unclear why this doesn't work. Prints out 1, 3, and 5 instead of 1, 4, 5 when sctest.ls8 is run. 
+      // case CMP:
+      //   if (cpu->reg[operandA] == cpu->reg[operandB]) {
+      //     cpu_ram_write(cpu, cpu->FL, 0b00000001);
+      //   }
+      //   else if (cpu->reg[operandA] > cpu->reg[operandB]) {
+      //     cpu_ram_write(cpu, cpu->FL, 0b00000010);
+      //   }
+      //   else if (cpu->reg[operandA] < cpu->reg[operandB]) {
+      //     cpu_ram_write(cpu, cpu->FL, 0b00000100);
+      //   }
+      //   break;
+      
       case CMP:
-        if (cpu->reg[operandA] == cpu->reg[operandB]) {
-          cpu_ram_write(cpu, cpu->FL, 00000001);
-        }
-        else if (cpu->reg[operandA] > cpu->reg[operandB]) {
-          cpu_ram_write(cpu, cpu->FL, 00000010);
-        }
-        else if (cpu->reg[operandA] < cpu->reg[operandB]) {
-          cpu_ram_write(cpu, cpu->FL, 00000100);
-        }
+        alu(cpu, ALU_CMP, operandA, operandB);
         break;
 
       case MUL:
@@ -162,18 +175,19 @@ void cpu_run(struct cpu *cpu)
         break;
       
       case JEQ:
-        if (cpu->FL >> 7 == 1) {
-          cpu->PC = cpu->reg[operandA];
+        if (cpu->FL == 0b00000001) {
+          cpu->PC = cpu->reg[operandA & 7];
           add_to_pc=0;
-          break;
+          
         }
-      
+        break;
+
       case JNE:
-        if (cpu->FL >> 7 == 0) {
-          cpu->PC = cpu->reg[operandA];
+        if (cpu->FL == 0b00000000) {
+          cpu->PC = cpu->reg[operandA & 7];
           add_to_pc=0;
-          break;
         }
+        break;
       
       case HLT:
         running = 0;
