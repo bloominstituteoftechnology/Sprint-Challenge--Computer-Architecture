@@ -140,6 +140,18 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[7]++;
         break;
       
+      case CMP:
+        if (cpu->reg[operandA] == cpu->reg[operandB]) {
+          cpu_ram_write(cpu, cpu->FL, 00000001);
+        }
+        else if (cpu->reg[operandA] > cpu->reg[operandB]) {
+          cpu_ram_write(cpu, cpu->FL, 00000010);
+        }
+        else if (cpu->reg[operandA] < cpu->reg[operandB]) {
+          cpu_ram_write(cpu, cpu->FL, 00000100);
+        }
+        break;
+
       case MUL:
         alu(cpu, ALU_MUL, operandA, operandB);
         break;
@@ -148,6 +160,20 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[operandA];
         add_to_pc=0;
         break;
+      
+      case JEQ:
+        if (cpu->FL >> 7 == 1) {
+          cpu->PC = cpu->reg[operandA];
+          add_to_pc=0;
+          break;
+        }
+      
+      case JNE:
+        if (cpu->FL >> 7 == 0) {
+          cpu->PC = cpu->reg[operandA];
+          add_to_pc=0;
+          break;
+        }
       
       case HLT:
         running = 0;
@@ -170,8 +196,10 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0;
 
   // TODO: Zero registers and RAM
   memset(cpu->ram, 0, sizeof(cpu->ram));
   memset(cpu->reg, 0,  sizeof(cpu->reg));
+  // memset(cpu->FL, 0, sizeof(cpu->FL));
 }

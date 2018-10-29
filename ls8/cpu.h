@@ -12,6 +12,8 @@ struct cpu {
   // TODO
   // PC (Program Counter)
   unsigned char PC;
+  // Flags register FL
+  unsigned char FL;
   // registers (array)
   unsigned char reg[8];
   // ram (array)
@@ -36,6 +38,9 @@ enum alu_op {
 #define JMP  0b01010100
 #define PUSH 0b01000101
 #define POP  0b01000110 
+#define CMP  0b10100111
+#define JEQ  0b01010101
+#define JNE  0b01010110
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations
