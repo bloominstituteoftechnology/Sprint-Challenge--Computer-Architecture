@@ -51,8 +51,7 @@ void cpu_load(char *filename, struct cpu *cpu)
 // void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 // {
 //   switch (op) {
-//     case ALU_MUL:
-//       // TODO
+//     case ALU_CMP:
 //       break;
 
 //     // TODO: implement more ALU ops
@@ -144,6 +143,20 @@ void cpu_run(struct cpu *cpu)
         instruction_index += 3; // increments instruction index to next instruction line
         break;
 
+      case CMP:
+        if (cpu->registers[regA] == cpu->registers[regB]) {
+          cpu->FL += 1; 
+        } else if (cpu->registers[regA] > cpu->registers[regB]) {
+          cpu->FL += 1;
+        } else if (cpu->registers[regA] < cpu->registers[regB]) {
+         cpu->FL += 0;
+        }
+        break;
+
+      case JMP:
+        cpu->pc = cpu->registers[operandA];
+        break;
+        
       case RET:
         instruction_index = cpu->ram[cpu->registers[7]]; // pop value from top of stack (presumably storing the last instruction and storing it to PC to continue running the program)
         cpu->registers[7]++; 
@@ -166,6 +179,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   cpu->pc = 0; //sets register to 0
+  cpu->FL = 0; // sets flag to false to begin with
   memset(cpu->registers, 0, sizeof cpu->registers); // uses memset to set register to 0
   memset(cpu->ram, 0, sizeof cpu->ram); // uses memset to set ram to 0
 
