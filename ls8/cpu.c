@@ -71,23 +71,26 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
   case ALU_CMP:
     if (cpu->registers[regA] == cpu->registers[regB]) {
-      int mask = 00000001;
+      // int mask = 00000001;
       printf("E %d\n", cpu->FL);
-      cpu->FL = cpu->FL & mask;
+      // cpu->FL = cpu->FL & mask;
+      cpu->FL = 00000001;
       printf("E %d\n", cpu->FL);
       // E flag 1
     } else if (cpu->registers[regA] < cpu->registers[regB]) {
-      int mask = 00000100;
+      // int mask = 11111011;
       printf("L %d\n", cpu->FL);
-      cpu->FL = cpu->FL & mask;
+      cpu->FL = 00000100;
+      // cpu->FL = cpu->FL | mask;
       printf("L %d\n", cpu->FL);
       // L flag 1
     } else {
       // G flag 1
-      int mask = 00000010;
-      printf("G %d\n", cpu->FL);
-      cpu->FL = cpu->FL & mask;
-      printf("G %d\n", cpu->FL);
+      // int mask = 00000010;
+      // printf("G %d\n", cpu->FL);
+      // cpu->FL = cpu->FL & mask;
+      // printf("G %d\n", cpu->FL);
+      cpu->FL = 00000010;
     }
     cpu->PC += 3;
     break;  
@@ -141,8 +144,11 @@ void cpu_run(struct cpu *cpu)
       break;
     case JEQ:
       if (cpu-> FL == 00000001) {
-        JMP;
+        cpu->PC = cpu->registers[operandA];
         cpu->FL += 2;
+      }
+      else {
+        cpu->PC += 2;
       }
       //if E is 1, jump to address in register
       break; 
@@ -151,8 +157,11 @@ void cpu_run(struct cpu *cpu)
       break;  
     case JNE:
       if(cpu->FL == 00000000) {
-        JMP;
+        cpu->PC = cpu->registers[operandA];
         cpu->FL += 2;
+      }
+      else {
+        cpu->PC += 2;
       }
       //if E is 0, jump to address in register
       break;   
