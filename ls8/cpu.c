@@ -107,6 +107,10 @@ void cpu_run(struct cpu *cpu)
       cpu->registers[opA] += cpu->registers[opB]; // add values of register opA and register opB and assign them to register opA
     }
 
+    void jump(int opA) {
+      instruction_index = cpu->registers[opA];
+    }
+
      switch(IR) { // switch based on IR's instruction
 
       case LDI: //Set the value of a register to an integer.
@@ -145,33 +149,33 @@ void cpu_run(struct cpu *cpu)
 
       case CMP:
         if (cpu->registers[operandA] == cpu->registers[operandB]) {
-
-          cpu->FL += 0b001; 
-        } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
-          cpu->FL += 0b010;
+          cpu->FL = 00000001;
         } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
-         cpu->FL += 0b100;;
+         cpu->FL = 00000100;
+        } else {
+          instruction_index = cpu->registers[operandA];
         }
         instruction_index += 3;
         break;
 
       case JMP:
-        instruction_index = cpu->registers[operandA];
+        jump(operandA);
         break;
 
       case JEQ:
       // if CMP is true/ 1, JMP to current address in register
-        if (cpu->FL == 0b001) {
-          instruction_index = cpu->registers[operandA];
+        if (cpu->FL == 00000001) {
+          jump(operandA);
+          instruction_index += 2;
         } else {
-          // if not true, move to next set of instructions
           instruction_index += 2;
         }
         break;
 
       case JNE:
-        if (cpu->FL == 0) {
-          instruction_index = cpu->registers[operandA];
+        if (cpu->FL == 00000100) {
+          jump(operandA);
+          instruction_index += 2;
         } else {
           instruction_index += 2;
         }
@@ -199,7 +203,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   cpu->pc = 0; //sets register to 0
-  cpu->FL = 0; // sets flag to false to begin with
+  cpu->FL = 00000000; // sets flag to false to begin with
   memset(cpu->registers, 0, sizeof cpu->registers); // uses memset to set register to 0
   memset(cpu->ram, 0, sizeof cpu->ram); // uses memset to set ram to 0
 
