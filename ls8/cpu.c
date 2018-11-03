@@ -145,37 +145,36 @@ void cpu_run(struct cpu *cpu)
 
       case CMP:
         if (cpu->registers[operandA] == cpu->registers[operandB]) {
-          cpu->FL += 1; 
+
+          cpu->FL += 0b001; 
         } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
-          cpu->FL += 1;
+          cpu->FL += 0b010;
         } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
-         cpu->FL += 0;
+         cpu->FL += 0b100;;
         }
-        instruction_index += 2;
+        instruction_index += 3;
         break;
 
       case JMP:
-        cpu->pc = cpu->registers[operandA];
+        instruction_index = cpu->registers[operandA];
         break;
 
       case JEQ:
       // if CMP is true/ 1, JMP to current address in register
-        if (cpu->FL == 1) {
-          cpu->pc = cpu->registers[operandA];
+        if (cpu->FL == 0b001) {
+          instruction_index = cpu->registers[operandA];
         } else {
           // if not true, move to next set of instructions
           instruction_index += 2;
         }
-        instruction_index += 1;
         break;
 
       case JNE:
         if (cpu->FL == 0) {
-          cpu->pc = cpu->registers[operandA];
+          instruction_index = cpu->registers[operandA];
         } else {
           instruction_index += 2;
         }
-        instruction_index += 1;
         break;
         
       case RET:
