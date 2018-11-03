@@ -69,7 +69,17 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->registers[regA] += cpu->registers[regB];
     cpu->PC += 3;
     break;
+  case CMP:
+    if (cpu->registers[regA] == cpu->registers[regB]) {
+      // E flag 1
+    } else if (cpu->registers[regA] < cpu->registers[regB]) {
+      // L flag 1
+    } else {
+      // G flag 1
+    }
+    break;  
   }
+
 }
 
 int cpu_push(struct cpu *cpu, unsigned char regA) {
@@ -113,6 +123,15 @@ void cpu_run(struct cpu *cpu)
       running = 0;
       cpu->PC += 1;
       break;
+    case JEQ:
+      //if E is 1, jump to address in register
+      break; 
+    case JMP:
+      cpu->PC = cpu->registers[operandA];
+      break;  
+    case JNE:
+      //if E is 0, jump to address in register
+      break;   
     case LDI:
       cpu->registers[operandA] = operandB;
       cpu->PC += 3;
