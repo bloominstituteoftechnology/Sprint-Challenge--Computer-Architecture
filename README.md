@@ -4,25 +4,27 @@
 
 Complete the following problems:
 
-* Convert `11001111` binary
+* Convert `1100 1111` binary
+* 1111 = 15 = F, 1100 = 192
 
-    to hex:
+    to hex: ```F```
 
-    to decimal:
+    to decimal: ```207```
 
 
 * Convert `4C` hex
+* C = 1100, 4 = 0100
 
-    to binary:
+    to binary: ```0100 1100```
 
-    to decimal:
+    to decimal: ```8 + 4 + 64 = 76```
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: ```0100 = 64, 0100 = 4 = 0100 0100```
 
-    to hex:
+    to hex: ```44```
 
 
 ## Architecture

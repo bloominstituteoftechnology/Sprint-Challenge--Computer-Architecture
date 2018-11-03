@@ -6,3 +6,6 @@
 2. Describe assembly language and machine language:
 
 
+##Answers to Binary, Decimal, and Hex are in the README.md
+
+
