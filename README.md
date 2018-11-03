@@ -6,23 +6,23 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 1001100
 
-    to decimal:
+    to decimal: 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 1000100
 
-    to hex:
+    to hex: 44
 
 
 ## Architecture
@@ -31,8 +31,17 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
-* Describe assembly language and machine language:
+- Computer, especially with one CPU which provides concurrently, can run multiple tasks at the same time by jumping from one task to another continually to process one chunk of data once at a time.
 
+- Computer can run a task parallel by spliting one task to multiple subtasks which can be processed by multiple CPUs at once.
+
+* Describe assembly language and machine language:
+- Machine language is language contains numbers which are instructions for machine to process.
+- Assemby language is machine language which instructions are more human-readable. It is the lowest level language which human can use to talk to machine.
+
+
+### For the Coding part: I use the Computer Architecture project
+Here is the PR: https://github.com/LambdaSchool/Computer-Architecture/pull/89
 
 ## Coding
 
