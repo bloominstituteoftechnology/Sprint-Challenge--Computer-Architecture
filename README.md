@@ -31,8 +31,13 @@ Short answer:
 
 * Explain how the CPU provides concurrency or parallelism:
 
-* Describe assembly language and machine language:
+- Computer, especially with one CPU which provides concurrently, can run multiple tasks at the same time by jumping from one task to another continually to process one chunk of data once at a time.
 
+- Computer can run a task parallel by spliting one task to multiple subtasks which can be processed by multiple CPUs at once.
+
+* Describe assembly language and machine language:
+- Machine language is language contains numbers which are instructions for machine to process.
+- Assemby language is machine language which instructions are more human-readable. It is the lowest level language which human can use to talk to machine.
 
 
 ### For the Coding part: I use the Computer Architecture project
