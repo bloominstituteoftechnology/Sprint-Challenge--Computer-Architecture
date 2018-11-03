@@ -30,7 +30,7 @@ void cpu_load(char *filename, struct cpu *cpu)
   fp = fopen(filename, "r");
   if (fp == NULL)
   {
-    printf("INVALID FILE NAME");
+    printf("INVALID FILE NAME.\n");
     return;
   }
 
@@ -69,14 +69,27 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->registers[regA] += cpu->registers[regB];
     cpu->PC += 3;
     break;
-  case CMP:
+  case ALU_CMP:
     if (cpu->registers[regA] == cpu->registers[regB]) {
+      int mask = 00000001;
+      printf("%d", cpu->FL);
+      cpu->FL = cpu->FL & mask;
+      printf("%d", cpu->FL);
       // E flag 1
     } else if (cpu->registers[regA] < cpu->registers[regB]) {
+      int mask = 00000100;
+      printf("%d", cpu->FL);
+      cpu->FL = cpu->FL & mask;
+      printf("%d", cpu->FL);
       // L flag 1
     } else {
       // G flag 1
+      int mask = 00000010;
+      printf("%d", cpu->FL);
+      cpu->FL = cpu->FL & mask;
+      printf("%d", cpu->FL);
     }
+    cpu->PC += 3;
     break;  
   }
 
@@ -119,17 +132,28 @@ void cpu_run(struct cpu *cpu)
       cpu->ram[cpu->registers[SP]] = cpu->PC;
       cpu->PC = cpu->registers[operandA];
       break;  
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);  
+      break;
     case HLT:
       running = 0;
       cpu->PC += 1;
       break;
     case JEQ:
+      if (cpu-> FL == 00000001) {
+        JMP;
+        cpu->FL += 2;
+      }
       //if E is 1, jump to address in register
       break; 
     case JMP:
       cpu->PC = cpu->registers[operandA];
       break;  
     case JNE:
+      if(cpu->FL == 00000000) {
+        JMP;
+        cpu->FL += 2;
+      }
       //if E is 0, jump to address in register
       break;   
     case LDI:
