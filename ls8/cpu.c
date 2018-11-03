@@ -72,22 +72,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_CMP:
     if (cpu->registers[regA] == cpu->registers[regB]) {
       int mask = 00000001;
-      printf("%d", cpu->FL);
+      printf("E %d\n", cpu->FL);
       cpu->FL = cpu->FL & mask;
-      printf("%d", cpu->FL);
+      printf("E %d\n", cpu->FL);
       // E flag 1
     } else if (cpu->registers[regA] < cpu->registers[regB]) {
       int mask = 00000100;
-      printf("%d", cpu->FL);
+      printf("L %d\n", cpu->FL);
       cpu->FL = cpu->FL & mask;
-      printf("%d", cpu->FL);
+      printf("L %d\n", cpu->FL);
       // L flag 1
     } else {
       // G flag 1
       int mask = 00000010;
-      printf("%d", cpu->FL);
+      printf("G %d\n", cpu->FL);
       cpu->FL = cpu->FL & mask;
-      printf("%d", cpu->FL);
+      printf("G %d\n", cpu->FL);
     }
     cpu->PC += 3;
     break;  
