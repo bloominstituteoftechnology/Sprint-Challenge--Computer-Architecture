@@ -6,6 +6,7 @@ struct cpu {
   unsigned char PC; // our program counter
   unsigned char registers[8]; // our array of register addresses, from 0-7
   unsigned char RAM[256]; // our RAM array
+  unsigned char FL; // our flag for the CMP 
 };
 
 // Special register values
@@ -33,6 +34,11 @@ enum alu_op {
 #define PRN  0b01000111
 #define PUSH 0b01000101
 #define RET  0b00010001
+#define MULT2PRINT 0b00011000
+#define CMP  0b10100111
+#define JMP  0b01010100
+#define JEQ  0b01010101
+#define JNE  0b01010110
 
 
 extern void cpu_load(char *filename, struct cpu *cpu);

@@ -98,6 +98,27 @@ void cpu_run(struct cpu *cpu) {
       case POP:
           cpu->registers[operandA] = cpu_pop(cpu);
           break;
+      case CMP:
+          if (cpu->registers[operandA] == cpu->registers[operandB]) {
+          cpu->FL += 1; 
+        } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
+          cpu->FL += 1;
+        } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
+         cpu->FL += 0;
+        }
+        break;
+      case JMP:
+          cpu->PC = cpu->registers[operandA];
+      case JNE:
+          if (cpu->FL == 0) {
+          cpu->PC = cpu->registers[operandA];
+        }
+        break;
+      case JEQ:
+          if (cpu->FL == 1) {
+          cpu->PC = cpu->registers[operandA];
+        } 
+        break;
       default:
           fprintf(stderr, "PC %0sx: unknown instruction %02x\n", cpu->PC, IR);
           exit(3);
