@@ -1,3 +1,25 @@
+Convert 1100 1111 binary
+
+to hex: 
+CF
+
+to decimal: 1 2 4 8 64 128
+207
+
+Convert 4C hex
+
+to binary:
+0100 1100
+
+to decimal: 4 8 64
+76
+
+Convert 68 decimal
+
+to binary: 0100 0100
+
+to hex: 44
+
 Explain how the CPU provides concurrency or parallelism:
 Paralellism is achieved when a cpu breaks a large problem down into smaller subtasks; computes each task simultaneously and then combines subtasks together at the end to produce the final answer. This allows multiple problems to be solved at the same time; rather than having to wait sequentially to solve a list of processes.
 Paralellism is achieved through the use of multiple CPU cores and cannot be achieved on a single core processor due to paralellism requiring processes to be completed at the same INSTANT. In concurrency process lifespans can overlap but they do not need to be completed at the same time. However because they are not completed at the same time there needs to be runtime communication between processes to ensure data is transferred between processes correctly resulting in the expected answer.

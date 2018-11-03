@@ -2,32 +2,12 @@ Sprint-Challenge--Computer-Architecture
 Binary, Decimal, and Hex
 Complete the following problems:
 
-Convert 1100 1111 binary
-
-to hex: 
-CF
-
-to decimal: 1 2 4 8 64 128
-207
-
-Convert 4C hex
-
-to binary:
-0100 1100
-
-to decimal: 4 8 64
-76
-
-Convert 68 decimal
-
-to binary: 0100 0100
-
-to hex: 44
+see answers.md
 
 Architecture
 Short answer:
 
-see answer.md
+see answers.md
 
 Coding
 Options for submission, whichever is easier for you:
