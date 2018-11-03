@@ -71,25 +71,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
   case ALU_CMP:
     if (cpu->registers[regA] == cpu->registers[regB]) {
-      // int mask = 00000001;
-      //printf("E %d\n", cpu->FL);
-      // cpu->FL = cpu->FL & mask;
       cpu->FL = 00000001;
-      //printf("E %d\n", cpu->FL);
       // E flag 1
+
+      //attempted masking and shifts with no luck
+      //   printf("FL %d\n", cpu->FL);
+      //   printf("SHIFT %d\n", cpu->FL << 5);
+      // if(cpu->FL << 7 == '0b10000000') {
+      //   printf("%s\n", "EQUAL");
+      //   cpu->FL = 00000001;
+      // }
+      //printf("E %d\n", cpu->FL);
     } else if (cpu->registers[regA] < cpu->registers[regB]) {
-      // int mask = 11111011;
-      //printf("L %d\n", cpu->FL);
       cpu->FL = 00000100;
-      // cpu->FL = cpu->FL | mask;
-      //printf("L %d\n", cpu->FL);
       // L flag 1
     } else {
       // G flag 1
-      // int mask = 00000010;
-      // printf("G %d\n", cpu->FL);
-      // cpu->FL = cpu->FL & mask;
-      // printf("G %d\n", cpu->FL);
       cpu->FL = 00000010;
     }
     cpu->PC += 3;
@@ -145,7 +142,6 @@ void cpu_run(struct cpu *cpu)
     case JEQ:
       if (cpu-> FL == 00000001) {
         cpu->PC = cpu->registers[operandA];
-        cpu->FL += 2;
       }
       else {
         cpu->PC += 2;
@@ -159,7 +155,6 @@ void cpu_run(struct cpu *cpu)
       if (cpu->FL == 00000100 || cpu->FL == 00000010)
       {
         cpu->PC = cpu->registers[operandA];
-        cpu->FL += 2;
       }
       else {
         cpu->PC += 2;
