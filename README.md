@@ -2,30 +2,32 @@ Sprint-Challenge--Computer-Architecture
 Binary, Decimal, and Hex
 Complete the following problems:
 
-Convert 11001111 binary
+Convert 1100 1111 binary
 
-to hex:
+to hex: 
+CF
 
-to decimal:
+to decimal: 1 2 4 8 64 128
+207
 
 Convert 4C hex
 
 to binary:
+0100 1100
 
-to decimal:
+to decimal: 4 8 64
+76
 
 Convert 68 decimal
 
-to binary:
+to binary: 0100 0100
 
-to hex:
+to hex: 44
 
 Architecture
 Short answer:
 
-Explain how the CPU provides concurrency or parallelism:
-
-Describe assembly language and machine language:
+see answer.md
 
 Coding
 Options for submission, whichever is easier for you:
