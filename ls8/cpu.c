@@ -151,10 +151,19 @@ void cpu_run(struct cpu *cpu)
         } else if (cpu->registers[regA] < cpu->registers[regB]) {
          cpu->FL += 0;
         }
+        instruction_index += 2;
         break;
 
       case JMP:
         cpu->pc = cpu->registers[operandA];
+        break;
+
+      case JEQ:
+      instruction_index += 1;
+        break;
+
+      case JNE:
+      instruction_index += 1;
         break;
         
       case RET:
