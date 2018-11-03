@@ -150,101 +150,59 @@ void cpu_run(struct cpu *cpu)
 
       case RET:
         instruction_index = cpu->ram[cpu->registers[7]]; // pop value from top of stack (presumably storing the last instruction and storing it to PC to continue running the program)
-        cpu->registers[7]++; 
+        cpu->registers[7]++; // increment SP to point to correct space in RAM corresponding to current stack location; effectively popping off stack value.
         break;
 
       case CALL:
         instruction_index += 2; // increments instruction index to next instruction line
-        cpu->registers[7]--;
-        cpu->ram[cpu->registers[7]] = instruction_index; // pop value from top of stack (presumably storing the last instruction and storing it to PC to continue running the program)
-        instruction_index = cpu->registers[operandA];
+        cpu->registers[7]--; // decrement SP to point to next place in RAM in order to create space to push current instruction
+        cpu->ram[cpu->registers[7]] = instruction_index; // push next instruction to stack, continue running current program.
+        instruction_index = cpu->registers[operandA]; // set instruction index to subroutine address loaded into passed register
         break;
 
       case CMP:
-        //`FL` bits: `00000LGE`
-        // number ^= 1UL << n;
-        printf("CMP OperandA: %u \n", cpu->registers[operandA]);
-        printf("CMP OperandB: %u \n", cpu->registers[operandB]);
-        printf("CMP instruction: %d \n", instruction_index);
-
-
         if (cpu->registers[operandA] == cpu->registers[operandB]) {
-          bit = (cpu->fl >> 0) & 1U;
-          printf(" CMP bit %u \n", bit);
-          if (bit == 1) {
+          bit = (cpu->fl >> 0) & 1U; // sets bit variable to 0000 0001 <--- bit to check if it has been set to 1 already.
+          if (bit == 1) { // if bit is 1 it's already set and this if statement need not do anything, increment and break switch case.
             instruction_index += 3;
             break;
           } else {
-          cpu->fl ^= 1UL << 0;
-          printf(" == %u \n", cpu->fl);
+          cpu->fl ^= 1UL << 0; //if bit is not 1; bitwise operation to switch flag E from 0 to 1
           }
 
         } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
-          cpu->fl ^= 1UL << 2;
-          printf(" < %u \n", cpu->fl);
+          cpu->fl ^= 1UL << 2; // if statement is true, switch value of cpu->flag bit
         
         } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
-          cpu->fl ^= 1UL << 1;
-          printf(" > %u \n", cpu->fl);
+          cpu->fl ^= 1UL << 1; // if statement is true, switch value of cpu->flag bit
 
         } else {
           printf("CPU registers are not set properly, try again for comparison");
         }
-        instruction_index += 3;
+        instruction_index += 3; // increment PC by manipulating instruction_index to next instruction
         break;
 
       case JMP:
-        jump(operandA);
+        jump(operandA); //change instruction index to match register passed to JMP instruction
         break;
 
       case JEQ:
-        bit = (cpu->fl >> 0) & 1U;
-        printf("JEQ Bit %u \n", bit);
-        printf(" JEQ instruction: %d \n", instruction_index);
-        if (bit == 1) {
+        bit = (cpu->fl >> 0) & 1U; // set bit variable to equal cpu-flag bit E
+        if (bit == 1) { // if cpu-flag bit E is true or 1; jump to given register; otherwise increment program and continue.
           jump(operandA);
         } else {
-          printf("Equal flag not set; JEQ will not execute \n");
           instruction_index += 2;
         }
         break;
 
       case JNE:
-        bit = (cpu->fl >> 0) & 1U;
-        printf("JNE Bit %u \n", bit);
-        printf(" JNE instruction: %d \n", instruction_index);
-        if (bit == 0) {
+        bit = (cpu->fl >> 0) & 1U; // set bit variable to equal cpu-flag bit E
+        if (bit == 0) { // if cpu-flag bit E is false or 0; jump to given register; otherwise increment program and continue.
           jump(operandA);
         } else {
-          printf("Equal flag set; JNE will not execute \n");
           instruction_index += 2;
         }
         break;
-
-        // call = cpu->registers[operandA];
-        //   if (call == LDI) {
-        //     load_immediate(operandA, operandB);
-        //   }
-        //   else if (call == PRN) {
-        //     print(operandA);
-        //   }
-        //   else if (call == MUL) {
-        //     multiply(operandA, operandB);
-        //   }
-        //   else if (call == PUSH) {
-        //     push(operandA);
-        //   }
-        //   else if (call == POP) {
-        //     pop(operandA);
-        //   }
-        //   else if (call == MULT2PRINT) {
-        //     add(0, 0);
-        //     print(0);
-        //     // pop(operandA);
-        //   }
-        // // printf("This is running within call switch before instruction increment \n");
-        // instruction_index += 2; // increments instruction index to next instruction line
-        // break;
 
       default:
        printf("Nothing to run, this is default of switch, current instruction: %u \n", IR);
@@ -256,7 +214,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   cpu->pc = 0; //sets pc to 0
-  cpu->fl = 00000000; //sets flag to 0
+  cpu->fl = 0; //sets flag to 0
   memset(cpu->registers, 0, sizeof cpu->registers); // uses memset to set register to 0
   memset(cpu->ram, 0, sizeof cpu->ram); // uses memset to set ram to 0
 
