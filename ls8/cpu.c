@@ -152,8 +152,8 @@ void cpu_run(struct cpu *cpu)
           cpu->FL = 00000001;
         } else if (cpu->registers[operandA] < cpu->registers[operandB]) {
          cpu->FL = 00000100;
-        } else {
-          instruction_index = cpu->registers[operandA];
+        } else if (cpu->registers[operandA] > cpu->registers[operandB]) {
+          cpu->FL = 00000010;
         }
         instruction_index += 3;
         break;
@@ -166,7 +166,6 @@ void cpu_run(struct cpu *cpu)
       // if CMP is true/ 1, JMP to current address in register
         if (cpu->FL == 00000001) {
           jump(operandA);
-          instruction_index += 2;
         } else {
           instruction_index += 2;
         }
@@ -175,7 +174,6 @@ void cpu_run(struct cpu *cpu)
       case JNE:
         if (cpu->FL == 00000100) {
           jump(operandA);
-          instruction_index += 2;
         } else {
           instruction_index += 2;
         }
