@@ -2,7 +2,7 @@ Complete the following problems:
 
 * Convert `11001111` binary
 
-    to hex: `0xCF`
+    to hex: `CF`
 
     to decimal: `207`
 
