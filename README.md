@@ -1,8 +1,63 @@
-# Sprint-Challenge--Computer-Architecture
+# Sprint Challenge: Computer Architecture - Conditional Jumps
 
-## Binary, Decimal, and Hex
+This challenge allows you to practice the concepts and techniques learned over
+the past week and apply them in a concrete project. This Sprint explored TOPIC.
+During this Sprint, you studied CPU components, number bases, bitwise
+operations, CPU stack, interrupts, and subroutiones.
 
-Complete the following problems:
+In your challenge this week, you will demonstrate proficiency by doing some
+number base conversions, answering some short questions about CPU functionality,
+and adding _conditional jumps_ to your LS-8 emulator.
+
+## Instructions
+
+**Read these instructions carefully. Understand exactly what is expected
+_before_ starting this Sprint Challenge.**
+
+This is an individual assessment. All work must be your own. Your challenge
+score is a measure of your ability to work independently using the material
+covered through this sprint. You need to demonstrate proficiency in the concepts
+and objectives introduced and practiced in preceding days.
+
+You are not allowed to collaborate during the Sprint Challenge. However, you are
+encouraged to follow the twenty-minute rule and seek support from your PM and
+Instructor in your cohort help channel on Slack. Your work reflects your
+proficiency with Computer Architecture and your command of the related concepts
+and techniques.
+
+You have three hours to complete this challenge. Plan your time accordingly.
+
+## Commits
+
+Commit your code regularly and meaningfully. This helps both you (in case you
+ever need to return to old code for any number of reasons and your project
+manager.
+
+## Description
+
+In this challenge, you will add _conditional jumps_ (AKA _conditional
+branching_) to your LS-8 emulator.
+
+Additionally, you'll perform some number base conversions, and answer some short
+questions about CPU functionality.
+
+## Self-Study/Essay Questions
+
+Demonstrate your understanding of this week's concepts by answering the
+following free-form questions. Add them to the `ANSWERS.md` file in this repo.
+
+You are expected to be able to answer all these questions. Your responses
+contribute to your Sprint Challenge grade.
+
+### Short Answer
+
+* Explain how the CPU provides concurrency or parallelism:
+
+* Describe assembly language and machine language:
+
+### Number Conversions
+
+Add the answers to `ANSWERS.md`.
 
 * Convert `11001111` binary
 
@@ -24,37 +79,37 @@ Complete the following problems:
 
     to hex:
 
-
-## Architecture
-
-Short answer:
-
-* Explain how the CPU provides concurrency or parallelism:
-
-* Describe assembly language and machine language:
-
-
-## Coding
+## Project Set Up
 
 Options for submission, whichever is easier for you:
 
 * Copy your source into this repo, or...
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
-  you've been using all along.
 
-Sprint Challenge:
+* Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
+  you've been using all along (in addition to the PR for `ANSWERS.md`)
+
+## Minimum Viable Product
+
+Your finished project must include all of the following requirements:
+
+- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+
+- [ ] Add the `JMP` instruction.
+
+- [ ] Add the `JEQ` and `JNE` instructions.
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
-Add the `CMP` instruction and `equal` flag to your LS-8.
+In your solution, it is essential that you follow best practices and produce
+clean and professional results. Schedule time to review, refine, and assess your
+work and perform basic professional polishing including spell-checking and
+grammar-checking on your work. It is better to submit a challenge that meets MVP
+than one that attempts too much and does not.
 
-Add the `JMP` instruction.
+Validate your work through testing and ensure that your code operates as designed.
 
-Add the `JEQ` and `JNE` instructions.
-
-
-[Here is some code](sctest.ls8) that exercises the above instructions.
-It should print:
+[Here is some code](sctest.ls8) that exercises the above instructions. It should
+print:
 
 ```
 1
@@ -151,3 +206,14 @@ It should print:
 00000001 # HLT
 ```
 
+## Stretch Problems
+
+After finishing your required elements, you can push your work further. These
+goals may or may not be things you have learned in this module but they build on
+the material you just studied. Time allowing, stretch your limits and see if you
+can deliver on the following optional goals:
+
+- [ ] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
+- [ ] Add an `ADDI` extension instruction to add an immediate value to a register
+- [ ] Add timer interrupts
+- [ ] Add keyboard interrupts
