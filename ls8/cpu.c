@@ -92,59 +92,50 @@ void cpu_run(struct cpu *cpu)
 
       case LDI:
         reg[operandA] = operandB;
-        PC += shift;
         break;
 
       case PRN:
         printf("%d \n", reg[operandA]);
-        PC += shift;
         break;
 
       case MUL:
         alu(cpu, ALU_MUL, operandA, operandB);
-        PC += shift;
         break;
       
       case SUB:
         alu(cpu, ALU_SUB, operandA, operandB);
-        PC += shift;
         break;
 
       case ADD:
         alu(cpu, ALU_ADD, operandA, operandB);
-        PC += shift;
         break;
       
       case DIV:
         alu(cpu, ALU_DIV, operandA, operandB);
-        PC += shift;
         break;
 
       case MOD:
         alu(cpu, ALU_MOD, operandA, operandB);
-        PC += shift;
         break;
 
       case POP:
         reg[operandA] = cpu_ram_read(cpu, reg[SP]++);
-        PC += shift;
         break;
 
       case PUSH:
         cpu_ram_write(cpu, --reg[SP], reg[operandA]);
-        PC += shift;
         break;
 
       case CALL:
         reg[SP] = reg[SP - 1];
         cpu_ram_write(cpu, reg[SP], PC + 2);
         PC = reg[operandA];
-        
+        shift = 0;
         break;
       
       case RET:
         PC = cpu_ram_read(cpu, reg[SP]++);
-        
+        shift = 0;
         break;
 
       case CMP:
@@ -153,7 +144,6 @@ void cpu_run(struct cpu *cpu)
       } else {
         cpu->FLAG = 0;
       }
-      PC += shift;
       break;
 
       case JMP:
@@ -164,23 +154,19 @@ void cpu_run(struct cpu *cpu)
       case JNE:
       if (!cpu->FLAG) {
         PC = reg[operandA];
-      } else {
-        PC += shift;
       }
       break;
 
       case JEQ:
       if (cpu->FLAG) {
         PC = reg[operandA];
-      } else {
-        PC += shift;
       }
       break;
       
     }
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
-    
+    PC += shift;
   }
 }
 
