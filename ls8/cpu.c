@@ -142,7 +142,7 @@ void cpu_run(struct cpu *cpu)
       if (reg[operandA] == reg[operandB]) {
         cpu->FLAG = 1;
       } else {
-        cpu->FLAG = 0;
+        cpu->FLAG = EQUAL_FLAG;
       }
       break;
 

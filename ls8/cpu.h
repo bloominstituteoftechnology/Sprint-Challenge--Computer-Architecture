@@ -7,7 +7,7 @@
 #define IM 5 // Interrupt mask
 
 // Setting flags to initial 0s
-#define EQUAL_FLAG = 0x00 // Equal flag (E)
+#define EQUAL_FLAG 0x00 // Equal flag (E)
 
 // Holds all information about the CPU
 struct cpu {
