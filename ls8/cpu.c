@@ -166,14 +166,16 @@ void cpu_run(struct cpu *cpu)
         PC = reg[operandA];
       } else {
         PC += shift;
-      };
+      }
+      break;
 
       case JEQ:
       if (cpu->FLAG) {
         PC = reg[operandA];
       } else {
         PC += shift;
-      };
+      }
+      break;
       
     }
     // 3. Do whatever the instruction should do according to the spec.
