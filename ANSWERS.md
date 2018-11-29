@@ -21,8 +21,16 @@
 
 
 * Convert `68` decimal
+    Action  Remainder
+    2/68        0
+    2/34        0
+    2/17        1
+    2/8         0
+    2/4         0
+    2/2         0
+    2/1         1
 
-    to binary: 0+64+0+0+0+4+0+0 = 01000100
+    to binary: 01000100
 
     to hex: 68/16 = 4 (first digit)
             16/4 =  4(second digit)
