@@ -1,9 +1,10 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
 1. Explain how the CPU provides concurrency or parallelism:
-
+    Concurrency or parallelism occurs only when several commands are executed at the same time without waiting for one or other command to finish before other starts. However computers only gives an illusion that they are excecuting programs at the same time. Remeber, CPUs are operating at vast speeds. In real life computers implement scheduling that gives right amount of speed and priority.This allows concurent processing or at least it looks to humans :D
 
 2. Describe assembly language and machine language:
+    Machine language is a collection of 0s and 1s, that is called a binary code and is meant to be read by the computers. On the other hand, assembly language, are the instructions that are easily readable by humans.
 
 
 * Convert `11001111` binary
