@@ -15,6 +15,8 @@ struct cpu {
   // registers (array)
   unsigned char reg[8];
 
+  unsigned char FLAG;
+
   // ram (array)
   unsigned char ram[MAX_ADDRESS + 1];
 };
