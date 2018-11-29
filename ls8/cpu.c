@@ -149,6 +149,7 @@ void cpu_run(struct cpu *cpu)
       case JMP:
       reg[SP] = reg[SP - 1];
       PC = reg[operandA];
+      shift = 0;
       break;
 
       case JNE:
@@ -166,7 +167,7 @@ void cpu_run(struct cpu *cpu)
     }
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
-    
+
     PC += shift;
   }
 }
