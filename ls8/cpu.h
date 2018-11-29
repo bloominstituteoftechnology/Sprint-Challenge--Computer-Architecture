@@ -6,6 +6,11 @@
 #define IS 6 // Interrupt status
 #define IM 5 // Interrupt mask
 
+// Setting flags to initial 0s
+#define EQUAL_FLAG = 0x00 // Equal flag (E)
+#define LESS_THAN_FLAG = 0x00 // Less than flag (L)
+#define GREATER_THAN_FLAG = 0x00 // Greater than flag (G)
+
 // Holds all information about the CPU
 struct cpu {
   // TODO
@@ -15,6 +20,7 @@ struct cpu {
   // registers (array)
   unsigned char reg[8];
 
+// FLAG
   unsigned char FLAG;
 
   // ram (array)
