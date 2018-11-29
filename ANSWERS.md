@@ -10,7 +10,7 @@
 
     to hex:
 
-    to decimal:
+    to decimal: 
 
 
 * Convert `4C` hex
