@@ -84,8 +84,8 @@ void cpu_run(struct cpu *cpu)
 
   while (running) {
       unsigned char IR = cpu_ram_read(cpu, cpu->PC); 
-      unsigned char operandA = cpu_ram_read(cpu, (cpu->PC + 1) & 0xff);
-      unsigned char operandB = cpu_ram_read(cpu, (cpu->PC + 2) & 0xff);
+      unsigned char operandA = cpu_ram_read(cpu, (cpu->PC + 1)) & 0xff;
+      unsigned char operandB = cpu_ram_read(cpu, (cpu->PC + 2)) & 0xff;
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     // 2. switch() over it to decide on a course of action.
@@ -140,13 +140,38 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case CMP:
-
+        if(cpu->registers[operandA] == cpu->registers[operandB]){
+          cpu->FL = 0b00000001;
+        }
+        else if(cpu->registers[operandA] < cpu->registers[operandB]){
+          cpu->FL = 0b00000100;
+        }
+        else if(cpu->registers[operandA] > cpu->registers[operandB]){
+          cpu->FL = 0b00000010;
+        }
+        break;
 
       case JMP:
+        cpu->PC = cpu->registers[operandA];
+        break;
 
       case JEQ:
+        if(cpu->FL = 0b00000001){
+          cpu->PC = cpu->registers[operandA];
+        }
+        else {
+          cpu->PC += 2;
+        }
+        break;
 
       case JNE:
+        if(cpu->FL = 0){
+          cpu->PC = cpu->registers[operandA];
+        }
+        else {
+          cpu->PC += 2;
+        }
+        break;
 
       case HLT:
         printf("Halting...\n");
@@ -165,6 +190,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   // TODO: Zero registers and RAM
   cpu->PC = 0;
+  cpu->FL = 0;
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));
 }
