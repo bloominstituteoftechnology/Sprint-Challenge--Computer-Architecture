@@ -151,28 +151,36 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->registers[operandA];
 
       case CMP:
+        if (cpu->registers[operandA] == cpu->registers[operandB]) {
+          cpu->add_pc = 1;
+        }
 
-        alu(cpu, ALU_CMP, operandA, operandB);
+        if (cpu->registers[operandA] < cpu->registers[operandB]) {
+          cpu->add_pc = 2;
+        }
 
-        cpu->PC += IR;
-
+        if (cpu->registers[operandA] > cpu->registers[operandB]) {
+          cpu->add_pc = 4;
+        }
+        cpu->PC += move_pc;
         break;
 
       case JEQ:
         if (cpu->add_pc == 1) {
           cpu->PC = cpu->registers[operandA];
         }
+        IR = 0;
         break;
 
       case JNE:
         if (cpu->add_pc != 1) {
           cpu->PC = cpu->registers[operandA];
+        IR = 0;
         }
         break;
         
      default:
       printf("default\n");
-      cpu->PC += IR;
         break;
 
     }
