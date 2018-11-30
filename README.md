@@ -8,7 +8,7 @@ operations, CPU stack, interrupts, and subroutiones.
 In your challenge this week, you will demonstrate proficiency by doing some
 number base conversions, answering some short questions about CPU functionality,
 and adding _conditional jumps_ to your LS-8 emulator.
-
+- for PR
 ## Instructions
 
 **Read these instructions carefully. Understand exactly what is expected
