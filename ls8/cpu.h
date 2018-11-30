@@ -42,7 +42,6 @@ enum alu_op {
   ALU_AND,
   ALU_OR,
   ALU_XOR,
-  ALU_NOT,
   ALU_SHL,
   ALU_SHR,
 };

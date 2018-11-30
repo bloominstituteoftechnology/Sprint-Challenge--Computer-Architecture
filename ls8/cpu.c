@@ -87,27 +87,23 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
 
     case ALU_OR:
-
+      reg[regA] = reg[regA] | reg[regB];
       break;
 
     case ALU_AND:
-
-      break;
-
-    case ALU_NOT:
-
+      reg[regA] = reg[regA] & reg[regB];
       break;
 
     case ALU_XOR:
-
+      reg[regA] = reg[regA] ^ reg[regB];
       break;
 
     case ALU_SHL:
-
+      reg[regA] = reg[regA] << reg[regB];
       break;
 
     case ALU_SHR:
-
+      reg[regA] = reg[regA] >> reg[regB];
       break;
   }
 }
@@ -205,26 +201,56 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case JMP:
-      reg[SP] = reg[SP - 1];
-      PC = reg[operandA];
-      //printf("Jumped to %d:\n ", PC);
-      break;
+        reg[SP] = reg[SP - 1];
+        PC = reg[operandA];
+        //printf("Jumped to %d:\n ", PC);
+        break;
 
       case JNE:
-      if (cpu->EQUAL_FLAG == 0) {
-        PC = reg[operandA];
-      } else {
-        PC += shift;
-      }
-      break;
+        if (cpu->EQUAL_FLAG == 0) {
+          PC = reg[operandA];
+        } else {
+          PC += shift;
+        }
+        break;
 
       case JEQ:
-      if (cpu->EQUAL_FLAG == 1) {
-        PC = reg[operandA];
-      } else {
+        if (cpu->EQUAL_FLAG == 1) {
+          PC = reg[operandA];
+        } else {
+          PC += shift;
+        }
+        break;
+
+      case OR:
+        alu(cpu, ALU_OR, operandA, operandB);
         PC += shift;
-      }
-      break;
+        break;
+
+      case AND:
+        alu(cpu, ALU_AND, operandA, operandB);
+        PC += shift;
+        break;
+
+      case NOT:
+        reg[operandA] = ~reg[operandA];
+        PC += shift;
+        break;
+
+      case XOR:
+        alu(cpu, ALU_XOR, operandA, operandB);
+        PC += shift;
+        break;
+
+      case SHL:
+        alu(cpu, ALU_SHL, operandA, operandB);
+        PC += shift;
+        break;
+
+      case SHR:
+        alu(cpu, ALU_SHR, operandA, operandB);
+        PC += shift;
+        break;
       
     }
     // 3. Do whatever the instruction should do according to the spec.
