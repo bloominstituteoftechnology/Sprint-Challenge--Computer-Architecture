@@ -54,6 +54,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD: 
       cpu-> registers[regA] += cpu-> registers[regB]; 
       break; 
+    case ALU_CMP:
+      if(cpu->registers[regA] > cpu->registers[regB]){
+        cpu->flag = 00000010; 
+      }else if(cpu->registers[regA] < cpu-> registers[regB]){
+        cpu->flag = 00000100; 
+      }else{
+        cpu->flag = 00000001; 
+      }
   }
 }
 
@@ -116,6 +124,9 @@ void cpu_run(struct cpu *cpu)
           cpu-> PC = cpu-> ram[cpu-> registers[7]]; //retrieve the address of the next instruction before the call which should be at the top of the stack and set the program counter to it
           cpu-> registers[7] += 1;  // increment the stack pointer
           add_to_pc = 0; 
+          break; 
+        case CMP: //opcode to compare two registers
+          alu(cpu, ALU_CMP, operandA, operandB); 
           break; 
       }
       
