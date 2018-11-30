@@ -70,7 +70,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
 
     // TODO: implement more ALU ops
-
   }
 }
 
@@ -102,11 +101,13 @@ void cpu_run(struct cpu *cpu)
 
     switch(IR) {
       case LDI:
+        printf("LDI\n");
         cpu->registers[operandA] = operandB;
         cpu->PC += 3;
         break;
 
       case PRN:
+        printf("PRN\n");
         printf("%d\n", cpu->registers[operandA]);
         cpu->PC += 2;
         break;
@@ -132,6 +133,7 @@ void cpu_run(struct cpu *cpu)
         cpu->registers[7]--;
         cpu_ram_write(cpu, cpu->registers[7], cpu->PC + 2);
         cpu->PC = cpu->registers[operandA];
+        cpu->PC += 3;
         break;
 
       case RET:
@@ -140,6 +142,7 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case CMP:
+        printf("CMP\n");
         if(cpu->registers[operandA] == cpu->registers[operandB]){
           cpu->FL = 0b00000001;
         }
@@ -149,14 +152,17 @@ void cpu_run(struct cpu *cpu)
         else if(cpu->registers[operandA] > cpu->registers[operandB]){
           cpu->FL = 0b00000010;
         }
+        cpu->PC += 3;
         break;
 
       case JMP:
+        printf("JMP\n");
         cpu->PC = cpu->registers[operandA];
         break;
 
       case JEQ:
-        if(cpu->FL = 0b00000001){
+        printf("JEQ\n");
+        if(cpu->FL == 0b00000001){
           cpu->PC = cpu->registers[operandA];
         }
         else {
@@ -165,7 +171,8 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case JNE:
-        if(cpu->FL = 0){
+        printf("JNE\n");
+        if(cpu->FL == 0){
           cpu->PC = cpu->registers[operandA];
         }
         else {
