@@ -28,3 +28,5 @@ Otherwise, the assemly language is the equivalent of the machine language. Somet
     to binary:  01000100
 
     to hex: 44
+
+PR link for the 4 day project this week: see comments and also here: previous 4 days: LambdaSchool/Computer-Architecture#137
