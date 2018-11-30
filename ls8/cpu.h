@@ -15,6 +15,7 @@ struct cpu {
 // ALU operations
 enum alu_op {
   ALU_ADD,
+  ALU_ADDI,
   ALU_AND,
   ALU_MUL,
   ALU_MOD,
@@ -30,6 +31,7 @@ enum alu_op {
 // These use binary literals. If these aren't available with your compiler, hexliterals should be used.
 
 #define ADD   0b10100000
+#define ADDI  0b01010111
 #define AND   0b10101000
 #define CALL  0b01010000
 #define CMP   0b10100111

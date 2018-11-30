@@ -55,6 +55,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       cpu->reg[regA] += cpu->reg[regB];
       break;
+    case ALU_ADDI:
+      cpu->reg[regA] += regB;
+      break;
     case ALU_AND:
       //untested
       cpu->reg[regA] = regA & regB;
@@ -112,6 +115,10 @@ void cpu_run(struct cpu *cpu)
 
     // 1. Get the value of the current instruction (in address PC).
     switch(IR){
+      case ADDI:
+        alu(cpu, ALU_ADDI, value1, value2);
+        cpu->PC+=3;
+        break;
       case AND:
         alu(cpu, ALU_AND, value1, value2);
         cpu->PC+=3;
