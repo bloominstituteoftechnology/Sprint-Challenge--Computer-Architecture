@@ -1,9 +1,11 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
 1. Explain how the CPU provides concurrency or parallelism:
-
+The CPU is able to provide concurrency through running tasks through different threads on the same core and breaking down tasks  and is able to provide paraellelism by running tasks on multiple cores simletaniusly. 
 
 2. Describe assembly language and machine language:
+They are pretty much as low to the circuit board as you get as far as it comes to language.
+Assembly is a more readable version of machine language with variable names for variables/commands instead of just numbers where as machine language is the 0's and 1's the computer understands. All languages have to compile down to machine language and Assembly is one step above it. 
 
 
 * Convert `11001111` binary
