@@ -67,6 +67,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         case ALU_MOD:
                 regist[regA] = regist[regA]%regist[regB];
                 break;
+
+        case ALU_CMP:
+                if (regist[regA] < regist[regB]){
+                  cpu->less = 1;
+                  cpu->greater = 0;
+                  cpu->equal = 0;
+                } else if(regist[regA] == regist[regB]){
+                  cpu->less = 0;
+                  cpu->greater = 0;
+                  cpu->equal = 1;
+                } else {
+                  cpu->less = 0;
+                  cpu->greater = 1;
+                  cpu->equal = 0;
+                }
+                break;
         }
 }
 
@@ -151,7 +167,7 @@ void cpu_run(struct cpu *cpu)
                 case CALL:
                         regist[SP] = regist[SP-1];
                         // store the next instruction into the ram index of the current stack.
-                        cpu_ram_write(cpu, regist[SP], PC + 2);
+                        cpu_ram_write(cpu, regist[SP], PC + shift);
                         PC = regist[operandA];
                         shift = 0;
                         break;
@@ -159,6 +175,27 @@ void cpu_run(struct cpu *cpu)
                 case RET:
                         PC = cpu_ram_read(cpu, regist[SP]++);
                         shift = 0;
+                        break;
+                        
+                case CMP:
+                        alu(cpu, ALU_CMP, operandA, operandB);
+                        break;
+
+                case JMP:
+                        regist[SP] = regist[SP -1];
+                        PC = regist[operandA];
+                        break;
+
+                case JNE:
+                        if(cpu->equal == 0){
+                          PC = regist[operandA];
+                        }
+                        break;
+
+                case JEQ:
+                        if(cpu->equal == 1){
+                          PC = regist[operandA];
+                        }
                         break;
 
                 default:
@@ -179,6 +216,10 @@ void cpu_init(struct cpu *cpu)
         // TODO: Initialize the PC and other special registers
         cpu->PC = 0x00;
         cpu->regist[SP] = 0xF4;
+        // Compare flags:
+        cpu->equal = 0x00;
+        cpu->less = 0x00;
+        cpu->greater = 0x00;
         //cpu->ram = calloc(256, sizeof(unsigned char));
         // TODO: Zero registers and RAM
         memset(cpu->regist, 0, sizeof(cpu->regist));

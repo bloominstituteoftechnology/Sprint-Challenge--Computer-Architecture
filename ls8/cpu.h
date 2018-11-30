@@ -7,7 +7,7 @@
 // define reserved registers here:
 #define IM 5 // Interrupt mask R6
 #define IS 6 // Interrupt status R6
-#define SP 7 //stack pointer R7 used for the stack. 
+#define SP 7 //stack pointer R7 used for the stack.
 
 
 // Holds all information about the CPU
@@ -19,6 +19,10 @@ struct cpu {
 	unsigned char regist[8];
   // ram (array)
 	unsigned char ram[256];
+	//flags
+	unsigned char less;
+	unsigned char greater;
+	unsigned char equal;
 };
 
 // ALU operations
@@ -27,7 +31,8 @@ enum alu_op {
 	ALU_ADD,
 	ALU_DIV,
 	ALU_SUB,
-	ALU_MOD
+	ALU_MOD,
+	ALU_CMP
 };
 
 // Instructions
