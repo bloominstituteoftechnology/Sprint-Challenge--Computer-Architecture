@@ -105,6 +105,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_SHR:
       reg[regA] = reg[regA] >> reg[regB];
       break;
+
+    case ALU_ADDI:
+      reg[regA] += regB;
+      break;
+
+    case ALU_LDI:
+      reg[regA] = regB;
+      break;
   }
 }
 
@@ -135,7 +143,7 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case LDI:
-        reg[operandA] = operandB;
+        alu(cpu, ALU_LDI, operandA, operandB);
         PC += shift;
         break;
 
@@ -251,7 +259,11 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_SHR, operandA, operandB);
         PC += shift;
         break;
-      
+
+      case ADDI:
+        alu(cpu, ALU_ADDI, operandA, operandB);
+        PC += shift;
+        break;
     }
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
