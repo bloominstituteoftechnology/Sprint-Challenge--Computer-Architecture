@@ -42,12 +42,27 @@ Additionally, by using interrupts(time slicing), a single CPU can execute one pr
 0  0
    --
     76
-    
+
     to decimal:
 76
 
 * Convert `68` decimal
 
-    to binary:
+0  0
+1  64
+0  0
+0  0
+0  0
+1  4
+0  0
+0  0
+-------
 
+01000100
+
+    to binary:
+0100 0100
+4     4
     to hex:
+
+    44
