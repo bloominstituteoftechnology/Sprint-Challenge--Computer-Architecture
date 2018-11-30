@@ -62,6 +62,25 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_MOD:
       reg[regA] = reg[regA]%reg[regB];
       break;
+
+    case ALU_CMP:
+      if (reg[regA] < reg[regB]){
+        cpu->LESS_THAN_FLAG = 1;
+      } else {
+        cpu->LESS_THAN_FLAG = 0;
+      }
+      if (reg[regA] > reg[regB]){
+        cpu->GREATER_THAN_FLAG = 1;
+      } else {
+        cpu->GREATER_THAN_FLAG = 0;
+      }
+      if (reg[regA] == reg[regB]){
+        cpu->EQUAL_FLAG = 1;
+      } else {
+        cpu->EQUAL_FLAG = 0;
+      }
+      break;
+
   }
 }
 
@@ -78,6 +97,7 @@ void cpu_run(struct cpu *cpu)
   while (running) {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
+
     unsigned char IR = cpu_ram_read(cpu, PC);
     unsigned char operandA = cpu_ram_read(cpu, (PC + 1));
     unsigned char operandB = cpu_ram_read(cpu, (PC + 2));
@@ -139,28 +159,28 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case CMP:
-      if (reg[operandA] == reg[operandB]) {
-        cpu->FLAG = 1;
-      } else {
-        cpu->FLAG = EQUAL_FLAG;
-      }
-      break;
+        alu(cpu, ALU_CMP, operandA, operandB);
+        shift = 3;
+        break;
 
       case JMP:
-      reg[SP] = reg[SP - 1];
       PC = reg[operandA];
-      shift = 0;
+      //printf("Jumped to %d:\n ", PC);
+      shift = 0; 
       break;
 
       case JNE:
-      if (!cpu->FLAG) {
+      if (cpu->EQUAL_FLAG == 0) {
         PC = reg[operandA];
+        shift = 2;
+        break;
       }
       break;
 
       case JEQ:
-      if (cpu->FLAG) {
+      if (cpu->EQUAL_FLAG == 1) {
         PC = reg[operandA];
+        shift = 2;
       }
       break;
       
@@ -186,6 +206,9 @@ void cpu_init(struct cpu *cpu)
   cpu->PC = 0x00;
   cpu->reg[SP] = 0xF4;
 
+  cpu->EQUAL_FLAG = 0x00;
+  cpu->LESS_THAN_FLAG = 0x00;
+  cpu->GREATER_THAN_FLAG = 0x00;
 }
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index) {
@@ -195,4 +218,3 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index) {
 void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value) {
   cpu->ram[index] = value;
 }
-

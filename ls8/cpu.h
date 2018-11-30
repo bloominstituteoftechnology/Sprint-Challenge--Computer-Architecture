@@ -6,8 +6,10 @@
 #define IS 6 // Interrupt status
 #define IM 5 // Interrupt mask
 
-// Setting flags to initial 0s
+/* // Setting flags to initial 0s
 #define EQUAL_FLAG 0x00 // Equal flag (E)
+#define LESS_THAN_FLAG 0x00 // Less than flag (L)
+#define GREATER_THAN_FLAG 0x00 // Greater than flag (G) */
 
 // Holds all information about the CPU
 struct cpu {
@@ -18,8 +20,10 @@ struct cpu {
   // registers (array)
   unsigned char reg[8];
 
-// FLAG
-  unsigned char FLAG;
+// flags
+  unsigned char EQUAL_FLAG;
+  unsigned char LESS_THAN_FLAG;
+  unsigned char GREATER_THAN_FLAG;
 
   // ram (array)
   unsigned char ram[MAX_ADDRESS + 1];
@@ -32,7 +36,8 @@ enum alu_op {
   ALU_ADD,
   ALU_DIV,
   ALU_SUB,
-  ALU_MOD
+  ALU_MOD,
+  ALU_CMP,
 };
 
 // Instructions
