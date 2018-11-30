@@ -82,6 +82,33 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       }
       break;
 
+    case ALU_LD:
+      reg[regA] = reg[regB];
+      break;
+
+    case ALU_OR:
+
+      break;
+
+    case ALU_AND:
+
+      break;
+
+    case ALU_NOT:
+
+      break;
+
+    case ALU_XOR:
+
+      break;
+
+    case ALU_SHL:
+
+      break;
+
+    case ALU_SHR:
+
+      break;
   }
 }
 
@@ -113,6 +140,11 @@ void cpu_run(struct cpu *cpu)
 
       case LDI:
         reg[operandA] = operandB;
+        PC += shift;
+        break;
+
+      case LD:
+        alu(cpu, ALU_LD, operandA, operandB);
         PC += shift;
         break;
 

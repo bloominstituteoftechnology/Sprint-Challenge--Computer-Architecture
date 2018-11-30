@@ -38,6 +38,13 @@ enum alu_op {
   ALU_SUB,
   ALU_MOD,
   ALU_CMP,
+  ALU_LD,
+  ALU_AND,
+  ALU_OR,
+  ALU_XOR,
+  ALU_NOT,
+  ALU_SHL,
+  ALU_SHR,
 };
 
 // Instructions
