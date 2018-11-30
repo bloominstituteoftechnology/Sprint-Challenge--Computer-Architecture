@@ -30,6 +30,10 @@ enum alu_op {
 #define MUL  0b10100010
 #define PUSH 0b01000101
 #define POP  0b01000110
+#define CMP  0b10100111
+#define JMP  0b01010100
+#define JEQ  0b01010101
+#define JNE  0b01010110
 #define SP 7
 // Function declarations
 
