@@ -25,3 +25,6 @@ Assembly language is a low-level language in which there is a strong corresponde
     to binary: 01000100
 
     to hex: 44
+
+
+PR link for the week's project: https://github.com/LambdaSchool/Computer-Architecture/pull/106
