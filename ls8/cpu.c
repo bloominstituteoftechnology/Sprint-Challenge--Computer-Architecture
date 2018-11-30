@@ -303,6 +303,9 @@ void cpu_run(struct cpu *cpu)
       case DEC:
         dec(cpu,operandA);
         break;
+      case ADDI:
+        cpu->registers[operandA] += operandB;
+        break;
     default:
       printf("Something went wrong\n");
 

@@ -31,6 +31,7 @@ enum alu_op {
 #define PRN  0b01000111
 #define MUL  0b10100010
 #define ADD  0b10100000
+#define ADDI 0b10101111
 #define SUB  0b10100001
 #define DIV  0b10100011
 #define POP  0b01000110
