@@ -150,14 +150,14 @@ void cpu_run(struct cpu *cpu)
         }else{
           cpu->E_FLAG = 0; 
         }
-        if (cpu->registers[operandA] > cpu->registers[operandB]){
+        if(cpu->registers[operandA] > cpu->registers[operandB]){
           // printf("%d  > \n", cpu->registers[operandA]);
           cpu->GREATER_FLAG = 1;
         }else{
           //  printf("%d  > 0 \n", cpu->registers[operandA]);
           cpu->GREATER_FLAG = 0; 
         }
-        if (cpu->registers[operandA] < cpu->registers[operandB]){
+        if(cpu->registers[operandA] < cpu->registers[operandB]){
           // printf("%d <\n", cpu->registers[operandA]);
           cpu->LESS_FLAG = 1;
         }else{
@@ -195,7 +195,6 @@ void cpu_run(struct cpu *cpu)
         //if E is equal to 0
         //then PC will equal the address at the given register
         //register - operandA
-
       if(cpu->E_FLAG == 0){
         cpu->PC = cpu->registers[operandA];
         //  printf("%d  JNE\n", cpu->registers[operandA]);
