@@ -66,18 +66,7 @@ void cpu_run(struct cpu *cpu)
   int running = 1; // True until we get a HLT instruction
 
   while (running) {
-    
-    // if ((cpu->registers[IM] & 0b00000001) == 1) {
-    //   unsigned char interrupts = cpu->registers[IM] & cpu->registers[IS];
-    //   for (int i = 0; i < 8; i++) {
-    //     // Right shift interrupts down by i, then mask with 1 to see if that bit was set
-    //     int interrupt_happened = ((interrupts >> i) & 1) == 1;
-    //     // ...
-    //   }
-    // }
-    // // call gettimeofday() and check to see if one second has passed
-    // // if yes, set bit 0 of R6 (interrupt status)
-
+  
     unsigned char IR = cpu_ram_read(cpu, cpu->PC);  // Get the value of the current instruction (in address PC)
     int move_pc = (IR >> 6) + 1;  // move counter
 
@@ -137,33 +126,47 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += move_pc;
         break;
 
-      case JMP:  //Jump to the address stored in the given register.
-        cpu->PC = cpu->registers[operandA];
-        break;
-
       case PRA:  //Print alpha character value stored in the given register.
         printf("%c", cpu->registers[operandA]);
         cpu->PC += move_pc;
         break;
 
-      case INT:  //Issue the interrupt number stored in the given register.
-        //This will set the _n_th bit in the `IS` register to the value in the given register.
+      case CMP:  //Compare the values in two registers.
+        // * If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+        if (cpu->registers[operandA] == cpu->registers[operandB]) {
+          cpu->FL = 1;
+        }
+        // * If registerA is less than registerB, set the Less-than `L` flag to 1,
+        //   otherwise set it to 0.
+        if (cpu->registers[operandA] < cpu->registers[operandB]) {
+          cpu->FL = 4;
+        }
+        // * If registerA is greater than registerB, set the Greater-than `G` flag
+        //   to 1, otherwise set it to 0.
+        if (cpu->registers[operandA] > cpu->registers[operandB]) {
+          cpu->FL = 2;
+        }
+        cpu->PC += move_pc;
         break;
 
-      case IRET:  //Return from an interrupt handler.
-        // The following steps are executed:
-        // 1. Registers R6-R0 are popped off the stack in that order.
-        for (int i = 6; i >= 0; i--) {
-          cpu->registers[i] = cpu_ram_read(cpu, cpu->registers[SP]);
-          cpu->registers[SP] ++;
+      case JMP:  //Jump to the address stored in the given register.
+        cpu->PC = cpu->registers[operandA];
+        break;
+
+      case JEQ:  //If `equal` flag is set (true), jump to the address stored in the given register.
+        if ((cpu->FL & 0b00000001) == 1) {
+          cpu->PC = cpu->registers[operandA];
+        } else {
+          cpu->PC += move_pc;
         }
-        // 2. The `FL` register is popped off the stack.
-        cpu->FL = cpu_ram_read(cpu, cpu->registers[SP]);
-        cpu->registers[SP] ++;
-        // 3. The return address is popped off the stack and stored in `PC`.
-        cpu->PC = cpu_ram_read(cpu, cpu->registers[SP]);
-        cpu->registers[SP] ++;
-        // 4. Interrupts are re-enabled
+        break;
+
+      case JNE:  //If `E` flag is clear (false, 0), jump to the address stored in the given register.
+        if ((cpu->FL & 0b00000001) == 0) {
+          cpu->PC = cpu->registers[operandA];
+        } else {
+          cpu->PC += move_pc;
+        }
         break;
 
       default:

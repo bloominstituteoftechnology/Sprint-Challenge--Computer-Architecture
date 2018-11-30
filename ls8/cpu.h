@@ -19,8 +19,8 @@ enum alu_op {
 // These use binary literals. If these aren't available with your compiler, hex
 // literals should be used.
 #define SP 7  // stack pointer
-#define IM 5  // stack pointer
-#define IS 6  // stack pointer
+#define IM 5  // interrupt mask
+#define IS 6  // interrupt status
 #define LDI  0b10000010
 #define HLT  0b00000001
 #define PRN  0b01000111
@@ -35,6 +35,9 @@ enum alu_op {
 #define PRA  0b01001000
 #define IRET  0b00010011
 #define INT  0b01010010
+#define CMP  0b10100111
+#define JEQ  0b01010101
+#define JNE  0b01010110
 
 // Function declarations
 extern void cpu_load(struct cpu *cpu, char *file);
