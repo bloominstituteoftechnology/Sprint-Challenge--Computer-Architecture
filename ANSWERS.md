@@ -1,4 +1,6 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
+I will be doing my sprint on the weekly project.   https://github.com/LambdaSchool/Computer-Architecture/pull/115
+
 
 1. Explain how the CPU provides concurrency or parallelism:
 
