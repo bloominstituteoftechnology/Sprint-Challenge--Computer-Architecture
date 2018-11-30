@@ -12,8 +12,11 @@
 #define CALL 0b01010000
 #define RET 0b00010001
 #define ADD 0b10100000
-
-#define DEBUG 0
+#define CMP 0b10100111
+#define JMP 0b01010100
+#define JEQ 0b01010101
+#define JNE 0b01010110
+#define DEBUG 1
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index)
 {
@@ -52,14 +55,14 @@ void cpu_load(struct cpu *cpu, char *path)
     }
   }
 
-  #if DEBUG
+#if DEBUG
   int current = 0;
   printf("address: %d\n", address);
-  while (current <= address) 
+  while (current <= address)
   {
     printf("RAM ADDR %i:\t%d\n", current++, cpu->ram[current]);
   }
-  #endif
+#endif
 }
 
 /**
@@ -70,13 +73,13 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 {
   switch (op)
   {
-    case ALU_MUL:
-      cpu->R[regA] *= cpu->R[regB];
-      break;
+  case ALU_MUL:
+    cpu->R[regA] *= cpu->R[regB];
+    break;
 
-    case ALU_ADD:
-      cpu->R[regA] += cpu->R[regB];
-      break;
+  case ALU_ADD:
+    cpu->R[regA] += cpu->R[regB];
+    break;
 
     // TODO: implement more ALU ops
   }
@@ -104,61 +107,98 @@ void cpu_run(struct cpu *cpu)
     // printf("Performing instruction IR: %d\n", IR);
     switch (IR)
     {
-      case HLT: // HLT
-        #if DEBUG
-        printf("halted\n");
-        #endif
-        running = 0; 
-        break;
+    case HLT: // HLT
+#if DEBUG
+      printf("halted\n");
+#endif
+      running = 0;
+      break;
 
-      case LDI:
-        a = cpu->R[oppA] = oppB;
+    case LDI:
+      a = cpu->R[oppA] = oppB;
+      cpu->PC += 3;
+      break;
+
+    case PRN:
+      prn = cpu->R[oppA];
+      printf("%d\n", prn);
+      cpu->PC += 2;
+      break;
+
+    case MUL:
+      alu(cpu, ALU_MUL, oppA, oppB);
+      cpu->PC += 3;
+      break;
+
+    case PUSH:
+      cpu->SP--;
+      cpu->ram[cpu->SP] = cpu->R[oppA];
+      cpu->PC += 2;
+      // printf("SP in PUSH %d\n", cpu->ram[cpu->SP]);
+      break;
+
+    case POP:
+      cpu->R[oppA] = cpu->ram[cpu->SP];
+      // printf("SP in POP %d\n", cpu->ram[cpu->SP]);
+      cpu->SP++;
+      cpu->PC += 2;
+      break;
+
+    case CALL:
+      cpu->ram[--cpu->SP] = cpu->PC + 2;
+      cpu->PC = cpu->R[oppA];
+      break;
+
+    case RET:
+      // printf("PC IS POINTING AT\n");
+      cpu->PC = cpu->ram[cpu->SP++];
+      break;
+
+    case ADD:
+      alu(cpu, ALU_ADD, oppA, oppB);
+      cpu->PC = cpu->PC + 3;
+      break;
+
+    case CMP:
+
+      if (cpu->R[oppA] > cpu->R[oppB])
+      {
+        cpu->FL = 0b00000010;
         cpu->PC += 3;
         break;
-
-      case PRN: 
-        prn = cpu->R[oppA];
-        printf("%d\n", prn);
-        cpu->PC += 2;
-        break;
-
-      case MUL: 
-        alu(cpu, ALU_MUL,oppA,oppB);
+      }
+      else if (cpu->R[oppA] < cpu->R[oppB])
+      {
+        cpu->FL = 0b00000100;
         cpu->PC += 3;
         break;
-
-      case PUSH: 
-        cpu->SP--;
-        cpu->ram[cpu->SP] = cpu->R[oppA];
-        cpu->PC += 2;
-        // printf("SP in PUSH %d\n", cpu->ram[cpu->SP]);
+      }
+      else
+      {
+        cpu->FL = 0b00000001;
+        cpu->PC += 3;
         break;
+      }
 
-      case POP:
-        cpu->R[oppA] = cpu->ram[cpu->SP];
-        // printf("SP in POP %d\n", cpu->ram[cpu->SP]);
-        cpu->SP++;
-        cpu->PC += 2;
-        break;
+    case JMP:
+      cpu->PC = cpu->R[oppA];
+      break;
+    
+    case JEQ:
+      if (cpu->FL == 0b00000001) {
+         cpu->PC = cpu->R[oppA];
+         break;
+      }
+    
+    case JNE:
+      if (cpu->FL != 0b00000001) {
+         cpu->PC = cpu->R[oppA];
+         break;
+      }
 
-      case CALL: 
-        cpu->ram[--cpu->SP] = cpu->PC + 2;
-        cpu->PC = cpu->R[oppA];
-        break;
-
-      case RET: 
-        // printf("PC IS POINTING AT\n");
-        cpu->PC = cpu->ram[cpu->SP++];
-        break;
-
-      case ADD: 
-        alu(cpu, ALU_ADD,oppA,oppB);
-        cpu->PC = cpu->PC + 3;
-        break;
-
-      default:
-        printf("whatmeantho? %d\n", IR);
-        break;
+    default:
+      printf("whatmeantho? %d\n", IR);
+      break;
     }
   }
 }
