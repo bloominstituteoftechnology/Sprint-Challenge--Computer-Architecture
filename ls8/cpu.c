@@ -78,6 +78,30 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       }
       cpu->registers[regA] %= cpu->registers[regB];
       break;
+    case ALU_AND:
+      cpu->registers[regA] &= cpu->registers[regB];
+      break;
+    case ALU_DEC:
+      cpu->registers[regA] -= 1;
+      break;
+    case ALU_INC:
+      cpu->registers[regA] += 1;
+      break;
+    case ALU_NOT:
+      cpu->registers[regA] = ~cpu->registers[regA];
+      break;
+    case ALU_OR:
+      cpu->registers[regA] |= cpu->registers[regB];
+      break;
+    case ALU_SHL:
+      cpu->registers[regA] <<= cpu->registers[regB];
+      break;
+    case ALU_SHR:
+      cpu->registers[regA] >>= cpu->registers[regB];
+      break;
+    case ALU_XOR:
+      cpu->registers[regA] ^= cpu->registers[regB];
+      break;
   }
   cpu->registers[regA] = cpu->registers[regA] & 0xFF;
 }
@@ -136,16 +160,16 @@ void cpu_run(struct cpu *cpu)
         cpu_ram_write(cpu, cpu->registers[operandA], cpu->registers[operandB]);
         break;
       case AND:
-        cpu->registers[operandA] = cpu->registers[operandA] & cpu->registers[operandB];
+        alu(cpu, ALU_AND, operandA, operandB);
         break;
       case DEC:
-        cpu->registers[operandA] -= 1;
+        alu(cpu, ALU_DEC, operandA, operandB);
         break;
       case DIV:
         alu(cpu, ALU_DIV, operandA, operandB);
         break;
       case INC:
-        cpu->registers[operandA] += 1;
+        alu(cpu, ALU_INC, operandA, operandB);
         break;
       case MOD:
         alu(cpu, ALU_MOD, operandA, operandB);
@@ -153,19 +177,19 @@ void cpu_run(struct cpu *cpu)
       case NOP:
         break;
       case NOT:
-        cpu->registers[operandA] = ~cpu->registers[operandA];
+        alu(cpu, ALU_NOT, operandA, operandB);
         break;
       case OR:
-        cpu->registers[operandA] = cpu->registers[operandA] | cpu->registers[operandB];
+        alu(cpu, ALU_OR, operandA, operandB);
         break;
       case PRA:
         printf("%c\n", cpu->registers[operandA]);
         break;
       case SHL:
-        cpu->registers[operandA] = cpu->registers[operandA] << cpu->registers[operandB];
+        alu(cpu, ALU_SHL, operandA, operandB);
         break;
       case SHR:
-        cpu->registers[operandA] = cpu->registers[operandA] >> cpu->registers[operandB];
+        alu(cpu, ALU_SHR, operandA, operandB);
         break;
       case CMP:
         cpu->FL = cpu->FL & 0b11111000;
@@ -200,7 +224,7 @@ void cpu_run(struct cpu *cpu)
         }
         break;
       case XOR:
-        cpu->registers[operandA] = cpu->registers[operandA] ^ cpu->registers[operandB];
+        alu(cpu, ALU_XOR, operandA, operandB);
         break;
       default:
         printf("Command: %d\n", IR);
