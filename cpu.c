@@ -57,11 +57,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_CMP:
       if(cpu->registers[regA] > cpu->registers[regB]){
         cpu->flag = 00000010; 
-      }else if(cpu->registers[regA] < cpu-> registers[regB]){
+      }else if(cpu->registers[regA] < cpu->registers[regB]){
         cpu->flag = 00000100; 
       }else{
         cpu->flag = 00000001; 
       }
+      break;
   }
 }
 
@@ -135,15 +136,18 @@ void cpu_run(struct cpu *cpu)
         case JEQ: // opcode to jump if the  equal flag is set to true
           if(cpu->flag == 00000001){
             cpu->PC = cpu->registers[operandA]; 
-            add_to_pc = 0; 
+           add_to_pc = 0;
+          }else{
+            break;
           }
           break; 
         case JNE: 
           if(cpu->flag != 00000001){
             cpu->PC = cpu->registers[operandA]; 
             add_to_pc = 0; 
+            break; 
           }
-          break; 
+          
       }
       
     
