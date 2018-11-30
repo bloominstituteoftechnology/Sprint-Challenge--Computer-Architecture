@@ -17,16 +17,19 @@ void cpu_load(struct cpu *cpu, char* arg)
   char *address;
   fp = fopen(arg, "r");
   
-  if (fp == NULL) {
+  if (fp == NULL)
+  {
     perror("Can not open the file\n");
     exit(1);
   }
   
-  while(fgets(data, sizeof(data), fp) != NULL) {
+  while(fgets(data, sizeof(data), fp) != NULL)
+  {
       
       unsigned char byte = strtoul(data, &address, 2);
       
-      if(address == data){
+      if(address == data)
+      {
         continue;
       }
       cpu_ram_write(cpu, line++, byte);
@@ -41,7 +44,8 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 {
   unsigned char *reg = cpu->reg;
 
-  switch (op) {
+  switch (op)
+  {
     case ALU_MUL:
       // TODO
       reg[regA] *= reg[regB];
@@ -126,7 +130,8 @@ void cpu_run(struct cpu *cpu)
   unsigned char *reg = cpu->reg;
   unsigned char PC = cpu->PC;
 
-  while (running) {
+  while (running)
+  {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
 
@@ -136,7 +141,8 @@ void cpu_run(struct cpu *cpu)
     int shift = ((IR >> 6)) + 1;
 
     // 2. switch() over it to decide on a course of action.
-    switch (IR) {
+    switch (IR)
+    {
       
       case HLT:
         running = 0;
@@ -289,10 +295,12 @@ void cpu_init(struct cpu *cpu)
   cpu->GREATER_THAN_FLAG = 0x00;
 }
 
-unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index) {
+unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index)
+{
   return cpu->ram[index];
 }
 
-void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value) {
+void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value)
+{
   cpu->ram[index] = value;
 }
