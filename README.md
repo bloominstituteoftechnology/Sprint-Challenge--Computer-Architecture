@@ -4,7 +4,7 @@ This challenge allows you to practice the concepts and techniques learned over
 the past week and apply them in a concrete project. This Sprint explored TOPIC.
 During this Sprint, you studied CPU components, number bases, bitwise
 operations, CPU stack, interrupts, and subroutiones.
-
+ 
 In your challenge this week, you will demonstrate proficiency by doing some
 number base conversions, answering some short questions about CPU functionality,
 and adding _conditional jumps_ to your LS-8 emulator.
