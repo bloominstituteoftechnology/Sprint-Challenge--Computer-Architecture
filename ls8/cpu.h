@@ -14,15 +14,15 @@ struct cpu {
 
 // ALU operations
 enum alu_op {
-  ALU_MUL,
   ALU_ADD,
   ALU_AND,
-  ALU_OR,
-  ALU_XOR,
+  ALU_MUL,
+  ALU_MOD,
   ALU_NOT,
+  ALU_OR,
   ALU_SHL,
   ALU_SHR,
-  ALU_MOD
+  ALU_XOR
 };
 
 // Instructions

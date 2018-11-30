@@ -253,6 +253,10 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_SHR, value1, value2);
         cpu->PC+=3;
         break;
+      case ST:
+        cpu->ram[cpu->reg[value1]] = cpu->reg[value2];
+        cpu->PC+=3;
+        break;
       case XOR:
         alu(cpu, ALU_XOR, value1, value2);
         cpu->PC+=3;
