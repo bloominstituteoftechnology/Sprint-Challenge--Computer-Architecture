@@ -12,12 +12,12 @@
 
 * Convert `4C` hex
 
-  to binary:
+  to binary: 01001100
 
-  to decimal:
+  to decimal: 78
 
 - Convert `68` decimal
 
-  to binary:
+  to binary: 01000100
 
-  to hex:
+  to hex: 44
