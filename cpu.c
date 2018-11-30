@@ -156,7 +156,7 @@ void cpu_run(struct cpu *cpu)
 
     case ADD:
       alu(cpu, ALU_ADD, oppA, oppB);
-      cpu->PC = cpu->PC + 3;
+      cpu->PC += 3;
       break;
 
     case CMP:
@@ -182,19 +182,26 @@ void cpu_run(struct cpu *cpu)
 
     case JMP:
       cpu->PC = cpu->R[oppA];
+      // printf("jumping to %c\n", cpu->R[PC]);
       break;
     
     case JEQ:
       if (cpu->FL == 0b00000001) {
          cpu->PC = cpu->R[oppA];
-         break;
+        //  printf(" EQ jumping to %c\n", cpu->R[PC]);
+      } else {
+          cpu->PC += 2; 
       }
+         break;
     
     case JNE:
       if (cpu->FL != 0b00000001) {
          cpu->PC = cpu->R[oppA];
-         break;
+        //  printf("NOT EQ jumping to %c\n", cpu->R[PC]);
+      } else {
+        cpu->PC += 2; 
       }
+         break;
 
     default:
       printf("whatmeantho? %d\n", IR);
