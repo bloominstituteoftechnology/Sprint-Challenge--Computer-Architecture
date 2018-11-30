@@ -1,9 +1,11 @@
 <!-- Answers to the Short Answer Essay Questions go here -->
 
-1. Explain how the CPU provides concurrency or parallelism:
+1. Explain how the CPU provides concurrency or parallelism:  
 - Concurrency and parallelism are two related but distinct concepts.
 Concurrency means, essentially, that task A and task B both need to happen independently of each other, and A starts running, and then B starts before A is finished.
 There are various different ways of accomplishing concurrency. One of them is parallelism--having multiple CPUs working on the different tasks at the same time. But that's not the only way. Another is by task switching, which works like this: Task A works up to a certain point, then the CPU working on it stops and switches over to task B, works on it for a while, and then switches back to task A. If the time slices are small enough, it may appear to the user that both things are being run in parallel, even though they're actually being processed in serial by a multitasking CPU.
+
+
 
 2. Describe assembly language and machine language:
 - Assembly language is a convenience mechanism over the machine language. With assembly language you use mnemonic sequences instead of numeric operation codes and can use symbolic labels instead of manually calculating offsets. It also protects you from really dumb errors - like typing a malformed processor instruction.
