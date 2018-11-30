@@ -67,17 +67,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->registers[regA] = cpu->registers[regB] + cpu->registers[regA];
       break;
 
-    case ALU_CMP:
-      if (cpu->registers[regA] < cpu->registers[regB]) {
-        cpu->add_pc = 0b00000100;
-      }
-      if (cpu->registers[regA] == cpu->registers[regB]) {
-        cpu->add_pc = 0b00000001;
-      }
-      if (cpu->registers[regA] > cpu->registers[regB]) {
-        cpu->add_pc = 0b00000010;
-      }
-      break;
       
      default:
       printf("default test\n");
