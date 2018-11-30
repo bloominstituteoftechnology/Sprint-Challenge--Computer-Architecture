@@ -12,9 +12,11 @@ struct cpu {
   // ram (array)
   unsigned char ram[256];
 
-  unsigned char E_FLAG;
-  unsigned char GREATER_FLAG;
-  unsigned char LESS_FLAG;
+
+  //create a flag for each possible outcome in the CMP case. 
+  unsigned char E_FLAG; // =
+  unsigned char GREATER_FLAG; // >
+  unsigned char LESS_FLAG; // <
 
 };
 

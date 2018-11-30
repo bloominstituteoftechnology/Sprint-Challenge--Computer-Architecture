@@ -141,18 +141,24 @@ void cpu_run(struct cpu *cpu)
       //   otherwise set it to 0.
       // * If registerA is greater than registerB, set the Greater-than `G` flag
       //   to 1, otherwise set it to 0.
-
+          //Each of the occurences has to have a true or false outcome.
+          //true = 1;
+          //false = 0;
         if(cpu->registers[operandA] == cpu->registers[operandB]){
           cpu->E_FLAG = 1;
+          printf("%d  == \n", cpu->registers[operandA]);
         }else{
           cpu->E_FLAG = 0; 
         }
         if (cpu->registers[operandA] > cpu->registers[operandB]){
+          printf("%d  > \n", cpu->registers[operandA]);
           cpu->GREATER_FLAG = 1;
         }else{
+           printf("%d  > 0 \n", cpu->registers[operandA]);
           cpu->GREATER_FLAG = 0; 
         }
         if (cpu->registers[operandA] < cpu->registers[operandB]){
+          printf("%d <\n", cpu->registers[operandA]);
           cpu->LESS_FLAG = 1;
         }else{
           cpu->LESS_FLAG = 0;
@@ -172,26 +178,39 @@ void cpu_run(struct cpu *cpu)
       case JEQ:
       // If `equal` flag is set (true), 
       // jump to the address stored in the given register.
-      if(cpu->E_FLAG){
-        cpu->registers[operandA];
+      //E flag must be equal to 1
+      //then PC will equal the stored address
+      //register - operandA
+      if(cpu->E_FLAG == 1){
+        cpu->PC = cpu->registers[operandA];
+        printf("%d JEQ\n", cpu->registers[operandA]);
       }else{
         cpu->PC += 2; 
       }
       break; 
+
       case JNE:
         // If `E` flag is clear (false, 0),
         // jump to the address stored in the given register.
-      if(!cpu->E_FLAG){
-        cpu->registers[operandA];
+        //if E is equal to 0
+        //then PC will equal the address at the given register
+        //register - operandA
+
+      if(cpu->E_FLAG == 0){
+        cpu->PC = cpu->registers[operandA];
+         printf("%d  JNE\n", cpu->registers[operandA]);
       }else{
         cpu->PC += 2; 
       }
       break; 
+
       case HLT: 
-      // printf("working-HLT");
+      printf("working-HLT");
         running = 0;
         cpu->PC++;
         break; 
+
+      //avoid comment lines  
       default:
         cpu->PC++;
     }
