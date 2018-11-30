@@ -89,11 +89,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
     case ALU_SHL:
       cpu->registers[regA] <<= cpu->registers[regB];
-      cpu->registers[regA] &= pow(2, cpu->registers[regB]);
+      cpu->registers[regA] &= (int)pow(2, cpu->registers[regB]);
       break;
     case ALU_SHR:
       cpu->registers[regA] >>= cpu->registers[regB];
-      cpu->registers[regA] &= 256 - pow(2, cpu->registers[regB]);
+      cpu->registers[regA] &= 256 - (int)pow(2, cpu->registers[regB]);
       break;
     case ALU_MOD:
       cpu->registers[regA] %= cpu->registers[regB];
@@ -220,7 +220,7 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_XOR, operandA, operandB);
         break;
       case NOT:
-        alu(cpu, ALU_NOT, operandA);
+        alu(cpu, ALU_NOT, operandA, operandB);
         break;
     }
     if ((IR >> 4 & 1) != 1) {
