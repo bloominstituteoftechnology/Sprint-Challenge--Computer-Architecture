@@ -38,6 +38,9 @@ enum alu_op {
 #define CMP  0b10100111
 #define JEQ  0b01010101
 #define JNE  0b01010110
+#define LD  0b10000011
+#define INC  0b01100101
+#define DEC  0b01100110
 
 // Function declarations
 extern void cpu_load(struct cpu *cpu, char *file);

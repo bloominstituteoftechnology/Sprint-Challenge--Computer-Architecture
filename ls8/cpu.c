@@ -74,37 +74,52 @@ void cpu_run(struct cpu *cpu)
     unsigned char operandB = cpu_ram_read(cpu, cpu->PC + 2);
 
     switch (IR) {
-      case HLT:
+      case HLT:   //Halt the CPU (and exit the emulator).
         running = 0;
         break;
 
-      case LDI:
+      case LD:  //Loads registerA with the value at the memory address stored in registerB.
+        cpu->registers[operandA] = cpu_ram_read(cpu, cpu->registers[operandB]);
+        cpu->PC += move_pc;
+        break;
+
+      case LDI:  //Set the value of a register to an integer.
         cpu->registers[operandA] = operandB;
         cpu->PC += move_pc;
         break;
 
-      case PRN:
+      case PRN:   //Print numeric value stored in the given register.
         printf("Saved value: %d\n", cpu->registers[operandA]);
         cpu->PC += move_pc;
         break;
 
-      case MUL:
+      case MUL:   //Multiply the values in two registers together and store the result in registerA.
         alu(cpu, ALU_MUL, operandA, operandB);
         cpu->PC += move_pc;
         break;
 
-      case ADD:
+      case ADD:   //Add the value in two registers and store the result in registerA.
         alu(cpu, ALU_ADD, operandA, operandB);
         cpu->PC += move_pc;
         break;
 
-      case PUSH:
+      case INC:   //Increment (add 1 to) the value in the given register.
+        cpu->registers[operandA] ++;
+        cpu->PC += move_pc;
+        break;
+
+      case DEC:   //Decrement (subtract 1 from) the value in the given register.
+        cpu->registers[operandA] --;
+        cpu->PC += move_pc;
+        break;
+
+      case PUSH:  //Push the value in the given register on the stack.
         cpu->registers[SP] --;
         cpu_ram_write(cpu, cpu->registers[SP], cpu->registers[operandA]);
         cpu->PC += move_pc;
         break;
 
-      case POP:
+      case POP:   //Pop the value from the top of the stack and store it in the `PC`.
         cpu->registers[operandA] = cpu_ram_read(cpu, cpu->registers[SP]);
         cpu->registers[SP] ++;
         cpu->PC += move_pc;
@@ -149,7 +164,7 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += move_pc;
         break;
 
-      case JMP:  //Jump to the address stored in the given register.
+      case JMP:   //Jump to the address stored in the given register.
         cpu->PC = cpu->registers[operandA];
         break;
 
