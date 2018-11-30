@@ -133,6 +133,24 @@ void cpu_run(struct cpu *cpu)
         cpu->FL = 4;
       }
       break;
+    case JMP:
+      cpu->PC = cpu->registers[param1];
+      pc_change = 0;
+      break;
+    case JEQ:
+      if (cpu->FL == 1)
+      {
+        cpu->PC = cpu->registers[param1];
+        pc_change = 0;
+      }
+      break;
+    case JNE:
+      if (cpu->FL != 1)
+      {
+        cpu->PC = cpu->registers[param1];
+        pc_change = 0;
+      }
+      break;
     case HLT:
       running = 0;
       break;
@@ -151,6 +169,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
   cpu->registers[SP] = 0xF4;
+  cpu->FL = 0;
 
   // TODO: Zero registers and RAM
   memset(cpu->ram, 0, sizeof cpu->ram);
