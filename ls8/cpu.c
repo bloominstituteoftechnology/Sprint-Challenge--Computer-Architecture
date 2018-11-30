@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define DATA_LEN 6
 
@@ -46,6 +47,17 @@ void cpu_load(struct cpu *cpu, char *argv[])
   }
 }
 
+unsigned char cpu_cmp(unsigned char numA, unsigned char numB) {
+  if (numA > numB) {
+    return 2;
+  } else if (numA < numB) {
+    return 4;
+  } else if (numA == numB) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 /**
  * ALU
  */
@@ -58,8 +70,33 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
     // TODO: implement more ALU ops
     case ALU_ADD:
-      printf("ADDING!\n");
       cpu->registers[regA] += cpu->registers[regB];
+      break;
+    case ALU_CMP:
+      cpu->FL += cpu_cmp(cpu->registers[regA], cpu->registers[regB]);
+      break;
+    case ALU_AND:
+      cpu->registers[regA] &= cpu->registers[regB];
+      break;
+    case ALU_OR:
+      cpu->registers[regA] |= cpu->registers[regB];
+      break;
+    case ALU_XOR:
+      cpu->registers[regA] ^= cpu->registers[regB];
+      break;
+    case ALU_NOT:
+      cpu->registers[regA] = ~(cpu->registers[regA]);
+      break;
+    case ALU_SHL:
+      cpu->registers[regA] <<= cpu->registers[regB];
+      cpu->registers[regA] &= pow(2, cpu->registers[regB]);
+      break;
+    case ALU_SHR:
+      cpu->registers[regA] >>= cpu->registers[regB];
+      cpu->registers[regA] &= 256 - pow(2, cpu->registers[regB]);
+      break;
+    case ALU_MOD:
+      cpu->registers[regA] %= cpu->registers[regB];
       break;
   }
 }
@@ -81,6 +118,7 @@ void cpu_pop(struct cpu *cpu, unsigned char target) {
   cpu->registers[7] += 1;
 }
 
+
 /**
  * Run the CPU
  */
@@ -92,7 +130,6 @@ void cpu_run(struct cpu *cpu)
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     unsigned char IR = cpu_ram_read(cpu, cpu->PC);
-    printf("CURRENT PC:%d\n", cpu->PC);
     unsigned char operandA = cpu_ram_read(cpu, cpu->PC+1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->PC+2);
     // 2. switch() over it to decide on a course of action.
@@ -109,7 +146,6 @@ void cpu_run(struct cpu *cpu)
         break;
       case HLT:
         // cpu->PC += 1;
-        printf("HALT I SAY!\n");
         running = 0;
         break;
       case MUL:
@@ -117,7 +153,6 @@ void cpu_run(struct cpu *cpu)
         // cpu->PC+=3;
         break;
       case ADD:
-        printf("YOU MADE IT TO THE ADD CASE!\n");
         alu(cpu, ALU_ADD, operandA, operandB);
         break;
       case PUSH:
@@ -129,23 +164,67 @@ void cpu_run(struct cpu *cpu)
         // cpu->PC += 2;
         break;
       case CALL:
-        printf("Starting CALL:\n");
         cpu->registers[7] -= 1;
         cpu_ram_write(cpu, cpu->registers[7], cpu->PC+2);
         cpu->PC = cpu->registers[operandA];
-        printf("CALL PC: %d\n", cpu->PC);
         break;
       case RET:
-        printf("Starting RET:\n");
         cpu->PC = cpu->ram[cpu->registers[7]];
         cpu->registers[7] += 1;
-        printf("PC: %d\n", cpu->PC);
+        break;
+      case CMP:
+        alu(cpu, ALU_CMP, operandA, operandB);
+        break;
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
+        break;
+      case JEQ:
+        if (cpu->FL == 1) {
+          cpu->PC = cpu->registers[operandA];
+          cpu->FL = 0;
+        } else {
+          cpu->PC += (IR >> 6 & 3) + 1;
+          cpu->FL = 0;
+        }
+        break;
+      case JNE:
+        if ((cpu->FL & 1) != 1) {
+          cpu->PC = cpu->registers[operandA];
+          cpu->FL = 0;
+        } else {
+          cpu->PC += (IR >> 6 & 3) + 1;
+          cpu->FL = 0;
+        }
+        break;
+      case SHL:
+        alu(cpu, ALU_SHL, operandA, operandB);
+        break;
+      case SHR:
+        alu(cpu, ALU_SHR, operandA, operandB);
+        break;
+      case MOD:
+        if (cpu->registers[operandB] == 0) {
+          printf("Error: Second number cannot be 0/blank.\n");
+          running = 0;
+        } else {
+          alu(cpu, ALU_MOD, operandA, operandB);
+        }
+        break;
+      case AND:
+        alu(cpu, ALU_AND, operandA, operandB);
+        break;
+      case OR:
+        alu(cpu, ALU_OR, operandA, operandB);
+        break;
+      case XOR:
+        alu(cpu, ALU_XOR, operandA, operandB);
+        break;
+      case NOT:
+        alu(cpu, ALU_NOT, operandA);
         break;
     }
     if ((IR >> 4 & 1) != 1) {
-      printf("NOT a call or ret\n");
       cpu->PC += (IR >> 6 & 3) + 1;
-      printf("PC: %d\n", cpu->PC);
     }
   }
 }
@@ -157,6 +236,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0b00000000;
   // TODO: Zero registers and RAM
   memset(cpu->registers, 0, 8*sizeof(char));
   memset(cpu->ram, 0, 256*sizeof(char));

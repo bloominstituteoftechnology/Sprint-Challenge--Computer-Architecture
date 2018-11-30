@@ -6,6 +6,7 @@ struct cpu {
   // TODO
   // PC
 	int PC;
+	int FL;
   // registers (array)
 	unsigned char registers[8];
   // ram (array)
@@ -16,7 +17,15 @@ struct cpu {
 enum alu_op {
 	ALU_MUL,
 	// Add more here
-	ALU_ADD
+	ALU_ADD,
+	ALU_CMP,
+	ALU_AND,
+	ALU_OR,
+	ALU_XOR,
+	ALU_NOT,
+	ALU_SHL,
+	ALU_SHR,
+	ALU_MOD
 };
 
 // Instructions
@@ -34,6 +43,17 @@ enum alu_op {
 #define POP  0b01000110
 #define CALL 0b01010000
 #define RET  0b00010001
+#define CMP  0b10100111
+#define JMP  0b01010100
+#define JEQ  0b01010101
+#define JNE	 0b01010110
+#define AND  0b10101000
+#define OR 	 0b10101010
+#define XOR	 0b10101011
+#define NOT  0b01101001
+#define SHL  0b10101100
+#define SHR	 0b10101101
+#define MOD  0b10100100
 
 // Function declarations
 
