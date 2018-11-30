@@ -64,8 +64,7 @@ Add the answers to `ANSWERS.md`.
     to hex:
 
     to decimal:
-
-
+    
 * Convert `4C` hex
 
     to binary:
