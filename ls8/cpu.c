@@ -51,9 +51,7 @@ void cpu_load(struct cpu *cpu, char *argv)
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
   switch (op) {
-    case ALU_MUL:
-      cpu->reg[regA] *= cpu->reg[regB];
-      break;
+   
     case ALU_ADD:
       cpu->reg[regA] += cpu->reg[regB];
       break;
@@ -61,17 +59,25 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       //untested
       cpu->reg[regA] = regA & regB;
       break;
-    case ALU_OR:
-      //untested
-      cpu->reg[regA] = regA | regB;
+    case ALU_MUL:
+      cpu->reg[regA] *= cpu->reg[regB];
       break;
-    case ALU_XOR:
+    case ALU_MOD:
       //untested
-      cpu->reg[regA] = regA ^ regB;
+      if(regB == 0){
+        cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
+      } else {
+        printf("Error: Cannot divide by 0 in ALU_MOD.");
+        exit(1);
+      }
       break;
     case ALU_NOT:
       //untested
       cpu->reg[regA] = ~regA;
+      break;
+    case ALU_OR:
+      //untested
+      cpu->reg[regA] = regA | regB;
       break;
     case ALU_SHL:
       //untested
@@ -81,13 +87,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       //untested
       cpu->reg[regA] = cpu->reg[regA]>>regB;
       break;
-    case ALU_MOD:
-      if(regB == 0){
-        cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
-      } else {
-        printf("Error: Cannot divide by 0 in ALU_MOD.");
-        exit(1);
-      }
+    case ALU_XOR:
+      //untested
+      cpu->reg[regA] = regA ^ regB;
       break;
   }
 }
@@ -112,30 +114,6 @@ void cpu_run(struct cpu *cpu)
     switch(IR){
       case AND:
         alu(cpu, ALU_AND, value1, value2);
-        cpu->PC+=3;
-        break;
-      case OR:
-        alu(cpu, ALU_OR, value1, value2);
-        cpu->PC+=3;
-        break;
-      case XOR:
-        alu(cpu, ALU_XOR, value1, value2);
-        cpu->PC+=3;
-        break;
-      case NOT:
-        alu(cpu, ALU_NOT, value1, value2);
-        cpu->PC+=2;
-        break;
-      case SHL:
-        alu(cpu, ALU_SHL, value1, value2);
-        cpu->PC+=3;
-        break;
-      case SHR:
-        alu(cpu, ALU_SHR, value1, value2);
-        cpu->PC+=3;
-        break;
-      case MOD:
-        alu(cpu, ALU_MOD, value1, value2);
         cpu->PC+=3;
         break;
       case ADD:
@@ -224,10 +202,22 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += 3;
             // printf("cpu->reg[%u] = %u\n", value1, cpu->reg[value1]);
         break;
+      case MOD:
+        alu(cpu, ALU_MOD, value1, value2);
+        cpu->PC+=3;
+        break;
       case MUL:
             // printf("MUL\n");
         alu(cpu, ALU_MUL, value1, value2);
         cpu->PC += 3;
+        break;
+      case NOT:
+        alu(cpu, ALU_NOT, value1, value2);
+        cpu->PC+=2;
+        break;
+      case OR:
+        alu(cpu, ALU_OR, value1, value2);
+        cpu->PC+=3;
         break;
       case POP:
             // printf("POP\n");
@@ -254,6 +244,18 @@ void cpu_run(struct cpu *cpu)
             // printf("RET %d\n", cpu->ram[cpu->reg[7]]);
         cpu->PC = cpu->ram[cpu->reg[7]];
         cpu->reg[7]++;
+        break;
+      case SHL:
+        alu(cpu, ALU_SHL, value1, value2);
+        cpu->PC+=3;
+        break;
+      case SHR:
+        alu(cpu, ALU_SHR, value1, value2);
+        cpu->PC+=3;
+        break;
+      case XOR:
+        alu(cpu, ALU_XOR, value1, value2);
+        cpu->PC+=3;
         break;
       default:
         exit(1);
