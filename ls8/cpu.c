@@ -79,14 +79,14 @@ void cpu_run(struct cpu *cpu)
     // 1. Get the value of the current instruction (in address PC).
     switch(IR){
       case ADD:
-        printf("ADD\n");
+            printf("ADD\n");
         alu(cpu, ALU_ADD, value1, value2);
         cpu->PC += 3;
         break;
       case CALL:
             // printf("CALLcurrentpointer %u\n", cpu->PC);
             //value 1 pushed onto stack
-            cpu->reg[7]--;
+        cpu->reg[7]--;
         cpu->ram[cpu->reg[7]] = cpu->PC+2;
             //pc is set to value 1 
             printf("CALL return to line -> %u\n", cpu->PC+3);
@@ -144,10 +144,12 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += 3;
         break;
       case LDI:
+        printf("Value1 %u\n", value1);
+        printf("Value2 %u\n", value2);
+        printf("cpu->ram[value2] %c\n", cpu->ram[value2]);
         cpu->reg[value1] = value2;
         cpu->PC += 3;
-            printf("LDI reg%u = %u\n", value1, value2);
-            printf("value at reg%u = %c\n", value1, cpu->reg[value1]);
+            printf("cpu->reg[value1] = %c\n", cpu->reg[value1]);
         break;
       case MUL:
             printf("MUL\n");
@@ -161,11 +163,11 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += 2;
         break;
       case PRA:
-            printf("\n------------------------------------PRA --%c--\n", cpu->reg[value1]);
+            printf("\n------------------------------------------------PRA --%c--\n", cpu->ram[cpu->reg[value1]]);
         cpu->PC += 2;
         break;
       case PRN:
-            printf("The number printed is %u\n", cpu->reg[value1]);
+            printf("--------------------------------------------------The number printed is %u\n", cpu->reg[value1]);
         cpu->PC += 2;
         break;
       case PUSH:
