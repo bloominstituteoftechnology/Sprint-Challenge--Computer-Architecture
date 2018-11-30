@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+  #include <sys/time.h>
 #include "cpu.h"
 
 #define DATA_LEN 6
@@ -271,10 +272,17 @@ void cpu_run(struct cpu *cpu)
       default:
         exit(1);
     }
-      // printf("\n----PC at line %d-----\n", cpu->PC+1);
-    // 2. switch() over it to decide on a course of action.
-    // 3. Do whatever the instruction should do according to the spec.
-    // 4. Move the PC to the next instruction.
+    // printf("\n----PC at line %d-----\n", cpu->PC+1);
+      // struct timeval {
+      //          time_t      tv_sec;     /* seconds */
+      //          suseconds_t tv_usec;    /* microseconds */
+      //      };
+      // struct timezone {
+      //          int tz_minuteswest;     /* minutes west of Greenwich */
+      //          int tz_dsttime;         /* type of DST correction */
+      //      };
+      // int * timenow = gettimeofday(struct timeval *tv, struct timezone *tz);
+      // printf("time = %n", timenow);
   }
 }
 
