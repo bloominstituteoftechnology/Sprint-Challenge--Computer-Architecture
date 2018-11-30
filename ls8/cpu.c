@@ -117,6 +117,44 @@ void cpu_run(struct cpu *cpu)
         cpu->registers[SP]++;
         cpu->PC += 2;
         break;
+      
+      case CMP:
+        if (cpu->registers[operandA] == cpu->registers[operandB])
+        {
+            cpu->FL = 1;
+            cpu->PC += 3;
+        }
+        else if (cpu->registers[operandA] < cpu->registers[operandB])
+        {
+            cpu->FL = 4;
+            cpu->PC += 3;
+        }
+        else
+        {
+            cpu->FL = 2;
+        }
+        break;
+
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
+        cpu->PC += 2;
+        break;
+
+      case JEQ:
+        if (cpu->FL == 1)
+        {
+            cpu->PC = cpu->registers[operandA];
+            cpu->PC += 2;
+        }
+        break;
+
+      case JNE:
+        if (cpu->FL == 0)
+        {
+            cpu->PC = cpu->registers[operandA];
+            cpu->PC += 2;
+        }
+        break;
 
       default:
         break;
@@ -133,6 +171,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0;
 
   // TODO: Zero registers and RAM
   memset(cpu->ram, 0, sizeof cpu->ram);
