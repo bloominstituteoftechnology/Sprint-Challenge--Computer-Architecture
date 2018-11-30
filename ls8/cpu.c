@@ -138,6 +138,14 @@ void cpu_run(struct cpu *cpu)
             printf("JMP to line %u\n", cpu->reg[value1]);
         cpu->PC = cpu->reg[value1];
         break;
+      case JNE:
+        printf("JNE");
+        if(cpu->FL == 0b00000000){
+          cpu->PC = cpu->reg[value1];
+        } else {
+          cpu->PC+=2;
+        }
+        break;
       case LD:
         cpu->reg[value1] = cpu->reg[value2];
             printf("LD loads reg%u with %u\n", value1, cpu->reg[value2]);
@@ -149,7 +157,7 @@ void cpu_run(struct cpu *cpu)
         printf("cpu->ram[value2] %c\n", cpu->ram[value2]);
         cpu->reg[value1] = value2;
         cpu->PC += 3;
-            printf("cpu->reg[value1] = %c\n", cpu->reg[value1]);
+            printf("cpu->reg[value1] = %c or %u\n", cpu->reg[value1], cpu->reg[value1]);
         break;
       case MUL:
             printf("MUL\n");

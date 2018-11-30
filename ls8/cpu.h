@@ -38,6 +38,7 @@ enum alu_op {
 #define DEC   0b01100110
 #define LD    0b10000011
 #define PRA   0b01001000
+#define JNE   0b01010110
 
 // TODO: more instructions here. These can be used in cpu_run().
 
