@@ -64,8 +64,43 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
+  // var time = gettimeofday();
 
   while (running) {
+
+    // if (gettimeofday() - time >= 1s) {
+     // time = gettimeofday();
+     // set bit 0 of R6 (interrupt status) cpu->registers[IS] = (cpu->registers[IS] | 0b00000001);
+    //}
+
+    if (cpu->registers[IS] > 0) { //if interrupts are enabled
+      unsigned char interrupts = cpu->registers[IM] & cpu->registers[IS];
+      for (int i = 0; i < 8; i++) {
+        if (((interrupts >> i) & 1) == 1) { // Right shift interrupts down by i, then mask with 1 to see if that bit was set
+          // 1. Disable further interrupts.
+          ????????????
+          // 2. Clear the bit in the IS register.
+          cpu->registers[IS] = (cpu->registers[IS] & 0b11111110);
+          // 3. The `PC` register is pushed on the stack.
+          cpu->registers[SP] --;
+          cpu_ram_write(cpu, cpu->registers[SP], cpu->PC);
+          // 4. The `FL` register is pushed on the stack.
+          cpu->registers[SP] --;
+          cpu_ram_write(cpu, cpu->registers[SP], cpu->FL);
+          // 5. Registers R0-R6 are pushed on the stack in that order.
+          for (int j = 0; j < 7; j++) {
+            cpu->registers[SP] --;
+            cpu_ram_write(cpu, cpu->registers[SP], cpu->registers[j]);
+          }
+          // 6. The address (_vector_ in interrupt terminology) of the appropriate
+          //   handler is looked up from the interrupt vector table.
+          // 7. Set the PC is set to the handler address.
+          return;
+        } else {
+          continue;
+        }
+      }
+    }
   
     unsigned char IR = cpu_ram_read(cpu, cpu->PC);  // Get the value of the current instruction (in address PC)
     int move_pc = (IR >> 6) + 1;  // move counter
@@ -134,6 +169,22 @@ void cpu_run(struct cpu *cpu)
       case RET:  //Return from subroutine.
         cpu->PC = cpu_ram_read(cpu, cpu->registers[SP]);
         cpu->registers[SP] ++;
+        break;
+
+      case IRET:  //Return from an interrupt handler.
+        // 1. Registers R6-R0 are popped off the stack in that order.
+        for (int i = 6; i >= 0; i--) {
+          cpu->registers[i] = cpu_ram_read(cpu, cpu->registers[SP]);
+          cpu->registers[SP] ++;
+        }
+        // 2. The `FL` register is popped off the stack.
+        cpu->FL = cpu_ram_read(cpu, cpu->registers[SP]);
+        cpu->registers[SP] ++;
+        // 3. The return address is popped off the stack and stored in `PC`.
+        cpu->PC = cpu_ram_read(cpu, cpu->registers[SP]);
+        cpu->registers[SP] ++;
+        // 4. Interrupts are re-enabled
+        ??????????????????????
         break;
 
       case ST:  //Store value in registerB in the address stored in registerA.
