@@ -6,6 +6,7 @@ struct cpu {
   // TODO
   // PC
   unsigned char PC;
+  unsigned char FL;
   // registers (array)
   unsigned char registers[8];
   // ram (array)
@@ -49,6 +50,7 @@ enum alu_op {
 #define OR   0b10101010
 #define PRA  0b01001000
 #define SHL  0b10101100
+#define CMP  0b10100111
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations

@@ -167,6 +167,21 @@ void cpu_run(struct cpu *cpu)
       case SHR:
         cpu->registers[operandA] = cpu->registers[operandA] >> cpu->registers[operandB];
         break;
+      case CMP:
+        //00000LGE
+        cpu->fl = cpu->fl & 0b11111000;
+        if(cpu->registers[operandA] == cpu->registers[operandB]){
+          cpu->fl = cpu->fl | 0b00000001;
+        }
+
+        if(cpu->registers[operandA] < cpu->registers[operandB]){
+          cpu->fl = cpu->fl | 0b00000100;
+        }
+
+        if(cpu->registers[operandA] > cpu->registers[operandB]){
+          cpu->fl = cpu->fl | 0b00000010;
+        }
+        break;
       default:
         printf("Command: %d\n", IR);
         printf("Unknown Command. Exiting...\n");
@@ -185,6 +200,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0;
   // TODO: Zero registers and RAM
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));
