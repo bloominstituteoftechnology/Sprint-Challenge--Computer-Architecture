@@ -132,7 +132,34 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_ADD, operandA, operandB);
         cpu->PC += 3;
         break; 
-         
+
+      case CMP: 
+      //Compare the values in two registers.
+
+      // * If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
+      // * If registerA is less than registerB, set the Less-than `L` flag to 1,
+      //   otherwise set it to 0.
+      // * If registerA is greater than registerB, set the Greater-than `G` flag
+      //   to 1, otherwise set it to 0.
+
+        if(cpu->registers[operandA] == cpu->registers[operandB]){
+          cpu->FLAG = 1;
+        }else if (cpu->registers[operandA] > cpu->registers[operandB]){
+          cpu->FLAG = 1;
+        }else{
+          cpu->FLAG = 0;
+        }
+        cpu->PC += 3; 
+      
+      case JMP:
+      // Jump to the address stored in the given register.
+      // (difference between CALL(Jump to location in RAM)
+      // and JMP(jump to address stored in given Register)
+      // **Set the `PC` to the address stored in the given register.
+        cpu->registers[7] = cpu->registers[7 - 1];
+        cpu->PC = cpu->registers[operandA]; 
+        break; 
+      
       case HLT: 
       // printf("working-HLT");
         running = 0;
