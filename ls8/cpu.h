@@ -15,7 +15,14 @@ struct cpu {
 // ALU operations
 enum alu_op {
   ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_AND,
+  ALU_OR,
+  ALU_XOR,
+  ALU_NOT,
+  ALU_SHL,
+  ALU_SHR,
+  ALU_MOD
 };
 
 // Instructions
@@ -39,6 +46,13 @@ enum alu_op {
 #define LD    0b10000011
 #define PRA   0b01001000
 #define JNE   0b01010110
+#define AND   0b10100000
+#define OR    0b10101010
+#define XOR   0b10101011
+#define NOT   0b01101001
+#define SHL   0b10101100
+#define SHR   0b10101101
+#define MOD   0b10100100
 
 // TODO: more instructions here. These can be used in cpu_run().
 

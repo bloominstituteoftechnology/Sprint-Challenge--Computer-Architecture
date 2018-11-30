@@ -57,6 +57,20 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       cpu->reg[regA] += cpu->reg[regB];
       break;
+    case ALU_AND:
+      break;
+    case ALU_OR:
+      break;
+    case ALU_XOR:
+      break;
+    case ALU_NOT:
+      break;
+    case ALU_SHL:
+      break;
+    case ALU_SHR:
+      break;
+    case ALU_MOD:
+      break;
   }
 }
 
@@ -78,8 +92,22 @@ void cpu_run(struct cpu *cpu)
 
     // 1. Get the value of the current instruction (in address PC).
     switch(IR){
+      case AND:
+        break;
+      case OR:
+        break;
+      case XOR:
+        break;
+      case NOT:
+        break;
+      case SHL:
+        break;
+      case SHR:
+        break;
+      case MOD:
+        break;
       case ADD:
-            printf("ADD\n");
+            // printf("ADD\n");
         alu(cpu, ALU_ADD, value1, value2);
         cpu->PC += 3;
         break;
@@ -89,20 +117,20 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[7]--;
         cpu->ram[cpu->reg[7]] = cpu->PC+2;
             //pc is set to value 1 
-            printf("CALL return to line -> %u\n", cpu->PC+3);
+            // printf("CALL return to line -> %u\n", cpu->PC+3);
         cpu->PC = cpu->reg[value1];
             // printf("CALL3newpointer %u\n", cpu->PC);
         break;
       case CMP:
-            printf("CMP %u to %u\n", cpu->reg[value1], cpu->reg[value2]);
+            // printf("CMP %u to %u\n", cpu->reg[value1], cpu->reg[value2]);
         if(cpu->reg[value1] == cpu->reg[value2]){
-              printf("%u is = %u\n", cpu->reg[value1], cpu->reg[value2]);
+              // printf("%u is = %u\n", cpu->reg[value1], cpu->reg[value2]);
           cpu->FL = 0b00000001;
         } else if (cpu->reg[value1] < cpu->reg[value2]){
-              printf("%u is < %u\n", cpu->reg[value1], cpu->reg[value2]);
+              // printf("%u is < %u\n", cpu->reg[value1], cpu->reg[value2]);
           cpu->FL = 0b00000100;
         } else {
-              printf("%u is > %u\n", cpu->reg[value1], cpu->reg[value2]);
+              // printf("%u is > %u\n", cpu->reg[value1], cpu->reg[value2]);
           cpu->FL = 0b00000010;
         }
         cpu->PC+=3;
@@ -110,7 +138,7 @@ void cpu_run(struct cpu *cpu)
         break;
       case DEC:
         cpu->reg[value1]--;
-            printf("decrement reg%u to %u\n", value1, cpu->reg[value1]);
+            // printf("decrement reg%u to %u\n", value1, cpu->reg[value1]);
         cpu->PC+=2;
         break;
       case HLT:
@@ -118,59 +146,59 @@ void cpu_run(struct cpu *cpu)
         exit(0); //terminates the whole program insetead of exiting switch... exit is kinda oppositeish
         break;
       case INC:
-            printf("incrementing reg%u to %u\n", value1, cpu->reg[value1]+1);
+            // printf("incrementing reg%u to %u\n", value1, cpu->reg[value1]+1);
         cpu->reg[value1]++;
         cpu->PC+=2;
         break;
       case JEQ:
-            printf("JEQ\n");
-            printf("is %u == %u?\n", cpu->FL, 0b00000001);
-        if(cpu->FL == 0b00000001){
-              printf("Yes\n");
+            // printf("JEQ\n");
+            // printf("is %u == %u?\n", cpu->FL, 0b00000001);
+        if(cpu->FL == 0b00000001 || cpu->FL == 0b00000011 || cpu->FL == 0b00000101){
+              // printf("Yes\n");
           cpu->PC = cpu->reg[value1];
         } else {
-              printf("No\n");
+              // printf("No\n");
           cpu->PC+=2;
         }
             // printf("JEQend %u\n", cpu->PC);
         break;
       case JMP:
             // printf("JMP to line %u\n", cpu->reg[cpu->PC+1]);
-            printf("JMP to line %u\n", cpu->reg[value1]);
+            // printf("JMP to line %u\n", cpu->reg[value1]);
         cpu->PC = cpu->reg[value1];
         break;
       case JNE:
-            printf("JNE\n");
-            printf("is %u == %u?\n", cpu->FL, 0b00000000);
+            // printf("JNE\n");
+            // printf("is %u == %u?\n", cpu->FL, 0b00000000);
         if(cpu->FL == 0b00000000 || cpu->FL == 0b00000010 || cpu->FL == 0b00000100){
           cpu->PC = cpu->reg[value1];
-              printf("Yes\n");
+              // printf("Yes\n");
         } else {
           cpu->PC+=2;
-              printf("No\n");
+              // printf("No\n");
         }
         break;
       case LD:
         cpu->reg[value1] = cpu->reg[value2];
-            printf("LD loads reg%u with %u\n", value1, cpu->reg[value2]);
+            // printf("LD loads reg%u with %u\n", value1, cpu->reg[value2]);
         cpu->PC += 3;
         break;
       case LDI:
-        printf("LDI\n");
-        printf("Value1 %u\n", value1);
-        printf("Value2 %u\n", value2);
+        // printf("LDI\n");
+        // printf("Value1 %u\n", value1);
+        // printf("Value2 %u\n", value2);
         // printf("cpu->ram[value2] %c%u\n", cpu->ram[value2],cpu->ram[value2]);
         cpu->reg[value1] = value2;
         cpu->PC += 3;
-            printf("cpu->reg[%u] = %u\n", value1, cpu->reg[value1]);
+            // printf("cpu->reg[%u] = %u\n", value1, cpu->reg[value1]);
         break;
       case MUL:
-            printf("MUL\n");
+            // printf("MUL\n");
         alu(cpu, ALU_MUL, value1, value2);
         cpu->PC += 3;
         break;
       case POP:
-            printf("POP\n");
+            // printf("POP\n");
         cpu->reg[value1] = cpu->ram[cpu->reg[7]];
         cpu->reg[7]++;
         cpu->PC += 2;
@@ -184,21 +212,21 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += 2;
         break;
       case PUSH:
-            printf("PUSH\n");
+            // printf("PUSH\n");
             // cpu->reg[7]--;// this will return previous value and then change it 
         --cpu->reg[7];//this will do the calculation before a return or a print
         cpu->ram[cpu->reg[7]] = cpu->reg[value1];
         cpu->PC += 2;
         break;
       case RET:
-            printf("RET %d\n", cpu->ram[cpu->reg[7]]);
+            // printf("RET %d\n", cpu->ram[cpu->reg[7]]);
         cpu->PC = cpu->ram[cpu->reg[7]];
         cpu->reg[7]++;
         break;
       default:
         exit(1);
     }
-      printf("\n----PC at line %d-----\n", cpu->PC+1);
+      // printf("\n----PC at line %d-----\n", cpu->PC+1);
     // 2. switch() over it to decide on a course of action.
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
