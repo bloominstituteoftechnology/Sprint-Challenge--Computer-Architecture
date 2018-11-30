@@ -50,9 +50,11 @@ enum alu_op {
 #define OR   0b10101010
 #define PRA  0b01001000
 #define SHL  0b10101100
+#define SHR  0b10101101
 #define CMP  0b10100111
 #define JMP  0b01010100
 #define JEQ  0b01010101
+#define JNE  0b01010110
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations
