@@ -123,12 +123,13 @@ void cpu_run(struct cpu *cpu)
         cpu->PC+=2;
         break;
       case JEQ:
-            printf("JEQ is %u == %u?\n", cpu->FL, 0b00000001);
+            printf("JEQ\n");
+            printf("is %u == %u?\n", cpu->FL, 0b00000001);
         if(cpu->FL == 0b00000001){
-              printf("yes\n");
+              printf("Yes\n");
           cpu->PC = cpu->reg[value1];
         } else {
-              printf("no\n");
+              printf("No\n");
           cpu->PC+=2;
         }
             // printf("JEQend %u\n", cpu->PC);
@@ -139,11 +140,14 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[value1];
         break;
       case JNE:
-        printf("JNE");
-        if(cpu->FL == 0b00000000){
+            printf("JNE\n");
+            printf("is %u == %u?\n", cpu->FL, 0b00000000);
+        if(cpu->FL == 0b00000000 || cpu->FL == 0b00000010 || cpu->FL == 0b00000100){
           cpu->PC = cpu->reg[value1];
+              printf("Yes\n");
         } else {
           cpu->PC+=2;
+              printf("No\n");
         }
         break;
       case LD:
@@ -152,12 +156,13 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += 3;
         break;
       case LDI:
+        printf("LDI\n");
         printf("Value1 %u\n", value1);
         printf("Value2 %u\n", value2);
-        printf("cpu->ram[value2] %c\n", cpu->ram[value2]);
+        // printf("cpu->ram[value2] %c%u\n", cpu->ram[value2],cpu->ram[value2]);
         cpu->reg[value1] = value2;
         cpu->PC += 3;
-            printf("cpu->reg[value1] = %c or %u\n", cpu->reg[value1], cpu->reg[value1]);
+            printf("cpu->reg[%u] = %u\n", value1, cpu->reg[value1]);
         break;
       case MUL:
             printf("MUL\n");
