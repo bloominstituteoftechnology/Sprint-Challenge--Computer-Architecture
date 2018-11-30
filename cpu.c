@@ -110,7 +110,7 @@ void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
 
-  // printf("\nCPU running\n");
+  printf("\nCPU running\n");
 
   while (running) {
     // TODO
@@ -118,7 +118,6 @@ void cpu_run(struct cpu *cpu)
     unsigned char IR = cpu->ram[cpu->PC];
     unsigned char operandA = cpu->ram[(cpu->PC + 1) & 0xFF];
     unsigned char operandB = cpu->ram[(cpu->PC + 2) & 0xFF];
-
 
     // 2. switch() over it to decide on a course of action.
     // printf("%i\n", cpu->PC);  // displays every instruction on a new line
@@ -183,6 +182,7 @@ void cpu_run(struct cpu *cpu)
       // cpu->PC += 2;
       break;
 
+
       case JMP:
       printf(" ...... JMP ...... \n");
       //Jump to the address stored in the given register.
@@ -190,38 +190,55 @@ void cpu_run(struct cpu *cpu)
       // don't increment the PC because we have already set the PC value explicitly
       break;
   
+
       //  CMP Compare the values in two registers.
       case CMP:
+      printf(" ...... CMP ...... \n");
+      printf("what is register A? %d\n", cpu->registers[operandA]);
+      printf("what is register B? %d\n", cpu->registers[operandB]);
+      printf("where is the PC? %d\n", cpu->PC);
+      printf("what is the initial value of the Equal flag? %d\n", cpu->flags[0]);
       //  If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. 
       if (cpu->registers[operandA] == cpu->registers[operandB]){
         cpu->flags[0] = 1;
+        printf("E flag value? %d\n", cpu->flags[0]);
       }
+      
       // If registerA is less than registerB, set the Less-than `L` flag to 1, otherwise set it to 0.
       else if (cpu->registers[operandA] < cpu->registers[operandB]){
         cpu->flags[1] = 1;
+        printf("L flag value? %d\n", cpu->flags[1]);
       }
       //If registerA is greater than registerB, set the Greater-than `G` flag to 1, otherwise set it to 0.
-      else if (cpu->registers[operandA] > cpu->registers[operandB]){
+      else {
         cpu->flags[2] = 1;
+        printf("G flag value? %d\n", cpu->flags[2]);
       } 
       cpu->PC += 3;
+      printf("PC location after first run of CMP: %d\n", cpu->PC);
       break;
       
-
       // JEQ - conditional jump - jump when equal
       case JEQ:
       // If `equal` flag[0] is set (true, 1), jump to the address stored in the given register.
       if (cpu->flags[0] == 1){
         cpu->PC = cpu->registers[operandA];
         }
+      else{
+        cpu->PC += 2; // go to the next instruction
+      };
       break;
     
+
       // JNE - conditional jump - jump when not equal
       case JNE:
       // If `E` flag[0] is clear (false, 0), jump to the address stored in the given register. 
       if (cpu->flags[0] == 0){
         cpu->PC = cpu->registers[operandA];
         }
+      else{
+        cpu->PC += 2;
+      };
       break;
       }
       // 4. Move the PC to the next instruction.
