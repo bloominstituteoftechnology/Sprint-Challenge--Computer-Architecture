@@ -125,32 +125,34 @@ void cpu_run(struct cpu *cpu)
     switch(IR) {
       // 3. Do whatever the instruction should do according to the spec.
       case LDI:
-      printf(" ....... LDI ...... \n");
+      printf("\n\n ....... LDI ...... \n");
+      printf("Register A: %d\n", cpu->registers[operandA]);
+      printf("Register B: %d\n", cpu->registers[operandB]);
       //set the value of a register to an integer
       cpu->registers[operandA] = operandB;
       cpu->PC += 3;
       break;
 
       case PRN:
-      printf(" ....... PRN ...... \n");
+      printf(" \n\n ....... PRN ...... \n");
       //print to the console the decimal integer value stored in given register
-      printf("Printed value: %d\n", cpu->registers[operandA]);
+      printf(" *** Printed value *** : %d\n", cpu->registers[operandA]);
       cpu->PC += 2;
       break;
 
       case HLT:
-      printf(" ....... HLT ...... \n");
+      printf(" \n\n ....... HLT ...... \n");
       running = 0;
       break;
 
       case PUSH:
-      printf(" ...... PUSH ...... \n");
+      printf(" \n\n ...... PUSH ...... \n");
       cpu_push(cpu, cpu->registers[operandA]);
       cpu->PC += 2;
       break;
       
       case POP:
-      printf(" ...... POP ...... \n");
+      printf(" \n\n ...... POP ...... \n");
       cpu->registers[operandA] = cpu_pop(cpu);
       cpu->PC += 2;
       break;
@@ -160,7 +162,7 @@ void cpu_run(struct cpu *cpu)
       then we halt
       */
       case RET:
-      printf(" ...... RET ...... \n");
+      printf(" \n\n ...... RET ...... \n");
       cpu->PC = cpu_pop(cpu); //pops the most recent item from the stack
       // cpu->PC += 1;
       break;  
@@ -175,7 +177,7 @@ void cpu_run(struct cpu *cpu)
 
       */
       case CALL:
-      printf(" ...... CALL ...... \n");
+      printf(" \n\n ...... CALL ...... \n");
       cpu_push(cpu, cpu->PC+2);
       printf("what is operandA: %d\n", cpu->registers[operandA]);
       cpu->PC = cpu->registers[operandA];
@@ -184,7 +186,7 @@ void cpu_run(struct cpu *cpu)
 
 
       case JMP:
-      printf(" ...... JMP ...... \n");
+      printf(" \n\n ...... JMP ...... \n");
       //Jump to the address stored in the given register.
       cpu->PC = cpu->registers[operandA];
       // don't increment the PC because we have already set the PC value explicitly
@@ -193,48 +195,61 @@ void cpu_run(struct cpu *cpu)
 
       //  CMP Compare the values in two registers.
       case CMP:
-      printf(" ...... CMP ...... \n");
-      printf("what is register A? %d\n", cpu->registers[operandA]);
-      printf("what is register B? %d\n", cpu->registers[operandB]);
-      printf("where is the PC? %d\n", cpu->PC);
-      printf("what is the initial value of the Equal flag? %d\n", cpu->flags[0]);
+      printf(" \n\n ...... CMP ...... \n");
+      printf("Register A: %d\n", cpu->registers[operandA]);
+      printf("Register B: %d\n", cpu->registers[operandB]);
+      printf("Initial value of the Equal flag: %d\n", cpu->flags[0]);
+      printf("PC location: %d\n", cpu->PC);
       //  If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. 
       if (cpu->registers[operandA] == cpu->registers[operandB]){
         cpu->flags[0] = 1;
-        printf("E flag value? %d\n", cpu->flags[0]);
+        printf("E flag: %d\n", cpu->flags[0]);
       }
       
       // If registerA is less than registerB, set the Less-than `L` flag to 1, otherwise set it to 0.
       else if (cpu->registers[operandA] < cpu->registers[operandB]){
         cpu->flags[1] = 1;
-        printf("L flag value? %d\n", cpu->flags[1]);
+        printf("L flag: %d\n", cpu->flags[1]);
       }
       //If registerA is greater than registerB, set the Greater-than `G` flag to 1, otherwise set it to 0.
       else {
         cpu->flags[2] = 1;
-        printf("G flag value? %d\n", cpu->flags[2]);
+        printf("G flag: %d\n", cpu->flags[2]);
       } 
       cpu->PC += 3;
-      printf("PC location after first run of CMP: %d\n", cpu->PC);
+      printf("PC location: %d\n", cpu->PC);
       break;
       
       // JEQ - conditional jump - jump when equal
       case JEQ:
+      printf(" \n\n ...... JEQ ...... \n");
+      printf("Register A: %d\n", cpu->registers[operandA]);
+      printf("Register B: %d\n", cpu->registers[operandB]);
+      printf("E flag: %d\n", cpu->flags[0]);
+      printf("PC location: %d\n", cpu->PC);
       // If `equal` flag[0] is set (true, 1), jump to the address stored in the given register.
       if (cpu->flags[0] == 1){
         cpu->PC = cpu->registers[operandA];
+        printf("E flag: %d\n", cpu->flags[0]);
         }
       else{
         cpu->PC += 2; // go to the next instruction
+        printf("PC location: %d\n", cpu->PC);
       };
       break;
     
 
       // JNE - conditional jump - jump when not equal
       case JNE:
+      printf(" \n\n ...... JNE ...... \n");
+      printf("Register A: %d\n", cpu->registers[operandA]);
+      printf("Register B: %d\n", cpu->registers[operandB]);
+      printf("E flag: %d\n", cpu->flags[0]);
+      printf("PC location: %d\n", cpu->PC);
       // If `E` flag[0] is clear (false, 0), jump to the address stored in the given register. 
       if (cpu->flags[0] == 0){
         cpu->PC = cpu->registers[operandA];
+        printf("E flag: %d\n", cpu->flags[0]);
         }
       else{
         cpu->PC += 2;
