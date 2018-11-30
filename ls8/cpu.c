@@ -185,6 +185,11 @@ void cpu_run(struct cpu *cpu)
       case JMP:
         cpu->PC = cpu->registers[operandA];
         break;
+      case JEQ:
+        if(cpu->fl & 0b00000001){
+          cpu->PC = cpu->registers[operandA];
+        }
+        break;
       default:
         printf("Command: %d\n", IR);
         printf("Unknown Command. Exiting...\n");
