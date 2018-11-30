@@ -6,15 +6,16 @@
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
-void cpu_load(struct cpu *cpu, char *argv[])
+void cpu_load(struct cpu *cpu, char* arg)
 {
 
   // TODO: Replace this with something less hard-coded
 
   FILE *fp;
   char data[1024];
-  unsigned char address = 0;
-  fp = fopen(argv[1], "r");
+  int line = 0;
+  char *address;
+  fp = fopen(arg, "r");
   
   if (fp == NULL) {
     perror("Can not open the file\n");
@@ -23,12 +24,12 @@ void cpu_load(struct cpu *cpu, char *argv[])
   
   while(fgets(data, sizeof(data), fp) != NULL) {
       
-      unsigned char byte = strtoul(data, NULL, 2);
+      unsigned char byte = strtoul(data, &address, 2);
       
-      if(data == NULL){
+      if(address == data){
         continue;
       }
-      cpu->ram[address++] = byte;
+      cpu_ram_write(cpu, line++, byte);
     }
     fclose(fp);
   }
@@ -112,45 +113,53 @@ void cpu_run(struct cpu *cpu)
 
       case LDI:
         reg[operandA] = operandB;
+        PC += shift;
         break;
 
       case PRN:
         printf("%d \n", reg[operandA]);
+        PC += shift;
         break;
 
       case MUL:
         alu(cpu, ALU_MUL, operandA, operandB);
+        PC += shift;
         break;
       
       case SUB:
         alu(cpu, ALU_SUB, operandA, operandB);
+        PC += shift;
         break;
 
       case ADD:
         alu(cpu, ALU_ADD, operandA, operandB);
+        PC += shift;
         break;
       
       case DIV:
         alu(cpu, ALU_DIV, operandA, operandB);
+        PC += shift;
         break;
 
       case MOD:
         alu(cpu, ALU_MOD, operandA, operandB);
+        PC += shift;
         break;
 
       case POP:
         reg[operandA] = cpu_ram_read(cpu, reg[SP]++);
+        PC += shift;
         break;
 
       case PUSH:
         cpu_ram_write(cpu, --reg[SP], reg[operandA]);
+        PC += shift;
         break;
 
       case CALL:
         reg[SP] = reg[SP - 1];
-        cpu_ram_write(cpu, reg[SP], PC + 2);
+        cpu_ram_write(cpu, reg[SP], PC + shift);
         PC = reg[operandA];
-        shift = 0;
         break;
       
       case RET:
@@ -160,35 +169,34 @@ void cpu_run(struct cpu *cpu)
 
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
-        shift = 3;
+        PC += shift;
         break;
 
       case JMP:
+      reg[SP] = reg[SP - 1];
       PC = reg[operandA];
       //printf("Jumped to %d:\n ", PC);
-      shift = 0; 
       break;
 
       case JNE:
       if (cpu->EQUAL_FLAG == 0) {
         PC = reg[operandA];
-        shift = 2;
-        break;
+      } else {
+        PC += shift;
       }
       break;
 
       case JEQ:
       if (cpu->EQUAL_FLAG == 1) {
         PC = reg[operandA];
-        shift = 2;
+      } else {
+        PC += shift;
       }
       break;
       
     }
     // 3. Do whatever the instruction should do according to the spec.
     // 4. Move the PC to the next instruction.
-
-    PC += shift;
   }
 }
 

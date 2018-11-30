@@ -5,7 +5,7 @@
 /**
  * Main
  */
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
   struct cpu cpu;
 
@@ -13,8 +13,9 @@ int main(int argc, char *argv[])
     printf("Error");
     exit(2);
   } else {
+    char *file = argv[1];
     cpu_init(&cpu);
-    cpu_load(&cpu, argv);
+    cpu_load(&cpu, file);
     cpu_run(&cpu);
   }
   return 0;
