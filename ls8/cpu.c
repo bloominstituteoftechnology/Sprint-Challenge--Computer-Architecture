@@ -215,7 +215,6 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case JMP:
-        reg[SP] = reg[SP - 1];
         PC = reg[operandA];
         //printf("Jumped to %d:\n ", PC);
         break;
