@@ -84,7 +84,7 @@ Add the answers to `ANSWERS.md`.
 Options for submission, whichever is easier for you:
 
 * Copy your source into this repo, or...
-
+https://github.com/LambdaSchool/Computer-Architecture/pull/135
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along (in addition to the PR for `ANSWERS.md`)
 
