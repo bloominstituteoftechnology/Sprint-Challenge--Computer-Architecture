@@ -58,18 +58,36 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->reg[regA] += cpu->reg[regB];
       break;
     case ALU_AND:
+      //untested
+      cpu->reg[regA] = regA & regB;
       break;
     case ALU_OR:
+      //untested
+      cpu->reg[regA] = regA | regB;
       break;
     case ALU_XOR:
+      //untested
+      cpu->reg[regA] = regA ^ regB;
       break;
     case ALU_NOT:
+      //untested
+      cpu->reg[regA] = ~regA;
       break;
     case ALU_SHL:
+      //untested
+      cpu->reg[regA] = cpu->reg[regA]<<regB;
       break;
     case ALU_SHR:
+      //untested
+      cpu->reg[regA] = cpu->reg[regA]>>regB;
       break;
     case ALU_MOD:
+      if(regB == 0){
+        cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
+      } else {
+        printf("Error: Cannot divide by 0 in ALU_MOD.");
+        exit(1);
+      }
       break;
   }
 }
@@ -93,18 +111,32 @@ void cpu_run(struct cpu *cpu)
     // 1. Get the value of the current instruction (in address PC).
     switch(IR){
       case AND:
+        alu(cpu, ALU_AND, value1, value2);
+        cpu->PC+=3;
         break;
       case OR:
+        alu(cpu, ALU_OR, value1, value2);
+        cpu->PC+=3;
         break;
       case XOR:
+        alu(cpu, ALU_XOR, value1, value2);
+        cpu->PC+=3;
         break;
       case NOT:
+        alu(cpu, ALU_NOT, value1, value2);
+        cpu->PC+=2;
         break;
       case SHL:
+        alu(cpu, ALU_SHL, value1, value2);
+        cpu->PC+=3;
         break;
       case SHR:
+        alu(cpu, ALU_SHR, value1, value2);
+        cpu->PC+=3;
         break;
       case MOD:
+        alu(cpu, ALU_MOD, value1, value2);
+        cpu->PC+=3;
         break;
       case ADD:
             // printf("ADD\n");

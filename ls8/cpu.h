@@ -46,7 +46,7 @@ enum alu_op {
 #define LD    0b10000011
 #define PRA   0b01001000
 #define JNE   0b01010110
-#define AND   0b10100000
+#define AND   0b10101000
 #define OR    0b10101010
 #define XOR   0b10101011
 #define NOT   0b01101001
