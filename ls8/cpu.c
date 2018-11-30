@@ -132,7 +132,6 @@ void cpu_run(struct cpu *cpu)
         break;
 
      default:
-        printf("Default\n");
         break;
 
     }
