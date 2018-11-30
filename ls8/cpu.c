@@ -169,20 +169,21 @@ void cpu_run(struct cpu *cpu)
                         // store the next instruction into the ram index of the current stack.
                         cpu_ram_write(cpu, regist[SP], PC + shift);
                         PC = regist[operandA];
-                        shift = 0;
+                        // shift = 0;
                         break;
 
                 case RET:
                         PC = cpu_ram_read(cpu, regist[SP]++);
-                        shift = 0;
+                        // shift = 0;
                         break;
-                        
+
                 case CMP:
                         alu(cpu, ALU_CMP, operandA, operandB);
                         break;
 
                 case JMP:
                         regist[SP] = regist[SP -1];
+                        shift = 0;
                         PC = regist[operandA];
                         break;
 
@@ -198,9 +199,9 @@ void cpu_run(struct cpu *cpu)
                         }
                         break;
 
-                default:
-                        printf("incorret instuction %02x at %02x\n", PC, IR );
-                        exit(2);
+                // default:
+                //         printf("incorret instuction %02x at %02x\n", PC, IR );
+                //         exit(2);
                 }
                 // 4. Move the PC to the next instruction. done with incemeneting shift var
                 // set PC
