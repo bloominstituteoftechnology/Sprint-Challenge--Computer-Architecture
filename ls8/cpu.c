@@ -67,9 +67,20 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->registers[regA] = cpu->registers[regB] + cpu->registers[regA];
       break;
 
+    case ALU_CMP:
+      if (cpu->registers[regA] < cpu->registers[regB]) {
+        cpu->add_pc = 0b00000100;
+      }
+      if (cpu->registers[regA] == cpu->registers[regB]) {
+        cpu->add_pc = 0b00000001;
+      }
+      if (cpu->registers[regA] > cpu->registers[regB]) {
+        cpu->add_pc = 0b00000010;
+      }
+      break;
       
      default:
-      printf("default\n");
+      printf("default test\n");
       break;
   }
 }
@@ -140,18 +151,11 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->registers[operandA];
 
       case CMP:
-        if (cpu->registers[operandA] == cpu->registers[operandB]) {
-          cpu->add_pc = 1;
-        }
 
-        if (cpu->registers[operandA] < cpu->registers[operandB]) {
-          cpu->add_pc = 4;
-        }
+        alu(cpu, ALU_CMP, operandA, operandB);
 
-        if (cpu->registers[operandA] > cpu->registers[operandB]) {
-          cpu->add_pc = 2;
-        }
-        cpu->PC += move_pc;
+        cpu->PC += IR;
+
         break;
 
       case JEQ:
@@ -168,6 +172,7 @@ void cpu_run(struct cpu *cpu)
         
      default:
       printf("default\n");
+      cpu->PC += IR;
         break;
 
     }
