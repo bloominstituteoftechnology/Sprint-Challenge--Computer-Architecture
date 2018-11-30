@@ -25,7 +25,10 @@ enum alu_op {
 #define MUL 0b10100010
 #define PUSH 01000101
 #define POP 01000110
-
+#define CMP 10100111
+#define JEQ 01010101
+#define JNE 01010110
+#define JMP 01010100
 
 // TODO: more instructions here. These can be used in cpu_run().
 // Function declarations
