@@ -26,7 +26,8 @@ enum alu_op {
   ALU_OR,
   ALU_SHL,
   ALU_SHR,
-  ALU_XOR
+  ALU_XOR,
+  ALU_SUB
 	// Add more here
 };
 
@@ -64,6 +65,7 @@ enum alu_op {
 #define JEQ  0b01010101
 #define JNE  0b01010110
 #define XOR  0b10101011
+#define SUB  0b10100001
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations

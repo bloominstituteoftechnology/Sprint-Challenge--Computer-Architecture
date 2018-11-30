@@ -102,6 +102,8 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_XOR:
       cpu->registers[regA] ^= cpu->registers[regB];
       break;
+    case ALU_SUB:
+      cpu->registers[regA] -= cpu->registers[regB];
   }
   cpu->registers[regA] = cpu->registers[regA] & 0xFF;
 }
@@ -226,6 +228,8 @@ void cpu_run(struct cpu *cpu)
       case XOR:
         alu(cpu, ALU_XOR, operandA, operandB);
         break;
+      case SUB:
+        alu(cpu, ALU_SUB, operandA, operandB);
       default:
         printf("Command: %d\n", IR);
         printf("Unknown Command. Exiting...\n");
