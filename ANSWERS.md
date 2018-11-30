@@ -4,7 +4,7 @@
 
 
 2. Describe assembly language and machine language:
-
+    Assembly language is any low-level programming language that represents machine language in symbolic code such that machine-level instructions are easier to write in software development.
 
 * Convert `11001111` binary
 
