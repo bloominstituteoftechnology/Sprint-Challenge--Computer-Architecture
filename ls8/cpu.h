@@ -23,8 +23,8 @@ enum alu_op {
 #define PRN 0b01000111
 #define HLT 0b00000001
 #define MUL 0b10100010
-#define PUSH 01000101
-#define POP 01000110
+#define PUSH 0b01000101
+#define POP 0b01000110
 #define CMP 10100111
 #define JEQ 01010101
 #define JNE 01010110

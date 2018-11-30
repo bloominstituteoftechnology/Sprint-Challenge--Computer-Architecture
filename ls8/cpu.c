@@ -71,17 +71,16 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
+  unsigned char SP = cpu->registers[7];
 
   while (running) {
     unsigned char current_instruction = cpu_ram_read(cpu, cpu->PC);
     unsigned char operand1 = cpu_ram_read(cpu, cpu->PC+1);
     unsigned char operand2 = cpu_ram_read(cpu, cpu->PC+2);
-    unsigned char SP;
 
     switch(current_instruction){
       case LDI:
         cpu->registers[operand1] = operand2;
-        printf("Printing %d\n", cpu->registers[operand1]);
         cpu->PC = cpu->PC+3;
         break;
       case MUL:
@@ -90,14 +89,16 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->PC+2;
         break;
       case PUSH:
-        SP = find_SP(cpu);
+        SP = SP - 1;
         cpu_ram_write(cpu, SP, cpu->registers[operand1]);
+        // cpu->registers[operand1] = 0;
         cpu->PC = cpu->PC+2;
         break;
       case POP:
-        SP = find_SP(cpu) + 1;
-        cpu_ram_write(cpu, SP, cpu->registers[operand1]);
+        cpu->registers[operand1] = cpu_ram_read(cpu, SP);
+        cpu_ram_write(cpu, SP, 0);
         cpu->PC = cpu->PC+2;
+        SP = SP + 1;
       case PRN:
         printf("Printing %d\n", cpu->registers[operand1]);
         cpu->PC = cpu->PC+2;
