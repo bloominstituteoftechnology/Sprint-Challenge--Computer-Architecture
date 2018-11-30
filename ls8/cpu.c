@@ -146,19 +146,19 @@ void cpu_run(struct cpu *cpu)
           //false = 0;
         if(cpu->registers[operandA] == cpu->registers[operandB]){
           cpu->E_FLAG = 1;
-          printf("%d  == \n", cpu->registers[operandA]);
+          // printf("%d  == \n", cpu->registers[operandA]);
         }else{
           cpu->E_FLAG = 0; 
         }
         if (cpu->registers[operandA] > cpu->registers[operandB]){
-          printf("%d  > \n", cpu->registers[operandA]);
+          // printf("%d  > \n", cpu->registers[operandA]);
           cpu->GREATER_FLAG = 1;
         }else{
-           printf("%d  > 0 \n", cpu->registers[operandA]);
+          //  printf("%d  > 0 \n", cpu->registers[operandA]);
           cpu->GREATER_FLAG = 0; 
         }
         if (cpu->registers[operandA] < cpu->registers[operandB]){
-          printf("%d <\n", cpu->registers[operandA]);
+          // printf("%d <\n", cpu->registers[operandA]);
           cpu->LESS_FLAG = 1;
         }else{
           cpu->LESS_FLAG = 0;
@@ -183,7 +183,7 @@ void cpu_run(struct cpu *cpu)
       //register - operandA
       if(cpu->E_FLAG == 1){
         cpu->PC = cpu->registers[operandA];
-        printf("%d JEQ\n", cpu->registers[operandA]);
+        // printf("%d JEQ\n", cpu->registers[operandA]);
       }else{
         cpu->PC += 2; 
       }
@@ -198,14 +198,14 @@ void cpu_run(struct cpu *cpu)
 
       if(cpu->E_FLAG == 0){
         cpu->PC = cpu->registers[operandA];
-         printf("%d  JNE\n", cpu->registers[operandA]);
+        //  printf("%d  JNE\n", cpu->registers[operandA]);
       }else{
         cpu->PC += 2; 
       }
       break; 
 
       case HLT: 
-      printf("working-HLT");
+      printf("%d working-HLT\n", cpu->registers[operandA]);
         running = 0;
         cpu->PC++;
         break; 
