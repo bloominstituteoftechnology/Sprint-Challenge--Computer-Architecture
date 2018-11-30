@@ -1,0 +1,9 @@
+LS-8 PR:
+https://github.com/LambdaSchool/Computer-Architecture/pull/112
+
+Day2 checklist:
+https://github.com/LambdaSchool/Computer-Architecture/pull/112#issuecomment-442250237
+
+Day 3 checklist:
+
+
