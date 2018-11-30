@@ -68,21 +68,21 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
                 regist[regA] = regist[regA]%regist[regB];
                 break;
 
-        case ALU_CMP:
-                if (regist[regA] < regist[regB]){
-                  cpu->less = 1;
-                  cpu->greater = 0;
-                  cpu->equal = 0;
-                } else if(regist[regA] == regist[regB]){
-                  cpu->less = 0;
-                  cpu->greater = 0;
-                  cpu->equal = 1;
-                } else {
-                  cpu->less = 0;
-                  cpu->greater = 1;
-                  cpu->equal = 0;
-                }
-                break;
+        // case ALU_CMP:
+        //         if (regist[regA] < regist[regB]){
+        //           cpu->less = 1;
+        //           cpu->greater = 0;
+        //           cpu->equal = 0;
+        //         } else if(regist[regA] == regist[regB]){
+        //           cpu->less = 0;
+        //           cpu->greater = 0;
+        //           cpu->equal = 1;
+        //         } else {
+        //           cpu->less = 0;
+        //           cpu->greater = 1;
+        //           cpu->equal = 0;
+        //         }
+        //         break;
         }
 }
 
@@ -177,24 +177,34 @@ void cpu_run(struct cpu *cpu)
                         // shift = 0;
                         break;
 
+                // case CMP:
+                //         alu(cpu, ALU_CMP, operandA, operandB);
+                //         break;
+
                 case CMP:
-                        alu(cpu, ALU_CMP, operandA, operandB);
-                        break;
+                         if (cpu->regist[operandA] == cpu->regist[operandB]) {
+                           cpu->flag = 1;
+                         } else if (cpu->regist[operandA] > cpu->regist[operandB]) {
+                           cpu->flag = 2;
+                         } else {
+                           cpu->flag = 4;
+                         }
+                         break;
 
                 case JMP:
-                        regist[SP] = regist[SP -1];
+                        //regist[SP] = regist[SP -1];
                         shift = 0;
                         PC = regist[operandA];
                         break;
 
                 case JNE:
-                        if(cpu->equal == 0){
+                        if(cpu->flag != 1){
                           PC = regist[operandA];
                         }
                         break;
 
                 case JEQ:
-                        if(cpu->equal == 1){
+                        if(cpu->flag == 1){
                           PC = regist[operandA];
                         }
                         break;
@@ -218,9 +228,10 @@ void cpu_init(struct cpu *cpu)
         cpu->PC = 0x00;
         cpu->regist[SP] = 0xF4;
         // Compare flags:
-        cpu->equal = 0x00;
-        cpu->less = 0x00;
-        cpu->greater = 0x00;
+        // cpu->equal = 0x00;
+        // cpu->less = 0x00;
+        // cpu->greater = 0x00;
+        cpu->flag = 0x00;
         //cpu->ram = calloc(256, sizeof(unsigned char));
         // TODO: Zero registers and RAM
         memset(cpu->regist, 0, sizeof(cpu->regist));
