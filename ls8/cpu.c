@@ -199,6 +199,9 @@ void cpu_run(struct cpu *cpu)
           cpu->PC += (IR >> 6 & 3) + 1;
         }
         break;
+      case XOR:
+        cpu->registers[operandA] = cpu->registers[operandA] ^ cpu->registers[operandB];
+        break;
       default:
         printf("Command: %d\n", IR);
         printf("Unknown Command. Exiting...\n");
