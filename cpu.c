@@ -5,11 +5,8 @@
 
 #define DATA_LEN 6
 
-/*general processes:
-
+/*general
 accessing a value in a register:  cpu->registers[operandA]
-
-
 */
 
 /* stack pointer (SP) needs to be 
@@ -193,35 +190,41 @@ void cpu_run(struct cpu *cpu)
       // don't increment the PC because we have already set the PC value explicitly
       break;
   
-
-    //  CMP Compare the values in two registers.
+      //  CMP Compare the values in two registers.
       case CMP:
-    //  If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. 
+      //  If they are equal, set the Equal `E` flag to 1, otherwise set it to 0. 
       if (cpu->registers[operandA] == cpu->registers[operandB]){
         cpu->flags[0] = 1;
       }
-
-    // If registerA is less than registerB, set the Less-than `L` flag to 1, otherwise set it to 0.
+      // If registerA is less than registerB, set the Less-than `L` flag to 1, otherwise set it to 0.
       else if (cpu->registers[operandA] < cpu->registers[operandB]){
         cpu->flags[1] = 1;
       }
-
-    //If registerA is greater than registerB, set the Greater-than `G` flag to 1, otherwise set it to 0.
-      else if (cpu->registers[operandA] < cpu->registers[operandB]){
+      //If registerA is greater than registerB, set the Greater-than `G` flag to 1, otherwise set it to 0.
+      else if (cpu->registers[operandA] > cpu->registers[operandB]){
         cpu->flags[2] = 1;
       } 
+      cpu->PC += 3;
+      break;
+      
 
-    // JEQ - conditional jump
-    // If `equal` flag is set (true, 1), jump to the address stored in the given register.
-
+      // JEQ - conditional jump - jump when equal
+      case JEQ:
+      // If `equal` flag[0] is set (true, 1), jump to the address stored in the given register.
+      if (cpu->flags[0] == 1){
+        cpu->PC = cpu->registers[operandA];
+        }
+      break;
     
-    // JNE - conditional jump
-    // If `E` flag is clear (false, 0), jump to the address stored in the given register. 
-
-
-
+      // JNE - conditional jump - jump when not equal
+      case JNE:
+      // If `E` flag[0] is clear (false, 0), jump to the address stored in the given register. 
+      if (cpu->flags[0] == 0){
+        cpu->PC = cpu->registers[operandA];
+        }
+      break;
       }
-    // 4. Move the PC to the next instruction.
+      // 4. Move the PC to the next instruction.
   }
 }
 
@@ -236,6 +239,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Zero registers and RAM
   memset(cpu->ram, 0, sizeof(cpu->ram));
   memset(cpu->registers, 0, sizeof(cpu->registers));
+  memset(cpu->flags, 0, sizeof(cpu->flags));
 
   // Initialize stack pointer
   cpu->registers[SP] = 0xF4;
