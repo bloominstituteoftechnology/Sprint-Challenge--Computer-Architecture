@@ -143,13 +143,22 @@ void cpu_run(struct cpu *cpu)
       //   to 1, otherwise set it to 0.
 
         if(cpu->registers[operandA] == cpu->registers[operandB]){
-          cpu->FLAG = 1;
-        }else if (cpu->registers[operandA] > cpu->registers[operandB]){
-          cpu->FLAG = 1;
+          cpu->E_FLAG = 1;
         }else{
-          cpu->FLAG = 0;
+          cpu->E_FLAG = 0; 
+        }
+        if (cpu->registers[operandA] > cpu->registers[operandB]){
+          cpu->GREATER_FLAG = 1;
+        }else{
+          cpu->GREATER_FLAG = 0; 
+        }
+        if (cpu->registers[operandA] < cpu->registers[operandB]){
+          cpu->LESS_FLAG = 1;
+        }else{
+          cpu->LESS_FLAG = 0;
         }
         cpu->PC += 3; 
+        break;
       
       case JMP:
       // Jump to the address stored in the given register.
@@ -160,6 +169,24 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->registers[operandA]; 
         break; 
       
+      case JEQ:
+      // If `equal` flag is set (true), 
+      // jump to the address stored in the given register.
+      if(cpu->E_FLAG){
+        cpu->registers[operandA];
+      }else{
+        cpu->PC += 2; 
+      }
+      break; 
+      case JNE:
+        // If `E` flag is clear (false, 0),
+        // jump to the address stored in the given register.
+      if(!cpu->E_FLAG){
+        cpu->registers[operandA];
+      }else{
+        cpu->PC += 2; 
+      }
+      break; 
       case HLT: 
       // printf("working-HLT");
         running = 0;

@@ -2,7 +2,6 @@
 #define _CPU_H_
 
 
-
 // Holds all information about the CPU
 struct cpu {
   // TODO
@@ -13,7 +12,9 @@ struct cpu {
   // ram (array)
   unsigned char ram[256];
 
-  unsigned char FLAG;
+  unsigned char E_FLAG;
+  unsigned char GREATER_FLAG;
+  unsigned char LESS_FLAG;
 
 };
 
