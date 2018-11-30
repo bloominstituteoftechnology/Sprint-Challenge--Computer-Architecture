@@ -136,7 +136,7 @@ void cpu_run(struct cpu *cpu)
       case PRN:
       printf(" \n\n ....... PRN ...... \n");
       //print to the console the decimal integer value stored in given register
-      printf(" *** Printed value *** : %d\n", cpu->registers[operandA]);
+      printf(" -------------------------------------------------------Output: %d\n", cpu->registers[operandA]);
       cpu->PC += 2;
       break;
 
