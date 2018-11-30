@@ -62,22 +62,51 @@ Add the answers to `ANSWERS.md`.
 * Convert `11001111` binary
 
     to hex:
+    8 4 2 1 | 8 4 2 1
+    1 1 0 0 | 1 1 1 1
+    C       +       F
+    =
+    CF
 
     to decimal:
+    128 64 32 16 | 8 4 2 1
+    1    1  0  0 | 1 1 1 1
 
+    128+64      + 8+4+2+1 
+    = 
+    207
+        
 
 * Convert `4C` hex
 
     to binary:
+    4C = 4 |   84
+        0100 | 1100
+    =
+    01001100  
 
     to decimal:
+    128 64 32 16 | 8 4 2 1
+    0    1  0  0 | 1 1 0 0
 
+    64      + 8+4 
+    = 
+    76
 
 * Convert `68` decimal
 
     to binary:
+         64       +   4  = 68     
+       0  1  0  0 | 0 1 0 0
+     128 64 32 16 | 8 4 2 1
+    =
+    01000100
 
     to hex:
+    8 4 2 1 | 8 4 2 1
+    0 1 0 0 | 0 1 0 0
+    =
+    44
 
 ## Project Set Up
 
@@ -92,11 +121,11 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [X] Add the `CMP` instruction and `equal` flag to your LS-8.
 
-- [ ] Add the `JMP` instruction.
+- [X] Add the `JMP` instruction.
 
-- [ ] Add the `JEQ` and `JNE` instructions.
+- [X] Add the `JEQ` and `JNE` instructions.
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
