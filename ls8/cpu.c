@@ -182,6 +182,9 @@ void cpu_run(struct cpu *cpu)
           cpu->fl = cpu->fl | 0b00000010;
         }
         break;
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
+        break;
       default:
         printf("Command: %d\n", IR);
         printf("Unknown Command. Exiting...\n");
