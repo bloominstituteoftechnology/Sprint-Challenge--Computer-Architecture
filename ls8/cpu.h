@@ -37,7 +37,6 @@ enum alu_op {
 #define CALL 0b01010000
 #define RET 0b00010001
 #define ADD 0b10100000
-#define NOP 0b00000000
 #define JEQ 0b01010101
 #define JMP 0b01010100
 #define CMP 0b10100111
