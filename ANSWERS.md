@@ -10,20 +10,20 @@ Programs written in high-level languages are compiled down into lower level asse
 
 * Convert `11001111` binary
 
-    to hex:
+    to hex: CF
 
-    to decimal:
+    to decimal: 128 + 64 + 8 + 4 + 2 + 1 = 207
 
 
 * Convert `4C` hex
 
-    to binary:
+    to binary: 01001100
 
-    to decimal:
+    to decimal: 4 + 8 + 64 = 76
 
 
 * Convert `68` decimal
 
-    to binary:
+    to binary: 01000100 (64 + 4)
 
-    to hex:
+    to hex: 44
