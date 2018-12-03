@@ -70,12 +70,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 
     case ALU_CMP:
       if (reg[regA] < reg[regB]){
-        cpu->LESS_THAN_FLAG = 1;
+        cpu->LESS_THAN_FLAG = 4;
       } else {
         cpu->LESS_THAN_FLAG = 0;
       }
       if (reg[regA] > reg[regB]){
-        cpu->GREATER_THAN_FLAG = 1;
+        cpu->GREATER_THAN_FLAG = 2;
       } else {
         cpu->GREATER_THAN_FLAG = 0;
       }
