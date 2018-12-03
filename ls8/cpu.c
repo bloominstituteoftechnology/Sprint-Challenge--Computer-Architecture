@@ -122,36 +122,40 @@ void cpu_run(struct cpu *cpu)
         if (cpu->registers[operandA] == cpu->registers[operandB])
         {
             cpu->FL = 1;
-            cpu->PC += 3;
         }
         else if (cpu->registers[operandA] < cpu->registers[operandB])
         {
             cpu->FL = 4;
-            cpu->PC += 3;
         }
         else
         {
             cpu->FL = 2;
         }
+        cpu->PC += 3;
         break;
 
       case JMP:
         cpu->PC = cpu->registers[operandA];
-        cpu->PC += 2;
         break;
 
       case JEQ:
         if (cpu->FL == 1)
         {
             cpu->PC = cpu->registers[operandA];
+        }
+        else
+        {
             cpu->PC += 2;
         }
         break;
 
       case JNE:
-        if (cpu->FL == 0)
+        if ((cpu->FL == 4) || (cpu->FL == 2))
         {
             cpu->PC = cpu->registers[operandA];
+        }
+        else
+        {
             cpu->PC += 2;
         }
         break;
