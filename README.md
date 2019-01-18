@@ -5,9 +5,7 @@ the past week and apply them in a concrete project. This Sprint explored TOPIC.
 During this Sprint, you studied CPU components, number bases, bitwise
 operations, CPU stack, interrupts, and subroutiones.
 
-In your challenge this week, you will demonstrate proficiency by doing some
-number base conversions, answering some short questions about CPU functionality,
-and adding _conditional jumps_ to your LS-8 emulator.
+In your challenge this week, you will demonstrate proficiency by adding _conditional jumps_ to your LS-8 emulator as well as answering a few questions during a one-on-one session with a PM.
 
 ## Instructions
 
@@ -30,54 +28,11 @@ You have three hours to complete this challenge. Plan your time accordingly.
 ## Commits
 
 Commit your code regularly and meaningfully. This helps both you (in case you
-ever need to return to old code for any number of reasons and your project
-manager.
+ever need to return to old code for any number of reasons and your project manager.
 
 ## Description
 
-In this challenge, you will add _conditional jumps_ (AKA _conditional
-branching_) to your LS-8 emulator.
-
-Additionally, you'll perform some number base conversions, and answer some short
-questions about CPU functionality.
-
-## Self-Study/Essay Questions
-
-Demonstrate your understanding of this week's concepts by answering the
-following free-form questions. Add them to the `ANSWERS.md` file in this repo.
-
-You are expected to be able to answer all these questions. Your responses
-contribute to your Sprint Challenge grade.
-
-### Short Answer
-
-* Explain how the CPU provides concurrency or parallelism:
-
-* Describe assembly language and machine language:
-
-### Number Conversions
-
-Add the answers to `ANSWERS.md`.
-
-* Convert `11001111` binary
-
-    to hex:
-
-    to decimal:
-
-
-* Convert `4C` hex
-
-    to binary:
-
-    to decimal:
-
-
-* Convert `68` decimal
-
-    to binary:
-
-    to hex:
+In this code challenge, you will add _conditional jumps_ (AKA _conditional branching_) to your LS-8 emulator.
 
 ## Project Set Up
 
