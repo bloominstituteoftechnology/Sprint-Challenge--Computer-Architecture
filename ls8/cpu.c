@@ -14,6 +14,18 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index)
 void cpu_ram_write(struct cpu *cpu, unsigned char val, unsigned char index){
   cpu->ram[index] = val;
 }
+
+void push_handler(struct cpu *cpu, unsigned char val)
+{
+    cpu_ram_write(cpu,  val, --cpu->SP);
+}
+
+unsigned char pop_handler(struct cpu *cpu){
+  unsigned char val = cpu_ram_read(cpu, cpu->SP++);
+
+  return val;
+}
+
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
@@ -110,12 +122,20 @@ void cpu_run(struct cpu *cpu )
         break;
 
       case POP:
-        cpu->reg[operandA] = cpu_ram_read(cpu, cpu->SP++);
+        cpu->reg[operandA] = pop_handler(cpu);
         break;
 
       case PUSH:
-        cpu_ram_write(cpu,  cpu->reg[operandA], --cpu->SP);
+        push_handler(cpu, cpu->reg[operandA]);
         break;
+
+      case CALL:
+        break;
+
+      case RET:
+        break;
+
+      
 
       default:
         break;
