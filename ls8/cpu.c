@@ -94,11 +94,20 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_AND:
       cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
       break;
+    case ALU_NOT:
+      cpu->reg[regA] = ~(cpu->reg[regA]);
+      break;
     case ALU_OR:
       cpu->reg[regA] = cpu->reg[regA] | cpu->reg[regB];
       break;
     case ALU_XOR:
       cpu->reg[regA] = cpu->reg[regA] ^ cpu->reg[regB];
+      break;
+    case ALU_SHL:
+      cpu->reg[regA] = cpu->reg[regA] << cpu->reg[regB];
+      break;
+    case ALU_SHR:
+      cpu->reg[regA] = cpu->reg[regA] >> cpu->reg[regB];
       break;
   }
 }
@@ -159,11 +168,20 @@ void cpu_run(struct cpu *cpu)
       case AND:
         alu(cpu, ALU_AND, operand_a, operand_b);
         break;
+      case NOT:
+        alu(cpu, ALU_NOT, operand_a, '0');
+        break;
       case OR:
         alu(cpu, ALU_OR, operand_a, operand_b);
         break;
       case XOR:
         alu(cpu, ALU_XOR, operand_a, operand_b);
+        break;
+      case SHL:
+        alu(cpu, ALU_SHL, operand_a, operand_b);
+        break;
+      case SHR:
+        alu(cpu, ALU_SHR, operand_a, operand_b);
         break;
 
       // set PC counter

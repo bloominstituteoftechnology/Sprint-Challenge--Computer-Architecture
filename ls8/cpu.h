@@ -21,8 +21,11 @@ enum alu_op {
 	ALU_ADD,
 	ALU_CMP,
 	ALU_AND,
+	ALU_NOT,
 	ALU_OR,
 	ALU_XOR,
+	ALU_SHL,
+	ALU_SHR,
 };
 
 // Instructions
@@ -54,8 +57,11 @@ enum alu_op {
 #define MUL  0b10100010
 #define CMP  0b10100111
 #define AND  0b10101000
+#define NOT  0b01101001
 #define OR   0b10101010
 #define XOR  0b10101011
+#define SHL  0b10101100
+#define SHR  0b10101101
 
 // Function declarations
 
