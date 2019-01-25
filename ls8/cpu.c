@@ -109,6 +109,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 
       cpu->registers[regA] = num1 + num2;
       break;
+    case ALU_OR:
+      num1 = cpu->registers[regA];
+      num2 = cpu->registers[regB];
+      cpu->registers[regA] = num1 | num2;
+      break;
   }
 }
 
@@ -180,6 +185,10 @@ void cpu_run(struct cpu *cpu)
         break;
       case ADD:
         alu(cpu,ALU_ADD,operandA,operandB);
+        cpu_increment(cpu,num_ops);
+        break;
+      case OR:
+        alu(cpu,ALU_OR,operandA,operandB);
         cpu_increment(cpu,num_ops);
         break;
       case HLT:
