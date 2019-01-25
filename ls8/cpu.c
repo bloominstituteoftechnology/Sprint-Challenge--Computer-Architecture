@@ -127,7 +127,7 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_CMP, operand_a, operand_b);
         break;
 
-      // subroutines
+      // set PC counter
       case CALL:
         //should be refactored to call PUSH but with PC +1
         SP--;
@@ -141,6 +141,9 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu_ram_read(cpu, SP);
         SP++;
 
+        break;
+      case JMP:
+        cpu->PC = cpu->reg[operand_a];
         break;
 
 
