@@ -25,6 +25,7 @@ enum alu_op {
   ALU_INC,
   ALU_DEC,
   ALU_CMP,
+  ALU_AND,
 	// Add more here
 };
 
@@ -49,6 +50,8 @@ enum alu_op {
 #define JMP  0b01010100
 #define JEQ  0b01010101
 #define JNE  0b01010110
+
+#define AND  0b10101000
 
 // Function declarations
 

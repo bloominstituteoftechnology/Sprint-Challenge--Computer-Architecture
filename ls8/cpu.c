@@ -19,7 +19,7 @@ void cpu_load(struct cpu *cpu, char *filename)
 
   FILE *file = fopen(filename, "r"); // open the filename passed in argv
 
-  char data[64];
+  char data[128];
 
   if(file == NULL){
     fprintf(stderr, "No file with that filename was found.\n");
@@ -47,27 +47,7 @@ void cpu_load(struct cpu *cpu, char *filename)
   }
 
   fclose(file);
-
-
-  // TODO: Replace this with something less hard-coded
 }
-
-
-// char data[DATA_LEN] = {
-//     // From print8.ls8
-//     0b10000010, // LDI R0,8
-//     0b00000000, // set register 0
-//     0b00001000, // to value of 8
-//     0b01000111, // PRN R0
-//     0b00000000, // print register 0's value
-//     0b00000001  // HLT
-//   };
-
-//   int address = 0;
-
-//   for (int i = 0; i < DATA_LEN; i++) { // loads the instructions of the print8 function into ram
-//     cpu->ram[address++] = data[i];
-
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address)
 {
@@ -130,6 +110,20 @@ void cpu_jne(struct cpu *cpu, unsigned char operandA){
   }
 }
 
+long dec_to_bin(unsigned char value){
+  int rem;
+  long binary = 0, i = 1;
+  
+  while(value != 0){
+    rem = value % 2;
+    value = value/2;
+    binary = binary + (rem * i);
+    i = i*10;
+  }
+
+  return binary;
+}
+
 /**
  * ALU
  */
@@ -164,6 +158,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       // printf("ALU compare: %d, %d\n", regA, regB);
       cpu->FL = cpu_compare(regA, regB);
       // printf("FL set to %d\n", cpu->FL);
+      break;
+
+    case ALU_AND:
+      regA = regA & regB;
+      printf("A: %d, B: %d\n", dec_to_bin(regA), dec_to_bin(regB));
       break;
 
     default:
@@ -202,14 +201,8 @@ void cpu_run(struct cpu *cpu)
       // printf("Two operands, reg: %d, val: %d\n", operandA, operandB);
     } else if (num_operands == 1){
       operandA = cpu_ram_read(cpu, (cpu->PC+1) & 0xff);
-      // operandB = cpu_ram_read(cpu, (cpu->PC+1) & 0xff);
       // printf("One operand, %d\n", operandA);
     }
-    // } else {
-    //   printf("No operands.\n");
-    //   running = 0;
-    //   // halt process if no operands given
-    // }
     // 4. switch() over it to decide on a course of action.
 
     switch(instruction){
@@ -264,7 +257,6 @@ void cpu_run(struct cpu *cpu)
 
         // NEW:
         cpu->registers[operandA] = cpu_pop(cpu);
-
         break;
 
       // CALL wil push the address of the instruction after it on the stack, then move the PC
@@ -300,6 +292,10 @@ void cpu_run(struct cpu *cpu)
 
       case JNE:
         cpu_jne(cpu, operandA);
+        break;
+
+      case AND:
+        alu(cpu, ALU_AND, cpu->registers[operandA], cpu->registers[operandB]);
         break;
 
       default:
