@@ -78,6 +78,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->registers[regA] *= cpu->registers[regB];
       // cpu_ram_write(cpu,regA,cpu_ram_read(cpu,regA)*cpu_ram_read(cpu,regB));
       break;
+    case ALU_CMP:
+      ;
+      unsigned char num1 = cpu->registers[regA];
+      unsigned char num2 = cpu->registers[regB];
+
+      if (num1 == num2){
+        cpu->FL = 1;
+      }
+      if (num1 > num2){
+        cpu->FL = 2;
+      }
+      if (num1 < num2){
+        cpu->FL = 4;
+      }
+      printf("FLAG %d\n", cpu->FL);
+      break;
     
   }
 }
@@ -123,6 +139,8 @@ void cpu_run(struct cpu *cpu)
       case POP:
         cpu->registers[operandA] = cpu_pop(cpu);
         break;
+      case CMP:
+        alu(cpu,ALU_CMP,operandA,operandB);
       case HLT:
         return;
     }
@@ -139,6 +157,7 @@ void cpu_init(struct cpu *cpu)
 {
   //Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0;
   memset(cpu->registers,0,8);
   memset(cpu->ram,0,256);
   cpu->registers[SP] = 0xF4;
