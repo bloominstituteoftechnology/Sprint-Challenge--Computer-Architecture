@@ -76,7 +76,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       }else{
         cpu->flag = 00000001; 
       }
-
+      break;
     // TODO: implement more ALU ops
   }
 }
@@ -153,7 +153,19 @@ void cpu_run(struct cpu *cpu)
       case JMP: 
           cpu->PC = cpu->registeres[operandA]; 
           next_operands = 0; 
-          break;  
+          break;
+      case JEQ: // opcode to jump if the  equal flag is set to true
+          if(cpu->flag == 00000001){
+            cpu->PC = cpu->registeres[operandA]; 
+            next_operands = 0; 
+          }
+          break; 
+        case JNE: 
+          if(cpu->flag != 00000001){
+            cpu->PC = cpu->registeres[operandA]; 
+            next_operands = 0; 
+            break;
+          }
     }
     // 6. Move the PC to the next instruction.
     cpu->PC += next_operands;
