@@ -68,6 +68,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       case ALU_ADD:
       cpu->registeres[regA] += cpu->registeres[regB];
       break;
+      case ALU_CMP:
+      if(cpu->registeres[regA] > cpu->registeres[regB]){
+        cpu->flag = 00000010; 
+      }else if(cpu->registeres[regA] < cpu-> registeres[regB]){
+        cpu->flag = 00000100; 
+      }else{
+        cpu->flag = 00000001; 
+      }
 
     // TODO: implement more ALU ops
   }
@@ -138,6 +146,9 @@ void cpu_run(struct cpu *cpu)
         cpu-> PC = cpu-> ram[cpu-> registeres[7]]; 
         cpu-> registeres[7] += 1; 
         next_operands = 0; 
+        break; 
+      case CMP: 
+        alu(cpu, ALU_CMP, operandA, operandB); 
         break; 
     }
     // 6. Move the PC to the next instruction.
