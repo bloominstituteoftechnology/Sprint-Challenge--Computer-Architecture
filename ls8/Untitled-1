@@ -1,0 +1,56 @@
+    case CMP: //opcode to compare two registers
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+    case JMP: // opcode to jump to the address stored at the given register
+      cpu->PC = cpu->registers[operandA];
+      add_to_pc = 0;
+      break;
+    case JEQ: // opcode to jump if the  equal flag is set to true
+      if (cpu->flag == 00000001)
+      {
+        cpu->PC = cpu->registers[operandA];
+        add_to_pc = 0;
+      }
+      break;
+    case JNE:
+      if (cpu->flag != 00000001)
+      {
+        cpu->PC = cpu->registers[operandA];
+        add_to_pc = 0;
+      }
+      break;
+    }
+
+
+
+
+    void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
+{
+  switch (op)
+  {
+  case ALU_MUL:
+    cpu->registers[regA] *= cpu->registers[regB];
+    break;
+  case ALU_ADD:
+    cpu->registers[regA] += cpu->registers[regB];
+    break;
+  case ALU_CMP:
+    if (cpu->registers[regA] > cpu->registers[regB])
+    {
+      cpu->flag = 00000010;
+    }
+    else if (cpu->registers[regA] < cpu->registers[regB])
+    {
+      cpu->flag = 00000100;
+    }
+    else
+    {
+      cpu->flag = 00000001;
+    }
+  }
+}
+
+#define CMP 0b10100111
+#define JMP 0b01010100
+#define JEQ 0b01010101
+#define JNE 0b01010110
