@@ -52,17 +52,6 @@ void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char towrite
   cpu->ram[address] = towrite;
 }
 
-void cpu_push(struct cpu *cpu, unsigned char val)
-{
-  cpu->SP--;
-  cpu_ram_write(cpu, val, cpu->SP);
-}
-
-unsigned char cpu_pop(struct cpu *cpu)
-{
-  return cpu_ram_read(cpu, cpu->SP);
-}
-
 
 /**
  * ALU
@@ -73,6 +62,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_MUL:
       cpu->registers[regA] = cpu->registers[regA] * cpu->registers[regB];
       break;
+
+    case ALU_CMP:
+      if(cpu->registers[regA] == cpu->registers[regB])
+      {
+        cpu->FL = 00000001;
+      }
+      else if (cpu->registers[regA] > cpu->registers[regB])
+      {
+        cpu->FL = 00000010;
+      }
+      else if(cpu->registers[regA] < cpu->registers[regB])
+      {
+        cpu->FL = 00000100;
+      }
+      break;
+
 
     // TODO: implement more ALU ops
   }
@@ -106,12 +111,30 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_MUL, operandA, operandB);
         break;
       case PUSH:
-        cpu_push(cpu, cpu->registers[operandA]);
+        cpu->registers[7]--;
+        cpu->ram[cpu->registers[7]] = cpu->registers[operandA];
         break;
       case POP:
-        cpu->registers[operandA] = cpu_pop(cpu);
-        cpu->SP++;
+        cpu->registers[operandA] = cpu->ram[cpu->registers[7]];
+        cpu->registers[7]++;
         break;
+      case CMP:
+        alu(cpu, ALU_CMP, operandA, operandB);
+        break;
+      case JEQ:
+        if (cpu->FL == 00000001)
+        {
+          cpu->PC = cpu->registers[operandA];
+        }
+        cpu->FL = 00000000;
+      case JNE:
+        if (cpu->FL != 00000001)
+        {
+          cpu->PC = cpu->registers[operandA];
+        }
+        cpu->FL = 00000000;
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
     }
     cpu->PC += (IR >> 6) + 1;
     // TODO
@@ -133,5 +156,6 @@ void cpu_init(struct cpu *cpu)
   cpu->PC = 0;  
   cpu->registers = calloc(8, sizeof(unsigned char));
   cpu->ram = calloc(256, sizeof(unsigned char)); 
-  cpu->SP = 0xF4;
+  cpu->registers[7] = 0xF4;
+  cpu->FL = 00000000;
 }
