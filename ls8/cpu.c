@@ -170,6 +170,12 @@ void cpu_run(struct cpu *cpu)
           increment_PC = 0;
         }
         break;
+      case JNE:
+        if(FL&0b00000001 == 0b00000000){
+          cpu->PC = cpu->registers[operandA];
+          increment_PC = 0;
+        }
+        break;
       default:
         printf("Instruction %d not implemented.\n", IR);
         break;
