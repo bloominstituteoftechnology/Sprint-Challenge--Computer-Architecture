@@ -109,6 +109,25 @@ unsigned char cpu_compare(struct cpu *cpu, unsigned char valA, unsigned char val
   }
 }
 
+void cpu_jump(struct cpu *cpu, unsigned char operandA){
+  printf("Jumping to register %d\n", operandA);
+  cpu->PC = cpu->registers[operandA];
+}
+
+void cpu_jeq(struct cpu *cpu, unsigned char operandA){
+  if(cpu->FL == EQUAL){
+    printf("EQUAL true, jumping to register %d\n", operandA);
+    cpu_jump(cpu, operandA);
+  }
+}
+
+void cpu_jne(struct cpu *cpu, unsigned char operandA){
+  if(cpu->FL != EQUAL){
+    printf("EQUAL false, jumping to register %d\n", operandA);
+    cpu_jump(cpu, operandA);
+  }
+}
+
 /**
  * ALU
  */
@@ -265,6 +284,21 @@ void cpu_run(struct cpu *cpu)
       case CMP:
         // printf("Compare %d with %d.\n", cpu->registers[operandA], cpu->registers[operandB]);
         alu(cpu, ALU_CMP, cpu->registers[operandA], cpu->registers[operandB]);
+        break;
+
+      case JMP:
+        // jump the PC to the address stored in the given register
+        cpu_jump(cpu, operandA);
+        break;
+
+      case JEQ:
+        // jump the PC to the given register if cpu->FL is == EQUAL
+        cpu_jeq(cpu, operandA);
+        break;
+
+      case JNE:
+        cpu_jne(cpu, operandA);
+        break;
 
       default:
         break;

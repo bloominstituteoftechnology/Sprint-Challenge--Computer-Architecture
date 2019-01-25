@@ -46,6 +46,9 @@ enum alu_op {
 #define RET  0b00010001
 
 #define CMP  0b10100111
+#define JMP  0b01010100
+#define JEQ  0b01010101
+#define JNE  0b01010110
 
 // Function declarations
 
