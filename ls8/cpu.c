@@ -44,6 +44,10 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address){
 void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value){
   cpu->ram[address] = value;
 }
+
+void incrementPC(struct cpu *cpu, int num_operands){
+  cpu->PC = cpu->PC + num_operands + 1;
+}
 /**
  * Stack Method
  */
@@ -126,26 +130,37 @@ void cpu_run(struct cpu *cpu)
         // printf("LDI: %d @R%d\n", operandB, operandA );
         cpu->registers[operandA] = operandB;
         // cpu_ram_write(cpu,operandA,operandB);
+        incrementPC(cpu,num_ops);
         break;
       case PRN:
         printf("%d\n", cpu->registers[operandA]);
+        incrementPC(cpu,num_ops);
         break;
       case MUL:
         alu(cpu,ALU_MUL,operandA,operandB);
+        incrementPC(cpu,num_ops);
         break;
       case PUSH:
         cpu_push(cpu,cpu->registers[operandA]);
+        incrementPC(cpu,num_ops);
         break;
       case POP:
         cpu->registers[operandA] = cpu_pop(cpu);
+        incrementPC(cpu,num_ops);
         break;
       case CMP:
         alu(cpu,ALU_CMP,operandA,operandB);
+        incrementPC(cpu,num_ops);
+      case JMP:
+        printf("JMP op: %d add: %d\n",operandA, cpu->registers[operandA] );
+        printf("PC 1:%d\n", cpu->PC );
+        cpu->PC = cpu->registers[operandA];
+        printf("PC 2:%d\n", cpu->PC );
       case HLT:
         return;
     }
     // 6. Move the PC to the next instruction.
-    cpu->PC = cpu->PC + num_ops + 1;
+    // cpu->PC = cpu->PC + num_ops + 1;
   }
 }
 

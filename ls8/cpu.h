@@ -33,6 +33,7 @@ enum alu_op {
 #define PUSH 0b01000101
 #define POP  0b01000110
 #define CMP  0b10100111
+#define JMP  0b01010100
 
 // Function declarations
 
