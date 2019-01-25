@@ -61,10 +61,6 @@ void cpu_load(struct cpu *cpu, int argc, char *argv[])
     cpu->ram[++address] = instruction;
   }
 
-  for (int j = 0; j<35; j++){
-    printf("Line %d: %d\n", j, cpu->ram[j]);
-  }
-
 }
 
 /**
@@ -81,7 +77,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
     case ALU_ADD:
       // TODO
-      printf("alu_add\n");
+      // printf("alu_add\n");
 
       reg[regA] += valB;
       break;
@@ -112,12 +108,12 @@ void cpu_run(struct cpu *cpu )
     } else if (num_operands == 1) {
       operandA = cpu->ram[cpu->PC + 1];
     }
-    printf("\nSP: %4d, PC: %4d\n", cpu->SP, cpu->PC);
-    printf("memory slots~~~\n");
-    printf("%4d %4d %4d %4d %4d %4d\n", cpu->ram[246], cpu->ram[245], cpu->ram[244], cpu->ram[243], cpu->ram[242], cpu->ram[241]);
-    printf("register slots~~~\n");
-    printf("%4d %4d %4d %4d %4d %4d\n", cpu->reg[0], cpu->reg[1], cpu->reg[2], cpu->reg[cpu->SP-3], cpu->reg[cpu->SP-4], cpu->reg[cpu->SP-5]);
-    printf("instruction: %d\n", instruction);
+    // printf("\nSP: %4d, PC: %4d\n", cpu->SP, cpu->PC);
+    // printf("memory slots~~~      ");
+    // printf("%4d %4d %4d %4d %4d %4d\n", cpu->ram[246], cpu->ram[245], cpu->ram[244], cpu->ram[243], cpu->ram[242], cpu->ram[241]);
+    // printf("register slots~~~      ");
+    // printf("%4d %4d %4d %4d %4d %4d\n", cpu->reg[0], cpu->reg[1], cpu->reg[2], cpu->reg[3], cpu->reg[4], cpu->reg[5]);
+    // printf("instruction: %d\n", instruction);
 
     switch (instruction) {
       case HLT:
@@ -125,13 +121,13 @@ void cpu_run(struct cpu *cpu )
         break;
 
       case PRN:
-      printf("print\n");
+      // printf("print\n");
 
         printf("%d\n", cpu->reg[operandA]);
         break;
 
       case LDI:
-      printf("ldi\n");
+      // printf("ldi\n");
         cpu->reg[operandA] = operandB;
         break;
 
@@ -140,7 +136,7 @@ void cpu_run(struct cpu *cpu )
         break;
 
       case ADD:
-      printf("add\n");
+      // printf("add\n");
         alu(cpu, ALU_ADD, operandA, operandB);
         break;
 
@@ -153,13 +149,13 @@ void cpu_run(struct cpu *cpu )
         break;
 
       case CALL:
-      printf("call\n");
-        push_handler(cpu, cpu->PC + 2);
+      // printf("call\n");
+        push_handler(cpu, cpu->PC + 1);
         cpu->PC = cpu->reg[operandA];
         break;
 
       case RET:
-      printf("ret\n");
+      // printf("ret\n");
         cpu->PC = pop_handler(cpu);
         break;
 
