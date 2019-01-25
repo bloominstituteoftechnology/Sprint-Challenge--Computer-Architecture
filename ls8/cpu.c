@@ -53,7 +53,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 
   switch (op)
   {
-    if (cpu->reg[regA] > cpu->reg[regB])
+  case ALU_CMP:
+    if (cpu->reg[regA] == cpu->reg[regB])
+    {
+      cpu->FL = 0b001;
+    }
+    else if (cpu->reg[regA] > cpu->reg[regB])
     {
       cpu->FL = 0b00000010;
     }
@@ -66,6 +71,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_MUL:
     reg[regA] *= valB;
     break;
+
   case ALU_ADD:
     reg[regA] += valB;
     break;
@@ -93,10 +99,14 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu->reg[operandA];
       break;
 
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+
     case LDI:
       reg[operandA] = operandB;
       break;
-      
+
     case PRN:
       printf("%d\n", reg[operandA]);
       break;
