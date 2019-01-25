@@ -157,36 +157,26 @@ void cpu_run(struct cpu *cpu)
         cpu_increment(cpu,num_ops);
         break;
       case JMP:
-        // printf("JMP op: %d add: %d\n",operandA, cpu->registers[operandA] );
-        // printf("PC 1:%d\n", cpu->PC ); 
-        // cpu->PC = cpu->registers[operandA];
         cpu_jump(cpu,operandA);
-        // printf("PC 2:%d\n", cpu->PC );
         break;
       case JEQ:
-        // printf("JEQ\n");
         if (cpu->FL == 1){
           cpu_jump(cpu,operandA);
         } else {
-        cpu_increment(cpu,num_ops);
+        cpu_increment(cpu,num_ops); 
         }
         break;
       case JNE:
-        // printf("JNE\n");
         if (cpu->FL != 1){
           cpu_jump(cpu,operandA);
-          // printf("reg: %d add:%d\n", operandA, cpu->registers[operandA]);
-          // printf("new PC:%d\n", cpu->PC );
         } else {
           cpu_increment(cpu,num_ops);
         }
         break;
       case HLT:
-        // printf("HALT\n");
         return;
     }
     // 6. Move the PC to the next instruction.
-    // cpu->PC = cpu->PC + num_ops + 1;
   }
 }
 
