@@ -55,17 +55,23 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_CMP:
     if (cpu->reg[regA] == cpu->reg[regB])
     {
-      cpu->FL = cpu->FL | (1 << 0);
-    }
-    else if (cpu->reg[regA] > cpu->reg[regB])
-    {
-      cpu->FL = cpu->FL | (1 << 1);
+      cpu->FL = 0b00000001;
     }
     else
     {
-      cpu->FL = cpu->FL | (1 << 2);
+      cpu->FL = 0b00000000;
     }
     break;
+
+    // if (cpu->reg[regA] == cpu->reg[regB]) {
+    //   cpu->FL = (cpu->FL & ~7) | 1; // 0b00000001; // cpu->FL | (1 << 0)
+    // }
+    // else if (cpu->reg[regA] > cpu->reg[regB]) {
+    //   cpu->FL = (cpu->FL & ~7) | 2; // 0b00000010; //cpu->FL | (1 << 1)
+    // }
+    // else {
+    //   cpu->FL = (cpu->FL & ~7) | 4; // 0b00000100; // cpu->FL | (1 << 2)
+    // }
 
   default:
     break;
@@ -110,6 +116,9 @@ void cpu_run(struct cpu *cpu)
     case ADD:
       alu(cpu, ALU_ADD, operandA, operandB);
       break;
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
     case PUSH:
       cpu_push(cpu, cpu->reg[operandA]);
       break;
@@ -118,39 +127,35 @@ void cpu_run(struct cpu *cpu)
       break;
     case CALL:
       cpu_push(cpu, cpu->PC + 2);
-      cpu->PC = cpu->reg[operandA] - 1;
+      cpu->PC = cpu->reg[operandA];
       num_operands = 0;
       break;
     case RET:
       cpu->PC = cpu_pop(cpu);
       num_operands = 0;
       break;
-    case HLT:
-      running = 0;
-      break;
-    case CMP:
-      alu(cpu, ALU_CMP, operandA, operandB);
-      break;
     case JMP:
       cpu->PC = cpu->reg[operandA];
       num_operands = 0;
       break;
-    case JEQ: // opcode to jump if the  equal flag is set to true
-      if (cpu->FL == 00000001)
+    case JEQ:
+      if (cpu->FL == 0b00000001)
       {
         cpu->PC = cpu->reg[operandA];
         num_operands = 0;
       }
       break;
     case JNE:
-      if (cpu->FL != 00000001)
+      if (cpu->FL == 0b00000000)
       {
         cpu->PC = cpu->reg[operandA];
         num_operands = 0;
       }
       break;
+    case HLT:
+      running = 0;
+      break;
     }
-
     cpu->PC += num_operands;
   }
 }
