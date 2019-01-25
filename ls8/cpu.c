@@ -90,7 +90,16 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       } else {
         cpu->FL = 0b00000010;
       }
-    // TODO: implement more ALU ops
+      break;
+    case ALU_AND:
+      cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
+      break;
+    case ALU_OR:
+      cpu->reg[regA] = cpu->reg[regA] | cpu->reg[regB];
+      break;
+    case ALU_XOR:
+      cpu->reg[regA] = cpu->reg[regA] ^ cpu->reg[regB];
+      break;
   }
 }
 
@@ -147,6 +156,15 @@ void cpu_run(struct cpu *cpu)
       case CMP:
         alu(cpu, ALU_CMP, operand_a, operand_b);
         break;
+      case AND:
+        alu(cpu, ALU_AND, operand_a, operand_b);
+        break;
+      case OR:
+        alu(cpu, ALU_OR, operand_a, operand_b);
+        break;
+      case XOR:
+        alu(cpu, ALU_XOR, operand_a, operand_b);
+        break;
 
       // set PC counter
       case CALL:
@@ -160,12 +178,32 @@ void cpu_run(struct cpu *cpu)
         cpu_JMP(cpu, operand_a);
         break;
       case JEQ:
-        if (cpu->FL % 2 == 1) {
+        if (cpu->FL == 1) {
           cpu_JMP(cpu, operand_a);
         }
         break;
       case JNE:
         if (cpu->FL % 2 == 0) {
+          cpu_JMP(cpu, operand_a);
+        }
+        break;
+      case JGE:
+        if ((cpu->FL == 1) || (cpu->FL == 4)) {
+          cpu_JMP(cpu, operand_a);
+        }
+        break;
+      case JGT:
+        if (cpu->FL == 4) {
+          cpu_JMP(cpu, operand_a);
+        }
+        break;
+      case JLE:
+        if ((cpu->FL == 2) || (cpu->FL == 0)) {
+          cpu_JMP(cpu, operand_a);
+        }
+        break;
+      case JLT:
+        if (cpu->FL == 2) {
           cpu_JMP(cpu, operand_a);
         }
         break;
