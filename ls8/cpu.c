@@ -19,7 +19,7 @@ void cpu_load(struct cpu *cpu, char *filename)
 
   FILE *file = fopen(filename, "r"); // open the filename passed in argv
 
-  char *data[64];
+  char data[64];
 
   if(file == NULL){
     fprintf(stderr, "No file with that filename was found.\n");
@@ -95,7 +95,7 @@ unsigned char cpu_pop(struct cpu *cpu){ // abstract pop for use in RET
   return new_address;
 }
 
-unsigned char cpu_compare(struct cpu *cpu, unsigned char valA, unsigned char valB){
+unsigned char cpu_compare(unsigned char valA, unsigned char valB){
   unsigned char result;
   if(valA > valB){
     result = GREATER;
@@ -107,23 +107,25 @@ unsigned char cpu_compare(struct cpu *cpu, unsigned char valA, unsigned char val
     result = EQUAL;
     return result;
   }
+
+  return result = 0;
 }
 
 void cpu_jump(struct cpu *cpu, unsigned char operandA){
-  printf("Jumping to register %d\n", operandA);
-  cpu->PC = cpu->registers[operandA];
+  // printf("Jumping to register %d\n", operandA);
+  cpu->PC = cpu->registers[operandA] - 2;
 }
 
 void cpu_jeq(struct cpu *cpu, unsigned char operandA){
   if(cpu->FL == EQUAL){
-    printf("EQUAL true, jumping to register %d\n", operandA);
+    // printf("EQUAL true, jumping to register %d\n", operandA);
     cpu_jump(cpu, operandA);
   }
 }
 
 void cpu_jne(struct cpu *cpu, unsigned char operandA){
   if(cpu->FL != EQUAL){
-    printf("EQUAL false, jumping to register %d\n", operandA);
+    // printf("EQUAL false, jumping to register %d\n", operandA);
     cpu_jump(cpu, operandA);
   }
 }
@@ -159,9 +161,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
 
     case ALU_CMP:
-      printf("ALU compare: %d, %d\n", regA, regB);
-      cpu->FL = cpu_compare(cpu, regA, regB);
-      printf("FL set to %d\n", cpu->FL);
+      // printf("ALU compare: %d, %d\n", regA, regB);
+      cpu->FL = cpu_compare(regA, regB);
+      // printf("FL set to %d\n", cpu->FL);
       break;
 
     default:
@@ -213,13 +215,13 @@ void cpu_run(struct cpu *cpu)
     switch(instruction){
 
       case HLT:
-        printf("HLT received at line %d, ending program.\n", cpu->PC);
+        printf("\nHLT received at line %d, ending program.\n", cpu->PC);
         running = 0;
         break;
 
       case PRN:
       // print what is in the specified register
-        printf("%d\n", cpu->registers[operandA]);
+        printf("\nOUTPUT: %d\n", cpu->registers[operandA]);
         break;
 
       case LDI:
