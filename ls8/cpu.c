@@ -46,6 +46,24 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       cpu->reg[regA] += cpu->reg[regB];
       break;
+    case ALU_AND:
+      cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
+      break;
+    case ALU_OR:
+      cpu->reg[regA] = cpu->reg[regA] | cpu->reg[regB];
+      break;
+    case ALU_XOR:
+      cpu->reg[regA] = cpu->reg[regA] ^ cpu->reg[regB];
+      break;
+    case ALU_NOT:
+      cpu->reg[regA] = ~cpu->reg[regA];
+      break;
+    case ALU_SHL:
+      break;
+    case ALU_SHR:
+      break;
+    case ALU_MOD:
+      break;
     case ALU_CMP:
       if (cpu->reg[regA] == cpu->reg[regB]) {
         cpu->FL = 0b00000001;
@@ -53,8 +71,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       else {
         cpu->FL = 0b00000000;
       }
-      break;
-
       // if (cpu->reg[regA] == cpu->reg[regB]) {
       //   cpu->FL = (cpu->FL & ~7) | 1; // 0b00000001; // cpu->FL | (1 << 0)
       // }
@@ -64,6 +80,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       // else {
       //   cpu->FL = (cpu->FL & ~7) | 4; // 0b00000100; // cpu->FL | (1 << 2)
       // }
+      break;
 
     default:
       break;
@@ -106,6 +123,27 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
+        break;
+      case AND:
+        alu(cpu, ALU_AND, operandA, operandB);
+        break;
+      case OR:
+        alu(cpu, ALU_OR, operandA, operandB);
+        break;
+      case XOR:
+        alu(cpu, ALU_XOR, operandA, operandB);
+        break;
+      case NOT:
+        alu(cpu, ALU_NOT, operandA, operandB);
+        break;
+      case SHL:
+        alu(cpu, ALU_SHL, operandA, operandB);
+        break;
+      case SHR:
+        alu(cpu, ALU_SHR, operandA, operandB);
+        break;
+      case MOD:
+        alu(cpu, ALU_MOD, operandA, operandB);
         break;
       case PUSH:
         cpu_push(cpu, cpu->reg[operandA]);
