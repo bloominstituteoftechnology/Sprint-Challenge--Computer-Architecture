@@ -189,6 +189,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu_push(cpu, (regA >> regB));
       break;
 
+    case ALU_MOD:
+      cpu_push(cpu, (regA % regB));
+      break;
+      
+
     default:
       break;
 
@@ -349,6 +354,15 @@ void cpu_run(struct cpu *cpu)
         cpu->registers[operandA] = cpu_pop(cpu);
         break;
 
+      case MOD:
+        if(cpu->registers[operandB] != 0){
+          alu(cpu, ALU_MOD, cpu->registers[operandA], cpu->registers[operandB]);
+          cpu->registers[operandA] = cpu_pop(cpu);
+        } else {
+          fprintf(stderr, "Cannot divide by 0!\n");
+          running = 0;
+        }
+        break;
 
       default:
         break;
