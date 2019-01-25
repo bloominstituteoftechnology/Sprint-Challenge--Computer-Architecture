@@ -150,7 +150,7 @@ void cpu_run(struct cpu *cpu)
         break;
       
       case LDI:     
-        printf("cpu->PC[%i] LDI\n", cpu->PC);   
+        // printf("cpu->PC[%i] LDI\n", cpu->PC);   
         cpu->registers[operand_a] = operand_b;        
         break;
 
@@ -158,7 +158,7 @@ void cpu_run(struct cpu *cpu)
         // for (int i = 0; i < 8; i++) {
         //   printf("cpu->registers[%i]: %i\n", i, cpu->registers[i]);
         // }
-        printf("cpu->PC[%i] PRN\n", cpu->PC);
+        // printf("cpu->PC[%i] PRN\n", cpu->PC);
         printf("%d\n", cpu->registers[operand_a]);        
         break;
 
@@ -167,7 +167,7 @@ void cpu_run(struct cpu *cpu)
         break;
       
       case ADD:
-        printf("cpu->PC[%i]: add function invoked\n", cpu->PC);
+        // printf("cpu->PC[%i]: add function invoked\n", cpu->PC);
         alu(cpu, ALU_ADD, operand_a, operand_b);        
         break;
 
@@ -180,22 +180,22 @@ void cpu_run(struct cpu *cpu)
         break;
       
       case CALL:       
-        printf("cpu->PC[%i] hit\n", cpu->PC);        
+        // printf("cpu->PC[%i] hit\n", cpu->PC);        
         push(cpu, cpu->PC + 1);
         cpu->PC = cpu->registers[operand_a] - 1;              
         break;
 
       case RET:
-        printf("cpu->PC[%i] ret\n", cpu->PC);
+        // printf("cpu->PC[%i] ret\n", cpu->PC);
         cpu->PC = pop(cpu);        
         break;
 
       case JMP:
-        cpu->PC = cpu->registers[operand_a];
+        cpu->PC = cpu->registers[operand_a] -1;
         break;
 
       case CMP:
-        printf("cpu->PC[%i] CMP\n", cpu->PC);
+        // printf("cpu->PC[%i] CMP\n", cpu->PC);
         alu(cpu, ALU_CMP, operand_a, operand_b);        
         break;
 
