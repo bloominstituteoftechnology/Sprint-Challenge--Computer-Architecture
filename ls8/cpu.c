@@ -164,8 +164,14 @@ void cpu_run(struct cpu *cpu)
           FL = FL | 0b00000100;
         }
         break;
+      case JEQ:
+        if(FL&0b00000001 == 0b00000001){
+          cpu->PC = cpu->registers[operandA];
+          increment_PC = 0;
+        }
+        break;
       default:
-        printf("Instruction $d not implemented.\n", IR);
+        printf("Instruction %d not implemented.\n", IR);
         break;
     }
     // 5. Do whatever the instruction should do according to the spec.
