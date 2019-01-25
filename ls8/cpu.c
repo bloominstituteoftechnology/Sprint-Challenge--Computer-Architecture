@@ -129,6 +129,20 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu->registers[operandA];
       add_to_pc = 0;
       break;
+    case JEQ: // opcode to jump if the  equal flag is set to true
+      if (cpu->flag == 00000001)
+      {
+        cpu->PC = cpu->registers[operandA];
+        add_to_pc = 0;
+      }
+      break;
+    case JNE:
+      if (cpu->flag != 00000001)
+      {
+        cpu->PC = cpu->registers[operandA];
+        add_to_pc = 0;
+      }
+      break;
     }
 
     cpu->PC += add_to_pc;
