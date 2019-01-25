@@ -125,6 +125,10 @@ void cpu_run(struct cpu *cpu)
     case CMP: //opcode to compare two registers
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
+    case JMP: // opcode to jump to the address stored at the given register
+      cpu->PC = cpu->registers[operandA];
+      add_to_pc = 0;
+      break;
     }
 
     cpu->PC += add_to_pc;
