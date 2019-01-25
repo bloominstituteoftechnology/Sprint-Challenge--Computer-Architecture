@@ -92,8 +92,6 @@ void cpu_run(struct cpu *cpu )
     } else if (num_operands == 1) {
       operandA = cpu->ram[cpu->PC + 1];
     }
-    // 4. switch() over it to decide on a course of action.
-    // 5. Do whatever the instruction should do according to the spec.
     switch (instruction) {
       case HLT:
         running = 0;
@@ -104,7 +102,6 @@ void cpu_run(struct cpu *cpu )
         break;
 
       case LDI:
-        printf("ldi\n");
         cpu->reg[operandA] = operandB;
         break;
 
@@ -113,12 +110,11 @@ void cpu_run(struct cpu *cpu )
         break;
 
       case POP:
-        // cpu->reg[operandA] = cpu_ram_read(cpu, cpu->SP++);
-        cpu->reg[operandA] = cpu->ram[cpu->SP++];
+        cpu->reg[operandA] = cpu_ram_read(cpu, cpu->SP++);
         break;
 
       case PUSH:
-        cpu_ram_write(cpu, cpu->SP--, cpu->reg[operandA]);
+        cpu_ram_write(cpu,  cpu->reg[operandA], --cpu->SP);
         break;
 
       default:
