@@ -53,9 +53,9 @@ void cpu_load(struct cpu *cpu, int argc, char *argv[])
     char *ptr;
     unsigned char instruction = strtol(line, &ptr, 2);
 
-    // if (ptr == line) {
-    //   continue;
-    // }
+    if (ptr == line) {
+      continue;
+    }
 
     cpu->ram[++address] = instruction;
   }
@@ -115,6 +115,8 @@ void cpu_run(struct cpu *cpu )
     } else if (num_operands == 1) {
       operandA = cpu->ram[cpu->PC + 1];
     }
+
+    
     // printf("\nSP: %4d, PC: %4d\n", cpu->SP, cpu->PC);
     // printf("memory slots~~~      ");
     // printf("%4d %4d %4d %4d %4d %4d\n", cpu->ram[246], cpu->ram[245], cpu->ram[244], cpu->ram[243], cpu->ram[242], cpu->ram[241]);
