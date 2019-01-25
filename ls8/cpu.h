@@ -19,7 +19,6 @@ enum alu_op
 
 #define ADDR_PROGRAM_ENTRY 0x00
 #define ADDR_EMPTY_STACK 0xF4
-
 #define ADD 0b10100000
 #define CALL 0b01010000
 #define HLT 0b00000001
