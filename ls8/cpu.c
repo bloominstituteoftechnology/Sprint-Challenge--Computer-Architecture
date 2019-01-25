@@ -169,6 +169,10 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu_push(cpu, (regA | regB));
       break;
 
+    case ALU_XOR:
+      cpu_push(cpu, (regA ^ regB));
+      break;
+
     default:
       break;
 
@@ -306,6 +310,11 @@ void cpu_run(struct cpu *cpu)
       case OR:
         alu(cpu, ALU_OR, cpu->registers[operandA], cpu->registers[operandB]);
         // pop the bitwise answer off the stack
+        cpu->registers[operandA] = cpu_pop(cpu);
+        break;
+
+      case XOR:
+        alu(cpu, ALU_XOR, cpu->registers[operandA], cpu->registers[operandB]);
         cpu->registers[operandA] = cpu_pop(cpu);
         break;
 
