@@ -103,6 +103,17 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
+    case JNE:
+      if ((cpu->FL & 1) != 1)
+      {
+        cpu->PC = cpu->reg[operandA];
+      }
+      else
+      {
+        cpu->PC += 2;
+      }
+      break;
+
     case LDI:
       reg[operandA] = operandB;
       break;
