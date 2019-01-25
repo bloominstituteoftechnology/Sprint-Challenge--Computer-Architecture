@@ -112,7 +112,7 @@ void cpu_run(struct cpu *cpu)
         }
         break;
       case JEQ:
-        if (cpu->E == 1){
+        if (!(cpu->E == 0)){
           cpu->PC = cpu->reg[operandA] - 2;
         }
         break;
