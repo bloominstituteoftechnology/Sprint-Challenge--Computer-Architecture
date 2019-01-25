@@ -184,6 +184,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu_push(cpu, (regA << regB));
       break;
 
+    case ALU_SHR:
+      printf("%ld\n", dec_to_bin((regA >> regB)));
+      cpu_push(cpu, (regA >> regB));
+      break;
+
     default:
       break;
 
@@ -332,10 +337,18 @@ void cpu_run(struct cpu *cpu)
       case NOT:
         alu(cpu, ALU_NOT, cpu->registers[operandA], cpu->registers[operandB]);
         cpu->registers[operandA] = cpu_pop(cpu);
+        break;
 
       case SHL:
         alu(cpu, ALU_SHL, cpu->registers[operandA], cpu->registers[operandB]);
         cpu->registers[operandA] = cpu_pop(cpu);
+        break;
+
+      case SHR:
+        alu(cpu, ALU_SHR, cpu->registers[operandA], cpu->registers[operandB]);
+        cpu->registers[operandA] = cpu_pop(cpu);
+        break;
+
 
       default:
         break;
