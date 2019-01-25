@@ -26,8 +26,8 @@ void cpu_load(struct cpu *cpu)
   FILE *fp;
   char line[1024];
 
-  if ((fp = fopen("./sctest.ls8", "r")) == NULL) {
-    fprintf(stderr, "Cannot open sctest.ls8\n");
+  if ((fp = fopen("./sprint.ls8", "r")) == NULL) {
+    fprintf(stderr, "Cannot open sprint.ls8\n");
     exit(1);
   }
 
