@@ -4,12 +4,12 @@
 /**
  * Main
  */
-int main(int argc, char *argv[])
+int main(void)
 {
   struct cpu cpu;
 
   cpu_init(&cpu);
-//   cpu_load(&cpu);
+  cpu_load(&cpu);
   cpu_run(&cpu);
 
   return 0;
