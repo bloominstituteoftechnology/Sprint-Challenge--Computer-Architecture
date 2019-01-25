@@ -92,6 +92,7 @@ void cpu_run(struct cpu *cpu)
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     unsigned char IR = cpu->ram[cpu->PC];
+    unsigned char FL = 0;
     // 2. Figure out how many operands this next instruction requires
     unsigned int amount_of_operands = IR >> 6;
     // 3. Get the appropriate value(s) of the operands following this instruction
@@ -149,6 +150,18 @@ void cpu_run(struct cpu *cpu)
       case IRET:
         for(int i=6; i>=0; i--){
           cpu->registers[i] = cpu->ram[cpu->registers[7]++];
+        }
+        break;
+      case CMP:
+        FL = 0;
+        if(cpu->registers[operandA] == cpu->registers[operandB]){
+          FL = FL | 1;
+        }
+        if(cpu->registers[operandA] > cpu->registers[operandB]){
+          FL = FL | 0b00000010;
+        }
+        if(cpu->registers[operandA] < cpu->registers[operandB]){
+          FL = FL | 0b00000100;
         }
         break;
       default:

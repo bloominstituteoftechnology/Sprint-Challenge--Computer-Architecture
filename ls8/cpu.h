@@ -43,6 +43,7 @@ enum alu_op {
 #define JMP  0b01010100
 #define PRA  0b01001000
 #define IRET 0b00010011
+#define CMP  0b10100111
 
 // Function declarations
 
