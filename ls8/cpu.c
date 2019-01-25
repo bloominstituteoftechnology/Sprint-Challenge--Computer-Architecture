@@ -17,6 +17,27 @@ void cpu_ram_write(struct cpu *cpu, unsigned char value, unsigned char address)
   cpu->ram[address] = value;
 }
 
+/*
+  Helper functions
+*/
+void cpu_PUSH(struct cpu *cpu, unsigned char value_to_add)
+{
+  cpu->SP--;
+  cpu_ram_write(cpu, value_to_add, cpu->SP);
+}
+unsigned char cpu_POP(struct cpu *cpu)
+{
+  unsigned char return_value = cpu_ram_read(cpu, cpu->SP);
+  cpu->SP++;
+  return return_value;
+}
+
+void cpu_JMP(struct cpu *cpu, unsigned char new_address)
+{
+  // the PC has to be moved back by 2, since this is always called
+  // where there is one operand (destination) plus this instruction
+  cpu->PC = cpu->reg[new_address] - 2;
+}
 
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
@@ -82,7 +103,7 @@ void cpu_run(struct cpu *cpu)
 
   unsigned char operand_a;
   unsigned char operand_b;
-  unsigned char SP = cpu->reg[7];
+  cpu->SP = cpu->reg[7];
 
   while (running) {
     // 1. Get the value of the current instruction (in address PC).
@@ -107,13 +128,13 @@ void cpu_run(struct cpu *cpu)
       case PRN:
         printf("%d\n", cpu->reg[operand_a]);
         break;
+
+      // stack management
       case PUSH:
-        SP--;
-        cpu_ram_write(cpu, cpu->reg[operand_a], SP);
+        cpu_PUSH(cpu, cpu->reg[operand_a]);
         break;
       case POP:
-        cpu->reg[operand_a] = cpu_ram_read(cpu, SP);
-        SP++;
+        cpu->reg[operand_a] = cpu_POP(cpu);
         break;
 
       // ALU functions
@@ -129,35 +150,23 @@ void cpu_run(struct cpu *cpu)
 
       // set PC counter
       case CALL:
-        //should be refactored to call PUSH but with PC +1
-        SP--;
-        cpu_ram_write(cpu, cpu->PC+1, SP);
-
-        cpu->PC = cpu->reg[operand_a];
-        number_of_operands = -1; // this is to execute the instruction at the new PC
+        cpu_PUSH(cpu, cpu->PC+1);
+        cpu_JMP(cpu, operand_a);
         break;
       case RET:
-        // should be refactored to call POP except set the PC
-        cpu->PC = cpu_ram_read(cpu, SP);
-        SP++;
-
+        cpu->PC = cpu_POP(cpu);
         break;
       case JMP:
-        cpu->PC = cpu->reg[operand_a];
-        number_of_operands = -1;
+        cpu_JMP(cpu, operand_a);
         break;
       case JEQ:
         if (cpu->FL % 2 == 1) {
-          // refactor JMP command to use here
-          cpu->PC = cpu->reg[operand_a];
-          number_of_operands = -1;
+          cpu_JMP(cpu, operand_a);
         }
         break;
       case JNE:
         if (cpu->FL % 2 == 0) {
-          // refactor JMP command to use here
-          cpu->PC = cpu->reg[operand_a];
-          number_of_operands = -1;
+          cpu_JMP(cpu, operand_a);
         }
         break;
 
@@ -170,6 +179,7 @@ void cpu_run(struct cpu *cpu)
     }
     // 6. Move the PC to the next instruction.
     cpu->PC = cpu->PC + number_of_operands + 1;
+
   }
 }
 
@@ -186,4 +196,5 @@ void cpu_init(struct cpu *cpu)
 
   memset(cpu->reg, 0, 8);
   cpu->reg[7] = 0xF4;
+  // cpu->SP = reg[7];
 }

@@ -3,7 +3,6 @@
 
 // Holds all information about the CPU
 struct cpu {
-  // TODO
   // PC
 	unsigned char PC;
   // registers (array)
@@ -12,6 +11,8 @@ struct cpu {
 	unsigned char ram[256];
 	// flag register
 	unsigned char FL;
+	// stack pointer
+	unsigned char SP;
 };
 
 // ALU operations
