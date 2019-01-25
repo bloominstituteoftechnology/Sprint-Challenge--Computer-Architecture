@@ -40,7 +40,46 @@ void cpu_load(struct cpu *cpu, char *argv[])
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
   switch (op) {
-    
+      case ALU_MUL:
+      cpu->reg[regA] *= cpu->reg[regB];
+      break;
+    case ALU_ADD:
+      cpu->reg[regA] += cpu->reg[regB];
+      break;
+    case ALU_AND:
+      cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
+      break;
+    case ALU_OR:
+      cpu->reg[regA] = cpu->reg[regA] | cpu->reg[regB];
+      break;
+    case ALU_XOR:
+      cpu->reg[regA] = cpu->reg[regA] ^ cpu->reg[regB];
+      break;
+    case ALU_NOT:
+      cpu->reg[regA] = ~cpu->reg[regA];
+      break;
+    case ALU_SHL:
+      break;
+    case ALU_SHR:
+      break;
+    case ALU_MOD:
+      break;
+    case ALU_CMP:
+      if (cpu->reg[regA] == cpu->reg[regB]) {
+        cpu->FL = 0b00000001;
+      }
+      else {
+        cpu->FL = 0b00000000;
+      }
+      // if (cpu->reg[regA] == cpu->reg[regB]) {
+      //   cpu->FL = (cpu->FL & ~7) | 1; // 0b00000001; // cpu->FL | (1 << 0)
+      // }
+      // else if (cpu->reg[regA] > cpu->reg[regB]) {
+      //   cpu->FL = (cpu->FL & ~7) | 2; // 0b00000010; //cpu->FL | (1 << 1)
+      // }
+      // else {
+      //   cpu->FL = (cpu->FL & ~7) | 4; // 0b00000100; // cpu->FL | (1 << 2)
+      // }
       break;
 
     default:
