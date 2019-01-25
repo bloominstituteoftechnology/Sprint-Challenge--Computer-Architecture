@@ -90,6 +90,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       cpu->reg[regA] += cpu->reg[regB];
       break;
+    case ALU_ADDI:
+      cpu->reg[regA] += regB;
+      break;
     case ALU_AND:
       cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
       break;
@@ -177,6 +180,10 @@ void cpu_run(struct cpu *cpu)
       // 5. Do whatever the instruction should do according to the spec.
       case ADD:
         alu(cpu, ALU_ADD, operandA, operandB);
+        cpu->PC += num_operands + 1;
+        break;
+      case ADDI:
+        alu(cpu, ALU_ADDI, operandA, operandB);
         cpu->PC += num_operands + 1;
         break;
       case AND:

@@ -26,6 +26,7 @@ struct cpu {
 enum alu_op {
 	// Add more here
   ALU_ADD,
+  ALU_ADDI,
   ALU_AND,
   ALU_CMP,
   ALU_DEC,
@@ -48,6 +49,7 @@ enum alu_op {
 // TODO: more instructions here. These can be used in cpu_run().
 
 #define ADD  0b10100000
+#define ADDI 0b10100101
 #define AND  0b10101000
 #define CALL 0b01010000
 #define CMP  0b10100111
