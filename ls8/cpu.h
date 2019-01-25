@@ -29,6 +29,7 @@ enum alu_op {
   ALU_OR,
   ALU_XOR,
   ALU_NOT,
+  ALU_SHL,
 	// Add more here
 };
 
@@ -58,6 +59,7 @@ enum alu_op {
 #define OR   0b10101010
 #define XOR  0b10101011
 #define NOT  0b01101001
+#define SHL  0b10101100
 // Function declarations
 
 extern void cpu_load(struct cpu *cpu, char *filename); // add filename parameter to load function
