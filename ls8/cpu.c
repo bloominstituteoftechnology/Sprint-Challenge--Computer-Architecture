@@ -76,11 +76,14 @@ void cpu_load(struct cpu *cpu, char *filename)
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
   switch (op) {
+    case ALU_ADD:
+      cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
+      break;
     case ALU_MUL:
       cpu->reg[regA] = cpu->reg[regA] * cpu->reg[regB];
       break;
-    case ALU_ADD:
-      cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
+    case ALU_MOD:
+      cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
       break;
     case ALU_CMP:
       if (cpu->reg[regA] == cpu->reg[regB]) {
@@ -161,6 +164,15 @@ void cpu_run(struct cpu *cpu)
         break;
       case ADD:
         alu(cpu, ALU_ADD, operand_a, operand_b);
+        break;
+      case MOD:
+        if (operand_b == 0) {
+          printf("Cannot divide by zero. Halting -->|\n");
+          // HLT instruction; refactor?
+          running = 0;
+          break;
+        }
+        alu(cpu, ALU_MOD, operand_a, operand_b);
         break;
       case CMP:
         alu(cpu, ALU_CMP, operand_a, operand_b);

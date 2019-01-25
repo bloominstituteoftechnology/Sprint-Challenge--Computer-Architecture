@@ -17,8 +17,9 @@ struct cpu {
 
 // ALU operations
 enum alu_op {
-	ALU_MUL,
 	ALU_ADD,
+	ALU_MUL,
+	ALU_MOD,
 	ALU_CMP,
 	ALU_AND,
 	ALU_NOT,
@@ -55,6 +56,7 @@ enum alu_op {
 // ALU Instructions
 #define ADD  0b10100000
 #define MUL  0b10100010
+#define MOD  0b10100100
 #define CMP  0b10100111
 #define AND  0b10101000
 #define NOT  0b01101001
