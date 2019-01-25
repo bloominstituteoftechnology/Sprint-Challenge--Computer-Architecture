@@ -20,47 +20,25 @@ void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value)
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
-// void cpu_load(struct cpu *cpu)
-// {
-//   char data[DATA_LEN] = {
-//     // From print8.ls8
-//     0b10000010, // LDI R0,8
-//     0b00000000,
-//     0b00001000,
-//     0b01000111, // PRN R0
-//     0b00000000,
-//     0b00000001  // HLT
-//   };
 
-//   int address = 0;
-
-//   for (int i = 0; i < DATA_LEN; i++) {
-//     cpu->ram[address++] = data[i];
-//   }
-  // TODO: Replace this with something less hard-coded
-// }
-
-void cpu_load(struct cpu *cpu, void *argv[])
+void cpu_load(struct cpu *cpu, char *argv[])
 {
-    FILE *fp;
-    char data[1024];
-    int address = 0;
-    fp =fopen(argv[1], "r");
-
-    if(!fp) {
-        printf("Error opening file\n");
-        exit(1);
+  FILE *fp;
+  char data[1024];
+  unsigned char address=0;
+  fp=fopen(argv[1], "r");
+  if(!fp){
+    printf("Error opening file \n");
+    exit(1);
+  }
+  while(fgets(data, sizeof data, fp) !=NULL){
+    unsigned char byte = strtol(data, NULL, 2);
+    if (fp == NULL){
+      continue;
     }
-
-    while(fgets(data, sizeof data, fp) != NULL) {
-        char *endptr;
-        unsigned char byte = strtol(data, &endptr, 2);
-        if (endptr==data){
-            continue;
-        }
-        cpu->ram[address++] = byte;
-    }
-    fclose(fp);
+    cpu->ram[address++]=byte;
+  }
+  fclose(fp);
 }
 
 
@@ -122,6 +100,13 @@ void cpu_run(struct cpu *cpu)
         case MUL:
             alu(cpu, ALU_MUL, param1, param2);
             break;
+        case CMP:
+            continue;
+        case JEQ:
+            continue;
+        case JNE:
+            continue;
+        
     }
     // cpu->PC += pc_change;
   }
