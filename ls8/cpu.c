@@ -125,14 +125,14 @@ void cpu_run(struct cpu *cpu)
       case JEQ:
         if (cpu->FL == 0b00000001)
         {
-          cpu->PC += operandA;
+          cpu->PC += operandA + (IR >> 6) + 1;
         }
         cpu->FL = 0b00000000;
         break;
       case JNE:
         if (cpu->FL != 0b00000001)
         {
-          cpu->PC += operandA;
+          cpu->PC += operandA + (IR >> 6) + 1;
         }
         cpu->FL = 0b00000000;
         break;
