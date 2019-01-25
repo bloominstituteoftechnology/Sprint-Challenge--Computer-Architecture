@@ -44,10 +44,14 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address){
 void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value){
   cpu->ram[address] = value;
 }
-
-void incrementPC(struct cpu *cpu, int num_operands){
+void cpu_jump(struct cpu *cpu, unsigned char registerA){
+  cpu->PC = cpu->registers[registerA];
+}
+void cpu_increment(struct cpu *cpu, int num_operands){
   cpu->PC = cpu->PC + num_operands + 1;
 }
+
+
 /**
  * Stack Method
  */
@@ -77,15 +81,16 @@ unsigned char cpu_pop(struct cpu *cpu){
  */
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
+  unsigned char num1, num2;
+
   switch (op) {
     case ALU_MUL:
       cpu->registers[regA] *= cpu->registers[regB];
       // cpu_ram_write(cpu,regA,cpu_ram_read(cpu,regA)*cpu_ram_read(cpu,regB));
       break;
     case ALU_CMP:
-      ;
-      unsigned char num1 = cpu->registers[regA];
-      unsigned char num2 = cpu->registers[regB];
+      num1 = cpu->registers[regA];
+      num2 = cpu->registers[regB];
 
       if (num1 == num2){
         cpu->FL = 1;
@@ -96,7 +101,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       if (num1 < num2){
         cpu->FL = 4;
       }
-      printf("FLAG %d\n", cpu->FL);
+      // printf("FLAG %d\n", cpu->FL);
       break;
     
   }
@@ -129,34 +134,55 @@ void cpu_run(struct cpu *cpu)
       case LDI:
         // printf("LDI: %d @R%d\n", operandB, operandA );
         cpu->registers[operandA] = operandB;
-        // cpu_ram_write(cpu,operandA,operandB);
-        incrementPC(cpu,num_ops);
+        cpu_increment(cpu,num_ops);
         break;
       case PRN:
         printf("%d\n", cpu->registers[operandA]);
-        incrementPC(cpu,num_ops);
+        cpu_increment(cpu,num_ops);
         break;
       case MUL:
         alu(cpu,ALU_MUL,operandA,operandB);
-        incrementPC(cpu,num_ops);
+        cpu_increment(cpu,num_ops);
         break;
       case PUSH:
         cpu_push(cpu,cpu->registers[operandA]);
-        incrementPC(cpu,num_ops);
+        cpu_increment(cpu,num_ops);
         break;
       case POP:
         cpu->registers[operandA] = cpu_pop(cpu);
-        incrementPC(cpu,num_ops);
+        cpu_increment(cpu,num_ops);
         break;
       case CMP:
         alu(cpu,ALU_CMP,operandA,operandB);
-        incrementPC(cpu,num_ops);
+        cpu_increment(cpu,num_ops);
+        break;
       case JMP:
-        printf("JMP op: %d add: %d\n",operandA, cpu->registers[operandA] );
-        printf("PC 1:%d\n", cpu->PC );
-        cpu->PC = cpu->registers[operandA];
-        printf("PC 2:%d\n", cpu->PC );
+        // printf("JMP op: %d add: %d\n",operandA, cpu->registers[operandA] );
+        // printf("PC 1:%d\n", cpu->PC ); 
+        // cpu->PC = cpu->registers[operandA];
+        cpu_jump(cpu,operandA);
+        // printf("PC 2:%d\n", cpu->PC );
+        break;
+      case JEQ:
+        // printf("JEQ\n");
+        if (cpu->FL == 1){
+          cpu_jump(cpu,operandA);
+        } else {
+        cpu_increment(cpu,num_ops);
+        }
+        break;
+      case JNE:
+        // printf("JNE\n");
+        if (cpu->FL != 1){
+          cpu_jump(cpu,operandA);
+          // printf("reg: %d add:%d\n", operandA, cpu->registers[operandA]);
+          // printf("new PC:%d\n", cpu->PC );
+        } else {
+          cpu_increment(cpu,num_ops);
+        }
+        break;
       case HLT:
+        // printf("HALT\n");
         return;
     }
     // 6. Move the PC to the next instruction.
