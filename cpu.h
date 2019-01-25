@@ -17,26 +17,6 @@ struct cpu {
 	#define ADDR_PROGRAM_ENTRY 0x00 //when the program is loading
 	#define ADDR_EMPTY_STACK 0XF4		//when SP is on the empty stack
 
- // Inventory what is here
- // Implement struct cpu in cpu.h
- // Add RAM functions cpu_ram_read and cpu_ram_write
- // Implement cpu_init()
- // Implement the core of cpu_run()
- // Implement the HLT instruction handler
- // Add the LDI instruction
- // Add the PRN instruction
-
-// ALU operations
-// enum alu_op {
-// 	ALU_MUL
-// 	// Add more here
-// };
-
-// Instructions
-
-// These use binary literals. If these aren't available with your compiler, hex
-// literals should be used.
-
 #define LDI  0b10000010
 #define HLT  0b00000001
 #define PRN  0b01000111
