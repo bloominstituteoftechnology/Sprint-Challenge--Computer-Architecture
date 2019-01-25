@@ -89,9 +89,14 @@ void cpu_run(struct cpu *cpu)
 
     switch (IR)
     {
+    case JMP:
+      cpu->PC = cpu->reg[operandA];
+      break;
+
     case LDI:
       reg[operandA] = operandB;
       break;
+      
     case PRN:
       printf("%d\n", reg[operandA]);
       break;
