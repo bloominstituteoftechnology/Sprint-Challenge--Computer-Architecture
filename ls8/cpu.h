@@ -17,7 +17,8 @@ struct cpu {
 // ALU operations
 enum alu_op {
 	ALU_MUL,
-	ALU_CMP
+	ALU_CMP,
+	ALU_ADD
 	// Add more here
 };
 
@@ -36,6 +37,7 @@ enum alu_op {
 #define JMP  0b01010100
 #define JEQ	 0b01010101
 #define JNE  0b01010110
+#define ADD  0b10100000
 
 // Function declarations
 
