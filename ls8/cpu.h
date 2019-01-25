@@ -55,6 +55,7 @@ enum alu_op {
 #define JNE 0b01010110
 
 #define FL_EQUAL 1
+#define FL_NOT_EQUAL 0
 
 
 // TODO: more instructions here. These can be used in cpu_run().
@@ -66,3 +67,13 @@ extern void cpu_init(struct cpu *cpu);
 extern void cpu_run(struct cpu *cpu);
 
 #endif
+
+
+/*
+0xA0
+
+A = 10 ==> 1010
+0 = 0 ==> 0000
+
+result : 1010 0000
+*/

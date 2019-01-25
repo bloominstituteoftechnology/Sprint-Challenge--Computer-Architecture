@@ -104,8 +104,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 
     case ALU_CMP:
       if (cpu->registers[regA] == cpu->registers[regB]) {
-        cpu->FL = FL_EQUAL;
-      }            
+        cpu->FL = 1;
+      } else if (cpu->registers[regA] > cpu->registers[regB]) {
+        cpu->FL = 2;
+      } else {
+        cpu->FL = 4;
+      }
       break;
     
   }
@@ -145,7 +149,8 @@ void cpu_run(struct cpu *cpu)
         running = 0;
         break;
       
-      case LDI:        
+      case LDI:     
+        printf("cpu->PC[%i] LDI\n", cpu->PC);   
         cpu->registers[operand_a] = operand_b;        
         break;
 
@@ -153,6 +158,7 @@ void cpu_run(struct cpu *cpu)
         // for (int i = 0; i < 8; i++) {
         //   printf("cpu->registers[%i]: %i\n", i, cpu->registers[i]);
         // }
+        printf("cpu->PC[%i] PRN\n", cpu->PC);
         printf("%d\n", cpu->registers[operand_a]);        
         break;
 
@@ -189,24 +195,22 @@ void cpu_run(struct cpu *cpu)
         break;
 
       case CMP:
-        alu(cpu, ALU_CMP, operand_a, operand_b);
+        printf("cpu->PC[%i] CMP\n", cpu->PC);
+        alu(cpu, ALU_CMP, operand_a, operand_b);        
         break;
 
       case JEQ:
-        printf("cpu->PC[%i] JEQ\n", cpu->PC);
-        if (cpu->FL == FL_EQUAL) {
-          cpu->PC = cpu->registers[operand_a];
+        if (cpu->FL == 1) {
+          cpu->PC = cpu->registers[operand_a] - 1;
         }
         break;
+                       
 
       case JNE:
-        printf("cpu->PC[%i] JNE\n", cpu->PC);
-        if (cpu->FL != FL_EQUAL) {
-          cpu->PC = cpu->registers[operand_a];
-        } else {
-          cpu->PC += 2;
+        if (cpu->FL != 1) {
+          cpu->PC = cpu->registers[operand_a] - 1;
         }
-        break;
+        break;        
       
 
       
