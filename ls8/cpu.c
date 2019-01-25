@@ -76,10 +76,9 @@ void cpu_run(struct cpu *cpu)
   while (running) {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
-    unsigned char current = cpu_ram_read(cpu, cpu->PC);
+    unsigned char current =cpu_ram_read(cpu, cpu->PC);
     unsigned char param1 = cpu_ram_read(cpu, cpu->PC+1);
     unsigned char param2 = cpu_ram_read(cpu, cpu->PC+2); 
-    int pc_increment=(current>>6)+1;
     // 2. Figure out how many operands this next instruction requires
     // 3. Get the appropriate value(s) of the operands following this instruction
     // 4. switch() over it to decide on a course of action.
@@ -87,6 +86,7 @@ void cpu_run(struct cpu *cpu)
     // 6. Move the PC to the next instruction.
 
     // LDI, PRN, MUL, ADD
+    int pc_increment = (current>>6) +1;
     switch(current) {
         case LDI:
             cpu->registers[param1] = param2;
@@ -100,8 +100,37 @@ void cpu_run(struct cpu *cpu)
         case MUL:
             alu(cpu, ALU_MUL, param1, param2);
             break;
+        case ADD:
+            alu(cpu, ALU_ADD, param1, param2);
+            break;
         case CMP:
-            continue;
+            if(cpu->registers[param1] == cpu->registers[param2]) {
+                cpu->FL =1;
+            } else if (cpu->registers[param1] > cpu->registers[param2]) {
+                cpu->FL = 2;
+            } else {
+                cpu->FL =4;
+            }
+            break;
+        case PUSH:
+            cpu_push(cpu, cpu->registers[param1]);
+            break;
+        case POP:
+            cpu->registers[param1] = cpu_pop(cpu);
+            break;
+        case CALL:
+            cpu_push(cpu, cpu->PC+2);
+            cpu->PC=cpu->registers[param1];
+            pc_increment =0;
+            break;
+        case RET:
+            cpu->PC = cpu_pop(cpu);
+            pc_increment=0;
+            break;
+        case ST:
+            cpu->registers[param1] =param2;
+            pc_increment++ ;
+            break;
         case JEQ:
             continue;
         case JNE:
