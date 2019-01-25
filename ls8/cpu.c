@@ -103,15 +103,6 @@ void cpu_run(struct cpu *cpu)
         case ADD:
             alu(cpu, ALU_ADD, param1, param2);
             break;
-        case CMP:
-            if(cpu->registers[param1] == cpu->registers[param2]) {
-                cpu->FL =1;
-            } else if (cpu->registers[param1] > cpu->registers[param2]) {
-                cpu->FL = 2;
-            } else {
-                cpu->FL =4;
-            }
-            break;
         case PUSH:
             cpu_push(cpu, cpu->registers[param1]);
             break;
@@ -131,10 +122,25 @@ void cpu_run(struct cpu *cpu)
             cpu->registers[param1] =param2;
             pc_increment++ ;
             break;
+        case CMP:
+            if(cpu->registers[param1] == cpu->registers[param2]) {
+                cpu->FL =1;
+            } else if (cpu->registers[param1] > cpu->registers[param2]) {
+                cpu->FL = 2;
+            } else {
+                cpu->FL =4;
+            }
+            break;
+        case JMP:
+            cpu->PC = cpu->registers[param1];
+            pc_increment = 0;
+            break;
         case JEQ:
-            continue;
+            
+            break;
         case JNE:
-            continue;
+            break;
+
         
     }
     // cpu->PC += pc_change;
