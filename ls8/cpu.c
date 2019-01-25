@@ -149,7 +149,11 @@ void cpu_run(struct cpu *cpu)
         break; 
       case CMP: 
         alu(cpu, ALU_CMP, operandA, operandB); 
-        break; 
+        break;
+      case JMP: 
+          cpu->PC = cpu->registeres[operandA]; 
+          next_operands = 0; 
+          break;  
     }
     // 6. Move the PC to the next instruction.
     cpu->PC += next_operands;
