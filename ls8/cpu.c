@@ -6,6 +6,9 @@
 
 #define DATA_LEN 6
 #define SP 7
+#define LESS 00000100
+#define GREATER 00000010
+#define EQUAL 00000001
 
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
@@ -92,6 +95,20 @@ unsigned char cpu_pop(struct cpu *cpu){ // abstract pop for use in RET
   return new_address;
 }
 
+unsigned char cpu_compare(struct cpu *cpu, unsigned char valA, unsigned char valB){
+  unsigned char result;
+  if(valA > valB){
+    result = GREATER;
+    return result;
+  } else if (valA < valB){
+    result = LESS;
+    return result;
+  } else if(valA == valB){
+    result = EQUAL;
+    return result;
+  }
+}
+
 /**
  * ALU
  */
@@ -120,6 +137,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
 
     case ALU_DEC:
+      break;
+
+    case ALU_CMP:
+      printf("ALU compare: %d, %d\n", regA, regB);
+      cpu->FL = cpu_compare(cpu, regA, regB);
+      printf("FL set to %d\n", cpu->FL);
       break;
 
     default:
@@ -238,6 +261,10 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu_pop(cpu);
         // printf("PC is now set to %d.\n", cpu->PC);
         break;
+
+      case CMP:
+        // printf("Compare %d with %d.\n", cpu->registers[operandA], cpu->registers[operandB]);
+        alu(cpu, ALU_CMP, cpu->registers[operandA], cpu->registers[operandB]);
 
       default:
         break;

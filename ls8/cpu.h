@@ -11,6 +11,8 @@ struct cpu {
   unsigned char registers[8]; // stores the values of the current process operands
   unsigned char ram[256]; // stores memory to be accesses by the program
   unsigned char FL; // holds flag information
+
+  // FL bits: 00000LGE where L = less than, G greater than, and E equal
   
 };
 
@@ -22,6 +24,7 @@ enum alu_op {
   ALU_DIV,
   ALU_INC,
   ALU_DEC,
+  ALU_CMP,
 	// Add more here
 };
 
@@ -41,6 +44,8 @@ enum alu_op {
 
 #define CALL 0b01010000
 #define RET  0b00010001
+
+#define CMP  0b10100111
 
 // Function declarations
 
