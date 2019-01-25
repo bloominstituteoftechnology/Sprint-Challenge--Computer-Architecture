@@ -66,6 +66,11 @@ unsigned char cpu_pop(struct cpu *cpu) {
     return ret;
 }
 
+void cpu_push(struct cpu *cpu, unsigned char val) {
+    cpu->registers[SP]--;
+    cpu->ram[cpu->registers[SP]] = val;
+}
+
 /**
  * Run the CPU
  */
@@ -136,14 +141,21 @@ void cpu_run(struct cpu *cpu)
             pc_increment = 0;
             break;
         case JEQ:
-            
+            if(cpu->FL == 1) {
+                cpu->PC = cpu->registers[param1];
+                pc_increment = 0;
+            }
             break;
         case JNE:
+            if(cpu->FL != 1) {
+                cpu->PC = cpu->registers[param1];
+                pc_increment = 0;
+            }
             break;
 
         
     }
-    // cpu->PC += pc_change;
+    cpu->PC += pc_increment;
   }
 }
 
