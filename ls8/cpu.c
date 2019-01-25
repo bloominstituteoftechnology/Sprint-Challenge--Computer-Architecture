@@ -144,8 +144,22 @@ void cpu_run(struct cpu *cpu)
         break;
       case JMP:
         cpu->PC = cpu->reg[operand_a];
+        number_of_operands = -1;
         break;
-
+      case JEQ:
+        if (cpu->FL % 2 == 1) {
+          // refactor JMP command to use here
+          cpu->PC = cpu->reg[operand_a];
+          number_of_operands = -1;
+        }
+        break;
+      case JNE:
+        if (cpu->FL % 2 == 0) {
+          // refactor JMP command to use here
+          cpu->PC = cpu->reg[operand_a];
+          number_of_operands = -1;
+        }
+        break;
 
       // halt
       case HLT:
