@@ -161,8 +161,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
 
     case ALU_AND:
-      regA = regA & regB;
-      printf("A: %d, B: %d\n", dec_to_bin(regA), dec_to_bin(regB));
+      cpu_push(cpu, (regA & regB));
+      break;
+
+    case ALU_OR:
+    // push the bitwise operation answer to the stack
+      cpu_push(cpu, (regA | regB));
       break;
 
     default:
@@ -296,6 +300,13 @@ void cpu_run(struct cpu *cpu)
 
       case AND:
         alu(cpu, ALU_AND, cpu->registers[operandA], cpu->registers[operandB]);
+        cpu->registers[operandA] = cpu_pop(cpu);
+        break;
+
+      case OR:
+        alu(cpu, ALU_OR, cpu->registers[operandA], cpu->registers[operandB]);
+        // pop the bitwise answer off the stack
+        cpu->registers[operandA] = cpu_pop(cpu);
         break;
 
       default:

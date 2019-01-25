@@ -26,6 +26,7 @@ enum alu_op {
   ALU_DEC,
   ALU_CMP,
   ALU_AND,
+  ALU_OR,
 	// Add more here
 };
 
@@ -52,7 +53,7 @@ enum alu_op {
 #define JNE  0b01010110
 
 #define AND  0b10101000
-
+#define OR   0b10101010
 // Function declarations
 
 extern void cpu_load(struct cpu *cpu, char *filename); // add filename parameter to load function
