@@ -103,6 +103,7 @@ void cpu_run(struct cpu *cpu)
         break;
       case LDI:
         cpu->registers[operandA] = operandB;
+        // printf("LDI: %d at reg %d\n",cpu->registers[operandA],operandA);
         break;
       case PRN:
         printf("%d\n", cpu->registers[operandA]);
@@ -127,14 +128,17 @@ void cpu_run(struct cpu *cpu)
           cpu->PC += operandA;
         }
         cpu->FL = 0b00000000;
+        break;
       case JNE:
         if (cpu->FL != 0b00000001)
         {
           cpu->PC += operandA;
         }
         cpu->FL = 0b00000000;
+        break;
       case JMP:
         cpu->PC += operandA;
+        break;
     }
     cpu->PC += (IR >> 6) + 1;
     // TODO
