@@ -37,6 +37,11 @@ void cpu_load(struct cpu *cpu, char *filename)
     }
     if(curr=='\n' || curr=='#'){
       if(!found_something){
+        if(curr == '#'){
+          while(curr != '\n'){
+            curr = fgetc(fp);
+          }
+        }
         continue;
       }
       buff[index] = '\0';
@@ -87,12 +92,12 @@ void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
   cpu->registers[7] = 0b11110100;
+  unsigned char FL = 0;
   // int number = 1;
   while (running) {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     unsigned char IR = cpu->ram[cpu->PC];
-    unsigned char FL = 0;
     // 2. Figure out how many operands this next instruction requires
     unsigned int amount_of_operands = IR >> 6;
     // 3. Get the appropriate value(s) of the operands following this instruction
@@ -165,13 +170,13 @@ void cpu_run(struct cpu *cpu)
         }
         break;
       case JEQ:
-        if(FL&0b00000001 == 0b00000001){
+        if((FL&0b00000001) == 0b00000001){
           cpu->PC = cpu->registers[operandA];
           increment_PC = 0;
         }
         break;
       case JNE:
-        if(FL&0b00000001 == 0b00000000){
+        if((FL&0b00000001) == 0b00000000){
           cpu->PC = cpu->registers[operandA];
           increment_PC = 0;
         }
