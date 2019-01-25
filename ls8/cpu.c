@@ -48,15 +48,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
     case ALU_CMP:
       if (cpu->reg[regA] == cpu->reg[regB]) {
-        cpu->FL = cpu->FL | (1 << 0);
-      }
-      else if (cpu->reg[regA] > cpu->reg[regB]) {
-        cpu->FL = cpu->FL | (1 << 1);
+        cpu->FL = 0b00000001;
       }
       else {
-        cpu->FL = cpu->FL | (1 << 2);
+        cpu->FL = 0b00000000;
       }
       break;
+
+      // if (cpu->reg[regA] == cpu->reg[regB]) {
+      //   cpu->FL = (cpu->FL & ~7) | 1; // 0b00000001; // cpu->FL | (1 << 0)
+      // }
+      // else if (cpu->reg[regA] > cpu->reg[regB]) {
+      //   cpu->FL = (cpu->FL & ~7) | 2; // 0b00000010; //cpu->FL | (1 << 1)
+      // }
+      // else {
+      //   cpu->FL = (cpu->FL & ~7) | 4; // 0b00000100; // cpu->FL | (1 << 2)
+      // }
 
     default:
       break;
@@ -120,13 +127,13 @@ void cpu_run(struct cpu *cpu)
         num_operands = 0;
         break;
       case JEQ:
-        if (cpu->FL == 0x01) {
+        if (cpu->FL == 0b00000001) {
           cpu->PC = cpu->reg[operandA];
           num_operands = 0;
         }
         break;
       case JNE:
-        if (cpu->FL != 0x00) {
+        if (cpu->FL == 0b00000000) {
           cpu->PC = cpu->reg[operandA];
           num_operands = 0;
         }
