@@ -108,19 +108,31 @@ void cpu_run(struct cpu *cpu)
         break;
       case CALL:
         cpu_push(cpu, cpu->PC+2);
-        cpu->PC = cpu->reg[operandA] - 1 ;
+        cpu->PC = cpu->reg[operandA];
         num_operands = 0;
         break;
       case RET:
         cpu->PC = cpu_pop(cpu);
         num_operands = 0;
         break;
-      case HLT:
-        running = 0;
-        break;
       case JMP:
         cpu->PC = cpu->reg[operandA];
-        pc_change = 0;
+        num_operands = 0;
+        break;
+      case JEQ:
+        if (cpu->FL == 0x01) {
+          cpu->PC = cpu->reg[operandA];
+          num_operands = 0;
+        }
+        break;
+      case JNE:
+        if (cpu->FL != 0x00) {
+          cpu->PC = cpu->reg[operandA];
+          num_operands = 0;
+        }
+        break;
+      case HLT:
+        running = 0;
         break;
     }
     cpu->PC += num_operands;
