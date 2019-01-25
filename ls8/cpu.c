@@ -60,7 +60,15 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
     case ALU_ADD:
       cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
-
+      break;
+    case ALU_CMP:
+      if (cpu->reg[regA] == cpu->reg[regB]) {
+        cpu->FL = 0b00000001;
+      } else if (cpu->reg[regA] < cpu->reg[regB]) {
+        cpu->FL = 0b00000100;
+      } else {
+        cpu->FL = 0b00000010;
+      }
     // TODO: implement more ALU ops
   }
 }
@@ -107,12 +115,19 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[operand_a] = cpu_ram_read(cpu, SP);
         SP++;
         break;
+
+      // ALU functions
       case MUL:
         alu(cpu, ALU_MUL, operand_a, operand_b);
         break;
       case ADD:
         alu(cpu, ALU_ADD, operand_a, operand_b);
         break;
+      case CMP:
+        alu(cpu, ALU_CMP, operand_a, operand_b);
+        break;
+
+      // subroutines
       case CALL:
         //should be refactored to call PUSH but with PC +1
         SP--;
@@ -127,6 +142,9 @@ void cpu_run(struct cpu *cpu)
         SP++;
 
         break;
+
+
+      // halt
       case HLT:
         running = 0;
         break;
@@ -147,6 +165,7 @@ void cpu_init(struct cpu *cpu)
   memset(cpu->ram, 0, 256);
 
   cpu->PC = 0;
+  cpu->FL = 0;
 
   memset(cpu->reg, 0, 8);
   cpu->reg[7] = 0xF4;
