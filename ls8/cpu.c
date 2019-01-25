@@ -5,7 +5,6 @@
 
 #define ADDR_EMPTY_STACK 0xF4
 #define ADDR_PROGRAM_ENTRY 0x00
-#define ADD   0b10100000
 
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index)
@@ -60,7 +59,9 @@ void cpu_load(struct cpu *cpu, int argc, char *argv[])
 
     cpu->ram[++address] = instruction;
   }
-
+  //   for (int j = 0; j<89; j++){
+  //   printf("Line %d: %d\n", j+7, cpu->ram[j]);
+  // }
 }
 
 /**
@@ -72,17 +73,23 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   unsigned char valB = reg[regB];
   switch (op) {
     case ALU_MUL:
-      // TODO
       reg[regA] *= valB;
       break;
-    case ALU_ADD:
-      // TODO
-      // printf("alu_add\n");
 
+    case ALU_ADD:
+      // printf("alu_add\n");
       reg[regA] += valB;
       break;
 
-    // TODO: implement more ALU ops
+    case ALU_CMP:
+      if (regA == regB)     { cpu->FL = 0b00000001; }
+      else if (regA > regB) { cpu->FL = 0b00000010; }
+      else if (regA < regB) { cpu->FL = 0b00000100; }
+      // printf("Flag: %d\n", cpu->FL);
+      break;
+      // if (regA == regB){ cpu->FL = 1 }
+      // else if (regA > regB) {cpu->FL = 2}
+      // else if (regA < regB) {cpu->FL = 4}
   }
 }
 
@@ -159,12 +166,34 @@ void cpu_run(struct cpu *cpu )
         cpu->PC = pop_handler(cpu);
         break;
 
+      case CMP:
+        alu(cpu, ALU_CMP, cpu->reg[operandA], cpu->reg[operandB]);
+        break;
+
+      case JMP:
+        cpu->PC = cpu->reg[operandA]-num_operands-1;
+        break;
+
+      case JEQ:
+        if (cpu->FL == 0b00000001) {
+          cpu->PC=cpu->reg[operandA]-num_operands-1;
+        }
+        break;
+
+      case JNE:
+        if ((cpu->FL & 0b00000001) == 0) {
+          cpu->PC=cpu->reg[operandA]-num_operands-1;
+        }
+        break;
+
       default:
         break;
     }
     // 6. Move the PC to the next instruction.
     cpu->PC += num_operands + 1;
   }
+  // unsigned char test = 4;
+  // printf("%d\n", test & 0b00000001);
 }
 
 /**
