@@ -102,7 +102,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->registers[regA] += cpu->registers[regB];
       break;
 
-    // TODO: implement more ALU ops
+    case ALU_CMP:
+      if (cpu->registers[regA] == cpu->registers[regB]) {
+        cpu->FL = FL_EQUAL;
+      }
+      break;
+    
   }
 }
 
@@ -182,6 +187,22 @@ void cpu_run(struct cpu *cpu)
       case JMP:
         cpu->PC = cpu->registers[operand_a];
         break;
+
+      case CMP:
+        alu(cpu, ALU_CMP, operand_a, operand_b);
+        break;
+
+      case JEQ:
+        if (cpu->FL == FL_EQUAL) {
+          cpu->PC = cpu->registers[operand_a];
+        }
+        break;
+
+      case JNE:
+        if (cpu->FL != FL_EQUAL) {
+          cpu->PC = cpu->registers[operand_a];
+        }
+        break;
       
 
       
@@ -203,6 +224,7 @@ void cpu_init(struct cpu *cpu)
   printf("cpu_init print\n");  
   cpu->PC = 0;
   cpu->registers[SP] = 0xF4; // ADDR_EMPTY_STACK
+  cpu->FL = 0;
   
   memset(cpu->registers, 0, sizeof(cpu->registers));
   memset(cpu->ram, 0, sizeof(cpu->ram));

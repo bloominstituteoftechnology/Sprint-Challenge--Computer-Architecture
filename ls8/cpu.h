@@ -10,6 +10,9 @@ struct cpu {
   // stack pointer & stack array  
   unsigned char SP;
 
+  // SPRINT: Flag
+  unsigned char FL;
+
   // registers (array) --> where we push operand values
   unsigned char registers[8]; // --> R0 -> R7
 
@@ -24,6 +27,7 @@ struct cpu {
 enum alu_op {
 	ALU_MUL, 
   ALU_ADD, 
+  ALU_CMP,
 	// Add more here
 };
 
@@ -44,6 +48,14 @@ enum alu_op {
 #define RET  0b00010001
 #define JMP  0b01010100
 #define ADD 0b10100000
+
+// SPRINT
+#define CMP 0b10100111
+#define JEQ 0b01010101
+#define JNE 0b01010110
+
+#define FL_EQUAL 1
+
 
 // TODO: more instructions here. These can be used in cpu_run().
 
