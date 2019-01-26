@@ -63,6 +63,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_SHR:
       break;
     case ALU_MOD:
+      cpu->reg[regA] = cpu->reg[regA] / cpu->reg[regB];
       break;
     case ALU_CMP:
       if (cpu->reg[regA] == cpu->reg[regB]) {
