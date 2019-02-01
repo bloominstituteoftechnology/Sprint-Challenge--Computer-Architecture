@@ -191,6 +191,7 @@ void cpu_run(struct cpu *cpu)
       case JNE:
       if(!cpu->FL){
         cpu->PC=cpu->reg[operandA&7];
+        //
         continue;
             
       }

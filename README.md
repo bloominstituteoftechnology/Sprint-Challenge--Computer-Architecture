@@ -52,6 +52,10 @@ Your finished project must include all of the following requirements:
 - [ ] Add the `JMP` instruction.
 
 - [ ] Add the `JEQ` and `JNE` instructions.
+0xDC
+
+C = 12 = 0b1010
+D = 13 = 
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
