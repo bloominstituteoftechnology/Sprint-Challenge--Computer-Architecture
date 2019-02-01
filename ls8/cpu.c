@@ -41,7 +41,7 @@ if ((p=fopen(filename,"r"))==NULL){
 //READs lines of file and stores them in ram
 while (fgets(line,sizeof line, p ) !=NULL){
  // converts string to number
- printf("%s",line) ;
+ printf("%s",line);
  char *endchar;
  unsigned char byte = strtol(line, &endchar,2);
 
@@ -80,24 +80,38 @@ unsigned char cpu_pop(struct cpu *cpu){
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
   
-unsigned char *ram =cpu->reg;
+unsigned char *ram = cpu->reg;
   switch (op) {
     case ALU_MUL:
 
-     ram[regA] *= ram[regB];
+   cpu->reg[regA] = ram[regB] * ram[regA] ;
 
       break;
 
     // TODO: implement more ALU ops
 
     case ALU_ADD:
-    
+    ram[regA] += ram[regB];
     break;
 
     case ALU_INC:
+    ram[regA]++;
     break;
 
     case ALU_DEC:
+    ram[regA]--;
+    break;
+    case ALU_CMP:
+    cpu->FL = 0;
+    if (ram[regA]==ram[regB]){
+      //set the equal bit 
+      cpu->FL =cpu ->FL | (1<<0);
+    } else if (cpu->reg[regA < cpu->reg[regB]]){
+      cpu->FL = cpu->FL|(1<<1);
+    }else{
+      //set 
+      cpu->FL = cpu->FL | (1<<2);
+    }
     break;
 
   }
@@ -119,14 +133,17 @@ void cpu_run(struct cpu *cpu)
   
     
     // 2. Figure out how many operands this next instruction requires
-    unsigned int num_operands = (instruction >> 6) + 1;
+    unsigned int num_operands = instruction >> 6    ;
     
 
     // 3. Get the appropriate value(s) of the operands following this instruction
    
-    operandA = cpu_ram_read(cpu, cpu->PC+1);
-  
-    operandB = cpu_ram_read(cpu, cpu->PC+2);
+  if(num_operands==2){
+     operandA = cpu_ram_read(cpu,(cpu->PC+1)& 0xff);
+     operandB = cpu_ram_read(cpu,(cpu->PC+2)& 0xff);
+  }else if(num_operands==1){
+     operandA = cpu_ram_read(cpu,(cpu->PC+1)& 0xff);
+  }else{}
     
    printf("Trace: %02x:%02x %02x %02x\n",cpu->PC,instruction,operandA,operandB);
     // 4. switch() over it to decide on a course of action.
@@ -155,7 +172,29 @@ void cpu_run(struct cpu *cpu)
       case POP:
       cpu->reg[operandA] = cpu_pop(cpu);
       break;
-
+      case JEQ:
+      //implement If `equal` flag is set (true), jump to the address stored in the given register.
+      if(cpu->FL){
+        cpu->PC=cpu->reg[operandA&7];
+        continue;
+            
+      }
+      break;
+      case CMP: 
+      //implement
+      alu(cpu,ALU_CMP,operandA,operandB);
+      break; 
+      case JMP:
+      cpu->PC=cpu->reg[operandA&7];
+      num_operands=0;
+      break;
+      case JNE:
+      if(!cpu->FL){
+        cpu->PC=cpu->reg[operandA&7];
+        continue;
+            
+      }
+      break;
       default:
       fprintf(stderr,"PC%02x: unknown instruction %02x\n",instruction);
       exit(3);
@@ -163,7 +202,7 @@ void cpu_run(struct cpu *cpu)
     // 5. Do whatever the instruction should do according to the spec.
 
     // 6. Move the PC to the next instruction.
-      cpu->PC += num_operands;
+      cpu->PC += num_operands + 1;
   
   }
 
@@ -177,7 +216,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu -> PC = 0;
   cpu -> SP = ADDR_EMPTY_STACK;
-  
+ 
   //    zero registers and ram
   memset(cpu->reg, 0, sizeof cpu->reg);
   memset(cpu->ram, 0, sizeof cpu->ram);
