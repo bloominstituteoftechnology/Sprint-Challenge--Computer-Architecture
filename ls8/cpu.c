@@ -145,6 +145,18 @@ void cpu_run(struct cpu *cpu)
       case ADD:
         alu(cpu, ALU_ADD, operandA, operandB);
         break;
+      case CMP:
+        if (cpu->reg[operandA] == cpu->reg[operandB])
+        {
+          // set the equal flag to true
+          cpu->E = 1;
+        }
+        else
+        {
+          // set flag to false
+          cpu->E = 0;
+        }
+        
       default:
         break;
     }
