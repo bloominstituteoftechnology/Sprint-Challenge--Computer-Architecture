@@ -45,6 +45,9 @@ enum alu_op
 // If equal flag is set (true), jump to the address stored
 // in the given register
 #define JEQ 0b01010101
+// If E flag is clear (false, 0), jump to the address stored
+// in the given register.
+#define JNE 0b01010110
 
 // TODO: more instructions here. These can be used in cpu_run().
 

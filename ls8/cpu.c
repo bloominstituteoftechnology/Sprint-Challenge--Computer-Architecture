@@ -125,49 +125,49 @@ void cpu_run(struct cpu *cpu)
     IR = cpu_ram_read(cpu, cpu->PC);
 
     // 2. Figure out how many operands this next instruction requires
+    unsigned char operands = IR >> 6;
     // 3. Get the appropriate value(s) of the operands following this instruction
-    operand0 = cpu_ram_read(cpu, cpu->PC + 1);
-    operand1 = cpu_ram_read(cpu, cpu->PC + 2);
+    if (operands == 2)
+    {
+      operand0 = cpu_ram_read(cpu, cpu->PC + 1);
+      operand1 = cpu_ram_read(cpu, cpu->PC + 2);
+    }
+    else if (operands == 1)
+    {
+      operand0 = cpu->ram[cpu->PC + 1];
+    }
 
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
-    // 6. Move the PC to the next instruction.
+    printf("TRACE: %02X: %02X   %02X %02X\n", cpu->PC, IR, operand0, operand1);
     switch (IR)
     {
     case LDI:
       // sets value of operand1 to the reg[operand0]
       cpu->reg[operand0] = operand1;
-      // Move the PC to the next instruction.
-      cpu->PC += 3;
       break;
     case PRN:
       printf("%d\n", cpu->reg[operand0]);
-      // Move the PC to the next instruction.
-      cpu->PC += 2;
       break;
     case MUL:
       // Multiply operand0 by operand1
       alu(cpu, ALU_MUL, operand0, operand1);
-      cpu->PC += 3;
       break;
     case ADD:
       alu(cpu, ALU_ADD, operand0, operand1);
-      cpu->PC += 3;
       break;
     case PUSH:
       cpu_push(cpu, cpu->reg[operand0]);
-      cpu->PC += 2;
       break;
     case POP:
       // Copy the value from the address pointed to by SP to the given register
       cpu->reg[operand0] = cpu_pop(cpu);
-      cpu->PC += 2;
       break;
     case CALL:
       // Address of instruction is pushed to the stack
-      cpu_push(cpu, (cpu->PC + 2));
+      cpu_push(cpu, (cpu->PC + 1));
       // The PC is set to the address stored in operand0
-      cpu->PC = cpu->reg[operand0];
+      cpu->PC = cpu->reg[operand0] - 2;
       break;
     case RET:
       // Pop the value from the top of the stack and store it in the PC
@@ -176,19 +176,27 @@ void cpu_run(struct cpu *cpu)
     case CMP:
       // Compares the value of 2 ints
       alu(cpu, ALU_CMP, operand0, operand1);
-      cpu->PC += 3;
+      // cpu->PC += 3;
       break;
     case JMP:
       // Jump to the address stored in the given register
       // Set the PC to the address stored in the given register.
-      cpu->PC = cpu->reg[operand0];
+      cpu->PC = cpu->reg[operand0] - operands - 1;
       break;
     case JEQ:
       // If equal flag is set (true), jump to the address stored
       // in the given register.
       if (cpu->FL == 0b00000001)
       {
-        cpu->PC = cpu->reg[operand0];
+        cpu->PC = cpu->reg[operand0] - operands - 1;
+      }
+      break;
+    case JNE:
+      // If E flag is clear (false, 0), jump to the address stored
+      // in the given register.
+      if ((cpu->FL & 0b00000001) == 0)
+      {
+        cpu->PC = cpu->reg[operand0] - operands - 1;
       }
       break;
     case HLT:
@@ -201,6 +209,9 @@ void cpu_run(struct cpu *cpu)
       printf("Unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
       exit(1);
     }
+
+    // 6. Move the PC to the next instruction.
+    cpu->PC += operands + 1;
   }
 }
 
