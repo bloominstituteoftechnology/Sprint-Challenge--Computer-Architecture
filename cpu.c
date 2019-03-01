@@ -220,7 +220,7 @@ void jmp(struct cpu *cpu)
 
 void cpu_runner(struct cpu *cpu)
 {
-  int running = 1; // True until we get a HLT instruction
+  int running = 1;
 
   while (running)
   {
@@ -249,7 +249,7 @@ void cpu_runner(struct cpu *cpu)
       call(cpu);
       break;
     case RET:
-      ret(cpu);
+      routine_instruction(cpu);
       break;
     case CMP:
       cmp(cpu);
@@ -272,9 +272,6 @@ void cpu_runner(struct cpu *cpu)
   }
 }
 
-/**
- * Initialize a CPU struct
- */
 void cpu_init(struct cpu *cpu)
 {
   cpu->pc = 0;

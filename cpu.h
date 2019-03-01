@@ -18,10 +18,6 @@ enum alu_operations {
   ALU_CMP_INSTRUCTION
 };
 
-// Instructions
-
-// These use binary literals. If these aren't available with your compiler, hex
-// literals should be used.
 
 #define LDI  0b10000010
 #define HLT  0b00000001
@@ -37,9 +33,7 @@ enum alu_operations {
 #define JNE  0b01010110
 #define JMP  0b01010100
 
-// Function declarations
-
-extern void cpu_load(struct cpu *cpu, char *arg);
+extern void cpu_loader(struct cpu *cpu, char *arg);
 extern void cpu_init(struct cpu *cpu);
 extern void cpu_runner(struct cpu *cpu);
 
