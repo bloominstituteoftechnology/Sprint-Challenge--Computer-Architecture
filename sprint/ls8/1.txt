@@ -1,0 +1,11 @@
+
+examples/call.ls8
+IN CPU_LOAD... examples/call.ls8
+Current stack loc 253 current program counter 8  operatndA 1  24 
+20
+Current stack loc 252 current program counter 13  operatndA 1  24 
+30
+Current stack loc 251 current program counter 18  operatndA 1  24 
+36
+Current stack loc 250 current program counter 23  operatndA 1  24 
+60
