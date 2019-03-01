@@ -95,6 +95,7 @@ void cpu_run(struct cpu *cpu)
       otherwise set it to 0.
       A is greater than registerB, set the Greater-than G 
       flag to otherwise set it to 0.*/
+      printf("%d CMP %d\n", cpu->registers[operandA], cpu->registers[operandB]); // <-debugging
       if (cpu->registers[operandA] == cpu->registers[operandB])
       {
         cpu->FL[0] = 1;
@@ -113,6 +114,7 @@ void cpu_run(struct cpu *cpu)
         cpu->FL[1] = 0;
         cpu->FL[2] = 1;
       }
+      printf("compare flags E:%d L:%d G:%d\n", cpu->FL[0], cpu->FL[1], cpu->FL[2]); // <-debugging
       break;
 
     case HLT: // HLT //
@@ -125,11 +127,13 @@ void cpu_run(struct cpu *cpu)
     case JEQ: // JEQ register //
       /*If equal flag is set (true), jump to the address 
       stored in the given register.*/
+      printf("E %d\n", cpu->FL[0]); // <-debugging
       if (cpu->FL[0] == 1)
       {
         cpu->pc = cpu->registers[operandA];
+        printf("JMP to %d\n", cpu->registers[operandA]); // <-debugging
+        cpu->FL[3] = 1;
       }
-      cpu->FL[3] = 1;
       break;
 
     // TODO:
@@ -139,8 +143,8 @@ void cpu_run(struct cpu *cpu)
       if (cpu->FL[2] == 1 || cpu->FL[0] == 1)
       {
         cpu->pc = cpu->registers[operandA];
+        cpu->FL[3] = 1;
       }
-      cpu->FL[3] = 1;
       break;
 
     // TODO:
@@ -150,8 +154,8 @@ void cpu_run(struct cpu *cpu)
       if (cpu->FL[1] == 1 || cpu->FL[0] == 1)
       {
         cpu->pc = cpu->registers[operandA];
+        cpu->FL[3] = 1;
       }
-      cpu->FL[3] = 1;
       break;
 
     case JMP: // JMP register //
