@@ -66,20 +66,13 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     // ------- SPRINT ---------
 
     case ALU_CMP: //Compare the values in two registers.
-      
-      if (cpu->reg[regA] == cpu->reg[regB]) { //Equal `E` flag to 1, otherwise set it to 0.
-        cpu->FL = cpu->FL | (1 << 0);
+      if (cpu->reg[regA] == cpu->reg[regB]) {
+        cpu->FL = 0b00000001;       
+      } else {
+        cpu->FL =  0b00000000;
       }
-
-      else if (cpu->reg[regA] > cpu->reg[regB]) { //Less-than `L` flag to 1,
-        cpu->FL = cpu->FL | (1 << 1);
-      }
-  
-      else {
-        cpu->FL = cpu->FL | (1 << 2); //Greater-than `G` flag to 1, otherwise set it to 0.
-      }
-
-      break;
+     
+    break;
 
   }
 }
@@ -111,6 +104,13 @@ void cpu_run(struct cpu *cpu)
       // 3. Get the appropriate value(s) of the operands following this instruction
       operandA = cpu_ram_read(cpu, (cpu->PC+1) & 0xff);
     } 
+
+    //printf("TRACE: %02X | %02X %02X %02X |", cpu->PC, IR, operandA, operandB);
+    //for (int i = 0; i < 8; i++) {
+    // printf(" %02X", cpu->reg[i]);
+   // }
+    //printf("\n");
+
 
 
     switch(IR) 
@@ -145,7 +145,7 @@ void cpu_run(struct cpu *cpu)
 
       case JEQ:  
         // If `equal` flag, jump to the address stored in the given register.
-        if (cpu->FL == 1) {
+        if (cpu->FL == 0b00000001) {
           cpu->PC = cpu->reg[operandA];//SP - stack pointer
           next_pc = -1;
         }
@@ -170,7 +170,7 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[SP]++; //Increment `SP`.
         break;
       
-      case CALL:
+      case CALL: 
       /*Calls a subroutine (function) at the address stored in the register.*/
         cpu->reg[SP]--;
         cpu->ram[cpu->reg[SP]] = cpu->PC + 2;
