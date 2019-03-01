@@ -17,7 +17,8 @@ struct cpu {
 enum alu_op {
 	ALU_MUL,
 	ALU_ADD,
-  ALU_CMP
+  ALU_CMP,
+  ALU_AND
 	// Add more here
 };
 
@@ -36,6 +37,7 @@ enum alu_op {
 #define MUL  0b10100010
 #define ADD  0b10100000
 #define CMP  0b10100111
+#define AND  0b10101000
 #define PUSH 0b01000101
 #define POP  0b01000110
 #define CALL 0b01010000

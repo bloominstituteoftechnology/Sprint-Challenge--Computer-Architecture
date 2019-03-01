@@ -92,6 +92,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         cpu->flags = CMP_Equal;
       }
       break;
+    case ALU_AND:
+      cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
+      break;
 
 
     // TODO: implement more ALU ops
@@ -203,6 +206,10 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
+        cpu->pc += 3;
+        break;
+      case AND:
+        alu(cpu, ALU_AND, operandA, operandB);
         cpu->pc += 3;
         break;
       case PUSH:
