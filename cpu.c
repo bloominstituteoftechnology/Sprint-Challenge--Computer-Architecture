@@ -59,6 +59,35 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_ADD:
     cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
     break;
+  case ALU_CMP:
+    if (regA == regB)
+    {
+      cpu->flag_e = 1;
+    }
+    else
+    {
+      cpu->flag_e = 0;
+    }
+
+    if (regA < regB)
+    {
+      cpu->flag_l = 1;
+    }
+    else
+    {
+      cpu->flag_l = 0;
+    }
+
+    if (regA > regB)
+    {
+      cpu->flag_g = 1;
+    }
+    else
+    {
+      cpu->flag_g = 0;
+    }
+    cpu->pc += 3;
+    break;
   }
 }
 
@@ -173,6 +202,11 @@ void ret_instr(struct cpu *cpu)
  */
 void cmp_instr(struct cpu *cpu)
 {
+  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_b = cpu_ram_read(cpu, cpu->pc + 2);
+  unsigned char reg_a = cpu->reg[operand_a];
+  unsigned char reg_b = cpu->reg[operand_b];
+  alu(cpu, ALU_CMP, reg_a, reg_b);
 }
 
 /**
