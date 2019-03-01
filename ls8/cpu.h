@@ -6,12 +6,14 @@ struct cpu
   unsigned char PC;
   unsigned char reg[8];
   unsigned char ram[256];
+  unsigned char FL;
 };
 
 enum alu_op
 {
   ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_CMP
 };
 
 #define LDI 0b10000010
@@ -23,6 +25,7 @@ enum alu_op
 #define PUSH 0b01000101
 #define CALL 0b01010000
 #define RET 0b00010001
+#define CMP 0b10100111
 
 extern void cpu_load(struct cpu *cpu, char *argv[]);
 extern void cpu_init(struct cpu *cpu);
