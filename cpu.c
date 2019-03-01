@@ -242,6 +242,15 @@ void jne_instr(struct cpu *cpu)
 }
 
 /**
+ * Perform JMP Instruction
+ */
+void jmp_instr(struct cpu *cpu)
+{
+  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  cpu->pc = cpu->reg[operand_a];
+}
+
+/**
  * Run the CPU
  */
 void cpu_run(struct cpu *cpu)
@@ -285,6 +294,9 @@ void cpu_run(struct cpu *cpu)
       break;
     case JNE:
       jne_instr(cpu);
+      break;
+    case JMP:
+      jmp_instr(cpu);
       break;
     case HLT:
       running = 0;
