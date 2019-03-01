@@ -79,6 +79,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       cpu->reg[regA] = cpu->reg[regA] + cpu->reg[regB];
       break;
+    case ALU_AND:
+      cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
+      break;
+    case ALU_OR:
+      cpu->reg[regA] |= cpu->reg[regB];
+      break;
     // TODO: implement more ALU ops
   }
 }
@@ -156,9 +162,32 @@ void cpu_run(struct cpu *cpu)
           // set flag to false
           cpu->E = 0;
         }
+        break;
       case JMP:
       // set PC to address stored in given register
         cpu->PC = cpu->reg[operandA] - 2;
+        break;
+      case JEQ:
+      // if the equal flag is true jump to given register
+        if(!(cpu->E == 0))
+        {
+          cpu->PC = cpu->reg[operandA] - 2;
+        }
+        break;
+      case JNE:
+        if(cpu->E == 0)
+        {
+          cpu->PC = cpu->reg[operandA] - 2;
+        }
+        break;
+      case AND: 
+        alu(cpu, ALU_AND, operandA, operandB);
+        cpu->PC += operands + 1;
+        break;
+      case OR:
+        alu(cpu, ALU_OR, operandA, operandB);
+        cpu->PC += operands + 1;
+        break;
       default:
         break;
     }

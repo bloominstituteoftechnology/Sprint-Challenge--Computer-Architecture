@@ -18,7 +18,9 @@ struct cpu {
 // ALU operations
 enum alu_op {
 	ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_AND,
+  ALU_OR
 	// Add more here
 };
 
@@ -38,6 +40,10 @@ enum alu_op {
 #define ADD 0b10100000
 #define CMP  0b10100111
 #define JMP  0b01010100
+#define JEQ  0b01010101
+#define JNE  0b01010110
+#define AND  0b10101000
+#define OR   0b10101010
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations
