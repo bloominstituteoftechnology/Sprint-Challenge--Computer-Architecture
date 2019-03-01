@@ -78,9 +78,9 @@ unsigned char cpu_ram_read(struct cpu *cpu, int index)
   return cpu->ram[index];
 }
 
-void cpu_ram_write(struct cpu *cpu, int index, unsigned char target)
+void cpu_ram_write(struct cpu *cpu, int index, unsigned char thing)
 {
-  cpu->ram[index] = target;
+  cpu->ram[index] = thing;
 }
 
 void cpu_push(struct cpu *cpu, unsigned char target)
@@ -115,13 +115,14 @@ void cpu_run(struct cpu *cpu)
     switch (instruction)
     {
     case LDI:
-    printf("LDI:\n");
+      printf("LDI:\n");
       // 5. Do whatever the instruction should do according to the spec.
       cpu->reg[operandA] = operandB;
+      
       // 6. Move the PC to the next instruction.
       break;
     case PRN:
-    printf("PRN: ----- ");
+      printf("PRN: ----- ");
       printf("%u", cpu->reg[operandA]);
       printf(" ----- \n");
       break;
@@ -151,28 +152,30 @@ void cpu_run(struct cpu *cpu)
     case RET:
       cpu->PC = cpu->ram[cpu->reg[7]];
       cpu->reg[7] += 1;
-  
+
       break;
     case CMP:
-    printf("CMP:\n");
+      printf("CMP:\n");
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
     case JMP:
-    
+
       cpu->PC = cpu->reg[operandA];
       break;
 
     case JEQ:
-    printf("JEQ:");
-    printf("                        CPU->FL: %d    ", cpu->FL);
-      if (cpu->FL == 0b00000001)
+      printf("JEQ:");
+      printf("                        CPU->FL: %d    ", cpu->FL);
+      if (cpu->FL == 1)
       {
-        printf("FL == 1  JUMPS!!");
+        printf("FL == 1  JUMPS!!     ");
+        printf("my cpu->PC %u, my cpu-FL %u, my cpu->reg[operandA] %u \n", cpu->PC, cpu->FL, cpu->reg[operandA]);
 
-        printf("%u \n", cpu->reg[operandA]);
         cpu->PC = cpu->reg[operandA];
+        cpu->PC += 2;
         cpu->FL = 0;
+        break;
       }
       else
       {
@@ -180,31 +183,34 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += (instruction >> 6 & 3) + 1;
         // cpu->PC += 2;
         cpu->FL = 0;
+        break;
       }
       break;
 
     case JNE:
-    printf("JNE:");
-     printf("                        CPU->FL: %d    ", cpu->FL);
-      if (cpu->FL != 0b00000001)
+      printf("JNE:");
+      printf("                        CPU->FL: %d    ", cpu->FL);
+      if ((cpu->FL & 1) != 1)
       {
         printf("cpu->FL & 1 != 1  JUMPS!\n");
         cpu->PC = cpu->reg[operandA];
         cpu->FL = 0;
+        break;
       }
       else
       {
         printf("cpu->FL & 1 == 1\n");
-        // cpu->PC += (instruction >> 6 & 3) + 1;
-         cpu->PC += 2;
-        // cpu->FL = 0;
+        cpu->PC += (instruction >> 6 & 3) + 1;
+        //  cpu->PC += 2;
+        cpu->FL = 0;
+        break;
       }
       break;
     }
 
-    if ((instruction >> 4 & 1) != 1)
+    if (!(instruction >> 4 & 1))
     {
-      cpu->PC += (instruction >> 6 & 3) + 1;
+      cpu->PC += (instruction >> 6 & 0x3) + 1;
     }
   }
 }
@@ -219,7 +225,7 @@ void cpu_init(struct cpu *cpu)
   cpu->FL = 0b00000000;
   //void *memset(void *ptr, int x, size_t n);
   //initalize both ram and reg from cpu.h
-  memset(cpu->reg, 0, 8*sizeof(char));
-  memset(cpu->ram, 0, 256*sizeof(char));
+  memset(cpu->reg, 0, 8 * sizeof(char));
+  memset(cpu->ram, 0, 256 * sizeof(char));
   cpu->reg[7] = cpu->ram[0xf4];
 }
