@@ -77,15 +77,15 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 
     if (valA == valB)
     {
-      flag = 0b00000001 & mask;
+      flag = 0b00000001;
     }
     else if (valA > valB)
     {
-      flag = 0b00000010 & mask;
+      flag = 0b00000010;
     }
     else if (valA < valB)
     {
-      flag = 0b00000100 & mask;
+      flag = 0b00000100;
     }
     else
     {
