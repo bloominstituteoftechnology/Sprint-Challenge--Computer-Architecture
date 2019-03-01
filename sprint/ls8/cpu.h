@@ -21,6 +21,10 @@ struct cpu {
       unsigned char ram[256]; //8-bit cpu .. 2^8 = 256 
       //stack 
       unsigned char SP;
+      //flags for comparison CMP
+      unsigned char equal_flag;
+      unsigned char greater_flag;
+      unsigned char less_flag;
 
 };
 
@@ -30,7 +34,9 @@ enum alu_op {
 	  // Add more here
     ALU_ADD,
     ALU_SUB,
-    ALU_DIV
+    ALU_DIV, 
+    ALU_CMP,
+    ALU_MOD
 };
 
 // Instructions

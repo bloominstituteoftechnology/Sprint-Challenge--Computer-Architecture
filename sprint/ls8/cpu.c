@@ -96,6 +96,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
             cpu->reg[regA] /= cpu->reg[regB];
             break;
 
+    case ALU_CMP:
+                if(cpu->reg[regA]  ==  cpu->reg[regB]) {
+                        cpu->equal_flag = 1;   
+                } 
+                else if(cpu->reg[regA] >  cpu->reg[regB]) {
+                        cpu->greater_flag = 1;   
+                } 
+                else {
+                        cpu->less_flag = 1;
+                }            
+            break; //ALU_CMP  break...
+
+    case ALU_MOD:
+            cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
+            break;
+
     default:
             break;
   }
@@ -159,6 +175,53 @@ void cpu_run(struct cpu *cpu)
                     cpu->PC = cpu_ram_read(cpu, cpu->SP);
                     break;
 
+            /*************** SPRINT-CHALLENGE CMP, JMP, JEQ, JNE **********************/
+            case CMP:
+                    //printf("\nexecuting..... CMP....");
+                    alu(cpu, ALU_CMP, operandA, operandB);
+                    cpu->PC += 3;
+                    break;
+
+            case JMP:
+                    //JMP instruction performs an unconditional jump ... no conditional CHECK
+                    //Jump to the address stored in the given register... operandA
+                    //Set the PC to the address stored in the given register..... operandA
+                    //printf("\nexecuting..... JMP....");
+                    cpu->PC = cpu->reg[operandA]; 
+                    break;
+
+            case JEQ:
+                    // jump if equal
+                    //JEQ and JNE checks CARRY_FLAG for higher-bit addition
+                    //printf("\nexecuting..... JEQ....");
+                    if(cpu->equal_flag == 1){
+			cpu->PC = cpu->reg[operandA];
+		    }
+		    else{
+			cpu->PC += 2;
+		    }
+                    break;
+
+            case JNE:
+                    // jump if not equal
+                    //printf("\nexecuting..... JNE....");
+                    if(cpu->equal_flag == 0){
+			cpu->PC = cpu->reg[operandA];
+		    }
+		    else{
+			cpu->PC += 2;
+		    }
+                    break;
+                    
+            case MOD:
+                    alu(cpu, ALU_MOD, operandA, operandB);
+                    cpu->PC += 3;
+                    break;
+                    
+            case AND:
+                    
+                    break;
+            /*************** SPRINT-CHALLENGE CMP, JMP, JEQ, JNE **********************/
             case DIV:
                     alu(cpu, ALU_DIV, operandA, operandB);
                     cpu->PC += 3;
@@ -211,4 +274,8 @@ void cpu_init(struct cpu *cpu)
       memset(cpu->ram, 0, sizeof(cpu->ram));
       //stack;
       cpu->SP = 254;
+      //for CMP
+      cpu->equal_flag = 0;
+      cpu->greater_flag = 0;
+      cpu->less_flag = 0;
 }
