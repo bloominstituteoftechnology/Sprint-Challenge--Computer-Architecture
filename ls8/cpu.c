@@ -183,6 +183,14 @@ void cpu_run(struct cpu *cpu)
       // Set the PC to the address stored in the given register.
       cpu->PC = cpu->reg[operand0];
       break;
+    case JEQ:
+      // If equal flag is set (true), jump to the address stored
+      // in the given register.
+      if (cpu->FL == 0b00000001)
+      {
+        cpu->PC = cpu->reg[operand0];
+      }
+      break;
     case HLT:
       // Set running to false to stop program
       running = 0;

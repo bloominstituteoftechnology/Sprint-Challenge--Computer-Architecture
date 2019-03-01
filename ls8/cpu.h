@@ -42,6 +42,9 @@ enum alu_op
 #define CMP 0b10100111
 // jump to the address stored in the given register
 #define JMP 0b01010100
+// If equal flag is set (true), jump to the address stored
+// in the given register
+#define JEQ 0b01010101
 
 // TODO: more instructions here. These can be used in cpu_run().
 
