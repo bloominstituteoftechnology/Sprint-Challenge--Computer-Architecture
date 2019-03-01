@@ -210,6 +210,22 @@ void cmp_instr(struct cpu *cpu)
 }
 
 /**
+ * Perform JEQ Instruction
+ */
+void jeq_instr(struct cpu *cpu)
+{
+  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  if (cpu->flag_e == 1)
+  {
+    cpu->pc = cpu->reg[operand_a];
+  }
+  else
+  {
+    cpu->pc += 2;
+  }
+}
+
+/**
  * Run the CPU
  */
 void cpu_run(struct cpu *cpu)
@@ -247,6 +263,9 @@ void cpu_run(struct cpu *cpu)
       break;
     case CMP:
       cmp_instr(cpu);
+      break;
+    case JEQ:
+      jeq_instr(cpu);
       break;
     case HLT:
       running = 0;
