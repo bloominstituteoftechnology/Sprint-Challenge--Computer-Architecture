@@ -63,6 +63,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->reg[regA] = (cpu->reg[regA] + cpu->reg[regB]) & 0xFF;
     break;
 
+  case ALU_CMP:
+    // equals
+    cpu->FL = cpu->reg[regA] ^ cpu->reg[regB] ? 0x00 : 0x01;
+    break;
+
   default:
     printf("nope\n");
     // TODO: implement more ALU ops
@@ -144,6 +149,10 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu->ram[cpu->reg[7]++];
       continue;
 
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+
     default:
       printf("nope\n");
     }
@@ -159,6 +168,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   cpu->PC = 0;
+  cpu->FL = 0;
   memset(cpu->reg, 0, 8);
   memset(cpu->ram, 0, 256);
 
