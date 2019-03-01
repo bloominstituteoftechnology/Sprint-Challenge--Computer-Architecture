@@ -220,6 +220,15 @@ void cpu_run(struct cpu *cpu)
       case JMP:
         cpu->pc = cpu->reg[operandA];
         break;
+      case JEQ:
+        // Check if the cmp_equal flag (bit) is set to true
+        if ((cpu->flags & CMP_Equal) == CMP_Equal) {
+          cpu->pc = cpu->reg[operandA];
+        } else {
+          // If it isn't skip the jump
+          cpu->pc += 2;
+        }
+        break;
       case HLT:
         running = 0;
         break;
