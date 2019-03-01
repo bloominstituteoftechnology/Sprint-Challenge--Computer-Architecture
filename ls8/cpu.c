@@ -237,8 +237,13 @@ void cpu_run(struct cpu *cpu)
         cpu->pc += 2;
         break;
       case MOD:
-        alu(cpu, ALU_MOD, operandA, operandB);
-        cpu->pc += 3;
+        if (cpu->reg[operandB] != 0) {
+          alu(cpu, ALU_MOD, operandA, operandB);
+          cpu->pc += 3;
+        } else {
+          printf("Error!");
+          running = 0;
+        }
         break;
       case PUSH:
         push(cpu, operandA);
