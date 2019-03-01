@@ -1,5 +1,7 @@
 # Sprint Challenge: Computer Architecture - Conditional Jumps
 
+Link to LS8 repository: https://github.com/alejandrok93/Computer-Architecture
+
 This challenge allows you to practice the concepts and techniques learned over
 the past week and apply them in a concrete project. This Sprint explored TOPIC.
 During this Sprint, you studied CPU components, number bases, bitwise
