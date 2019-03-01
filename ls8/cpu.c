@@ -95,19 +95,19 @@ void cpu_run(struct cpu *cpu)
       otherwise set it to 0.
       A is greater than registerB, set the Greater-than G 
       flag to otherwise set it to 0.*/
-      if (cpu->ram[cpu->registers[operandA]] == cpu->ram[cpu->registers[operandB]])
+      if (cpu->registers[operandA] == cpu->registers[operandB])
       {
         cpu->FL[0] = 1;
         cpu->FL[1] = 0;
         cpu->FL[2] = 0;
       }
-      if (cpu->ram[cpu->registers[operandA]] < cpu->ram[cpu->registers[operandB]])
+      if (cpu->registers[operandA] < cpu->registers[operandB])
       {
         cpu->FL[0] = 0;
         cpu->FL[1] = 1;
         cpu->FL[2] = 0;
       }
-      if (cpu->ram[cpu->registers[operandA]] > cpu->ram[cpu->registers[operandB]])
+      if (cpu->registers[operandA] > cpu->registers[operandB])
       {
         cpu->FL[0] = 0;
         cpu->FL[1] = 0;
