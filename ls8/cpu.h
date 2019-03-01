@@ -6,6 +6,7 @@ struct cpu
 {
   // TODO
   unsigned char PC;
+  unsigned char FL;
   // registers (array)
   unsigned char registers[8];
   // ram (array)
@@ -17,8 +18,12 @@ struct cpu
 // ALU operations
 enum alu_op
 {
-  ALU_MUL
+  ALU_MUL,
   // Add more here
+  ALU_DIV,
+  ALU_ADD,
+  ALU_SUB,
+  ALU_CMP
 };
 
 // Instructions
@@ -33,6 +38,13 @@ enum alu_op
 // Stack instructions
 #define POP 0b01000110
 #define PUSH 0b01000101
+#define RET 0b00010001
+#define CALL 0b01010000
+#define JMP 0b01010100
+#define JEQ 0b01010101
+#define JNE 0b01010110
+#define CMP 0b10100111
+
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations

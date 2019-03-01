@@ -51,11 +51,31 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->registers[regA] *= cpu->registers[regB];
     break;
     // TODO: implement more ALU ops
-    /* case ALU_CMP: */
-    /*   cpu->next = cpu_ram_read(cpu, cpu->PC++); */
-    /*   if (cpu->registers[regA] = cpu->registers[regA] & cpu->registers[regB]){ */
-
-    /*   } */
+  case ALU_DIV:
+    //add code
+    cpu->registers[regA] /= cpu->registers[regB];
+    break;
+  case ALU_SUB:
+    //add code
+    cpu->registers[regA] -= cpu->registers[regB];
+    break;
+  case ALU_ADD:
+    cpu->registers[regA] += cpu->registers[regB];
+    break;
+  case ALU_CMP:
+    if (regA == regB)
+    {
+      cpu->FL = 0b00000001;
+    }
+    else if (regA > regB)
+    {
+      cpu->FL = 0b00000010;
+    }
+    else if (regA < regB)
+    {
+      cpu->FL = 0b00000100;
+    }
+    break;
   }
 }
 // pop for cpu stack
@@ -111,6 +131,27 @@ void cpu_run(struct cpu *cpu)
     case POP:
       cpu->registers[operandA] = pop(cpu);
       break;
+    case CMP:
+      alu(cpu, ALU_CMP, cpu->registers[operandA], cpu->registers[operandB]);
+      break;
+
+    case JMP:
+      cpu->PC = cpu->registers[operandA] - operands - 1;
+      break;
+
+    case JEQ:
+      if (cpu->FL == 0b00000001)
+      {
+        cpu->PC = cpu->registers[operandA] - operands - 1;
+      }
+      break;
+
+    case JNE:
+      if ((cpu->FL & 0b00000001) == 0)
+      {
+        cpu->PC = cpu->registers[operandA] - operands - 1;
+      }
+      break;
     default:
       break;
     }
@@ -128,6 +169,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->FL = 0;
   memset(cpu->registers, 0, sizeof cpu->registers);
   memset(cpu->ram, 0, sizeof cpu->ram);
   cpu->equal = 0;
