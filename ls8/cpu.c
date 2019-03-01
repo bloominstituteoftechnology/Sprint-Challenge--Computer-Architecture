@@ -55,15 +55,15 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_CMP:
     if (cpu->reg[regA] == cpu->reg[regB])
     {
-      cpu->FL = cpu->FL | (1 << 0);
+      cpu->FL = 1;
     }
     else if (cpu->reg[regA] > cpu->reg[regB])
     {
-      cpu->FL = cpu->FL | (1 << 1);
+      cpu->FL = 2;
     }
     else
     {
-      cpu->FL = cpu->FL | (1 << 2);
+      cpu->FL = 4;
     }
     break;
 
