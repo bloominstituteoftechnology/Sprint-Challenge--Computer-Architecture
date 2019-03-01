@@ -51,7 +51,8 @@ void cpu_run(struct cpu *cpu)
   while (running)
   {
     unsigned char _IR = cpu_ram_read(cpu, cpu->pc);
-    unsigned char flag = 0;
+    // reset the manual pc move flag
+    cpu->FL[3] == 0;
 
     // TODO: refactor with bitwise operations
     int _operands;
@@ -84,7 +85,7 @@ void cpu_run(struct cpu *cpu)
       instruction in the subroutine. The PC can move forward 
       or backwards from its current location.*/
       cpu->pc = cpu->registers[operandA];
-      flag = 1;
+      cpu->FL[3] == 1;
       break;
 
     // TODO:
@@ -107,21 +108,21 @@ void cpu_run(struct cpu *cpu)
     case JEQ: // JEQ register //
       /*If equal flag is set (true), jump to the address 
       stored in the given register.*/
-      flag = 1;
+      cpu->FL[3] = 1;
       break;
 
     // TODO:
     case JGE: // JGE register //
       /*If greater-than flag or equal flag is set (true), 
       jump to the address stored in the given register.*/
-      flag = 1;
+      cpu->FL[3] = 1;
       break;
 
     // TODO:
     case JLE: // JLE register //
       /*If less-than flag or equal flag is set (true), 
       jump to the address stored in the given register.*/
-      flag = 1;
+      cpu->FL[3] = 1;
       break;
 
     case LDI: // LDI register immediate //
@@ -166,7 +167,7 @@ void cpu_run(struct cpu *cpu)
       Pop the value from the top of the stack and store it in the PC.*/
       cpu->pc = cpu->ram[cpu->registers[7]];
       cpu->registers[7]++;
-      flag = 1;
+      cpu->FL[3] = 1;
       break;
 
     default:
@@ -175,7 +176,7 @@ void cpu_run(struct cpu *cpu)
       exit(1);
       break;
     }
-    if (flag == 0)
+    if (cpu->FL[3] == 0)
     {
       cpu->pc = cpu->pc + _operands + 1;
     }
@@ -190,6 +191,7 @@ void cpu_init(struct cpu *cpu)
   cpu->pc = 0;
   memset(cpu->ram, 0, sizeof(cpu->ram));
   memset(cpu->registers, 0, sizeof(cpu->registers));
+  memset(cpu->FL, 0, sizeof(cpu->FL));
   cpu->registers[7] = 243;
 }
 
