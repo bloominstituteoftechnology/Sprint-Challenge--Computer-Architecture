@@ -18,7 +18,8 @@ enum alu_op {
 	ALU_MUL,
 	ALU_ADD,
   ALU_CMP,
-  ALU_AND
+  ALU_AND,
+  ALU_OR
 	// Add more here
 };
 
@@ -38,6 +39,7 @@ enum alu_op {
 #define ADD  0b10100000
 #define CMP  0b10100111
 #define AND  0b10101000
+#define OR   0b10101010
 #define PUSH 0b01000101
 #define POP  0b01000110
 #define CALL 0b01010000
