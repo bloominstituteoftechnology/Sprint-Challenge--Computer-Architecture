@@ -95,6 +95,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
 
     // TODO: implement more ALU ops
+  case ALU_MOD:
+    if (valB == 0)
+    {
+      printf("That is a zero\n");
+      exit(4);
+    }
+    cpu->registers[regA] = valA % valB;
+    break;
   case ALU_MUL:
     cpu->registers[regA] = valA * valB;
     break;
@@ -181,16 +189,16 @@ void cpu_run(struct cpu *cpu)
       cpu->registers[operandA] = operandB;
       break;
     case MOD:
-      alu(cpu, ALU_MUL, operandA, operandB);
+      alu(cpu, ALU_MOD, operandA, operandB);
       break;
     case MUL:
       alu(cpu, ALU_MUL, operandA, operandB);
       break;
     case NOT:
-      alu(cpu, ALU_MUL, operandA, operandB);
+      alu(cpu, ALU_NOT, operandA, operandB);
       break;
     case OR:
-      alu(cpu, ALU_AND, operandA, operandB);
+      alu(cpu, ALU_OR, operandA, operandB);
       break;
     case PRN:
       printf("%d\n", cpu->registers[operandA]);
@@ -208,13 +216,13 @@ void cpu_run(struct cpu *cpu)
       cpu->registers[7]++;
       break;
     case SHL:
-      alu(cpu, ALU_MUL, operandA, operandB);
+      alu(cpu, ALU_SHL, operandA, operandB);
       break;
     case SHR:
-      alu(cpu, ALU_MUL, operandA, operandB);
+      alu(cpu, ALU_SHR, operandA, operandB);
       break;
     case XOR:
-      alu(cpu, ALU_MUL, operandA, operandB);
+      alu(cpu, ALU_XOR, operandA, operandB);
       break;
     default:
       printf("unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
