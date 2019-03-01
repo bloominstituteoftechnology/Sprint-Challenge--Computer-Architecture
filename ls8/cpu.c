@@ -164,6 +164,12 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[operand0] - 2;
       }
       break;
+    case JNE:
+      if (cpu->E == 0)
+      {
+        cpu->PC = cpu->reg[operand0] - 2;
+      }
+      break;
     }
     // 5. Do whatever the instruction should do according to the spec.
     // 6. Move the PC to the next instruction.
