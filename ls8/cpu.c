@@ -156,7 +156,9 @@ void cpu_run(struct cpu *cpu)
           // set flag to false
           cpu->E = 0;
         }
-        
+      case JMP:
+      // set PC to address stored in given register
+        cpu->PC = cpu->reg[operandA] - 2;
       default:
         break;
     }
