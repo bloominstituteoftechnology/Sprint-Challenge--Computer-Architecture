@@ -85,6 +85,18 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_OR:
       cpu->reg[regA] |= cpu->reg[regB];
       break;
+    case ALU_XOR:
+      cpu->reg[regA] ^= cpu->reg[regB];
+      break;
+    case ALU_SHL:
+      cpu->reg[regA] <<= cpu->reg[regB];
+      break;
+    case ALU_SHR:
+      cpu->reg[regA] >>= cpu->reg[regB];
+      break;
+    case ALU_MOD:
+      cpu->reg[regA] %= cpu->reg[regB];
+      break;
     // TODO: implement more ALU ops
   }
 }
@@ -187,6 +199,30 @@ void cpu_run(struct cpu *cpu)
       case OR:
         alu(cpu, ALU_OR, operandA, operandB);
         cpu->PC += operands + 1;
+        break;
+      case XOR:
+        alu(cpu, ALU_XOR, operandA, operandB);
+        cpu->PC += operands + 1;
+        break;
+      case SHL:
+        alu(cpu, ALU_SHL, operandA, operandB);
+        cpu->PC += operands + 1;
+        break;
+      case SHR:
+        alu(cpu, ALU_SHR, operandA, operandB);
+        cpu->PC += operands + 1;
+        break;
+      case MOD:
+        if (cpu->reg[operandB] == 0)
+        {
+          printf("Divide by 0 not allowed.\n");
+          running = 0;
+        }
+        else
+        {
+          alu(cpu, ALU_MOD, operandA, operandB);
+          cpu->PC += operands + 1;
+        }
         break;
       default:
         break;
