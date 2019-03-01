@@ -6,6 +6,7 @@ struct cpu {
   // TODO
   // PC
   unsigned char pc;
+  unsigned char flags;
   // registers (array)
   unsigned char reg[8]; // there are 8 total: R0-R7
   // ram (array)
@@ -19,6 +20,10 @@ enum alu_op {
 	// Add more here
 };
 
+#define CMP_LessThan      0b00000100
+#define CMP_GreaterThan   0b00000010
+#define CMP_Equal         0b00000001
+
 // Instructions
 
 // These use binary literals. If these aren't available with your compiler, hex
@@ -29,6 +34,7 @@ enum alu_op {
 #define PRN  0b01000111
 #define MUL  0b10100010
 #define ADD  0b10100000
+#define CMP  0b10100111
 #define PUSH 0b01000101
 #define POP  0b01000110
 #define CALL 0b01010000
