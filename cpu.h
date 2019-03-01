@@ -12,7 +12,7 @@ struct cpu {
 };
 
 
-enum alu_op {
+enum alu_operations {
 	ALU_MULTIPLIER,
 	ALU_ADDITION,
   ALU_CMP_INSTRUCTION

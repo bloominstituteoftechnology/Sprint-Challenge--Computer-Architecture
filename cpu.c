@@ -45,7 +45,7 @@ void cpu_loader(struct cpu *cpu, char *arg)
 }
 
 
-void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
+void alu(struct cpu *cpu, enum alu_operations op, unsigned char regA, unsigned char regB)
 {
   switch (op)
   {
