@@ -115,14 +115,15 @@ void cpu_run(struct cpu *cpu)
     switch (instruction)
     {
     case LDI:
-    printf("LDI:  ");
+    printf("LDI:\n");
       // 5. Do whatever the instruction should do according to the spec.
       cpu->reg[operandA] = operandB;
       // 6. Move the PC to the next instruction.
       break;
     case PRN:
-    printf("PRN:  ");
-      printf("%u\n", cpu->reg[operandA]);
+    printf("PRN: ----- ");
+      printf("%u", cpu->reg[operandA]);
+      printf(" ----- \n");
       break;
     case HLT:
       running = 0;
@@ -150,42 +151,53 @@ void cpu_run(struct cpu *cpu)
     case RET:
       cpu->PC = cpu->ram[cpu->reg[7]];
       cpu->reg[7] += 1;
-      printf("PC: %d\n", cpu->PC);
+  
       break;
     case CMP:
-    printf("CMP:  ");
+    printf("CMP:\n");
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
     case JMP:
+    
       cpu->PC = cpu->reg[operandA];
       break;
 
     case JEQ:
-    printf("JEQ:  ");
-      if (cpu->FL == 1)
+    printf("JEQ:");
+    printf("                        CPU->FL: %d    ", cpu->FL);
+      if (cpu->FL == 0b00000001)
       {
+        printf("FL == 1  JUMPS!!");
+
+        printf("%u \n", cpu->reg[operandA]);
         cpu->PC = cpu->reg[operandA];
         cpu->FL = 0;
       }
       else
       {
+        printf("FL != 1       Doesn't jump   \n");
         cpu->PC += (instruction >> 6 & 3) + 1;
+        // cpu->PC += 2;
         cpu->FL = 0;
       }
       break;
 
     case JNE:
-    printf("JNE:  ");
-      if ((cpu->FL & 1) != 1)
+    printf("JNE:");
+     printf("                        CPU->FL: %d    ", cpu->FL);
+      if (cpu->FL != 0b00000001)
       {
+        printf("cpu->FL & 1 != 1  JUMPS!\n");
         cpu->PC = cpu->reg[operandA];
         cpu->FL = 0;
       }
       else
       {
-        cpu->PC += (instruction >> 6 & 3) + 1;
-        cpu->FL = 0;
+        printf("cpu->FL & 1 == 1\n");
+        // cpu->PC += (instruction >> 6 & 3) + 1;
+         cpu->PC += 2;
+        // cpu->FL = 0;
       }
       break;
     }
@@ -207,7 +219,7 @@ void cpu_init(struct cpu *cpu)
   cpu->FL = 0b00000000;
   //void *memset(void *ptr, int x, size_t n);
   //initalize both ram and reg from cpu.h
-  memset(cpu->reg, 0, sizeof(cpu->reg));
-  memset(cpu->ram, 0, sizeof(cpu->ram));
+  memset(cpu->reg, 0, 8*sizeof(char));
+  memset(cpu->ram, 0, 256*sizeof(char));
   cpu->reg[7] = cpu->ram[0xf4];
 }
