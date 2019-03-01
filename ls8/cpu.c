@@ -115,14 +115,13 @@ void cpu_run(struct cpu *cpu)
     switch (instruction)
     {
     case LDI:
-      printf("LDI:\n");
       // 5. Do whatever the instruction should do according to the spec.
       cpu->reg[operandA] = operandB;
       
       // 6. Move the PC to the next instruction.
       break;
     case PRN:
-      printf("PRN: ----- ");
+      printf(" ----- ");
       printf("%u", cpu->reg[operandA]);
       printf(" ----- \n");
       break;
@@ -155,7 +154,6 @@ void cpu_run(struct cpu *cpu)
 
       break;
     case CMP:
-      printf("CMP:\n");
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
@@ -165,13 +163,8 @@ void cpu_run(struct cpu *cpu)
       break;
 
     case JEQ:
-      printf("JEQ:");
-      printf("                        CPU->FL: %d    ", cpu->FL);
       if (cpu->FL == 1)
       {
-        printf("FL == 1  JUMPS!!     ");
-        printf("my cpu->PC %u, my cpu-FL %u, my cpu->reg[operandA] %u \n", cpu->PC, cpu->FL, cpu->reg[operandA]);
-
         cpu->PC = cpu->reg[operandA];
         cpu->PC += 2;
         cpu->FL = 0;
@@ -179,7 +172,6 @@ void cpu_run(struct cpu *cpu)
       }
       else
       {
-        printf("FL != 1       Doesn't jump   \n");
         cpu->PC += (instruction >> 6 & 3) + 1;
         // cpu->PC += 2;
         cpu->FL = 0;
@@ -188,18 +180,15 @@ void cpu_run(struct cpu *cpu)
       break;
 
     case JNE:
-      printf("JNE:");
-      printf("                        CPU->FL: %d    ", cpu->FL);
+
       if ((cpu->FL & 1) != 1)
       {
-        printf("cpu->FL & 1 != 1  JUMPS!\n");
         cpu->PC = cpu->reg[operandA];
         cpu->FL = 0;
         break;
       }
       else
       {
-        printf("cpu->FL & 1 == 1\n");
         cpu->PC += (instruction >> 6 & 3) + 1;
         //  cpu->PC += 2;
         cpu->FL = 0;
