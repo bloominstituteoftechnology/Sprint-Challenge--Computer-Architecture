@@ -98,6 +98,12 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_MUL:
     cpu->registers[regA] = valA * valB;
     break;
+  case ALU_OR:
+    cpu->registers[regA] = valA | valB;
+    break;
+  case ALU_XOR:
+    cpu->registers[regA] = valA ^ valB;
+    break;
   }
 }
 
@@ -168,6 +174,9 @@ void cpu_run(struct cpu *cpu)
     case MUL:
       alu(cpu, ALU_MUL, operandA, operandB);
       break;
+    case OR:
+      alu(cpu, ALU_AND, operandA, operandB);
+      break;
     case PRN:
       printf("%d\n", cpu->registers[operandA]);
       break;
@@ -182,6 +191,9 @@ void cpu_run(struct cpu *cpu)
     case RET:
       cpu->PC = cpu->ram[cpu->registers[7]];
       cpu->registers[7]++;
+      break;
+    case XOR:
+      alu(cpu, ALU_MUL, operandA, operandB);
       break;
     default:
       printf("unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
