@@ -239,6 +239,7 @@ void cpu_run(struct cpu *cpu)
       case MOD:
         alu(cpu, ALU_MOD, operandA, operandB);
         cpu->pc += 3;
+        break;
       case PUSH:
         push(cpu, operandA);
         break;
