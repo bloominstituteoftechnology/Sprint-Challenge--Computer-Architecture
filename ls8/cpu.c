@@ -104,6 +104,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_NOT:
       cpu->reg[regA] = ~(cpu->reg[regA]);
       break;
+    case ALU_MOD:
+      cpu->reg[regA] = cpu->reg[regA] % cpu->reg[regB];
+      break;
 
     // TODO: implement more ALU ops
   }
@@ -214,6 +217,7 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
+//        printf("CMP %d - %d\n", cpu->reg[operandA], cpu->reg[operandB]);
         cpu->pc += 3;
         break;
       case AND:
@@ -232,6 +236,9 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_NOT, operandA, 0);
         cpu->pc += 2;
         break;
+      case MOD:
+        alu(cpu, ALU_MOD, operandA, operandB);
+        cpu->pc += 3;
       case PUSH:
         push(cpu, operandA);
         break;

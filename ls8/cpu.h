@@ -21,7 +21,8 @@ enum alu_op {
   ALU_AND,
   ALU_OR,
   ALU_XOR,
-  ALU_NOT
+  ALU_NOT,
+  ALU_MOD
 	// Add more here
 };
 
@@ -44,6 +45,7 @@ enum alu_op {
 #define OR   0b10101010
 #define XOR  0b10101011
 #define NOT  0b01101001
+#define MOD  0b10100100
 #define PUSH 0b01000101
 #define POP  0b01000110
 #define CALL 0b01010000
