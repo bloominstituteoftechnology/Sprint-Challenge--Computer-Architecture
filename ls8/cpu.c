@@ -173,6 +173,11 @@ void cpu_run(struct cpu *cpu)
       // Pop the value from the top of the stack and store it in the PC
       cpu->PC = cpu_pop(cpu);
       break;
+    case CMP:
+      // Compares the value of 2 ints
+      alu(cpu, ALU_CMP, operand0, operand1);
+      cpu->PC += 3;
+      break;
     case HLT:
       // Set running to false to stop program
       running = 0;
