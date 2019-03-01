@@ -145,13 +145,24 @@ void cpu_run(struct cpu *cpu)
       {
         cpu->E = 1;
       }
-      else
+      if (cpu->reg[operand0] < cpu->reg[operand1])
       {
-        cpu->E = 0;
+        cpu->L = 1;
       }
+      if (cpu->reg[operand0] > cpu->reg[operand1])
+      {
+        cpu->G = 1;
+      }
+
       break;
     case JMP:
       cpu->PC = cpu->reg[operand0] - 2;
+      break;
+    case JEQ:
+      if (cpu->E == 1)
+      {
+        cpu->PC = cpu->reg[operand0] - 2;
+      }
       break;
     }
     // 5. Do whatever the instruction should do according to the spec.
@@ -171,4 +182,6 @@ void cpu_init(struct cpu *cpu)
   memset(cpu->reg, 0, sizeof cpu->reg);
   cpu->reg[SP] = ADDR_EMPTY_STACK;
   cpu->E = 0;
+  cpu->L = 0;
+  cpu->G = 0;
 }

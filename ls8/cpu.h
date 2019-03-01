@@ -10,6 +10,8 @@ struct cpu
   unsigned int PC;
   unsigned int SP;
   unsigned int E;
+  unsigned int G;
+  unsigned int L;
   // registers (array)
   unsigned char reg[8];
   // ram (array)
