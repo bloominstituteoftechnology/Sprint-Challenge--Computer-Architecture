@@ -169,6 +169,13 @@ void ret_instr(struct cpu *cpu)
 }
 
 /**
+ * Perform CMP Instruction
+ */
+void cmp_instr(struct cpu *cpu)
+{
+}
+
+/**
  * Run the CPU
  */
 void cpu_run(struct cpu *cpu)
@@ -203,6 +210,9 @@ void cpu_run(struct cpu *cpu)
       break;
     case RET:
       ret_instr(cpu);
+      break;
+    case CMP:
+      cmp_instr(cpu);
       break;
     case HLT:
       running = 0;
