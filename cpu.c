@@ -14,7 +14,7 @@ void cpu_ram_writer(struct cpu *cpu, unsigned char value, unsigned char addr)
   cpu->ram[addr] = value;
 }
 
-void cpu_load(struct cpu *cpu, char *arg)
+void cpu_loader(struct cpu *cpu, char *arg)
 {
   int addr = 0;
   FILE *f = fopen(arg, "r");
