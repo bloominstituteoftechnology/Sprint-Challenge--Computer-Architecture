@@ -64,6 +64,20 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         case ALU_ADD:
             cpu->registers[regA] = a + b;
             break;
+        case ALU_CMP:
+            if (cpu->registers[regA] == cpu->registers[regB])
+            {
+                cpu->flags |= 0b00000001;
+            }
+            if (cpu->registers[regA] < cpu->registers[regB])
+            {
+                cpu->flags |= 0b00000100;
+            }
+            if (cpu->registers[regA] > cpu->registers[regB])
+            {
+                cpu->flags |= 0b00000010;
+            }
+            break;
     }
 }
 
@@ -106,12 +120,38 @@ void cpu_run(struct cpu *cpu)
                 alu(cpu, ALU_ADD, operandA, operandB);
                 cpu->pc += 3;
                 break;
+            case CMP:
+                alu(cpu, ALU_CMP, operandA, operandB);
+                cpu->pc += 3;
+                break;
+            case JMP:
+                cpu->pc = cpu->registers[operandA];
+                break;
+            case JNE:
+                if (!(cpu->flags & 1))
+                {
+                    cpu->pc = cpu->registers[operandA];
+                } else
+                {
+                    cpu->pc += 2;
+                }
+                break;
+            case JEQ:
+                if (cpu->flags & 1)
+                {
+                    cpu->pc = cpu->registers[operandA];
+                } else
+                {
+                    cpu->pc += 2;
+                }
+                break;
             case HLT:
                 // Halt the CPU (and exit the emulator)
                 running = 0;
                 break;
             default:
-                break;
+                fprintf(stderr, "Unkown command\n");
+                exit(3);
         }
     }
 }
@@ -125,4 +165,5 @@ void cpu_init(struct cpu *cpu)
     memset(cpu->ram, 0, sizeof(cpu->ram));
     memset(cpu->registers, 0, sizeof(cpu->registers));
     cpu->registers[7] = 0xF4;
+    cpu->flags = 0b00000000;
 }
