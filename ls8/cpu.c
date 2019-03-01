@@ -86,7 +86,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_CMP:
       if (cpu->reg[regA] < cpu->reg[regB]) {
         cpu->flags = CMP_LessThan;
-      } else if (cpu->reg[regA] > cou->reg[regB]) {
+      } else if (cpu->reg[regA] > cpu->reg[regB]) {
         cpu->flags = CMP_GreaterThan;
       } else {
         cpu->flags = CMP_Equal;
@@ -237,6 +237,7 @@ void cpu_run(struct cpu *cpu)
           // If it isn't skip the jump
           cpu->pc += 2;
         }
+        break;
       case HLT:
         running = 0;
         break;
