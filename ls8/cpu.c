@@ -153,6 +153,26 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
+    case JMP:
+      cpu->PC = cpu->reg[operandA];
+      continue;
+
+    case JEQ:
+      if (cpu->FL & 0x01)
+      {
+        cpu->PC = cpu->reg[operandA];
+        continue;
+      }
+      break;
+
+    case JNE:
+      if (!cpu->FL & 0x01)
+      {
+        cpu->PC = cpu->reg[operandA];
+        continue;
+      }
+      break;
+
     default:
       printf("nope\n");
     }
