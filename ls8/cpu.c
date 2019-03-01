@@ -229,6 +229,14 @@ void cpu_run(struct cpu *cpu)
           cpu->pc += 2;
         }
         break;
+      case JNE:
+        // Check if the cmp_equal flag is set to false
+        if ((cpu->flags & CMP_Equal) != CMP_Equal) {
+          cpu->pc = cpu->reg[operandA];
+        } else {
+          // If it isn't skip the jump
+          cpu->pc += 2;
+        }
       case HLT:
         running = 0;
         break;
