@@ -52,7 +52,7 @@ void cpu_run(struct cpu *cpu)
   {
     unsigned char _IR = cpu_ram_read(cpu, cpu->pc);
     // reset the manual pc move flag
-    cpu->FL[3] == 0;
+    cpu->FL[3] = 0;
 
     // TODO: refactor with bitwise operations
     int _operands;
@@ -85,7 +85,7 @@ void cpu_run(struct cpu *cpu)
       instruction in the subroutine. The PC can move forward 
       or backwards from its current location.*/
       cpu->pc = cpu->registers[operandA];
-      cpu->FL[3] == 1;
+      cpu->FL[3] = 1;
       break;
 
     // TODO:
@@ -96,6 +96,24 @@ void cpu_run(struct cpu *cpu)
       otherwise set it to 0.
       A is greater than registerB, set the Greater-than G 
       flag to otherwise set it to 0.*/
+      if (cpu->ram[cpu->registers[operandA]] == cpu->ram[cpu->registers[operandB]])
+      {
+        cpu->FL[0] = 1;
+        cpu->FL[1] = 0;
+        cpu->FL[2] = 0;
+      }
+      if (cpu->ram[cpu->registers[operandA]] < cpu->ram[cpu->registers[operandB]])
+      {
+        cpu->FL[0] = 0;
+        cpu->FL[1] = 1;
+        cpu->FL[2] = 0;
+      }
+      if (cpu->ram[cpu->registers[operandA]] > cpu->ram[cpu->registers[operandB]])
+      {
+        cpu->FL[0] = 0;
+        cpu->FL[1] = 0;
+        cpu->FL[2] = 1;
+      }
       break;
 
     case HLT: // HLT //
@@ -191,6 +209,7 @@ void cpu_init(struct cpu *cpu)
   cpu->pc = 0;
   memset(cpu->ram, 0, sizeof(cpu->ram));
   memset(cpu->registers, 0, sizeof(cpu->registers));
+  // FL[0] Equal / FL[1] Less Than / FL[2] Greater Than / FL[3] pc manually moved /
   memset(cpu->FL, 0, sizeof(cpu->FL));
   cpu->registers[7] = 243;
 }
