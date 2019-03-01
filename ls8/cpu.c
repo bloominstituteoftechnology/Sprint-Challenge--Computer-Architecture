@@ -68,6 +68,22 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->FL = cpu->reg[regA] ^ cpu->reg[regB] ? 0x00 : 0x01;
     break;
 
+  case ALU_AND:
+    cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB];
+    break;
+
+  case ALU_OR:
+    cpu->reg[regA] = cpu->reg[regA] | cpu->reg[regB];
+    break;
+
+  case ALU_XOR:
+    cpu->reg[regA] = cpu->reg[regA] ^ cpu->reg[regB];
+    break;
+
+  case ALU_NOT:
+    cpu->reg[regA] = ~cpu->reg[regA];
+    break;
+
   default:
     printf("nope\n");
     // TODO: implement more ALU ops
@@ -171,6 +187,22 @@ void cpu_run(struct cpu *cpu)
         cpu->PC = cpu->reg[operandA];
         continue;
       }
+      break;
+
+    case AND:
+      alu(cpu, ALU_AND, operandA, operandB);
+      break;
+
+    case OR:
+      alu(cpu, ALU_AND, operandA, operandB);
+      break;
+
+    case XOR:
+      alu(cpu, ALU_AND, operandA, operandB);
+      break;
+
+    case NOT:
+      alu(cpu, ALU_AND, operandA);
       break;
 
     default:
