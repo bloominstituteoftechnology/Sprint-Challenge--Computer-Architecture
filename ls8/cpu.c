@@ -54,16 +54,7 @@ void cpu_run(struct cpu *cpu)
     // reset the manual pc move flag
     cpu->FL[3] = 0;
 
-    // TODO: refactor with bitwise operations
-    int _operands;
-    if (_IR > 0b00111111 && _IR < 0b10000000)
-    {
-      _operands = 1;
-    }
-    if (_IR >= 0b10000000)
-    {
-      _operands = 2;
-    }
+    int _operands = _IR >> 6;
 
     unsigned char operandA = cpu_ram_read(cpu, cpu->pc + 1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->pc + 2);
@@ -121,7 +112,6 @@ void cpu_run(struct cpu *cpu)
       exit(0);
       break;
 
-    // TODO:
     case JEQ: // JEQ register //
       /*If equal flag is set (true), jump to the address 
       stored in the given register.*/
@@ -132,7 +122,6 @@ void cpu_run(struct cpu *cpu)
       }
       break;
 
-    // TODO:
     case JGE: // JGE register //
       /*If greater-than flag or equal flag is set (true), 
       jump to the address stored in the given register.*/
@@ -143,7 +132,6 @@ void cpu_run(struct cpu *cpu)
       }
       break;
 
-    // TODO:
     case JLE: // JLE register //
       /*If less-than flag or equal flag is set (true), 
       jump to the address stored in the given register.*/
