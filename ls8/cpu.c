@@ -84,6 +84,23 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->reg[regA] = ~cpu->reg[regA];
     break;
 
+  case ALU_SHL:
+    cpu->reg[regA] = cpu->reg[regA] << cpu->reg[regB];
+    break;
+
+  case ALU_SHR:
+    cpu->reg[regA] = cpu->reg[regA] >> cpu->reg[regB];
+    break;
+
+  case ALU_MOD:
+    if (cpu->reg[regB] & 0x01)
+    {
+      cpu->reg[regA] %= cpu->reg[regB];
+      break;
+    }
+    cpu->reg[regA] = cpu->reg[regA] & cpu->reg[regB] - 1;
+    break;
+
   default:
     printf("nope\n");
     // TODO: implement more ALU ops
@@ -202,7 +219,25 @@ void cpu_run(struct cpu *cpu)
       break;
 
     case NOT:
-      alu(cpu, ALU_AND, operandA);
+      alu(cpu, ALU_AND, operandA, operandB);
+      break;
+
+    case SHL:
+      alu(cpu, ALU_SHL, operandA, operandB);
+      break;
+
+    case SHR:
+      alu(cpu, ALU_SHR, operandA, operandB);
+      break;
+
+    case MOD:
+      if (!cpu->reg[operandA])
+      {
+        printf('can\'t divide by zero');
+        running = 0;
+        return;
+      }
+      alu(cpu, ALU_MOD, operandA, operandB);
       break;
 
     default:
