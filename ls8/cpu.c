@@ -178,6 +178,11 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_CMP, operand0, operand1);
       cpu->PC += 3;
       break;
+    case JMP:
+      // Jump to the address stored in the given register
+      // Set the PC to the address stored in the given register.
+      cpu->PC = cpu->reg[operand0];
+      break;
     case HLT:
       // Set running to false to stop program
       running = 0;

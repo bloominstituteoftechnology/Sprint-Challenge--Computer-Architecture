@@ -40,6 +40,9 @@ enum alu_op
 
 // compare the values in 2 registers
 #define CMP 0b10100111
+// jump to the address stored in the given register
+#define JMP 0b01010100
+
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations
