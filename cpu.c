@@ -4,12 +4,12 @@
 #include "cpu.h"
 
 // Reads logic stored in the ram
-char cpu_ram_read(struct cpu *cpu, unsigned char addr)
+char cpu_ram_reader(struct cpu *cpu, unsigned char addr)
 {
   return cpu->ram[addr];
 }
 
-void cpu_ram_write(struct cpu *cpu, unsigned char value, unsigned char addr)
+void cpu_ram_writer(struct cpu *cpu, unsigned char value, unsigned char addr)
 {
   cpu->ram[addr] = value;
 }
@@ -36,7 +36,7 @@ void cpu_load(struct cpu *cpu, char *arg)
       continue;
     }
 
-    cpu_ram_write(cpu, val, addr++);
+    cpu_ram_writer(cpu, val, addr++);
 
   }
   // Close the cpu instruction
@@ -90,8 +90,8 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 
 void ldi(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
-  unsigned char operand_b = cpu_ram_read(cpu, cpu->pc + 2);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
+  unsigned char operand_b = cpu_ram_reader(cpu, cpu->pc + 2);
   cpu->reg[operand_a] = operand_b;
   cpu->pc += 3;
 }
@@ -99,7 +99,7 @@ void ldi(struct cpu *cpu)
 // PRN stage
 void prn(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
   unsigned char print_value = cpu->reg[operand_a];
 
   printf("%u \n", print_value);
@@ -110,8 +110,8 @@ void prn(struct cpu *cpu)
 
 void mul(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
-  unsigned char operand_b = cpu_ram_read(cpu, cpu->pc + 2);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
+  unsigned char operand_b = cpu_ram_reader(cpu, cpu->pc + 2);
   alu(cpu, ALU_MULTIPLIER, operand_a, operand_b);
   cpu->pc += 3;
 }
@@ -120,7 +120,7 @@ void mul(struct cpu *cpu)
 void push(struct cpu *cpu)
 {
 
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
 
   cpu->reg[7]--;
 
@@ -133,7 +133,7 @@ void pop(struct cpu *cpu)
 {
   // note: stack decrements memory address as things are added to it, 
   // like having gravity reversed
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
 
   cpu->reg[operand_a] = cpu->ram[cpu->reg[7]];
 
@@ -146,8 +146,8 @@ void pop(struct cpu *cpu)
 void add(struct cpu *cpu)
 {
 
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
-  unsigned char operand_b = cpu_ram_read(cpu, cpu->pc + 2);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
+  unsigned char operand_b = cpu_ram_reader(cpu, cpu->pc + 2);
 
   alu(cpu, ALU_ADDITION, operand_a, operand_b);
   cpu->pc += 3;
@@ -158,7 +158,7 @@ void add(struct cpu *cpu)
 void call(struct cpu *cpu)
 {
 
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
   unsigned char subroutine_location = cpu->reg[operand_a];
   unsigned char location_info = cpu->pc + 2;
 
@@ -178,8 +178,8 @@ void routine_instruction(struct cpu *cpu)
 
 void cmp(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
-  unsigned char operand_b = cpu_ram_read(cpu, cpu->pc + 2);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
+  unsigned char operand_b = cpu_ram_reader(cpu, cpu->pc + 2);
   unsigned char reg_a = cpu->reg[operand_a];
   unsigned char reg_b = cpu->reg[operand_b];
   alu(cpu, ALU_CMP_INSTRUCTION, reg_a, reg_b);
@@ -188,7 +188,7 @@ void cmp(struct cpu *cpu)
 
 void jeq(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
   if (cpu->flag_equals == 1)
   {
     cpu->pc = cpu->reg[operand_a];
@@ -201,7 +201,7 @@ void jeq(struct cpu *cpu)
 
 void jne(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
   if (cpu->flag_equals == 0)
   {
     cpu->pc = cpu->reg[operand_a];
@@ -214,7 +214,7 @@ void jne(struct cpu *cpu)
 
 void jmp(struct cpu *cpu)
 {
-  unsigned char operand_a = cpu_ram_read(cpu, cpu->pc + 1);
+  unsigned char operand_a = cpu_ram_reader(cpu, cpu->pc + 1);
   cpu->pc = cpu->reg[operand_a];
 }
 
@@ -224,7 +224,7 @@ void cpu_runner(struct cpu *cpu)
 
   while (running)
   {
-    unsigned char c_instr = cpu_ram_read(cpu, cpu->pc);
+    unsigned char c_instr = cpu_ram_reader(cpu, cpu->pc);
     switch (c_instr)
     {
     case LDI:
