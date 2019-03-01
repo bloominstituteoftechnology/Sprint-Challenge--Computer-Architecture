@@ -38,9 +38,9 @@ In this code challenge, you will add _conditional jumps_ (AKA _conditional branc
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
+- Copy your source into this repo, or...
 
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
+- Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along (in addition to the PR for `ANSWERS.md`)
 
 ## Minimum Viable Product
@@ -172,3 +172,5 @@ can deliver on the following optional goals:
 - [ ] Add an `ADDI` extension instruction to add an immediate value to a register
 - [ ] Add timer interrupts
 - [ ] Add keyboard interrupts
+
+-read
