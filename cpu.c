@@ -216,6 +216,9 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   cpu->pc = 0;
+  cpu->flag_e = 0;
+  cpu->flag_l = 0;
+  cpu->flag_g = 0;
   memset(cpu->ram, 0, 256 * sizeof(unsigned char));
   memset(cpu->reg, 0, 8 * sizeof(unsigned char));
 }

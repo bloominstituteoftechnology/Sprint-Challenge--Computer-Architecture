@@ -8,6 +8,9 @@ struct cpu {
   // registers (array)
   // ram (array)
   unsigned int pc;
+  unsigned int flag_e;
+  unsigned int flag_g;
+  unsigned int flag_l;
   unsigned char reg[8]; // Set to 8 as it's the max
   unsigned char ram[256]; // Set to 256 as it's the max
 };
@@ -32,6 +35,7 @@ enum alu_op {
 #define ADD  0b10100000
 #define CALL 0b01010000
 #define RET  0b00010001
+#define CMP  0b10100111
 
 // Function declarations
 
