@@ -70,6 +70,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
   case ALU_CMP:
     cpu->FL += cpu_cmp(cpu->reg[regA], cpu->reg[regB]);
+    break;
   }
 }
 unsigned char cpu_ram_read(struct cpu *cpu, int index)
@@ -114,15 +115,16 @@ void cpu_run(struct cpu *cpu)
     switch (instruction)
     {
     case LDI:
+    printf("LDI:  ");
       // 5. Do whatever the instruction should do according to the spec.
       cpu->reg[operandA] = operandB;
       // 6. Move the PC to the next instruction.
       break;
     case PRN:
+    printf("PRN:  ");
       printf("%u\n", cpu->reg[operandA]);
       break;
     case HLT:
-      printf("Stop\n");
       running = 0;
       break;
     case MUL:
@@ -151,9 +153,43 @@ void cpu_run(struct cpu *cpu)
       printf("PC: %d\n", cpu->PC);
       break;
     case CMP:
+    printf("CMP:  ");
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
+
+    case JMP:
+      cpu->PC = cpu->reg[operandA];
+      break;
+
+    case JEQ:
+    printf("JEQ:  ");
+      if (cpu->FL == 1)
+      {
+        cpu->PC = cpu->reg[operandA];
+        cpu->FL = 0;
+      }
+      else
+      {
+        cpu->PC += (instruction >> 6 & 3) + 1;
+        cpu->FL = 0;
+      }
+      break;
+
+    case JNE:
+    printf("JNE:  ");
+      if ((cpu->FL & 1) != 1)
+      {
+        cpu->PC = cpu->reg[operandA];
+        cpu->FL = 0;
+      }
+      else
+      {
+        cpu->PC += (instruction >> 6 & 3) + 1;
+        cpu->FL = 0;
+      }
+      break;
     }
+
     if ((instruction >> 4 & 1) != 1)
     {
       cpu->PC += (instruction >> 6 & 3) + 1;
@@ -168,6 +204,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special reg
   cpu->PC = 0;
+  cpu->FL = 0b00000000;
   //void *memset(void *ptr, int x, size_t n);
   //initalize both ram and reg from cpu.h
   memset(cpu->reg, 0, sizeof(cpu->reg));
