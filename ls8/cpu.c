@@ -67,6 +67,15 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_ADD:
       cpu -> reg[regA] = valA + valB;
       break;
+    case ALU_CMP:
+      if(cpu -> reg[regA] == cpu -> reg[regB]) {
+        cpu -> FL = (cpu -> FL & ~7) | 1;
+      } else if (cpu -> reg[regA] == cpu -> reg[regB]) {
+        cpu->FL = (cpu->FL & ~7) | 2;
+      } else {
+        cpu->FL = (cpu->FL & ~7) | 4;
+      }
+      break;
   }
 }
 
@@ -136,6 +145,9 @@ void cpu_run(struct cpu *cpu)
       case RET:
         // pops the value from the stack and stores it in pc
         cpu -> PC = cpu_ram_read(cpu, cpu -> SP++);
+        break;
+      case CMP:
+        alu(cpu, ALU_CMP, operandA, operandB);
         break;
       case HLT:
         // halts the cpu and exits the emulator
