@@ -52,6 +52,19 @@ void cpu_load(struct cpu *cpu, char *filename)
   fclose(fp);
 }
 
+unsigned char cpu_compare(unsigned char valA, unsigned char valB){
+  unsigned char result;
+  if(valA > valB){
+    return 2;
+  } else if (valA < valB){
+    return 4;
+  } else if(valA == valB){
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 /**
  * ALU
  */
@@ -68,13 +81,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu -> reg[regA] = valA + valB;
       break;
     case ALU_CMP:
-      if(cpu -> reg[regA] == cpu -> reg[regB]) {
-        cpu -> FL = (cpu -> FL & ~7) | 1;
-      } else if (cpu -> reg[regA] == cpu -> reg[regB]) {
-        cpu->FL = (cpu->FL & ~7) | 2;
-      } else {
-        cpu->FL = (cpu->FL & ~7) | 4;
-      }
+      cpu -> FL += cpu_compare(cpu -> reg[regA], cpu -> reg[regB]);
       break;
   }
 }
@@ -149,6 +156,24 @@ void cpu_run(struct cpu *cpu)
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
         break;
+      case JNE:
+        if((cpu -> FL & 1) != 1) {
+          cpu -> PC = cpu -> reg[operandA];
+          cpu -> FL = 0;
+        } else {
+          cpu -> PC += (IR >> 6 & 3) + 1;
+          cpu -> FL = 0;
+        }
+        break;
+      case JEQ:
+        if(cpu -> FL == 1) {
+          cpu -> PC = cpu -> reg[operandA];
+          cpu -> FL = 0;
+        } else {
+          cpu->PC += (IR >> 6 & 3) + 1;
+          cpu->FL = 0;
+        }
+        break;
       case HLT:
         // halts the cpu and exits the emulator
         running = 0;
@@ -176,4 +201,5 @@ void cpu_init(struct cpu *cpu)
   // initializes ram and reg from cpu.h
   memset(cpu -> ram, 0, sizeof(cpu -> ram));
   memset(cpu -> reg, 0, sizeof(cpu -> reg));
+  cpu -> FL = 0;
 }
