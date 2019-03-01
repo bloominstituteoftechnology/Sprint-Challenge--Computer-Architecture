@@ -54,8 +54,6 @@ void cpu_run(struct cpu *cpu)
     // reset the manual pc move flag
     cpu->FL[3] = 0;
 
-    int _operands = _IR >> 6;
-
     unsigned char operandA = cpu_ram_read(cpu, cpu->pc + 1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->pc + 2);
 
@@ -211,7 +209,7 @@ void cpu_run(struct cpu *cpu)
     }
     if (cpu->FL[3] == 0)
     {
-      cpu->pc = cpu->pc + _operands + 1;
+      cpu->pc = cpu->pc + (_IR >> 6) + 1;
     }
   }
 }
