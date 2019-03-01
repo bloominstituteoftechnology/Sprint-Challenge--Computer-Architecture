@@ -61,7 +61,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 {
   unsigned char valA = cpu->registers[regA];
   unsigned char valB = cpu->registers[regB];
-
+  unsigned char flag;
+  unsigned char mask;
+  mask = 0b00000111;
   switch (op)
   {
   case ALU_MUL:
@@ -71,18 +73,18 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->registers[regA] = valA + valB;
     break;
   case ALU_CMP:
-    unsigned char flag;
+
     if (valA == valB)
     {
-      flag = 0b00000001 & cpu->ram[cpu->PC];
+      flag = 0b00000001 & mask;
     }
     else if (valA > valB)
     {
-      flag = 0b00000010 & cpu->ram[cpu->PC];
+      flag = 0b00000010 & mask;
     }
     else if (valA < valB)
     {
-      flag = 0b00000100 & cpu->ram[cpu->PC];
+      flag = 0b00000100 & mask;
     }
     else
     {
@@ -118,17 +120,50 @@ void cpu_run(struct cpu *cpu)
     // 5. Do whatever the instruction should do according to the spec.
     switch (IR)
     {
+    case ADD:
+      alu(cpu, ALU_ADD, operandA, operandB);
+      break;
+    case CALL:
+      cpu->registers[7]--;
+      cpu_ram_write(cpu, cpu->registers[7], cpu->PC + 2);
+      cpu->PC = cpu->registers[operandA];
+      break;
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+    case HLT:
+      running = 0;
+      break;
+    case JEQ:
+      if (cpu->FL == 1)
+      {
+        cpu->PC = cpu->registers[operandA];
+      }
+      else
+      {
+        cpu->PC += 2;
+      }
+      break;
+    case JMP:
+      cpu->PC = cpu->registers[operandA];
+      break;
+    case JNE:
+      if ((cpu->FL & 0b00000001) == 0)
+      {
+        cpu->PC = cpu->registers[operandA];
+      }
+      else
+      {
+        cpu->PC += 2;
+      }
     case LDI:
       cpu->registers[operandA] = operandB;
-      break;
-    case PRN:
-      printf("%d\n", cpu->registers[operandA]);
       break;
     case MUL:
       alu(cpu, ALU_MUL, operandA, operandB);
       break;
-    case ADD:
-      alu(cpu, ALU_ADD, operandA, operandB);
+    case PRN:
+      printf("%d\n", cpu->registers[operandA]);
       break;
     case POP:
       cpu->registers[operandA] = cpu->ram[cpu->registers[7]];
@@ -138,20 +173,9 @@ void cpu_run(struct cpu *cpu)
       cpu->registers[7]--;
       cpu_ram_write(cpu, cpu->registers[7], cpu->registers[operandA]);
       break;
-    case CALL:
-      cpu->registers[7]--;
-      cpu_ram_write(cpu, cpu->registers[7], cpu->PC + 2);
-      cpu->PC = cpu->registers[operandA];
-      break;
     case RET:
       cpu->PC = cpu->ram[cpu->registers[7]];
       cpu->registers[7]++;
-      break;
-    case HLT:
-      running = 0;
-      break;
-    case CMP:
-      alu(cpu, ALU_CMP, operandA, operandB);
       break;
     default:
       printf("unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
@@ -161,7 +185,7 @@ void cpu_run(struct cpu *cpu)
 
     // 6. Move the PC to the next instruction.
     // mask IR then shift it using the shift operator
-    if ((0b11000000 & IR) >> 6 == 1 && IR != CALL && IR != RET)
+    if ((0b11000000 & IR) >> 6 == 1 && IR != CALL && IR != RET && IR != JMP && IR != JEQ && IR != JNE)
     {
       cpu->PC += 2;
     }
