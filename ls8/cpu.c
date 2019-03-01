@@ -165,6 +165,16 @@ void cpu_run(struct cpu *cpu)
       cpu->FL[3] = 1;
       break;
 
+    case JNE: // JNE register //
+      /*If E flag is clear (false, 0), jump to the address 
+      stored in the given register.*/
+      if (cpu->FL[0] == 0)
+      {
+        cpu->pc = cpu->registers[operandA];
+        cpu->FL[3] = 1;
+      }
+      break;
+
     case LDI: // LDI register immediate //
       /*Set the value of a register to an integer.*/
       // printf("setting register %u to %u\n", operandA, operandB); // <-- debugging
