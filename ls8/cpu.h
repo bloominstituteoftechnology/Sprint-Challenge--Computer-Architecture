@@ -16,8 +16,12 @@ enum alu_op
   ALU_ADD,
   ALU_AND,
   ALU_CMP,
+  ALU_MOD,
   ALU_MUL,
+  ALU_NOT,
   ALU_OR,
+  ALU_SHL,
+  ALU_SHR,
   ALU_XOR
   // Add more here
 };
@@ -36,12 +40,16 @@ enum alu_op
 #define JMP 0b01010100
 #define JNE 0b01010110
 #define LDI 0b10000010
+#define MOD 0b10100100
 #define MUL 0b10100010
+#define NOT 0b01101001
 #define OR 0b10101010
 #define POP 0b01000110
 #define PRN 0b01000111
 #define PUSH 0b01000101
 #define RET 0b000010001
+#define SHL 0b10101100
+#define SHR 0b10101101
 #define XOR 0b10101011
 // TODO: more instructions here. These can be used in cpu_run().
 

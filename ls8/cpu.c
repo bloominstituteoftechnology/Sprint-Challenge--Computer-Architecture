@@ -98,8 +98,17 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   case ALU_MUL:
     cpu->registers[regA] = valA * valB;
     break;
+  case ALU_NOT:
+    cpu->registers[regA] = ~(valA);
+    break;
   case ALU_OR:
     cpu->registers[regA] = valA | valB;
+    break;
+  case ALU_SHL:
+    cpu->registers[regA] = valA << valB;
+    break;
+  case ALU_SHR:
+    cpu->registers[regA] = valA >> valB;
     break;
   case ALU_XOR:
     cpu->registers[regA] = valA ^ valB;
@@ -171,7 +180,13 @@ void cpu_run(struct cpu *cpu)
     case LDI:
       cpu->registers[operandA] = operandB;
       break;
+    case MOD:
+      alu(cpu, ALU_MUL, operandA, operandB);
+      break;
     case MUL:
+      alu(cpu, ALU_MUL, operandA, operandB);
+      break;
+    case NOT:
       alu(cpu, ALU_MUL, operandA, operandB);
       break;
     case OR:
@@ -191,6 +206,12 @@ void cpu_run(struct cpu *cpu)
     case RET:
       cpu->PC = cpu->ram[cpu->registers[7]];
       cpu->registers[7]++;
+      break;
+    case SHL:
+      alu(cpu, ALU_MUL, operandA, operandB);
+      break;
+    case SHR:
+      alu(cpu, ALU_MUL, operandA, operandB);
       break;
     case XOR:
       alu(cpu, ALU_MUL, operandA, operandB);
