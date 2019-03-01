@@ -64,13 +64,14 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   unsigned char flag;
   unsigned char mask;
   mask = 0b00000111;
+
   switch (op)
   {
-  case ALU_MUL:
-    cpu->registers[regA] = valA * valB;
-    break;
   case ALU_ADD:
     cpu->registers[regA] = valA + valB;
+    break;
+  case ALU_AND:
+    cpu->registers[regA] = valA & valB;
     break;
   case ALU_CMP:
 
@@ -94,6 +95,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
 
     // TODO: implement more ALU ops
+  case ALU_MUL:
+    cpu->registers[regA] = valA * valB;
+    break;
   }
 }
 
@@ -123,6 +127,8 @@ void cpu_run(struct cpu *cpu)
     case ADD:
       alu(cpu, ALU_ADD, operandA, operandB);
       break;
+    case AND:
+      alu(cpu, ALU_AND, operandA, operandB);
     case CALL:
       cpu->registers[7]--;
       cpu_ram_write(cpu, cpu->registers[7], cpu->PC + 2);
