@@ -250,6 +250,9 @@ void cpu_run(struct cpu *cpu)
       break;
     case HLT:
       running = 0;
+      break;
+    default:
+      break;
     }
   }
 }
