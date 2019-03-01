@@ -5,8 +5,10 @@
 struct cpu
 {
   // TODO
-  // PC
+  // PC = program counter;
   unsigned int PC;
+  // FL = flag
+  unsigned int FL;
   // registers (array)
   unsigned char reg[8];
   // ram (array)
@@ -17,7 +19,8 @@ struct cpu
 enum alu_op
 {
   ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_CMP
 };
 
 // Instructions
@@ -34,6 +37,9 @@ enum alu_op
 #define CALL 0b01010000
 #define RET 0b00010001
 #define ADD 0b10100000
+
+// compare the values in 2 registers
+#define CMP 0b10100111
 // TODO: more instructions here. These can be used in cpu_run().
 
 // Function declarations
