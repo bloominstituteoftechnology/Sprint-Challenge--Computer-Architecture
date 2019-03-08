@@ -113,27 +113,34 @@ void cpu_run(struct cpu *cpu)
         cpu->reg[operand_a] = operand_b;
         cpu->PC += 3;
         break;
+
       case PRN:
         printf("%d\n", cpu->reg[operand_a]);
         cpu->PC += 2;
         break;
+
       case HLT:
         running = 0;
         break;
+
       case MUL:
         alu(cpu, ALU_MUL, operand_a, operand_b);
         cpu->PC += 3;
         break;
+
       case ADD:
         alu(cpu, ALU_ADD, operand_a, operand_b);
         cpu->PC += 3;
         break;
+
       case PUSH:
         cpu->ram[--cpu->reg[7]] = cpu->reg[operand_a];
         break;
+
       case POP:
         cpu->reg[operand_a] = cpu->ram[cpu->reg[7]++];
         break;
+
       case CALL:
         cpu->ram[--cpu->reg[7]] = cpu->PC + next_instruction;
         cpu->PC = cpu->reg[operand_a];
@@ -152,6 +159,26 @@ void cpu_run(struct cpu *cpu)
         else if (operand_a <= operand_b)
         {
           cpu->GFL = 1;
+        }
+        cpu->PC += 3;
+        break;
+
+      case JMP:
+        cpu->reg[operand_a] = cpu->ram[operand_b];
+        cpu->PC += 3;
+        continue;
+
+      case JEQ:
+        if (cpu->EFL) {
+          cpu->reg[operand_a] = cpu->ram[operand_b];
+          cpu->PC += 2;
+          continue;
+        }
+      case JNE:
+        if (!(cpu->EFL)) {
+          cpu->reg[operand_a] = cpu->ram[operand_b];
+          cpu->PC += 2;
+          continue;
         }
 
       default:
