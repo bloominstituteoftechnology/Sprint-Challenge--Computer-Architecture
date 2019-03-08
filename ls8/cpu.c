@@ -49,6 +49,10 @@ void cpu_increment(struct cpu *cpu, int num_ops){
 	  cpu->PC = cpu->PC + num_ops + 1;
 	}
 
+void cpu_jump(struct cpu *cpu, unsigned char address){
+  cpu->PC = address;
+}
+
 // Stack
 
 void cpu_push(struct cpu *cpu, unsigned char value)
@@ -148,8 +152,8 @@ void cpu_run(struct cpu *cpu)
         alu(cpu,ALU_MUL,opA,opB);
         break;
       case HLT:
-      running = 0;
-      break;
+        running = 0;
+        break;
       case PUSH:
         cpu_push(cpu,cpu->registers[opA]);
         break;
@@ -170,6 +174,18 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP:
         alu(cpu, ALU_CMP, opA, opB);
+        break;
+      case JMP:
+        cpu_jump(cpu, cpu->registers[opA]);
+      case JEQ:
+        if (cpu->FL == 1) {
+          cpu_jump(cpu, cpu->registers[opA]);
+        }
+        break;
+      case JNE:
+        if (cpu->FL != 1) {
+          cpu_jump(cpu, cpu->registers[opA]);
+        }
         break;
       default:
         fprintf(stderr, "PC %02x: unknown instruction %02x\n", cpu->PC, IR);
