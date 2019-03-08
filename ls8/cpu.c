@@ -68,6 +68,21 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       break;
     case ALU_ADD:
       reg[valA] += valB & 0xFF;
+      break;
+    case ALU_CMP:
+      if (regA == regB)
+      {
+        cpu->FL = 0b00000001;
+      }
+      else if (regA >= regB) 
+      {
+        cpu->FL = 0b00000010;
+      }
+      else
+      {
+        cpu->FL = 0b00000100;
+      }
+      break;
   }
 }
 
@@ -89,7 +104,6 @@ void cpu_run(struct cpu *cpu)
     unsigned char operand_b = cpu_ram_read(cpu, cpu->PC + 2);
 
     int next_instruction = 1;
-    
     if (IR & 0x80)
     {
       operand_a = cpu_ram_read(cpu, cpu->PC + 1);
@@ -99,6 +113,7 @@ void cpu_run(struct cpu *cpu)
     } 
     else if (IR & 0x40)
     {
+      // printf("Working?\n");
       operand_a = cpu_ram_read(cpu, cpu->PC + 1);
 
       next_instruction = 2;
@@ -149,38 +164,24 @@ void cpu_run(struct cpu *cpu)
       // Sprint
 
       case CMP:
-        if(operand_a == operand_b) {
-          cpu->EFL = 1;
-        }
-        else if (operand_a >= operand_b)
-        {
-          cpu->LFL = 1;
-        }
-        else if (operand_a <= operand_b)
-        {
-          cpu->GFL = 1;
-        }
-        cpu->PC += 3;
+        alu(cpu, ALU_CMP, operand_a, operand_b);
         break;
 
       case JMP:
-        cpu->reg[operand_a] = cpu->ram[operand_b];
-        cpu->PC += 3;
-        continue;
+        cpu->PC = cpu->reg[operand_a];
+        break;
 
       case JEQ:
-        if (cpu->EFL) {
-          cpu->reg[operand_a] = cpu->ram[operand_b];
-          cpu->PC += 2;
+        if (cpu->FL) {
+          cpu->PC = cpu->reg[operand_a];
           continue;
         }
-      case JNE:
-        if (!(cpu->EFL)) {
-          cpu->reg[operand_a] = cpu->ram[operand_b];
-          cpu->PC += 2;
-          continue;
-        }
+        break;
 
+      case JNE:
+        cpu->PC = cpu->reg[operand_a];
+        break;
+        
       default:
         printf("unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
         exit(1);
