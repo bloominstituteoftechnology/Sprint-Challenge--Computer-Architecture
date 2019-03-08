@@ -93,11 +93,10 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
         } else if(num_A == num_B){
           cpu->FL = 0b00000001;
         }
+        break;
     
   }
 }
-
-
 
 
 /**
@@ -107,14 +106,14 @@ void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
   unsigned char IR, operandA, operandB;
- 
+  
+
   while (running) {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     IR = cpu_ram_read(cpu, cpu->PC);
     operandA = cpu_ram_read(cpu, cpu->PC+1);
     operandB = cpu_ram_read(cpu, cpu->PC+2);
-
   
     // 2. switch() over it to decide on a course of action.
     switch (IR) {
@@ -130,15 +129,27 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_ADD, operandA, operandB);
         cpu->PC += 3;
         break;
-      case JMP:
-        cpu->PC = cpu->registers[operandA];
-        break;
       case POP:
         cpu->registers[operandA] = pop(cpu);
         cpu->PC += 2;
         break;
       case CMP:
-        alu(cpu, ALU_CMP, cpu->registers[operandA], cpu->registers[operandB]);
+        alu(cpu, ALU_CMP, operandA, operandB);
+        break;
+      case JMP:
+        cpu->PC = cpu->registers[operandA];
+        break;
+      case JEQ:
+        if (cpu->FL == 0b00000001)
+        {
+          cpu->PC = cpu->registers[operandA];
+        }
+        break;
+      case JNE:
+        if (cpu->FL == 0b00000000)
+        {
+          cpu->PC = cpu->registers[operandA];
+        }
         break;
       case PRN:
         printf("%d\n", cpu->registers[operandA]);
@@ -149,13 +160,12 @@ void cpu_run(struct cpu *cpu)
         cpu->PC += 2;
         break;
       case CALL:
-        cpu->registers[SP]--;
-        cpu_ram_write(cpu, cpu->registers[SP], cpu->PC + 2);
-        cpu->PC = cpu->registers[operandA];
-        continue;
+        push(cpu, (cpu->PC + 2));
+        cpu->PC = cpu->registers[operandA] - 1;
+        break;
       case RET:
         cpu->PC = cpu_ram_read(cpu, cpu->registers[SP]++);
-        continue;
+        break;
       case HTL:
         cpu->PC += 1;
         running = 0;
