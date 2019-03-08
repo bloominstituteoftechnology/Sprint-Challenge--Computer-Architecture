@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "cpu.h"
 
 /**
@@ -7,10 +6,6 @@
  */
 int main(int argc, char **argv)
 {
-  // if(argc != 2){
-  //   fprintf(stderr, "incorrect number of arguments");
-  //   exit(1);
-  // }
   if(argc != 2){
     fprintf(stderr, "incorrect number of arguments");
     return 1;

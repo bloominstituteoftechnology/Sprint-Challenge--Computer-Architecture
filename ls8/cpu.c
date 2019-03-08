@@ -60,6 +60,10 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     reg[regA] += valB;
     break;
     // TODO: implement more ALU ops
+  case ALU_CMP:
+    if(cpu->regs[regA] == cpu->regs[regB]){
+      cpu->regs[6] = 0b00000001;
+    }
   }
 }
 
@@ -145,6 +149,24 @@ void cpu_run(struct cpu *cpu)
         break;
       case RET:
         ret(cpu);
+        break;
+      case CMP:
+        alu(cpu, ALU_CMP, op0, op1);
+        break;
+      case JNE:
+        if(cpu ->FL == 1){
+          cpu->PC = cpu -> regs[op0];
+          cpu->FL = 0;
+        }
+        break;
+      case JEQ:
+        if(cpu->FL == 1){
+          cpu->PC = cpu->regs[op0];
+          cpu->FL = 0;
+        }else{
+          cpu->PC += (instruction >> 6 & 3) + 1;
+          cpu->FL = 0;
+        }
         break;
       default:
         printf("unexpected instruction 0x%02X at 0x%02X\n", instruction, cpu->PC);
