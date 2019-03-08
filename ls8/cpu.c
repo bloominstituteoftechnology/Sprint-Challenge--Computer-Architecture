@@ -143,9 +143,15 @@ void cpu_run(struct cpu *cpu)
 
       case CMP:
         if(operand_a == operand_b) {
-          cpu->FL = 1;
-        } else {
-          cpu->FL = 0;
+          cpu->EFL = 1;
+        }
+        else if (operand_a >= operand_b)
+        {
+          cpu->LFL = 1;
+        }
+        else if (operand_a <= operand_b)
+        {
+          cpu->GFL = 1;
         }
 
       default:

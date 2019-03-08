@@ -11,8 +11,14 @@ struct cpu {
   // ram (array)
   unsigned char ram[256]; // 0-255
   // flag
-  unsigned char FL;
+  // Equal flag
+  unsigned char EFL;
+  // Less than
+  unsigned char LFL;
+  // Greater than
+  unsigned char GFL;
 };
+
 
 // ALU operations
 enum alu_op {
