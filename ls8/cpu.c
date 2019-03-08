@@ -138,6 +138,15 @@ void cpu_run(struct cpu *cpu)
         cpu->ram[--cpu->reg[7]] = cpu->PC + next_instruction;
         cpu->PC = cpu->reg[operand_a];
         continue;
+      
+      // Sprint
+
+      case CMP:
+        if(operand_a == operand_b) {
+          cpu->FL = 1;
+        } else {
+          cpu->FL = 0;
+        }
 
       default:
         printf("unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
