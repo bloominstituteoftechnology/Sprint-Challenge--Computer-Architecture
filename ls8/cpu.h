@@ -17,13 +17,12 @@ struct cpu {
 // ALU operations
 enum alu_op {
 	ALU_MUL,
-  ALU_ADD
+  ALU_ADD,
+  ALU_CMP
 	// Add more here
 };
 
 // Instructions
-#define ADDR_PROGRAM_ENTRY 0x00
-#define ADDR_EMPTY_STACK 0xF4 
 // These use binary literals. If these aren't available with your compiler, hex
 // literals should be used.
 
@@ -36,6 +35,10 @@ enum alu_op {
 #define POP  0b01000110
 #define CALL 0b01010000
 #define RET  0b00010001
+#define CMP  0b10100111
+#define JMP  0b01010100
+#define JNE  0b01010110
+#define JEQ  0b01010101
 
 // TODO: more instructions here. These can be used in cpu_run().
 
