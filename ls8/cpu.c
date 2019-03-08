@@ -109,19 +109,16 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     cpu->reg[regA] += cpu->reg[regB];
     break;
 
-   case ALU_CMP:
+  case ALU_CMP:
     if (cpu->reg[regA] == cpu->reg[regB])
     {
-      cpu->FL = 0b00000001;
+      cpu->FL = 1;
     }
     else if (cpu->reg[regA] > cpu->reg[regB])
     {
-      cpu->FL = 0b00000010;
+      cpu->FL = 0;
     }
-    else
-    {
-      cpu->FL = 0b00000100;
-    }
+    
     break;
   }
 }
@@ -177,10 +174,7 @@ void cpu_run(struct cpu *cpu)
       alu(cpu, ALU_MUL, operandA, operandB);
       break;
 
-    case ADD:
-      alu(cpu, ALU_ADD, operandA, operandB);
-      break;
-
+    // uses function cpu_push that pushes value into reg
     case PUSH:
       cpu_push(cpu, cpu->reg[operandA]);
       break;
@@ -189,17 +183,49 @@ void cpu_run(struct cpu *cpu)
       cpu->reg[operandA] = cpu_pop(cpu);
       break;
 
+    case ADD:
+      alu(cpu, ALU_ADD, operandA, operandB);
+      break;
+
     case CALL:
       cpu_push(cpu, cpu->PC + 1);
       cpu->PC = cpu->reg[operandA] - 1;
       break;
 
+    case RET:
+      cpu->PC = cpu_pop(cpu);
+      break;
+
     case CMP:
+      // should compare both values
+      // and change the flag
       alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
-    case RET:
-      cpu->PC = cpu_pop(cpu);
+    case JMP:
+      // should jump to location
+      cpu->PC = cpu->reg[operandA];
+      cpu->PC += 1;
+      break;
+
+    case JEQ:
+      // should check if flag is true
+      if (cpu->FL == 1)
+      {
+        // move counter
+        cpu->PC = cpu->reg[operandA];
+        cpu->PC -= 1;
+      }
+      break;
+
+    case JNE:
+      // should check if flag is false
+      if (cpu->FL != 1)
+      {
+        // move counter
+        cpu->PC = cpu->reg[operandA];
+        cpu->PC -= 1;
+      }
       break;
 
     default:
