@@ -94,7 +94,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       {
         flag = 0b00000000;  //otherwise set to 0
       }
-      cpu->fl = flag;
+      //cpu->fl = flag;
       break;
   }
 }
@@ -219,12 +219,21 @@ void cpu_run(struct cpu *cpu)
         {
           cpu->pc = cpu->reg[operandA];
         }
+        //if not skip jump
+        else
+        {
+          cpu->pc += 2;
+        }
         break;
       case JNE:
         //if equal flag is clear/false/0 jump to address stored at given register.
         if ((cpu->fl & 0b00000001) == 0)
         {
           cpu->pc = cpu->reg[operandA];
+        }
+        else
+        {
+          cpu->pc += 2;
         }
         break;
       case HLT: 
