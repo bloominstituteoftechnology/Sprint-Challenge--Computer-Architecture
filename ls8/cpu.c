@@ -112,32 +112,50 @@ void cpu_run(struct cpu *cpu)
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     IR = cpu_ram_read(cpu, cpu->PC);
-    operandA = cpu_ram_read(cpu, cpu->PC+1);
-    operandB = cpu_ram_read(cpu, cpu->PC+2);
+
+    unsigned int operands = IR >> 6;
+    if (operands == 2) {
+      operandA = cpu_ram_read(cpu, cpu->PC+1);
+      operandB = cpu_ram_read(cpu, cpu->PC+2);
+    } else if (operands == 1) {
+      operandA = cpu->ram[cpu->PC + 1];
+    }
+
+  
   
     // 2. switch() over it to decide on a course of action.
     switch (IR) {
       case LDI:
         cpu->registers[operandA] = operandB;
-        cpu->PC += 3;
+        break;
+      case PRN:
+        printf("%d\n", cpu->registers[operandA]);
         break;
       case MUL:
         alu(cpu, ALU_MUL, operandA, operandB);
-        cpu->PC += 3;
         break;
       case ADD:
         alu(cpu, ALU_ADD, operandA, operandB);
-        cpu->PC += 3;
+        break;
+      case PUSH:
+        push(cpu, cpu->registers[operandA]);
+
         break;
       case POP:
         cpu->registers[operandA] = pop(cpu);
-        cpu->PC += 2;
+        break;
+      case CALL:
+        push(cpu, cpu->PC + 1);
+        cpu->PC = cpu->registers[operandA] - 2;
+        break;
+      case RET:
+        cpu->PC = pop(cpu);
         break;
       case CMP:
         alu(cpu, ALU_CMP, operandA, operandB);
         break;
       case JMP:
-        cpu->PC = cpu->registers[operandA];
+        cpu->PC = cpu->registers[operandA] - operands -1;
         break;
       case JEQ:
         if (cpu->FL == 0b00000001)
@@ -146,34 +164,16 @@ void cpu_run(struct cpu *cpu)
         }
         break;
       case JNE:
-        if (cpu->FL == 0b00000000)
+        if ((cpu->FL & 0b000000001) == 0)
         {
-          cpu->PC = cpu->registers[operandA];
+          cpu->PC = cpu->registers[operandA] - operands -1;
         }
         break;
-      case PRN:
-        printf("%d\n", cpu->registers[operandA]);
-        cpu->PC += 2;
-        break;
-      case PUSH:
-        push(cpu, cpu->registers[operandA]);
-        cpu->PC += 2;
-        break;
-      case CALL:
-        push(cpu, (cpu->PC + 2));
-        cpu->PC = cpu->registers[operandA] - 1;
-        break;
-      case RET:
-        cpu->PC = cpu_ram_read(cpu, cpu->registers[SP]++);
-        break;
       case HTL:
-        cpu->PC += 1;
-        running = 0;
-        break;
-      default:
-        printf("Unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
         exit(1);
+        break;
     }
+    cpu->PC += operands + 1;
   }
    
 
@@ -196,5 +196,5 @@ void cpu_init(struct cpu *cpu)
   cpu->registers[7] = 0xF4;
   // TODO: Zero registers and RAM
   memset(cpu->ram, 0, sizeof(cpu->ram));
-  
+  // memset(cpu->registers, 0, sizeof(cpu->registers));
 }
