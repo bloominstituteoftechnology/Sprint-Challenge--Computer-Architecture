@@ -48,8 +48,9 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
 {
   unsigned char *reg = cpu->regs;
 
-  unsigned char valA = reg[regA];
-  unsigned char valB = reg[regB];
+  unsigned char valA = cpu->regs[regA];
+  unsigned char valB = cpu->regs[regB];
+
   switch (op)
   {
   case ALU_MUL:
@@ -61,12 +62,21 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
     // TODO: implement more ALU ops
   case ALU_CMP:
-    if(cpu->regs[regA] == cpu->regs[regB]){
-      cpu->regs[6] = 0b00000001;
+    if (cpu->regs[regA] == cpu->regs[regB])
+    {
+      cpu->FL |= 0b00000001;
     }
+    if (cpu->regs[regA] < cpu->regs[regB])
+    {
+      cpu->FL |= 0b00000100;
+    }
+    if (cpu->regs[regA] > cpu->regs[regB])
+    {
+      cpu->FL |= 0b00000010;
+    }
+    break;
   }
 }
-
 void push(struct cpu *cpu, unsigned char value)
 {
   cpu->regs[7]--;
@@ -92,12 +102,12 @@ void call(struct cpu *cpu, unsigned char registerOfAddress)
   cpu->PC = address;
 }
 
-void ret(struct cpu *cpu)
-{
+void ret(struct cpu *cpu){
   unsigned char address = cpu_ram_read(cpu, cpu->regs[7]);
   cpu->regs[7]++;
   cpu->PC = address;
 }
+
 /**
  * Run the CPU
  */
@@ -106,18 +116,12 @@ void cpu_run(struct cpu *cpu)
   int running = 1; // True until we get a HLT instruction
 
   while (running) {
-    // TODO
-    // 1. Get the value of the current instruction (in address PC).
     unsigned char instruction = cpu_ram_read(cpu, cpu->PC);
-    // 2. Figure out how many operands this next instruction requires
-      // Not needed if we use a switch statement
-    // 3. Get the appropriate value(s) of the operands following this instruction
     unsigned char op0 = cpu_ram_read(cpu, cpu->PC + 1);
     unsigned char op1 = cpu_ram_read(cpu, cpu->PC + 2);
+
     printf("trace: %02X: %02X    %02X   %02X\n", cpu->PC, instruction, op0, op1);
-    // 4. switch() over it to decide on a course of action.
-    // 5. Do whatever the instruction should do according to the spec.
-    // 6. Move the PC to the next instruction.
+
     switch (instruction){
       case LDI:
         cpu->regs[op0] = op1;
@@ -152,25 +156,31 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP:
         alu(cpu, ALU_CMP, op0, op1);
+        cpu->PC += 3;
+        break;
+      case JMP:
+        cpu->PC = cpu->regs[op0];
         break;
       case JNE:
-        if(cpu ->FL == 1){
-          cpu->PC = cpu -> regs[op0];
-          cpu->FL = 0;
+        if (!(cpu->FL & 1)){
+          cpu->PC = cpu->regs[op0];
+        }
+        else{
+          cpu->PC += 2;
         }
         break;
       case JEQ:
-        if(cpu->FL == 1){
+        if (cpu->FL & 1){
           cpu->PC = cpu->regs[op0];
-          cpu->FL = 0;
-        }else{
-          cpu->PC += (instruction >> 6 & 3) + 1;
-          cpu->FL = 0;
+        }
+        else{
+          cpu->PC += 2;
         }
         break;
       default:
         printf("unexpected instruction 0x%02X at 0x%02X\n", instruction, cpu->PC);
         exit(1);
+        break;
     }
   }
 }
