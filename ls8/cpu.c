@@ -90,11 +90,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       {
         flag = 0b00000001;
       }
-      else
-      {
-        flag = 0b00000000;  //otherwise set to 0
-      }
-      //cpu->fl = flag;
+      cpu->fl = flag;
       break;
   }
 }
@@ -163,7 +159,7 @@ void cpu_run(struct cpu *cpu)
     // 3. Get the appropriate value(s) of the operands following this instruction
     unsigned char operandA = cpu_ram_read(cpu, cpu->pc+1);
     unsigned char operandB = cpu_ram_read(cpu, cpu->pc+2);
-    printf("TRACE: %02X: %02X  %02X  %02X \n", cpu->pc, IR, operandA, operandB);
+    printf("TRACE: %02X %02X: %02X %02X %02X\n", cpu->fl, cpu->pc, IR, operandA, operandB);
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
     //int instruction_set_pc = (IR >> 4);
@@ -208,6 +204,7 @@ void cpu_run(struct cpu *cpu)
         break;
       case CMP: 
         alu(cpu, ALU_CMP, operandA, operandB);
+        cpu->pc +=3;
         break;
       case JMP:
         //jump to address stored in given register. set pc to address stored in given register. 
@@ -215,7 +212,7 @@ void cpu_run(struct cpu *cpu)
         break;
       case JEQ:
         //if equal flag set to true jump to address stored at given register.
-        if (cpu->fl == 1)
+        if (cpu->fl & 0b00000001)
         {
           cpu->pc = cpu->reg[operandA];
         }
