@@ -66,20 +66,24 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     case ALU_MUL:
       reg[valA] *= valB & 0xFF;
       break;
+
     case ALU_ADD:
       reg[valA] += valB & 0xFF;
       break;
+
     case ALU_CMP:
-      if (regA == regB)
+      if (cpu->ram[regA] == cpu->ram[regB])
       {
         cpu->FL = 0b00000001;
       }
-      else if (regA >= regB) 
+      else if (cpu->ram[regA] <= cpu->ram[regB]) 
       {
+        // printf("cpu->ram[regA] <= cpu->ram[regB]\n");
         cpu->FL = 0b00000010;
       }
       else
       {
+      // printf("cpu->ram[regA] >= cpu->ram[regB]\n");
         cpu->FL = 0b00000100;
       }
       break;
@@ -104,6 +108,7 @@ void cpu_run(struct cpu *cpu)
     unsigned char operand_b = cpu_ram_read(cpu, cpu->PC + 2);
 
     int next_instruction = 1;
+    
     if (IR & 0x80)
     {
       operand_a = cpu_ram_read(cpu, cpu->PC + 1);
@@ -113,14 +118,13 @@ void cpu_run(struct cpu *cpu)
     } 
     else if (IR & 0x40)
     {
-      // printf("Working?\n");
       operand_a = cpu_ram_read(cpu, cpu->PC + 1);
 
       next_instruction = 2;
     }
 
     // print out hex letters, 2 means it'll be two characters long
-    // printf("TRACE: %02X   %02X   %02X   %02X\n", cpu->PC, IR, operand_a, operand_b);
+    printf("TRACE: %02X   %02X   %02X   %02X\n", cpu->PC, IR, operand_a, operand_b);
     
     // 4. switch() over it to decide on a course of action.
     switch(IR) {
@@ -150,37 +154,42 @@ void cpu_run(struct cpu *cpu)
 
       case PUSH:
         cpu->ram[--cpu->reg[7]] = cpu->reg[operand_a];
+        cpu->PC += 2;
         break;
 
       case POP:
         cpu->reg[operand_a] = cpu->ram[cpu->reg[7]++];
+        cpu->PC += 2;
         break;
-
-      case CALL:
-        cpu->ram[--cpu->reg[7]] = cpu->PC + next_instruction;
-        cpu->PC = cpu->reg[operand_a];
-        continue;
       
       // Sprint
 
       case CMP:
         alu(cpu, ALU_CMP, operand_a, operand_b);
+        cpu->PC += 3;
         break;
 
       case JMP:
         cpu->PC = cpu->reg[operand_a];
-        break;
+        continue;
 
       case JEQ:
-        if (cpu->FL) {
+        if (cpu->FL ^ 0x01)
+        {
           cpu->PC = cpu->reg[operand_a];
           continue;
         }
+        cpu->PC += 1;
         break;
 
       case JNE:
+      if (!cpu->FL & 0x01)
+      {
         cpu->PC = cpu->reg[operand_a];
-        break;
+        continue;
+      }
+        cpu->PC += 2;
+      break;
         
       default:
         printf("unexpected instruction 0x%02X at 0x%02X\n", IR, cpu->PC);
@@ -197,6 +206,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   cpu->PC = 0;
+  cpu->FL = 0;
   memset(cpu->reg, 0, 8);
   memset(cpu->ram, 0, 256);
 
