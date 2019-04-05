@@ -55,12 +55,6 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char operand1, unsigned char 
 
     switch (op)
     {
-    case ALU_ADD:
-        cpu->reg[operand1] = op1 + op2;
-        break;
-    case ALU_MUL:
-        cpu->reg[operand1] = op1 * op2;
-        break;
     case ALU_CMP:
         // compare op1 to op2
         // if equal set flag to 0b00000001
