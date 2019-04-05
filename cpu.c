@@ -8,6 +8,10 @@
 // SP reservs spot 7 in the RAM
 #define SP 7
 
+///////////////////////////////////////////////////////////
+//////////////////// CPU Functions ////////////////////////
+///////////////////////////////////////////////////////////
+
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char mar)
 {
     return cpu->ram[mar];
@@ -55,6 +59,26 @@ void cpu_load(struct cpu *cpu, char *filename)
     fclose(fp);
 }
 
+//////////////////////////////////////////////////////////
+////////////////////// ALU ///////////////////////////////
+void alu(struct cpu *cpu, enum alu_op op, unsigned char operand1, unsigned char operand2)
+{
+    unsigned char op1 = cpu->reg[operand1];
+    unsigned char op2 = cpu->reg[operand2];
+
+    switch (op)
+    {
+    case ALU_ADD:
+        op1 = operand1 + operand2;
+        break;
+    case ALU_MUL:
+        op1 = operand1 * operand2;
+        break;
+    default:
+        break;
+    }
+}
+
 void cpu_run(struct cpu *cpu)
 {
     int running = 1;
@@ -86,6 +110,7 @@ void cpu_run(struct cpu *cpu)
         case POP:
             cpu->reg[operand1] = cpu_pop(cpu);
             cpu->PC += 2;
+            break;
         case CMP:
             /* code */
         case JEQ:

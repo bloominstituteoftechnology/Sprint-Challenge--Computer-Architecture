@@ -138,3 +138,6 @@ Machine code:
 10000010 00000rrr iiiiiiii
 82 0r ii
 ```
+
+00000111
+1111111

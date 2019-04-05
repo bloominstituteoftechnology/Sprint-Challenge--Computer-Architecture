@@ -4,7 +4,10 @@
 // setup basic cpu struct
 struct cpu
 {
+    // program counter
     unsigned int PC;
+    // FL = flag
+    unsigned int FL;
     // R7 is reserved as the stack pointer (SP)
     unsigned int SP;
     // 8 general-purpose 8-bit numeric registers R0 - R7
@@ -17,24 +20,26 @@ struct cpu
 };
 
 // ALU ops
-// enum alu_op
-// {
-//     // add alu ops if needed
-// };
+enum alu_op
+{
+    ALU_MUL,
+    ALU_ADD,
+    ALU_CMP,
+};
 
 // setup instructions
 #define LDI 0b10000010
 #define PRN 0b01000111
 #define HLT 0b00000001
 #define PUSH 0b01000101
+#define MUL 0b10100010
 //POP register - pop the value at the top of the stack into the given reg.
 #define POP 0b01000110
 // look into these they are new for the sprint
-#define CMP 0b10100111 // handled by ALU Compare the valu
+#define CMP 0b10100111 // Compare the value of regs
 #define JEQ 0b01010101
 #define JNE 0b01010110
 // A lot of these commented out instructions might not be needed
-// #define MUL 0b10100010
 // #define CALL 0b01010000
 // #define RET 0b00010001
 // #define ADD 0b10100000
