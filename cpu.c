@@ -195,6 +195,31 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu_pop(cpu);
       break;
 
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
+      break;
+
+    case JMP:
+      cpu->PC = cpu->reg[operandA];
+      cpu->PC += 1;
+      break;
+
+    case JEQ:
+      if (cpu->FL == 1)
+      {
+        cpu->PC = cpu->reg[operandA];
+        cpu->PC -= 1;
+      }
+      break;
+
+    case JNE:
+      if (cpu->FL != 1)
+      {
+        cpu->PC = cpu->reg[operandA];
+        cpu->PC -= 1;
+      }
+      break;
+      
     default:
       break;
     }
