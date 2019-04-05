@@ -12,4 +12,5 @@ int main(int argc, char *argv[])
   cpu_load(&cpu, argc, argv);
   cpu_run(&cpu);
 
-  ret
+  return 0;
+}
