@@ -34,6 +34,7 @@ enum alu_op
 #define PUSH 0b01000101
 #define MUL 0b10100010
 #define ADD 0b10100000
+#define JMP 0b01010100
 //POP register - pop the value at the top of the stack into the given reg.
 #define POP 0b01000110
 // look into these they are new for the sprint
@@ -41,8 +42,8 @@ enum alu_op
 #define JEQ 0b01010101
 #define JNE 0b01010110
 // A lot of these commented out instructions might not be needed
-// #define CALL 0b01010000
-// #define RET 0b00010001
+#define CALL 0b01010000
+#define RET 0b00010001
 
 // function declarations
 // load the instructions for the cpu

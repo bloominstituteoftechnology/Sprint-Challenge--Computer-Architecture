@@ -69,25 +69,24 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char operand1, unsigned char 
     switch (op)
     {
     case ALU_ADD:
-        op1 = operand1 + operand2;
+        cpu->reg[operand1] = op1 + op2;
         break;
     case ALU_MUL:
-        op1 = operand1 * operand2;
+        cpu->reg[operand1] = op1 * op2;
         break;
     case ALU_CMP:
         if (op1 == op2)
         {
-            cpu->FL = 00000001;
-        }
-        else if (op1 > op2)
-        {
-            cpu->FL = 00000100;
+            cpu->FL = 0b00000001;
         }
         else if (op1 < op2)
         {
-            cpu->FL = 00000010;
+            cpu->FL = 0b00000100;
         }
-        break;
+        else if (op1 > op2)
+        {
+            cpu->FL = 0b00000010;
+        }
     }
 }
 
@@ -112,7 +111,6 @@ void cpu_run(struct cpu *cpu)
             break;
         case PRN:
             printf("%d\n", cpu->reg[operand1]);
-            cpu->PC += 2;
             break;
         case MUL:
             alu(cpu, ALU_MUL, operand1, operand2);
@@ -127,6 +125,11 @@ void cpu_run(struct cpu *cpu)
         case PUSH:
             cpu_push(cpu, cpu->reg[operand1]);
             cpu->PC += 2;
+            break;
+        case JMP:
+            // Jump to the address stored in the given register
+            // Set the PC to the address stored in the given register.
+            cpu->PC = cpu->reg[operand1] - operands - 1;
             break;
         case POP:
             cpu->reg[operand1] = cpu_pop(cpu);
@@ -143,11 +146,21 @@ void cpu_run(struct cpu *cpu)
                 cpu->PC = cpu->reg[operand1] - operands - 1;
             }
             break;
+        case RET:
+            // Pop the value from the top of the stack and store it in the PC
+            cpu->PC = cpu_pop(cpu);
+            break;
+        case CALL:
+            // Address of instruction is pushed to the stack
+            cpu_push(cpu, (cpu->PC + 1));
+            // The PC is set to the address stored in operand0
+            cpu->PC = cpu->reg[operand1] - operands - 1;
+            break;
         case JNE:
             //If `E` flag is clear (false, 0),
             //jump to the address stored in the given
             //register.
-            if ((cpu->FL && 0b00000001) == 0)
+            if ((cpu->FL & 0b00000001) == 0)
             {
                 cpu->PC = cpu->reg[operand1] - operands - 1;
             }
@@ -157,7 +170,7 @@ void cpu_run(struct cpu *cpu)
             printf("That command was stupid\n");
             exit(1);
         }
-        cpu->PC += 1;
+        cpu->PC += operands + 1;
     }
 }
 
