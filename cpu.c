@@ -94,3 +94,14 @@ void cpu_run(struct cpu *cpu)
         }
     }
 }
+
+void cpu_init(struct cpu *cpu)
+{
+    for (int i = 0; i < 6; i++)
+    {
+        cpu->reg[i] = 0;
+    }
+    cpu->reg[7] = 0xF4;
+    cpu->PC = 0;
+    memset(cpu->ram, 0, sizeof(cpu->ram));
+}
