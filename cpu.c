@@ -42,35 +42,6 @@ void cpu_load(struct cpu *cpu, char *filename)
     fclose(fp);
 }
 
-//////////////////////////////////////////////////////////
-////////////////////// ALU ///////////////////////////////
-void alu(struct cpu *cpu, enum alu_op op, unsigned char operand1, unsigned char operand2)
-{
-    unsigned char op1 = cpu->reg[operand1];
-    unsigned char op2 = cpu->reg[operand2];
-
-    switch (op)
-    {
-    case ALU_CMP:
-        // compare op1 to op2
-        // if equal set flag to 0b00000001
-        if (op1 == op2)
-        {
-            cpu->FL = 0b00000001;
-        }
-        // if op2 is greater set flag to 0b00000100
-        else if (op1 < op2)
-        {
-            cpu->FL = 0b00000100;
-        }
-        // if op1 is greater set flag to 0b00000010
-        else if (op1 > op2)
-        {
-            cpu->FL = 0b00000010;
-        }
-    }
-}
-
 void cpu_run(struct cpu *cpu)
 {
     int running = 1;
@@ -106,7 +77,20 @@ void cpu_run(struct cpu *cpu)
             break;
 
         case CMP:
-            alu(cpu, ALU_CMP, operand1, operand2);
+            if (cpu->reg[operand1] == cpu->reg[operand2])
+            {
+                cpu->FL = 0b00000001;
+            }
+            // if op2 is greater set flag to 0b00000100
+            else if (cpu->reg[operand1] < cpu->reg[operand2])
+            {
+                cpu->FL = 0b00000100;
+            }
+            // if op1 is greater set flag to 0b00000010
+            else if (cpu->reg[operand1] > cpu->reg[operand2])
+            {
+                cpu->FL = 0b00000010;
+            }
             break;
         case JEQ:
             // If `equal` flag is set (true),
