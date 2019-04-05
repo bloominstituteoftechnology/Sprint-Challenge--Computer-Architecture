@@ -23,3 +23,34 @@ void cpu_push(struct cpu *cpu, unsigned char val)
     cpu->reg[SP]--;
     cpu_ram_write(cpu, cpu->reg[SP], val);
 }
+
+void cpu_pop(struct cpu *cpu)
+{
+    unsigned char val = cpu_ram_read(cpu, cpu->reg[SP]);
+    cpu->reg[SP]++;
+    return val;
+}
+
+void cpu_load(struct cpu *cpu, char *filename)
+{
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        fprintf(stderr, "error opening file: %s\n", filename);
+        exit(2);
+    }
+    char line[1024];
+    int address = 0;
+
+    while (fgets(line, sizeof(line), fp) != NULL)
+    {
+        char *endptr;
+        unsigned char byte = strtoul(line, &endptr, 2);
+        if (endptr == line)
+        {
+            continue;
+        }
+        cpu->ram[address++] = byte;
+    }
+    fclose(fp);
+}
