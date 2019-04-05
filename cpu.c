@@ -54,3 +54,43 @@ void cpu_load(struct cpu *cpu, char *filename)
     }
     fclose(fp);
 }
+
+void cpu_run(struct cpu *cpu)
+{
+    int running = 1;
+    unsigned char command, operand1, operand2;
+
+    while (running)
+    {
+        command = cpu_ram_read(cpu, cpu->PC);
+        operand1 = cpu_ram_read(cpu, cpu->PC + 1);
+        operand2 = cpu_ram_read(cpu, cpu->PC + 2);
+
+        switch (command)
+        {
+        case LDI:
+            /* code */
+            break;
+        case PRN:
+            /* code */
+            break;
+        case HLT:
+            /* code */
+        case PUSH:
+            /* code */
+        case POP:
+            /* code */
+        case CMP:
+            /* code */
+        case JEQ:
+            /* code */
+        case JNE:
+            /* code */
+
+        default:
+            printf("That command was stupid\n");
+            exit(1);
+            break;
+        }
+    }
+}
