@@ -22,19 +22,6 @@ void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char mdr)
     cpu->ram[index] = mdr;
 }
 
-void cpu_push(struct cpu *cpu, unsigned char val)
-{
-    cpu->reg[SP]--;
-    cpu_ram_write(cpu, cpu->reg[SP], val);
-}
-
-unsigned cpu_pop(struct cpu *cpu)
-{
-    unsigned char val = cpu_ram_read(cpu, cpu->reg[SP]);
-    cpu->reg[SP]++;
-    return val;
-}
-
 void cpu_load(struct cpu *cpu, char *filename)
 {
     FILE *fp = fopen(filename, "r");
@@ -75,14 +62,18 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char operand1, unsigned char 
         cpu->reg[operand1] = op1 * op2;
         break;
     case ALU_CMP:
+        // compare op1 to op2
+        // if equal set flag to 0b00000001
         if (op1 == op2)
         {
             cpu->FL = 0b00000001;
         }
+        // if op2 is greater set flag to 0b00000100
         else if (op1 < op2)
         {
             cpu->FL = 0b00000100;
         }
+        // if op1 is greater set flag to 0b00000010
         else if (op1 > op2)
         {
             cpu->FL = 0b00000010;
@@ -112,29 +103,18 @@ void cpu_run(struct cpu *cpu)
         case PRN:
             printf("%d\n", cpu->reg[operand1]);
             break;
-        case MUL:
-            alu(cpu, ALU_MUL, operand1, operand2);
-            break;
-        case ADD:
-            alu(cpu, ALU_ADD, operand1, operand2);
-            break;
+
         case HLT:
             running = 0;
             cpu->PC += 1;
             break;
-        case PUSH:
-            cpu_push(cpu, cpu->reg[operand1]);
-            cpu->PC += 2;
-            break;
+
         case JMP:
             // Jump to the address stored in the given register
             // Set the PC to the address stored in the given register.
             cpu->PC = cpu->reg[operand1] - operands - 1;
             break;
-        case POP:
-            cpu->reg[operand1] = cpu_pop(cpu);
-            cpu->PC += 2;
-            break;
+
         case CMP:
             alu(cpu, ALU_CMP, operand1, operand2);
             break;
@@ -146,16 +126,7 @@ void cpu_run(struct cpu *cpu)
                 cpu->PC = cpu->reg[operand1] - operands - 1;
             }
             break;
-        case RET:
-            // Pop the value from the top of the stack and store it in the PC
-            cpu->PC = cpu_pop(cpu);
-            break;
-        case CALL:
-            // Address of instruction is pushed to the stack
-            cpu_push(cpu, (cpu->PC + 1));
-            // The PC is set to the address stored in operand0
-            cpu->PC = cpu->reg[operand1] - operands - 1;
-            break;
+
         case JNE:
             //If `E` flag is clear (false, 0),
             //jump to the address stored in the given

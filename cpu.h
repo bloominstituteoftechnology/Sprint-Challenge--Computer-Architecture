@@ -31,19 +31,19 @@ enum alu_op
 #define LDI 0b10000010
 #define PRN 0b01000111
 #define HLT 0b00000001
-#define PUSH 0b01000101
-#define MUL 0b10100010
-#define ADD 0b10100000
+// #define MUL 0b10100010
+// #define ADD 0b10100000
 #define JMP 0b01010100
 //POP register - pop the value at the top of the stack into the given reg.
-#define POP 0b01000110
+// #define PUSH 0b01000101
+// #define POP 0b01000110
 // look into these they are new for the sprint
 #define CMP 0b10100111 // Compare the value of regs
 #define JEQ 0b01010101
 #define JNE 0b01010110
 // A lot of these commented out instructions might not be needed
-#define CALL 0b01010000
-#define RET 0b00010001
+// #define CALL 0b01010000
+// #define RET 0b00010001
 
 // function declarations
 // load the instructions for the cpu
