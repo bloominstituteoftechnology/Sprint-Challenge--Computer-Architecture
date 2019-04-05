@@ -2,7 +2,7 @@
 #define _CPU_H_
 
 // setup basic cpu struct
-struct CPU
+struct cpu
 {
     unsigned int PC;
     // R7 is reserved as the stack pointer (SP)
@@ -17,10 +17,10 @@ struct CPU
 };
 
 // ALU ops
-enum alu_op
-{
-    // add alu ops if needed
-};
+// enum alu_op
+// {
+//     // add alu ops if needed
+// };
 
 // setup instructions
 #define LDI 0b10000010

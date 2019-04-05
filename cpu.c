@@ -13,7 +13,7 @@ unsigned char cpu_ram_read(struct cpu *cpu, unsigned char mar)
     return cpu->ram[mar];
 }
 
-void cpu_ram_read(struct cpu *cpu, unsigned char index, unsigned char mdr)
+void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char mdr)
 {
     cpu->ram[index] = mdr;
 }
@@ -24,7 +24,7 @@ void cpu_push(struct cpu *cpu, unsigned char val)
     cpu_ram_write(cpu, cpu->reg[SP], val);
 }
 
-void cpu_pop(struct cpu *cpu)
+unsigned cpu_pop(struct cpu *cpu)
 {
     unsigned char val = cpu_ram_read(cpu, cpu->reg[SP]);
     cpu->reg[SP]++;
