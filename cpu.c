@@ -74,7 +74,19 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char operand1, unsigned char 
     case ALU_MUL:
         op1 = operand1 * operand2;
         break;
-    default:
+    case ALU_CMP:
+        if (op1 == op2)
+        {
+            cpu->FL = 00000001;
+        }
+        else if (op1 > op2)
+        {
+            cpu->FL = 00000100;
+        }
+        else if (op1 < op2)
+        {
+            cpu->FL = 00000010;
+        }
         break;
     }
 }
@@ -86,7 +98,10 @@ void cpu_run(struct cpu *cpu)
 
     while (running)
     {
+
         command = cpu_ram_read(cpu, cpu->PC);
+
+        unsigned char operands = command >> 6;
         operand1 = cpu_ram_read(cpu, cpu->PC + 1);
         operand2 = cpu_ram_read(cpu, cpu->PC + 2);
 
@@ -98,6 +113,12 @@ void cpu_run(struct cpu *cpu)
         case PRN:
             printf("%d\n", cpu->reg[operand1]);
             cpu->PC += 2;
+            break;
+        case MUL:
+            alu(cpu, ALU_MUL, operand1, operand2);
+            break;
+        case ADD:
+            alu(cpu, ALU_ADD, operand1, operand2);
             break;
         case HLT:
             running = 0;
@@ -112,17 +133,31 @@ void cpu_run(struct cpu *cpu)
             cpu->PC += 2;
             break;
         case CMP:
-            /* code */
+            alu(cpu, ALU_CMP, operand1, operand2);
+            break;
         case JEQ:
-            /* code */
+            // If `equal` flag is set (true),
+            //jump to the address stored in the given register.
+            if (cpu->FL == 00000001)
+            {
+                cpu->PC = cpu->reg[operand1] - operands - 1;
+            }
+            break;
         case JNE:
-            /* code */
+            //If `E` flag is clear (false, 0),
+            //jump to the address stored in the given
+            //register.
+            if ((cpu->FL && 0b00000001) == 0)
+            {
+                cpu->PC = cpu->reg[operand1] - operands - 1;
+            }
+            break;
 
         default:
             printf("That command was stupid\n");
             exit(1);
-            break;
         }
+        cpu->PC += 1;
     }
 }
 
