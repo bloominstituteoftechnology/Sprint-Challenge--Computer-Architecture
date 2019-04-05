@@ -69,17 +69,23 @@ void cpu_run(struct cpu *cpu)
         switch (command)
         {
         case LDI:
-            /* code */
+            cpu->reg[operand1] = operand2;
             break;
         case PRN:
-            /* code */
+            printf("%d\n", cpu->reg[operand1]);
+            cpu->PC += 2;
             break;
         case HLT:
-            /* code */
+            running = 0;
+            cpu->PC += 1;
+            break;
         case PUSH:
-            /* code */
+            cpu_push(cpu, cpu->reg[operand1]);
+            cpu->PC += 2;
+            break;
         case POP:
-            /* code */
+            cpu->reg[operand1] = cpu_pop(cpu);
+            cpu->PC += 2;
         case CMP:
             /* code */
         case JEQ:
