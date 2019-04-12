@@ -169,6 +169,15 @@ void cpu_run(struct cpu *cpu)
         //pop the PC off the stack
         PC = cpu_pop(cpu);
         break;
+      case CMP:
+        if (cpu->registers[operand1] == cpu->registers[operand2]) {
+          cpu->FL = 1;
+        } else if (cpu->registers[operand1] > cpu->registers[operand2]) {
+          cpu->FL = 2;
+        } else {
+          cpu->FL = 4;
+        } 
+        break;
       }
 
     }
