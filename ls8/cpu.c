@@ -177,11 +177,30 @@ void cpu_run(struct cpu *cpu)
         } else {
           cpu->FL = 4;
         } 
+        PC+=3;
         break;
       case JMP:
-        cpu->PC = cpu->registers[operand1];
-        PC+=2;
+        PC = cpu->registers[operand1];
         break;
+      case JEQ:
+        if (cpu->FL == 1) {
+          PC = cpu->registers[operand1]; 
+          break;   
+        }
+        else{
+          PC+=2;
+          break;
+        }
+      case JNE:
+        if (cpu->FL != 1) {
+          PC = cpu->registers[operand1];
+          break;
+        }
+        else{
+          PC+=2;
+          break;
+        }
+        
       }
 
     }
@@ -199,6 +218,7 @@ void cpu_init(struct cpu *cpu)
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
   cpu->registers[7] = 0xF4;
+  cpu->FL = 0;
   /* cpu->registers = calloc(8, sizeof(unsigned char));
   cpu->ram = calloc(256, sizeof(unsigned char)); */
 }
