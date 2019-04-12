@@ -110,20 +110,21 @@ void cpu_run(struct cpu *cpu)
   while (running) {
     
     // TODO
-    // 1. Get the value of the current instruction (in address PC).
+    
     instruction = ram[PC];
-    // 2. Figure out how many operands this next instruction requires
+    
     
     operand1 = cpu_ram_read(cpu, PC+1);  
     operand2 = cpu_ram_read(cpu, PC+2);
-    // 4. switch() over it to decide on a course of action.
-    // 5. Do whatever the instruction should do according to the spec.
-    printf("[");
+   
+    /* Prints an array of each register #, its value, and the value the stack is currently pointing to.  
+    printf("["); 
     for (int i = 0; i < 8; i++){
       printf("(R:%d V:%d S:%d),", i, cpu->registers[i], cpu->ram[cpu->registers[7]]);
     }
-    printf("]\n");
-    printf("ins: %d | %d %d %d %d \n", instruction, operand1, operand2, cpu_ram_read(cpu, PC+3), cpu_ram_read(cpu, PC+4) );
+    printf("]\n"); */
+    /* If errors occur, checks to see which value/instruction is at the address in RAM the error is occuring at. 
+    printf("ins: %d | %d %d %d %d \n", instruction, operand1, operand2, cpu_ram_read(cpu, PC+3), cpu_ram_read(cpu, PC+4) );  */
     switch(instruction){
       
       case HLT:
@@ -131,7 +132,7 @@ void cpu_run(struct cpu *cpu)
         break;
       case LDI:
         cpu->registers[operand1] = operand2;
-        printf("LDI: %d \n", cpu->registers[operand1]);
+        //printf("LDI: %d \n", cpu->registers[operand1]);
         PC+=3;
         break;
       case PRN: 
@@ -139,13 +140,13 @@ void cpu_run(struct cpu *cpu)
         PC+=2;
         break;
       case MUL:
-        printf("MUL ~ %d \n", cpu->registers[operand1]);
+        //printf("MUL ~ %d \n", cpu->registers[operand1]);
         alu(cpu, ALU_MUL, operand1, operand2);
         PC+=3;
         break;
       case PUSH:
         val = cpu->registers[operand1];
-        printf("PUSH: (R:%d V:%d) \n", operand1 ,val);
+       // printf("PUSH: (R:%d V:%d) \n", operand1 ,val);
         cpu->registers[7]--;
         cpu->ram[cpu->registers[7]] = val;
         PC+=2;
@@ -155,13 +156,13 @@ void cpu_run(struct cpu *cpu)
         PC+=3;
         break;
       case POP:
-        printf("POP: (R:%d V:%d) \n", operand1 ,cpu->ram[cpu->registers[7]]);
+        //printf("POP: (R:%d V:%d) \n", operand1 ,cpu->ram[cpu->registers[7]]);
         cpu->registers[operand1] = cpu->ram[cpu->registers[7]];
         cpu->registers[7]++;
         PC+=2;
         break;
       case CALL:
-        printf("CALL\n\n\n");
+        //printf("CALL\n\n\n");
         cpu_push(cpu, PC+2);
         PC = cpu->registers[operand1];
         break;
@@ -200,7 +201,6 @@ void cpu_run(struct cpu *cpu)
           PC+=2;
           break;
         }
-        
       }
 
     }
