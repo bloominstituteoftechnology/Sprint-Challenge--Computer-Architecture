@@ -178,6 +178,10 @@ void cpu_run(struct cpu *cpu)
           cpu->FL = 4;
         } 
         break;
+      case JMP:
+        cpu->PC = cpu->registers[operand1];
+        PC+=2;
+        break;
       }
 
     }
