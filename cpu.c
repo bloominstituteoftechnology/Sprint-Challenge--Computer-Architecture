@@ -10,7 +10,6 @@ void cpu_load(struct cpu *cpu, char *file_name) {
   FILE *fp;
   char line[128];
   int address = 0;
-
   fp = fopen(file_name, "r");
   if (fp == NULL) { 
     fprintf(stderr, "Error - Opening File Failed\n"); 
@@ -19,27 +18,20 @@ void cpu_load(struct cpu *cpu, char *file_name) {
   while (fgets(line, 128, fp) != NULL) {
     char *endptr;
     unsigned char value = strtoul(line, &endptr, 2);
-
     if (line == endptr) {
       continue;
     }
-
     cpu->ram[address++] = value;
-    
   }
-
   fclose(fp);
-
 }
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char index) {
   return cpu->ram[index];
 }
-
 void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value) {
   cpu->ram[index] = value;
 }
-
 /**
  * Run the CPU
  */
@@ -79,16 +71,13 @@ void cpu_run(struct cpu *cpu)
       printf("%d\n", cpu->reg[operandA]);
       break;
     case CMP:
-	      if (cpu->reg[operandA] == cpu->reg[operandB])
-	      {
+	      if (cpu->reg[operandA] == cpu->reg[operandB]) {
 	        cpu->fl = 1;
 	      }
-	      else if (cpu->reg[operandA] < cpu->reg[operandB])
-	      {
+	      else if (cpu->reg[operandA] < cpu->reg[operandB]) {
 	        cpu->fl = 4;
 	      }
-	      else if (cpu->reg[operandA] > cpu->reg[operandB])
-	      {
+	      else if (cpu->reg[operandA] > cpu->reg[operandB]) {
 	        cpu->fl = 2;
 	      }
 	      break;
@@ -96,14 +85,12 @@ void cpu_run(struct cpu *cpu)
         cpu->pc = cpu->reg[operandA] - num_operands - 1;
         break;
     case JEQ:
-	      if (cpu->fl == 1)
-	      {
+	      if (cpu->fl == 1) {
 	      cpu->pc = cpu->reg[operandA] - num_operands - 1;
 	      }
 	      break;
 	  case JNE:
-	      if (cpu->fl == 2 || cpu->fl == 4)
-	      {
+	      if (cpu->fl == 2 || cpu->fl == 4) {
 	      cpu->pc = cpu->reg[operandA] - num_operands - 1;
 	      }
 	      break;
