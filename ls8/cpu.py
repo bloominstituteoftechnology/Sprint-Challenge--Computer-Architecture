@@ -56,7 +56,8 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.halt = False
-        self.SP = F3
+        self.SP = F3,
+        self.fl = 0b00000000
 
         #branch/dispatch table
         self.ops = {
@@ -69,6 +70,7 @@ class CPU:
             POP: self.pop,
             CALL: self.call,
             RET: self.ret,
+            CMP: self.cmp,
             JMP: self.jump,
         }
     
@@ -118,6 +120,28 @@ class CPU:
         # return to skipped instruction
         # set pc to return address
         self.pc = self.ram[self.SP]
+
+    def cmp(self, mar, mdr):
+        # grab values from register
+        mar = self.reg[mar]
+        mdr = self.reg[mdr]
+        # Compare the values in two registers.
+        # If they are equal, set the Equal E flag to 1, otherwise set it to 0.
+        self.fl = 0b00000000 # FL bits: 00000LGE
+        if mar == mdr:
+            self.fl = self.fl | 0b00000001
+        else:
+            self.fl = self.fl | 0b00000000
+        # If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
+        if mar < mdr:
+            self.fl = self.fl | 0b00000100
+        else:
+            self.fl = self.fl | 0b00000000
+        # If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+        if mar > mdr:
+            self.fl = self.fl | 0b00000010
+        else:
+            self.fl = self.fl | 0b00000000
     
     def jump(self, mar, mdr):
         self.pc = self.reg[mar]
