@@ -72,11 +72,13 @@ class CPU:
             RET: self.ret,
             CMP: self.cmp,
             JMP: self.jump,
+            JEQ: self.jeq,
+            JNE: self.jne
         }
     
     def print_num(self, mar, mdr):
         #Print numeric value stored in the given register
-        self.reg[mar]
+        print(self.reg[mar])
     
     def reg_add(self, mar, mdr):
         #set value of a register to an integer
@@ -122,29 +124,45 @@ class CPU:
         self.pc = self.ram[self.SP]
 
     def cmp(self, mar, mdr):
+        #reset flags
+        self.fl = 0b0 # FL bits: 00000LGE
         # grab values from register
         mar = self.reg[mar]
         mdr = self.reg[mdr]
         # Compare the values in two registers.
         # If they are equal, set the Equal E flag to 1, otherwise set it to 0.
-        self.fl = 0b00000000 # FL bits: 00000LGE
         if mar == mdr:
-            self.fl = self.fl | 0b00000001
+            self.fl = self.fl | 0b01
         else:
-            self.fl = self.fl | 0b00000000
+            self.fl = self.fl | 0b0
         # If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
         if mar < mdr:
-            self.fl = self.fl | 0b00000100
+            self.fl = self.fl | 0b100
         else:
-            self.fl = self.fl | 0b00000000
+            self.fl = self.fl | 0b0
         # If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
         if mar > mdr:
-            self.fl = self.fl | 0b00000010
+            self.fl = self.fl | 0b10
         else:
-            self.fl = self.fl | 0b00000000
+            self.fl = self.fl | 0b0
     
     def jump(self, mar, mdr):
+        #Jump to the address stored in the given register
         self.pc = self.reg[mar]
+
+    def jeq(self, mar, mdr):
+        # If equal flag is set (true), jump to the address stored in the given register.
+        if(self.fl & 0b1):
+            self.jump(mar, mdr)
+        else:
+            self.pc += 2
+    
+    def jne(self, mar, mdr):
+        # If E flag is clear (false, 0), jump to the address stored in the given register
+        if not (self.fl & 0b1):
+            self.jump(mar, mdr)
+        else:
+            self.pc += 2
 
     def ram_read(self, mar):
         return self.ram[mar]
@@ -225,11 +243,12 @@ class CPU:
         """Run the CPU."""
         self.reg[7] = F3
         self.SP = self.reg[7]
+        count = 0
 
         while not self.halt:
             #read instruction given
             ir = self.ram_read(self.pc)
-         
+            # print(f"instruction {count}: {ir:b}")
             #save next instructions
             #values AA
             op_a = self.ram_read(self.pc + 1)
@@ -246,6 +265,7 @@ class CPU:
             #if instruction is in the dispatch table run instruction with op a and b
             if ir in self.ops:
                 self.ops[ir](op_a, op_b)
+                count +=1
             else:
                 print(f"Error: Instruction {ir} not found")
                 exit()
