@@ -243,7 +243,6 @@ class CPU:
         """Run the CPU."""
         self.reg[7] = F3
         self.SP = self.reg[7]
-        count = 0
 
         while not self.halt:
             #read instruction given
@@ -265,7 +264,6 @@ class CPU:
             #if instruction is in the dispatch table run instruction with op a and b
             if ir in self.ops:
                 self.ops[ir](op_a, op_b)
-                count +=1
             else:
                 print(f"Error: Instruction {ir} not found")
                 exit()
