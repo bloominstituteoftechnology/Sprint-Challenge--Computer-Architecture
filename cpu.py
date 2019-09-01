@@ -109,6 +109,9 @@ class CPU:
     def ret(self):
         self.pc = self.ram[self.SP]
 
+    def jump(self, MAR):
+        self.pc = self.reg[MAR]
+
 
     def load(self):
         address = 0
