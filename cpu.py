@@ -85,6 +85,12 @@ class CPU:
     def reg_add(self, MAR, MDR):
         self.reg(MAR) = MDR
 
+    def mul(self, operand_a, operand_b):
+        self.alu("MUL", operand_a, operand_b)
+
+    def add(self, operand_a, operand_b):
+        self.alu("ADD", operand_a, operand_b)
+
     def load(self):
         address = 0
         
@@ -154,12 +160,7 @@ class CPU:
             if inst_set == False:
                 self.pc += op_size + 1 
 
-            # elif IR == LDI:
-            #     self.reg[operand_a] = operand_b
-            #     self.pc += 3
-            # elif IR == MUL:
-            #     self.alu("MUL", operand_a, operand_b)
-            #     self.pc += 3
+         
             # elif IR == PUSH:
             #     self.reg[7] = (self.reg[7] - 1) % 255
             #     self.SP = self.reg[7]
