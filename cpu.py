@@ -10,8 +10,24 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.SP = 0
+        self.halt = False
 
         self.reg[7] = 0xF3
+
+        self.ops = {
+                HLT: self.hlt,
+                LDI: self.reg_add,
+                PRN: self.print_num,
+                MUL: self.mul,
+                ADD: self.add,
+                PUSH: self.push,
+                POP: self.pop,
+                CALL: self.call,
+                RET: self.ret,
+                JMP: self.jump,
+            }
+    def hlt(self):
+        self.halt = not self.halt
 
     def ram_read(self, MAR):
         return self.ram[MAR]
@@ -65,18 +81,10 @@ class CPU:
         print()
 
     def run(self):
-        running = True
-        LDI = 0b10000010
-        PRN = 0b01000111
-        HLT = 0b00000001
-        MUL = 0b10100010
-        PUSH = 0b01000101
-        POP = 0b01000110
-        CALL = 0b01010000
-        RET = 0b00010001
-        MULT2PRINT = 0b00011000
+        self.reg[7] = F3
+        self.SP = self.reg[7]
 
-        while running:
+        while not self.halt:
             IR = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
