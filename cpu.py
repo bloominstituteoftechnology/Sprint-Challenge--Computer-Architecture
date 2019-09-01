@@ -2,6 +2,50 @@
 
 import sys
 
+#global operations
+#ALU ops
+ADD = 0b10100000 # 00000aaa 00000bbb
+SUB = 0b10100001 # 00000aaa 00000bbb
+MUL = 0b10100010 # 00000aaa 00000bbb
+DIV = 0b10100011 # 00000aaa 00000bbb
+MOD = 0b10100100 # 00000aaa 00000bbb
+INC = 0b01100101 # 00000rrr
+DEC = 0b01100110 # 00000rrr
+CMP = 0b10100111 # 00000aaa 00000bbb
+AND = 0b10101000 # 00000aaa 00000bbb
+NOT = 0b01101001 # 00000rrr
+OR  = 0b10101010 # 00000aaa 00000bbb
+XOR = 0b10101011 # 00000aaa 00000bbb
+SHL = 0b10101100 # 00000aaa 00000bbb
+SHR = 0b10101101 # 00000aaa 00000bbb
+ALU_OP = [ADD, SUB, MUL, DIV, MOD, INC, DEC, CMP, AND, NOT, OR, XOR, SHL, SHR]
+
+## PC mutators
+CALL = 0b01010000 # 00000rrr
+RET  = 0b00010001 #
+INT  = 0b01010010 # 00000rrr
+IRET = 0b00010011 #
+JMP  = 0b01010100 # 00000rrr
+JEQ  = 0b01010101 # 00000rrr
+JNE  = 0b01010110 # 00000rrr
+JGT  = 0b01010111 # 00000rrr
+JLT  = 0b01011000 # 00000rrr
+JLE  = 0b01011001 # 00000rrr
+JGE  = 0b01011010 # 00000rrr
+
+## Other
+NOP = 0b00000000
+HLT = 0b00000001 
+LDI  = 0b10000010 # 00000rrr iiiiiiii
+LD   = 0b10000011 # 00000aaa 00000bbb
+ST   = 0b10000100 # 00000aaa 00000bbb
+PUSH = 0b01000101 # 00000rrr
+POP  = 0b01000110 # 00000rrr
+PRN  = 0b01000111 # 00000rrr
+PRA  = 0b01001000 # 00000rrr
+
+F3 = 0b11110011
+
 class CPU:
     """Main CPU class."""
 
@@ -88,47 +132,62 @@ class CPU:
             IR = self.ram[self.pc]
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-            if IR == HLT:
-                running = False
-            elif IR == LDI:
-                self.reg[operand_a] = operand_b
-                self.pc += 3
-            elif IR == PRN:
-                print(self.reg[operand_a])
-                self.pc += 2
-            elif IR == MUL:
-                self.alu("MUL", operand_a, operand_b)
-                self.pc += 3
-            elif IR == PUSH:
-                self.reg[7] = (self.reg[7] - 1) % 255
-                self.SP = self.reg[7]
-                regadd = operand_a
-                val = self.reg[regadd]
-                self.ram[self.SP] = val
-                self.pc += 2
-            elif IR == POP:
-                self.SP = self.reg[7]
-                val = self.ram[self.SP]
-                regadd = operand_a
-                self.reg[regadd] = val
-                self.reg[7] = (self.reg[7] + 1) % 255
-                self.pc += 2
-            elif IR == CALL:
-                # regadd = operand_a
-                # # calladd = self.reg[regadd]
-                # nextinst = self.pc + 2
-                # self.reg[7] = (self.reg[7] - 1) % 255
-                # self.SP = self.reg[7]
-                # self.ram[self.SP] = nextinst
-                self.reg[4] = self.pc + 2
-                self.push(4)
-                self.pc = self.reg[operand_a]
-            elif IR == RET:
-                self.SP = self.reg[7]
-                retadd = self.ram[self.SP]
-                self.reg[7] = (self.reg[7] + 1) % 255
-                self.pc = retadd
+
+            op_a = self.ram_read(self.pc + 1)
+            op_b = self.ram_read(self.pc + 2)
+
+            op_size = IR >> 6
+
+            inst_set = ((IR >> 4) & 0b1) == 1
+
+            if IR in self.ops:
+                self.ops[IR](operand_a, operand_b)
             else:
-                print('Error')
-                sys.exit()
+                print(f"Error: Instruction {IR} not found")
+                exit()
+            if inst_set == False:
+                self.pc += op_size + 1 
+            # if IR == HLT:
+            #     running = False
+            # elif IR == LDI:
+            #     self.reg[operand_a] = operand_b
+            #     self.pc += 3
+            # elif IR == PRN:
+            #     print(self.reg[operand_a])
+            #     self.pc += 2
+            # elif IR == MUL:
+            #     self.alu("MUL", operand_a, operand_b)
+            #     self.pc += 3
+            # elif IR == PUSH:
+            #     self.reg[7] = (self.reg[7] - 1) % 255
+            #     self.SP = self.reg[7]
+            #     regadd = operand_a
+            #     val = self.reg[regadd]
+            #     self.ram[self.SP] = val
+            #     self.pc += 2
+            # elif IR == POP:
+            #     self.SP = self.reg[7]
+            #     val = self.ram[self.SP]
+            #     regadd = operand_a
+            #     self.reg[regadd] = val
+            #     self.reg[7] = (self.reg[7] + 1) % 255
+            #     self.pc += 2
+            # elif IR == CALL:
+            #     # regadd = operand_a
+            #     # # calladd = self.reg[regadd]
+            #     # nextinst = self.pc + 2
+            #     # self.reg[7] = (self.reg[7] - 1) % 255
+            #     # self.SP = self.reg[7]
+            #     # self.ram[self.SP] = nextinst
+            #     self.reg[4] = self.pc + 2
+            #     self.push(4)
+            #     self.pc = self.reg[operand_a]
+            # elif IR == RET:
+            #     self.SP = self.reg[7]
+            #     retadd = self.ram[self.SP]
+            #     self.reg[7] = (self.reg[7] + 1) % 255
+            #     self.pc = retadd
+            # else:
+            #     print('Error')
+            #     sys.exit()
 
