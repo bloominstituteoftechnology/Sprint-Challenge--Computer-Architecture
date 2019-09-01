@@ -55,6 +55,7 @@ class CPU:
         self.pc = 0
         self.SP = 0
         self.halt = False
+        self.FL = 0b00000000
 
         self.reg[7] = 0xF3
 
@@ -69,12 +70,13 @@ class CPU:
                 CALL: self.call,
                 RET: self.ret,
                 JMP: self.jump,
+                CMP: self.cmp
             }
     def hlt(self):
         self.halt = not self.halt
 
     def print_num(self,MAR):
-        self.reg(MAR)
+        self.reg[MAR]
 
     def ram_read(self, MAR):
         return self.ram[MAR]
@@ -83,7 +85,7 @@ class CPU:
         self.ram[MAR] = MDR
 
     def reg_add(self, MAR, MDR):
-        self.reg(MAR) = MDR
+        self.reg[MAR] = MDR
 
     def mul(self, operand_a, operand_b):
         self.alu("MUL", operand_a, operand_b)
@@ -111,6 +113,24 @@ class CPU:
 
     def jump(self, MAR):
         self.pc = self.reg[MAR]
+    
+    def cmp(self, a, b):
+        a = self.reg[a]
+        b = self.reg[b]
+
+        self.FL = 0b00000000
+        if a == b:
+            self.FL = 0b00000001
+        else:
+            self.FL = 0b00000000
+        if a < b:
+            self.FL = 0b00000100
+        else:
+            self.FL = 0b00000000
+        if a > b:
+            self.FL = 0b00000010
+        else:
+            self.FL = 0b00000000
 
 
     def load(self):
@@ -183,22 +203,4 @@ class CPU:
                 self.pc += op_size + 1 
 
 
-            # elif IR == CALL:
-            #     # regadd = operand_a
-            #     # # calladd = self.reg[regadd]
-            #     # nextinst = self.pc + 2
-            #     # self.reg[7] = (self.reg[7] - 1) % 255
-            #     # self.SP = self.reg[7]
-            #     # self.ram[self.SP] = nextinst
-            #     self.reg[4] = self.pc + 2
-            #     self.push(4)
-            #     self.pc = self.reg[operand_a]
-            # elif IR == RET:
-            #     self.SP = self.reg[7]
-            #     retadd = self.ram[self.SP]
-            #     self.reg[7] = (self.reg[7] + 1) % 255
-            #     self.pc = retadd
-            # else:
-            #     print('Error')
-            #     sys.exit()
 

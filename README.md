@@ -47,9 +47,9 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [x] Add the `CMP` instruction and `equal` flag to your LS-8.
 
-- [ ] Add the `JMP` instruction.
+- [x] Add the `JMP` instruction.
 
 - [ ] Add the `JEQ` and `JNE` instructions.
 
