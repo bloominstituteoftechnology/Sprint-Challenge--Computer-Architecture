@@ -65,6 +65,7 @@ class CPU:
                 PRN: self.print_num,
                 MUL: self.mul,
                 ADD: self.add,
+                SUB: self.sub,
                 PUSH: self.push,
                 POP: self.pop,
                 CALL: self.call,
@@ -72,7 +73,14 @@ class CPU:
                 JMP: self.jump,
                 CMP: self.comp,
                 JEQ: self.jeq,
-                JNE: self.jne
+                JNE: self.jne,
+                AND: self.aluand,
+                NOT: self.alunot,
+                OR: self.aluor,
+                XOR: self.aluxor,
+                SHL: self.shl,
+                SHR: self.shr,
+                MOD: self.alumod,
             }
     def hlt(self, MAR, MDR):
         self.halt = not self.halt
@@ -94,6 +102,30 @@ class CPU:
 
     def add(self, operand_a, operand_b):
         self.alu("ADD", operand_a, operand_b)
+
+    def sub(self, operand_a, operand_b):
+        self.alu("SUB", operand_a, operand_b)
+
+    def aluand(self, operand_a, operand_b):
+        self.alu("AND", operand_a, operand_b)
+
+    def alunot(self, operand_a, operand_b):
+        self.alu("NOT", operand_a, operand_b)
+
+    def aluor(self, operand_a, operand_b):
+        self.alu("OR", operand_a, operand_b)
+    
+    def aluxor(self, operand_a, operand_b):
+        self.alu("XOR", operand_a, operand_b)
+
+    def shl(self, operand_a, operand_b):
+        self.alu("SHL", operand_a, operand_b)
+
+    def shr(self, operand_a, operand_b):
+        self.alu("SHR", operand_a, operand_b)
+
+    def alumod(self, operand_a, operand_b):
+        self.alu("MOD", operand_a, operand_b)
 
     def push(self, MAR, MDR):
         self.reg[7] = (self.reg[7] - 1) % 255
@@ -154,13 +186,27 @@ class CPU:
             print(f"{sys.argv[0]}: {sys.argv[1]} Not found")
             sys.exit()
 
-
     def alu(self, op, reg_a, reg_b):
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        # elif op == "SUB": etc
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "AND":
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+        elif op == "OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+        elif op == "NOT":
+            self.reg[reg_a] = ~self.reg[reg_a]
+        elif op == "XOR":
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+        elif op == "MOD":
+            self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
+        elif op == "SHL":
+            self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]
+        elif op == "SHR":
+            self.reg[reg_a] = self.reg[reg_a] >> self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
