@@ -91,6 +91,16 @@ class CPU:
     def add(self, operand_a, operand_b):
         self.alu("ADD", operand_a, operand_b)
 
+    def push(self, MAR):
+        self.reg[7] = (self.reg[7] - 1) % 255
+        self.SP = self.reg[7]
+        self.ram[self.SP] = self.reg[MAR]
+
+    def pop(self, MAR):
+        self.SP = self.reg[7]
+        self.reg[MAR] = self.ram[self.SP]
+        self.reg[7] = (self.reg[7] +1) % 255
+
     def load(self):
         address = 0
         
@@ -160,21 +170,7 @@ class CPU:
             if inst_set == False:
                 self.pc += op_size + 1 
 
-         
-            # elif IR == PUSH:
-            #     self.reg[7] = (self.reg[7] - 1) % 255
-            #     self.SP = self.reg[7]
-            #     regadd = operand_a
-            #     val = self.reg[regadd]
-            #     self.ram[self.SP] = val
-            #     self.pc += 2
-            # elif IR == POP:
-            #     self.SP = self.reg[7]
-            #     val = self.ram[self.SP]
-            #     regadd = operand_a
-            #     self.reg[regadd] = val
-            #     self.reg[7] = (self.reg[7] + 1) % 255
-            #     self.pc += 2
+
             # elif IR == CALL:
             #     # regadd = operand_a
             #     # # calladd = self.reg[regadd]
