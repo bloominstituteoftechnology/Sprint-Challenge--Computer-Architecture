@@ -82,6 +82,9 @@ class CPU:
     def ram_write(self, MAR, MDR):
         self.ram[MAR] = MDR
 
+    def reg_add(self, MAR, MDR):
+        self.reg(MAR) = MDR
+
     def load(self):
         address = 0
         
