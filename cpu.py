@@ -73,6 +73,9 @@ class CPU:
     def hlt(self):
         self.halt = not self.halt
 
+    def print_num(self,MAR):
+        self.reg(MAR)
+
     def ram_read(self, MAR):
         return self.ram[MAR]
 
@@ -147,14 +150,10 @@ class CPU:
                 exit()
             if inst_set == False:
                 self.pc += op_size + 1 
-            # if IR == HLT:
-            #     running = False
+
             # elif IR == LDI:
             #     self.reg[operand_a] = operand_b
             #     self.pc += 3
-            # elif IR == PRN:
-            #     print(self.reg[operand_a])
-            #     self.pc += 2
             # elif IR == MUL:
             #     self.alu("MUL", operand_a, operand_b)
             #     self.pc += 3
