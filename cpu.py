@@ -101,6 +101,15 @@ class CPU:
         self.reg[MAR] = self.ram[self.SP]
         self.reg[7] = (self.reg[7] +1) % 255
 
+    def call(self, operand_a, operand_b):
+        self.push(operand_a, operand_b)
+        self.ram[self.SP] = self.pc + 2
+        self.pc = self.reg[operand_a]
+
+    def ret(self):
+        self.pc = self.ram[self.SP]
+
+
     def load(self):
         address = 0
         
