@@ -70,13 +70,15 @@ class CPU:
                 CALL: self.call,
                 RET: self.ret,
                 JMP: self.jump,
-                CMP: self.cmp
+                CMP: self.comp,
+                JEQ: self.jeq,
+                JNE: self.jne
             }
-    def hlt(self):
+    def hlt(self, MAR, MDR):
         self.halt = not self.halt
 
-    def print_num(self,MAR):
-        self.reg[MAR]
+    def print_num(self,MAR, MDR):
+        print(self.reg[MAR])
 
     def ram_read(self, MAR):
         return self.ram[MAR]
@@ -93,12 +95,12 @@ class CPU:
     def add(self, operand_a, operand_b):
         self.alu("ADD", operand_a, operand_b)
 
-    def push(self, MAR):
+    def push(self, MAR, MDR):
         self.reg[7] = (self.reg[7] - 1) % 255
         self.SP = self.reg[7]
         self.ram[self.SP] = self.reg[MAR]
 
-    def pop(self, MAR):
+    def pop(self, MAR, MDR):
         self.SP = self.reg[7]
         self.reg[MAR] = self.ram[self.SP]
         self.reg[7] = (self.reg[7] +1) % 255
@@ -111,10 +113,10 @@ class CPU:
     def ret(self):
         self.pc = self.ram[self.SP]
 
-    def jump(self, MAR):
+    def jump(self, MAR, MDR):
         self.pc = self.reg[MAR]
-    
-    def cmp(self, a, b):
+
+    def comp(self, a, b):
         a = self.reg[a]
         b = self.reg[b]
 
@@ -123,14 +125,18 @@ class CPU:
             self.FL = 0b00000001
         else:
             self.FL = 0b00000000
-        if a < b:
-            self.FL = 0b00000100
+
+    def jeq(self, MAR, MDR):
+        if self.FL == 0b00000001:
+            self.jump(MAR, MDR)
         else:
-            self.FL = 0b00000000
-        if a > b:
-            self.FL = 0b00000010
+            self.pc += 2
+
+    def jne(self, MAR, MDR):
+        if self.FL != 0b00000001:
+            self.jump(MAR, MDR)
         else:
-            self.FL = 0b00000000
+            self.pc += 2
 
 
     def load(self):
