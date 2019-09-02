@@ -14,7 +14,7 @@ class CPU:
         self.PC = 0
         self.HLT = "0b1"
         self.reg[7] = 243
-        self.reg[4] = "00000000"
+        self.reg[4] = "00000000" 
         self.FLG = self.reg[4]
     def ram_read(self, MAR):
         return self.ram[MAR]
@@ -37,7 +37,9 @@ class CPU:
                     address += 1
                 except:
                     address += 1
+        
             
+        print('RAM-ROD', self.ram)
 
 
 
@@ -108,7 +110,7 @@ class CPU:
                 self.alu("MULTIPLY", r1, r2)
 
             elif IR == "0b1000101":
-                print(self.ram, self.reg)
+                # print(self.ram, self.reg)
                 # print('SP PUSH', SP)
                 self.reg[7] -= 1
                 SP = self.reg[7]
@@ -128,11 +130,11 @@ class CPU:
 
                 self.PC += 2
 
-                print('PC PUSH', self.PC)
+                # print('PC PUSH', self.PC)
 
 
             elif IR == "0b1000110":
-                print(self.ram, self.reg)
+                # print(self.ram, self.reg)
                 SP = self.reg[7]
                 # print('SP POP', SP)
 
@@ -157,10 +159,98 @@ class CPU:
 
 
 
+            elif IR == "0b10100111":
+                
+                registerA = input("First register to compare  ")
+                registerB = input("Second register to compare   ")
+
+                if self.reg[int(registerA)] > self.reg[int(registerB)]:
+                    self.FLG = '00000'
+                    for i in range(0,3):
+                        if i == 0:
+                            self.FLG = self.FLG + '1'
+                        else:
+                            self.FLG = self.FLG + '0'
+
+                if self.reg[int(registerA)] < self.reg[int(registerB)]:
+                    self.FLG = '00000'
+                    for i in range(0,3):
+                        if i == 1:
+                            self.FLG = self.FLG + '1'
+                        else:
+                            self.FLG = self.FLG + '0'
+
+                if self.reg[int(registerA)] == self.reg[int(registerB)]:
+                    self.FLG = '00000'
+                    for i in range(0,3):
+                        if i == 2:
+                            self.FLG = self.FLG + '1'
+                        else:
+                            self.FLG = self.FLG + '0'
+                          
+                self.PC+=3
 
 
-            
+            elif IR == "0b1010100":
+                address == input("Register to jump to   ")
+
+                self.ram[self.reg[address]]
+
+                self.PC = self.reg[address]
+
+            elif IR == "0b1010110":
+
+                if self.FLG != "00000001":
+
+                    address == input("Register to jump to   ")
+
+                    self.ram[self.reg[address]]
+
+                    self.PC = self.reg[address]
+
+            elif IR == "0b1010101":
+                print('FLAG', self.FLG, self.PC)
+
+                if self.FLG== "00000001":
+
+                    address == input("Register to jump to   ")
+
+                    self.ram[self.reg[address]]
+
+                    self.PC = self.reg[address]
+                
+                else:
+                    self.PC += 2
+
+
+
+
             elif IR == self.HLT:
                 running = False
+
+
+# # - [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+
+# # - [ ] Add the `JMP` instruction.
+
+# # - [ ] Add the `JEQ` and `JNE` instructions.
+
+# t = '1'
+# f = '0'
+# cpu = CPU()
+# group = re.search(r'(00000)(0)(0)(0)', cpu.FLG)
+# groupAll = group.group()
+# groupAll = re.sub(r'(00000)(0)(1)(1)',q + r'\3\4','00000011')
+# groupAll = '00000' + groupAll
+
+# groupAll = '00000111'
+# b = '00000'
+# f = groupAll[5:6]
+# g = groupAll[6:7]
+# h = groupAll[7:8]
+# g = '0'
+# s = b+f+g+h
+# print(groupAll, group.group())
+
 
 
