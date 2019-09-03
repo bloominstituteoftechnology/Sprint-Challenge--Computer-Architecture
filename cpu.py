@@ -2,6 +2,7 @@
 
 import sys
 import re
+import time
 
 
 class CPU:
@@ -13,6 +14,7 @@ class CPU:
         self.reg = [0]*8
         self.pc = 0
         self.SP = self.reg[7] = 0xF3
+        self.flag = 0b00000000
 
     def ram_read(self, MAR):
         return self.ram[MAR]
@@ -49,8 +51,29 @@ class CPU:
         elif op == "MUL":
             mul = self.reg[reg_a] * self.reg[reg_b]
             print(mul)
+        elif op == "CMP":
+            self.flag = 0b00000000
+
+            # Compare the values in two registers.
+            # If they are equal, set the Equal E flag to 1, otherwise set it to 0.
+            if self.ram[reg_a] == self.ram[reg_b]:
+                self.flag = 0b00000001
+            else:
+                self.flag = 0b00000000
+            # If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
+            if self.ram[reg_a] < self.ram[reg_b]:
+                self.flag = 0b00000100
+            else:
+                self.flag = 0b000000000
+            # If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+            if self.ram[reg_a] > self.ram[reg_b]:
+                self.flag = 0b00000010
+            else:
+                self.flag = 0b000000000
         else:
             raise Exception("Unsupported ALU operation")
+    def jump(self, operand):
+        self.pc = self.reg[operand]
 
     def trace(self):
         """
@@ -73,7 +96,7 @@ class CPU:
         print()
 
     def push(self, operand_a):
-        #decrement the SP
+        # decrement the SP
         self.SP = (self.SP-1) % 255
         self.ram[self.SP] = self.reg[operand_a]
 
@@ -95,28 +118,16 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
-        print("LDI",
-              LDI,
-              "PRN",
-              PRN,
-              "HLT",
-              HLT,
-              "MUL",
-              MUL,
-              "PUSH",
-              PUSH,
-              "POP",
-              POP,
-              "CALL",
-              CALL,
-              "RET",
-              RET,
-              "WTF",
-              0x00011000)
+        CMP = 0b10100111
+        JMP = 0b01010100
+        JNE = 0b01010110
+        JEQ = 0b01010101
 
         running = True
 
         while running:
+            self.trace()
+            time.sleep(1)
 
             IR = self.ram[self.pc]
 
@@ -145,9 +156,23 @@ class CPU:
                 self.push(operand_a)
                 self.ram[self.SP] = self.pc+2
                 self.pc = self.reg[operand_a]
-
             elif IR == RET:
                 self.pc = self.ram[self.SP]
+            elif IR == CMP:
+                print(self.reg[operand_a], self.reg[operand_b])
+                self.alu("CMP", self.reg[operand_a], self.reg[operand_b])
+            elif IR == JMP:
+                self.pc = self.reg[operand_a]
+            elif IR == JNE:
+                if self.flag == 0b00000000:
+                    self.jump(operand_a)
+                else:
+                    self.pc += 2
+            elif IR == JEQ:
+                if self.flag == 0b00000001:
+                    self.jump(operand_a)
+                else:
+                    self.pc += 2
             elif IR == HLT:
                 running = False
             else:
