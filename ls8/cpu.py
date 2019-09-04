@@ -45,8 +45,16 @@ class CPU:
 
     def LDI(self):
         r = input("register number  ")
-        n = input("number that is saved     ")
-        self.reg[int(r)] = int(n)
+        item = input("item that is saved     ")
+        if type(int(item)) == int:
+            print('it is a number!')
+            self.reg[int(r)] = int(item)
+        
+        else:
+            print('oh no!', type(int(item)))
+
+            self.reg[int(r)] = item
+
         self.PC+=3
         
 
@@ -155,6 +163,8 @@ class CPU:
                 # registers[7] = ( SP + 1 ) % 255
 
                 self.PC += 2
+
+                print('counter is at', self.PC)
                 # print('PC POP', self.PC)
 
 
@@ -189,6 +199,7 @@ class CPU:
                             self.FLG = self.FLG + '0'
                           
                 self.PC+=3
+                print('counter is at', self.PC)
 
 
             elif IR == "0b1010100":
@@ -197,30 +208,45 @@ class CPU:
                 self.ram[self.reg[address]]
 
                 self.PC = self.reg[address]
+                
+                print('counter is at', self.PC)
+
 
             elif IR == "0b1010110":
 
                 if self.FLG != "00000001":
 
-                    address == input("Register to jump to   ")
+                    address = input("Register to jump to   ")
 
-                    self.ram[self.reg[address]]
+                    print(self.reg[int(address)], self.ram[int(self.reg[int(address)])])
 
-                    self.PC = self.reg[address]
+
+                    self.ram[int(self.reg[int(address)])]
+                    self.PC = int(self.reg[int(address)])
+                    
+                    print('counter is at', self.PC)
+
+                else:
+                    self.PC += 2
+                    print('counter is at', self.PC)
+
 
             elif IR == "0b1010101":
                 print('FLAG', self.FLG, self.PC)
 
-                if self.FLG== "00000001":
+                if self.FLG == "00000001":
 
-                    address == input("Register to jump to   ")
+                    address = input("Register to jump to   ")
 
-                    self.ram[self.reg[address]]
+                    self.ram[int(self.reg[int(address)])]
+                    self.PC = int(self.reg[int(address)])
+                    print('counter is at', self.PC)
 
-                    self.PC = self.reg[address]
                 
                 else:
                     self.PC += 2
+                    print('counter is at', self.PC)
+
 
 
 
