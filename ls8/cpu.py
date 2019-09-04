@@ -39,7 +39,7 @@ class CPU:
                     address += 1
         
             
-        print('RAM-ROD', self.ram)
+        # print('RAM-ROD', self.ram)
 
 
 
@@ -56,6 +56,8 @@ class CPU:
             self.reg[int(r)] = item
 
         self.PC+=3
+        print('counter is at', self.PC)
+
         
 
 
@@ -205,9 +207,9 @@ class CPU:
             elif IR == "0b1010100":
                 address == input("Register to jump to   ")
 
-                self.ram[self.reg[address]]
+                self.ram[int(self.reg[int(address)])]
 
-                self.PC = self.reg[address]
+                self.PC = int(self.reg[int(address)])
                 
                 print('counter is at', self.PC)
 
@@ -217,8 +219,6 @@ class CPU:
                 if self.FLG != "00000001":
 
                     address = input("Register to jump to   ")
-
-                    print(self.reg[int(address)], self.ram[int(self.reg[int(address)])])
 
 
                     self.ram[int(self.reg[int(address)])]
