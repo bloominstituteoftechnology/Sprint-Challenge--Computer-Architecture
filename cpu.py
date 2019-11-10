@@ -38,7 +38,9 @@ class CPU:
 	def hlt(self):
         sys.exit()
 
-    def ldi(self):
+    def ldi(self, operand_a, operand_b):
+		self.reg[operand_a] = operand_b
+        self.pc += 3
 
     def prn(self):
 
