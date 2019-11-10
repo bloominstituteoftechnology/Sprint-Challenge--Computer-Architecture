@@ -128,13 +128,13 @@ class CPU:
 		MUL = 0b10100010
 		SUB = 0b10100001
 		DIV = 0b10100011
-        AND = 0b10101000
+        # AND = 0b10101000
         OR = 0b10101010
         XOR = 0b10101011
-        NOT = 0b01101001
+        # NOT = 0b01101001
         SHL = 0b10101100
         SHR = 0b10101101
-        MOD = 0b10100100
+        # MOD = 0b10100100
         CMP = 0b1010011
 
 		if op == ADD:
@@ -148,19 +148,33 @@ class CPU:
         elif op == AND:
             return
         elif op == OR:
-            return
+        	bit_or = self.reg[reg_a] | self.reg[reg_b]
+			self.reg[reg_a] = bit_or
+
         elif op == XOR:
-            return
+            xor = self.reg[reg_a] ^ self.reg[reg_b]
+			self.reg[reg_a] = xor
         elif op == NOT:
-            return
+            # TODO
         elif op == SHL:
-            return
+            shl = self.reg[reg_a]
+			left = shl << self.reg[reg_b]
+			self.reg[reg_a] = left
         elif op == SHR:
-            return
+            shr = self.reg[reg_a]
+			right = shr >> self.reg[reg_b]
+			self.reg[reg_a] = right
         elif op == MOD:
-            return
+            # TODO
         elif op == CMP:
-            return
+        	a = self.reg[reg_a]
+			b = self.reg[reg_b]
+			if a == b:
+				self.fl = 0b00000010
+			elif a < b:
+				self.fl = 0b00000100
+			elif a > b:
+				self.fl = 0b00000001				
 		
 
         else:
