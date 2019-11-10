@@ -42,7 +42,9 @@ class CPU:
 		self.reg[operand_a] = operand_b
         self.pc += 3
 
-    def prn(self):
+    def prn(self, operand_a):
+		print(self.reg[operand_a])
+		self.pc += 2
 
     def push(self):
 
@@ -64,21 +66,7 @@ class CPU:
 
         address = 0
 
-        # # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010,  # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111,  # PRN R0
-        #     0b00000000,
-        #     0b00000001,  # HLT
-        # ]
-
-        # for instruction in program:
-        #     self.ram[address] = instruction
-        #     address += 1
+        
         try:
             # open the program specified by the second command line argument
             with open(sys.argv[1]) as f:
