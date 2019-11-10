@@ -35,6 +35,28 @@ class CPU:
     def ram_write(self, MAR, MDR):
         self.ram[MAR] = MDR
 
+	def hlt(self):
+        sys.exit()
+
+    def ldi(self):
+
+    def prn(self):
+
+    def push(self):
+
+    def pop(self):
+
+    def call(self):
+
+    def ret(self):
+
+    def jmp(self):
+
+    def jeq(self):
+
+    def jne(self):
+
+
     def load(self):
         """Load a program into memory."""
 
