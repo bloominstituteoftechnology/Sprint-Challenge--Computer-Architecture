@@ -78,7 +78,10 @@ class CPU:
 		# set PC to the address to jump to
 		self.SP = address_to_jump_to
 
-    
+    def ret(self):
+        address = self.ram[self.SP]
+        self.pc = address
+        self.SP += 1
 
     def jmp(self, operand_a):
 		self.pc = self.reg[operand_a]
