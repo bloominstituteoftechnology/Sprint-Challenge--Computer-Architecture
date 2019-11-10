@@ -46,7 +46,15 @@ class CPU:
 		print(self.reg[operand_a])
 		self.pc += 2
 
-    def push(self):
+    def push(self, operand_a):
+		# 1. Decrement the 'SP'
+		# 2. copy the value in the given register to the address pointed to by 'SP'
+		self.reg[7] = (self.reg[7] - 1) % 255
+        self.SP = self.reg[7]
+        register_address = self.ram[self.pc + 1]
+        value = self.reg[register_address]
+        self.ram[self.SP] = value
+        self.pc += 2
 
     def pop(self):
 
