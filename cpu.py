@@ -10,8 +10,8 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
-        #self.SP = 7
-        #self.reg[7] = 255
+        # self.SP = 7
+        # self.reg[7] = 255
         self.fl = None
 		self.SP = 0xF4
 		self.reg[7] = self.ram[self.SP]
@@ -49,24 +49,34 @@ class CPU:
     def push(self, operand_a):
 		# 1. Decrement the 'SP'
 		# 2. copy the value in the given register to the address pointed to by 'SP'
-		self.reg[7] = (self.reg[7] - 1) % 255
-        self.SP = self.reg[7]
-        register_address = self.ram[self.pc + 1]
-        value = self.reg[register_address]
+		self.SP -= 1
+        value = self.ram[operand_a]
+        
+        
         self.ram[self.SP] = value
         self.pc += 2
 
-    def pop(self):
+    def pop(self, operand_a):
 		# 1. copy the value from the address pointed to by 'SP' to the given register
 		# 2. Increment 'SP'
-		self.SP = self.reg[7]
-        value = self.ram[self.SP]
-        register_address = self.ram[self.pc + 1]
-        self.reg[register_address] = value
-        self.reg[7] = (self.SP + 1) % 255
-        self.pc += 2
 		
-    def call(self):
+        value = self.ram[self.SP]
+		self.reg[operand_a] = value
+		self.SP += 1
+        self.pc += 2
+        
+        
+    def call(self, operand_a):
+		# 1. The address ***instructions*** _directly after_ 'CALL' is pushed onto the stack
+		# This allow us to return to where we left off when subroutine finishes executing.
+		# 2. The PC is set to the address stored in the given register. We jump to first location in RAM
+		# and execute the first instruction in the subroutine. The PC  can move forward/backward from its current location
+		self.SP -= 1
+		next_instruction_address = self.pc + 2
+		self.ram[self.SP] = next_instruction_address
+		address_to_jump_to = self.ram[operand_a]
+		# set PC to the address to jump to
+		self.SP = address_to_jump_to
 
     def ret(self):
 
@@ -172,39 +182,7 @@ class CPU:
             elif IR == MUL:
                 self.alu("MUL", operand_a, operand_b)
                 self.pc += 3
-            elif IR == PUSH:
-                # 1. Decrement the `SP`.
-                # 2. Copy the value in the given register to the address pointed to by
-                # `SP`.
-                self.reg[7] = (self.reg[7] - 1) % 255
-                self.SP = self.reg[7]
-                register_address = self.ram[self.pc + 1]
-                value = self.reg[register_address]
-                self.ram[self.SP] = value
-                self.pc += 2
-            elif IR == POP:
-                # 1. Copy the value from the address pointed to by `SP` to the given register.
-                # 2. Increment `SP`.
-                self.SP = self.reg[7]
-                value = self.ram[self.SP]
-                register_address = self.ram[self.pc + 1]
-                self.reg[register_address] = value
-                self.reg[7] = (self.SP + 1) % 255
-                self.pc += 2
-            elif IR == CALL:
-                # 1. The address of the ** *instruction*** _directly after_ `CALL` is
-                # pushed onto the stack. This allows us to return to where we left off when the subroutine finishes executing.
-                # 2. The PC is set to the address stored in the given register. We jump to that location in RAM and execute the 
-                # first instruction in the subroutine. The PC can move forward or backwards from its current location.
-                register_address = self.ram[self.pc + 1]
-                address_to_jump_to = self.reg[register_address]
-                # store address of the next instruction
-                next_instruction_address = self.pc + 2
-                self.reg[7] = (self.reg[7] - 1) % 255
-                self.SP = self.reg[7]
-                self.ram[self.SP] = next_instruction_address
-                # set PC to the address to jump to
-                self.pc = address_to_jump_to
+            
             elif IR == RET:
                 self.SP = self.reg[7]
                 address_to_return_to = self.ram[self.SP]
@@ -216,3 +194,6 @@ class CPU:
                 self.pc = address_to_jump_to
             else:
                 print("Unknown instruction.")
+        
+
+
