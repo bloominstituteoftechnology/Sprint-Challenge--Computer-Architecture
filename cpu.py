@@ -78,9 +78,10 @@ class CPU:
 		# set PC to the address to jump to
 		self.SP = address_to_jump_to
 
-    def ret(self):
+    
 
-    def jmp(self):
+    def jmp(self, operand_a):
+		self.pc = self.reg[operand_a]
 
     def jeq(self):
 
