@@ -57,7 +57,15 @@ class CPU:
         self.pc += 2
 
     def pop(self):
-
+		# 1. copy the value from the address pointed to by 'SP' to the given register
+		# 2. Increment 'SP'
+		self.SP = self.reg[7]
+        value = self.ram[self.SP]
+        register_address = self.ram[self.pc + 1]
+        self.reg[register_address] = value
+        self.reg[7] = (self.SP + 1) % 255
+        self.pc += 2
+		
     def call(self):
 
     def ret(self):
