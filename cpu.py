@@ -121,14 +121,48 @@ class CPU:
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
+		ADD = 0b10100000
+		MUL = 0b10100010
+		SUB = 0b10100001
+		DIV = 0b10100011
+        AND = 0b10101000
+        OR = 0b10101010
+        XOR = 0b10101011
+        NOT = 0b01101001
+        SHL = 0b10101100
+        SHR = 0b10101101
+        MOD = 0b10100100
+        CMP = 0b1010011
 
-        if op == "ADD":
-            self.reg[reg_a] += self.reg[reg_b]
-        # elif op == "SUB": etc
-        elif op == "MUL":
-            self.reg[reg_a] *= self.reg[reg_b]
+		if op == ADD:
+			self.reg[reg_a] += self.reg[reg_b]
+		elif op == MUL:
+			self.reg[reg_a] *= self.reg[reg_b]
+		elif op == SUB:
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == DIV:
+            self.reg[reg_a] /= self.reg[reg_b]
+        elif op == AND:
+            return
+        elif op == OR:
+            return
+        elif op == XOR:
+            return
+        elif op == NOT:
+            return
+        elif op == SHL:
+            return
+        elif op == SHR:
+            return
+        elif op == MOD:
+            return
+        elif op == CMP:
+            return
+		
+
         else:
             raise Exception("Unsupported ALU operation")
+		self.pc += 3
 
     def trace(self):
         """
