@@ -10,8 +10,24 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
-        self.SP = 7
-        self.reg[7] = 255
+        #self.SP = 7
+        #self.reg[7] = 255
+        self.fl = None
+		self.SP = 0xF4
+		self.reg[7] = self.ram[self.SP]
+
+		# Instruction table
+        self.in_table = {}
+        self.in_table[0b00000001] = self.hlt
+        self.in_table[0b10000010] = self.ldi
+        self.in_table[0b01000111] = self.prn
+        self.in_table[0b01000101] = self.push
+        self.in_table[0b01000110] = self.pop
+        self.in_table[0b01010000] = self.call
+        self.in_table[0b00010001] = self.ret
+        self.in_table[0b01010100] = self.jmp
+        self.in_table[0b01010101] = self.jeq
+        self.in_table[0b01010110] = self.jne
 
     def ram_read(self, MAR):
         return self.ram[MAR]
