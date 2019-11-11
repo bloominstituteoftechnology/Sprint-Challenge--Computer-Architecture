@@ -45,6 +45,8 @@ Options for submission, whichever is easier for you:
 
 ## Minimum Viable Product
 
+Opening Project:
+
 Your finished project must include all of the following requirements:
 
 - [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
