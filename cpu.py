@@ -7,15 +7,62 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.ram = [0] * 256
-        self.reg = [0] * 8
+        self.ram = [0] * 256  # hexadecimal number FF which has a integer value of 255
+
+        # Registers are the most important components of a CPU.
+        # Each register performs a specific function. A brief
+        # description of most important CPU registers and their
+        # functioms are given below:
+
+        self.reg = [0] * 8  # 8 general-purpose registers
         self.reg[7] = 0xf4
-        self.PC = 0
-        self.MAR = 0
-        self.MDR = 0
-        self.IR = 0
+
+        # Program Counter (PC): is also known as Instruction
+        # Pointer Register. This register is used to store the
+        # address of the next instruction to be fetched for
+        # execution. When fetched, it is then incremented.
+
+        self.PC = 0  # Program Counter, address of the currently executing instruction
+
+        # Memory Address Register (MAR): This register holds
+        # the address of memory where CPU wants to read or write
+        # data. When CPU wants to store some data in the memory
+        # or reads the data from the memory, it places the
+        # address of the required memory location in the MAR.
+
+        self.MAR = 0  # Memory Address Register, holds the memory address we're reading or writing
+
+        # Memory Data Register (MDR): This register holds the
+        # contents of data or instruction read from, or written
+        # in memory. The contents of instruction placed in this
+        # register are transferred to the Instruction Register,
+        # while the contents of data are transferred to the
+        # accumulator or I/O register. In other words you can
+        # say that this register is used to store data/instruction
+        # coming from the memory or going to the memory.
+
+        self.MDR = 0  # Memory Data Register, holds the value to write or the value just read
+
+        # Instruction Register (IR): Once an instruction
+        # is fetched from main memory, it is stored in the
+        # Instruction Register. The control unit takes
+        # instruction from this register, decodes and executes
+        # it by sending signals to the appropriate component
+        # of computer to carry out the task.
+
+        self.IR = 0  # Instruction Register, contains a copy of the currently executing instruction
+
+        # Stack Pointer (SP): used to keep track of where the top of the stack is.
         self.SP = 7
-        self.FL = 0
+
+        # Flag Register (FL): used to indicate occurrence of a certain
+        # condition during an operation of the CPU. It isa special
+        # purpose register with size one byte or two bytes. Each bit
+        # of the flag register constitutes a flag, such that the bit
+        # value indicates if a specified condition was encountered
+        # while executing an instruction.
+
+        self.FL = 0  # Flags or Flag Register
         self.E = 0
         self.L = 0
         self.G = 0
