@@ -117,6 +117,11 @@ class CPU:
         CALL = 0b01010000
         RET = 0b00010001
         ADD = 0b10100000
+        CMP = 0b10100111
+        JMP = 0b01010100
+
+        JEQ = 0b01010101
+        JNE = 0b01010110
         running = True
         # looks like we need a converter for the binary
         while running:
@@ -130,6 +135,7 @@ class CPU:
                 reg = self.ram[self.pc + 1]
                 value = self.ram[self.pc + 2]
                 self.reg[reg] = value
+                self.fl = [0] * 8
             # elif command == PRN:
             #     self.ir = command
             #     instruction_size = 2
@@ -153,6 +159,7 @@ class CPU:
                 instruction_size = 2
                 reg = self.ram[self.pc + 1]
                 print(self.reg[reg])
+                # print(self.reg)
             
             elif command == PUSH:
                 instruction_size = 2
@@ -188,8 +195,38 @@ class CPU:
                 self.pc = self.ram[self.reg[SP]]
                 self.reg[SP] += 1
                 instruction_size = 0
+            elif command == CMP:
+                instruction_size = 3
+                reg_a = self.reg[self.ram[self.pc + 1]]
+                reg_b = self.reg[self.ram[self.pc + 2]]
+                if reg_a < reg_b:
+                    self.fl[5] = 1
+                elif reg_a > reg_b:
+                    self.fl[6] = 1
+                elif reg_a == reg_b:
+                    self.fl[7] = 1
+            elif command == JMP:
+                reg_a = self.ram[self.pc + 1]
+                self.pc = self.reg[reg_a]
+                instruction_size = 0
+            elif command == JEQ:
+                # print(self.fl)
+                if self.fl[7] == 1:
+                    reg_a = self.ram[self.pc + 1]
+                    self.pc = self.reg[reg_a]
+                    instruction_size = 0
+                else:
+                    instruction_size = 2
+            elif command == JNE:
+                if self.fl[7] == 0:
+                    reg_a = self.ram[self.pc + 1]
+                    self.pc = self.reg[reg_a]
+                    instruction_size = 0
+                else:
+                    instruction_size = 2
             else:
                 print(f"Unknown Instruction {command}")
                 sys.exit(1)
             # its not inside else but on the same level
             self.pc += instruction_size
+            

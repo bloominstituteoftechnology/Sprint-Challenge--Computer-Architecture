@@ -14,6 +14,6 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 cpu.load(sys.argv[1])
-print(cpu.ram)
+# print(cpu.ram)
 
 cpu.run()
