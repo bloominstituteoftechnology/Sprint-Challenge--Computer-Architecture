@@ -41,21 +41,7 @@ class CPU:
         self.op_pc = False
         self.equal = 0
 
-        # Place methods on branch_table key=>pay dictionary to enable O(1) access inside run() loop
-        self.branch_table = {}
-        self.branch_table[PRN] = self.handle_prn
-        self.branch_table[LDI] = self.handle_ldi
-        self.branch_table[ADD] = self.handle_add
-        self.branch_table[HLT] = self.handle_halt
-        self.branch_table[MUL] = self.handle_mul
-        self.branch_table[PUSH] = self.handle_push
-        self.branch_table[POP] = self.handle_pop
-        self.branch_table[CALL] = self.handle_call
-        self.branch_table[RET] = self.handle_ret
-        self.branch_table[CMP] = self.handle_cmp
-        self.branch_table[JEQ] = self.handle_jeq
-        self.branch_table[JMP] = self.handle_jmp
-        self.branch_table[JNE] = self.handle_jne
+        # branch table for O(1) during run()
 
     def ram_read(self, addr):
         return self.ram[addr]
@@ -91,6 +77,9 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        
+        # Move cmp here
+        
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -242,5 +231,18 @@ class CPU:
                 print(f"Error: Instruction {IR} not found")
                 sys.exit(1)
 
-cpu = CPU()
-cpu.run()
+# Place methods on branch_table key=>pay dictionary to enable O(1) access inside run() loop
+        self.branch_table = {}
+        self.branch_table[PRN] = self.handle_prn
+        self.branch_table[LDI] = self.handle_ldi
+        self.branch_table[ADD] = self.handle_add
+        self.branch_table[HLT] = self.handle_halt
+        self.branch_table[MUL] = self.handle_mul
+        self.branch_table[PUSH] = self.handle_push
+        self.branch_table[POP] = self.handle_pop
+        self.branch_table[CALL] = self.handle_call
+        self.branch_table[RET] = self.handle_ret
+        self.branch_table[CMP] = self.handle_cmp
+        self.branch_table[JEQ] = self.handle_jeq
+        self.branch_table[JMP] = self.handle_jmp
+        self.branch_table[JNE] = self.handle_jne
