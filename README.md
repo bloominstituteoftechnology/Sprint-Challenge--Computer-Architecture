@@ -38,16 +38,16 @@ In this code challenge, you will add _conditional jumps_ (AKA _conditional branc
 
 Options for submission, whichever is easier for you:
 
-* Copy your source into this repo, or...
+- Copy your source into this repo, or...
 
-* Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
+- Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along.
 
 ## Minimum Viable Product
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [x ] Add the `CMP` instruction and `equal` flag to your LS-8.
 
 - [ ] Add the `JMP` instruction.
 
