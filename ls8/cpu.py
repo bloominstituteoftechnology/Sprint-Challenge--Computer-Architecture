@@ -26,7 +26,6 @@ class CPU:
 
         self.keyboardMonitor = KBHit()
 
-
     def setupBranchtable(self):
         self.branchtable = {}
 
@@ -44,6 +43,7 @@ class CPU:
         self.branchtable[PRA] = self.handlePRA
         self.branchtable[IRET] = self.handleIRET
         self.branchtable[LD] = self.handleLD
+        self.branchtable[CMP] = self.handleCMP
 
     def load(self, program):
         """Load a program into memory."""
@@ -79,6 +79,22 @@ class CPU:
         elif op == ADD:
             self.register[operandA] += self.register[operandB]
             self.register[operandA] &= 0xFF
+        elif op == CMP:
+            if self.register[operandA] < self.register[operandB]:
+                # L flag 0b0100
+                self.fl |= 0b0100
+            else:
+                self.fl &= 0b11111011
+            if self.register[operandA] > self.register[operandB]:
+                # G flag 0b0010
+                self.fl |= 0b0010
+            else:
+                self.fl &= 0b11111101
+            if self.register[operandA] == self.register[operandB]:
+                # equal flag 0b0001
+                self.fl |= 0b0001
+            else:
+                self.fl &= 0b11111110
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -186,6 +202,11 @@ class CPU:
         operandA = self.ramRead(self.pc + 1)
         operandB = self.ramRead(self.pc + 2)
         self.register[operandA] = self.ramRead(self.register[operandB])
+
+    def handleCMP(self):
+        operandA = self.ramRead(self.pc + 1)
+        operandB = self.ramRead(self.pc + 2)
+        self.alu(CMP, operandA, operandB)
 
     def __interuptTimer(self):
         currentTime = time.time()
