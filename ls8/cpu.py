@@ -44,6 +44,7 @@ class CPU:
         self.branchtable[IRET] = self.handleIRET
         self.branchtable[LD] = self.handleLD
         self.branchtable[CMP] = self.handleCMP
+        self.branchtable[JEQ] = self.handleJEQ
 
     def load(self, program):
         """Load a program into memory."""
@@ -207,6 +208,13 @@ class CPU:
         operandA = self.ramRead(self.pc + 1)
         operandB = self.ramRead(self.pc + 2)
         self.alu(CMP, operandA, operandB)
+
+    def handleJEQ(self):
+        operand = self.ramRead(self.pc + 1)
+        if (self.fl >> 0) & 0b1 == 1:
+            self.pc = self.register[operand]
+        else:
+            self.pc += 2
 
     def __interuptTimer(self):
         currentTime = time.time()
