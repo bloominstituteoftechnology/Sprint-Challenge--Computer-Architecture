@@ -220,8 +220,8 @@ class CPU:
         self.alu(XOR, operandAIndex, operandBIndex)
 
     def handleNOT(self):
-        operandAIndex = self.ram[self.pc + 1]
-        self.alu(OR, operandAIndex, 0)
+        operand = self.ram[self.pc + 1]
+        self.alu(NOT, operand, 0)
 
     def handleSHL(self):
         operandAIndex = self.ram[self.pc + 1]
