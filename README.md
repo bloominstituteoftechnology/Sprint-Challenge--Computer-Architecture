@@ -1,4 +1,4 @@
-# Sprint Challenge: Computer Architecture - Conditional Jumps
+# Sprint Challenge: Computer Architecture - Conditional Jump
 
 This challenge allows you to practice the concepts and techniques learned over
 the past week and apply them in a concrete project.
@@ -44,6 +44,8 @@ Options for submission, whichever is easier for you:
   you've been using all along.
 
 ## Minimum Viable Product
+
+Opening Project:
 
 Your finished project must include all of the following requirements:
 
