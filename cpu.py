@@ -13,14 +13,21 @@ binary_op = {
     0b00010001: 'RET',
     0b01010100: 'JMP',
     0b01010101: 'JEQ',
-    0b01010110: 'JNE'
+    0b01010110: 'JNE',
 }
 
 math_op = {
     "ADD": 0b10100000,
     "SUB": 0b10100001,
     "MUL": 0b10100010,
-    'CMP': 0b10100111
+    'CMP': 0b10100111,
+    'SHL': 0b10101100,
+    'SHR': 0b10101101,
+    'MOD': 0b10100100,
+    'AND': 0b10101000,
+    'OR': 0b10101010,
+    'XOR': 0b10101011,
+    'NOT': 0b01101001
 }
 
 # Global Constants
@@ -194,15 +201,12 @@ class CPU:
         """ALU operations."""
 
         if op == math_op["ADD"]:
-            print("ADDING")
             self.reg[reg_a] += self.reg[reg_b]
 
         elif op == math_op["SUB"]:
-            print("SUBTRACTING")
             self.reg[reg_a] -= self.reg[reg_b]
 
         elif op == math_op["MUL"]:
-            print("MULTIPYING")
             self.reg[reg_a] *= self.reg[reg_b]
 
         elif op == math_op["CMP"]:
@@ -218,6 +222,56 @@ class CPU:
 
             if valueA > valueB:
                 self.FL = 0b00000010
+
+        elif op == math_op["AND"]:
+            """Bitwise-AND the values in registerA and registerB, then store the result in registerA."""
+            valueA = self.reg[self.operand_a]
+            valueB = self.reg[self.operand_b]
+
+            self.reg[self.operand_a] = valueA & valueB
+
+        elif op == math_op["OR"]:
+            """Perform a bitwise-OR between the values in registerA and registerB, storing the result in registerA."""
+            valueA = self.reg[self.operand_a]
+            valueB = self.reg[self.operand_b]
+
+            self.reg[self.operand_a] = valueA | valueB
+
+        elif op == math_op["XOR"]:
+            """Perform a bitwise-XOR between the values in registerA and registerB, storing the result in registerA."""
+            valueA = self.reg[self.operand_a]
+            valueB = self.reg[self.operand_b]
+
+            self.reg[self.operand_a] = valueA ^ valueB
+
+        elif op == math_op["NOT"]:
+            """Perform a bitwise-NOT on the value in a register."""
+            register = self.operand_a
+            value = self.reg[register]
+
+            self.reg[register] = ~value
+
+        elif op == math_op["SHL"]:
+            """Shift the value in registerA left by the number of bits specified in registerB, filling the low bits with 0."""
+            valueA = self.reg[self.operand_a]
+            number_of_bits = self.reg[self.operand_b]
+
+            self.reg[self.operand_a] = (valueA << number_of_bits) % 255
+
+        elif op == math_op["SHR"]:
+            """Shift the value in registerA right by the number of bits specified in registerB, filling the high bits with 0."""
+            valueA = self.reg[self.operand_a]
+            number_of_bits = self.reg[self.operand_b]
+
+            self.reg[self.operand_a] = (valueA >> number_of_bits) % 255
+
+        elif op == math_op["MOD"]:
+            """Divide the value in the first register by the value in the second, storing the _remainder_ of the result in registerA."""
+            valueA = self.reg[self.operand_a]
+            valueB = self.reg[self.operand_b]
+
+            self.reg[self.operand_a] = valueA % valueB
+
         else:
             raise Exception("Unsupported ALU operation")
 
