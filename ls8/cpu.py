@@ -40,6 +40,8 @@ class CPU:
         self.branchtable[SHL] = self.handleSHL
         self.branchtable[SHR] = self.handleSHR
         self.branchtable[MOD] = self.handleMOD
+        self.branchtable[INC] = self.handleINC
+        self.branchtable[DEC] = self.handleDEC
 
         self.branchtable[LDI] = self.handleLDI
         self.branchtable[PRN] = self.handlePRN
@@ -69,6 +71,8 @@ class CPU:
         self.aluTable[SHL] = self.handleAluSHL
         self.aluTable[SHR] = self.handleAluSHR
         self.aluTable[MOD] = self.handleAluMOD
+        self.aluTable[INC] = self.handleAluINC
+        self.aluTable[DEC] = self.handleAluDEC
 
     def load(self, program):
         """Load a program into memory."""
@@ -159,6 +163,14 @@ class CPU:
             print("Cannot divide (or MOD) by 0!")
             sys.exit(1)
         self.register[operandA] = self.register[operandA] % self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluINC(self, operandA, operandB):
+        self.register[operandA] += 1
+        self.register[operandA] &= 0xFF
+
+    def handleAluDEC(self, operandA, operandB):
+        self.register[operandA] -= 1
         self.register[operandA] &= 0xFF
 
     def trace(self):
@@ -281,7 +293,7 @@ class CPU:
     def handlePRA(self):
         operand = self.ramRead(self.pc + 1)
         value = self.register[operand]
-        print(chr(value))
+        print(chr(value), end="")
 
     def handleIRET(self):
         self.register[6] = self.popValueFromStack()
@@ -304,6 +316,14 @@ class CPU:
         operandA = self.ramRead(self.pc + 1)
         operandB = self.ramRead(self.pc + 2)
         self.alu(CMP, operandA, operandB)
+
+    def handleINC(self):
+        operand = self.ramRead(self.pc + 1)
+        self.alu(INC, operand, 0)
+
+    def handleDEC(self):
+        operand = self.ramRead(self.pc + 1)
+        self.alu(DEC, operand, 0)
 
     def handleJEQ(self):
         operand = self.ramRead(self.pc + 1)
