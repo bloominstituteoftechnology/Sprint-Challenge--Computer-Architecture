@@ -21,6 +21,7 @@ class CPU:
         self.pc = 0
         self.fl = 0
         self.setupBranchtable()
+        self.setupALUBranchtable()
         self.lastFire = time.time()
         self.interruptsEnabled = True
 
@@ -46,6 +47,13 @@ class CPU:
         self.branchtable[CMP] = self.handleCMP
         self.branchtable[JEQ] = self.handleJEQ
         self.branchtable[JNE] = self.handleJNE
+
+    def setupALUBranchtable(self):
+        self.aluTable = {}
+
+        self.aluTable[MUL] = self.handleAluMUL
+        self.aluTable[ADD] = self.handleAluADD
+        self.aluTable[CMP] = self.handleAluCMP
 
     def load(self, program):
         """Load a program into memory."""
@@ -75,30 +83,36 @@ class CPU:
     def alu(self, op, operandA, operandB):
         """ALU operations."""
 
-        if op == MUL:
-            self.register[operandA] *= self.register[operandB]
-            self.register[operandA] &= 0xFF
-        elif op == ADD:
-            self.register[operandA] += self.register[operandB]
-            self.register[operandA] &= 0xFF
-        elif op == CMP:
-            if self.register[operandA] < self.register[operandB]:
-                # L flag 0b0100
-                self.fl |= 0b0100
-            else:
-                self.fl &= 0b11111011
-            if self.register[operandA] > self.register[operandB]:
-                # G flag 0b0010
-                self.fl |= 0b0010
-            else:
-                self.fl &= 0b11111101
-            if self.register[operandA] == self.register[operandB]:
-                # equal flag 0b0001
-                self.fl |= 0b0001
-            else:
-                self.fl &= 0b11111110
+        opMethod = self.aluTable.get(op, None)
+        if opMethod is not None:
+            opMethod(operandA, operandB)
         else:
             raise Exception("Unsupported ALU operation")
+
+    def handleAluADD(self, operandA, operandB):
+        self.register[operandA] += self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluMUL(self, operandA, operandB):
+        self.register[operandA] *= self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluCMP(self, operandA, operandB):
+        if self.register[operandA] < self.register[operandB]:
+            # L flag 0b0100
+            self.fl |= 0b0100
+        else:
+            self.fl &= 0b11111011
+        if self.register[operandA] > self.register[operandB]:
+            # G flag 0b0010
+            self.fl |= 0b0010
+        else:
+            self.fl &= 0b11111101
+        if self.register[operandA] == self.register[operandB]:
+            # equal flag 0b0001
+            self.fl |= 0b0001
+        else:
+            self.fl &= 0b11111110
 
     def trace(self):
         """
