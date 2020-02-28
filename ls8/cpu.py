@@ -30,21 +30,29 @@ class CPU:
     def setupBranchtable(self):
         self.branchtable = {}
 
+        self.branchtable[MUL] = self.handleMUL
+        self.branchtable[CMP] = self.handleCMP
+        self.branchtable[ADD] = self.handleADD
+        self.branchtable[AND] = self.handleAND
+        self.branchtable[OR] = self.handleOR
+        self.branchtable[XOR] = self.handleXOR
+        self.branchtable[NOT] = self.handleNOT
+        self.branchtable[SHL] = self.handleSHL
+        self.branchtable[SHR] = self.handleSHR
+        self.branchtable[MOD] = self.handleMOD
+
         self.branchtable[LDI] = self.handleLDI
         self.branchtable[PRN] = self.handlePRN
         self.branchtable[HLT] = self.handleHLT
-        self.branchtable[MUL] = self.handleMUL
         self.branchtable[PUSH] = self.handlePUSH
         self.branchtable[POP] = self.handlePOP
         self.branchtable[CALL] = self.handleCALL
         self.branchtable[RET] = self.handleRET
-        self.branchtable[ADD] = self.handleADD
         self.branchtable[ST] = self.handleST
         self.branchtable[JMP] = self.handleJMP
         self.branchtable[PRA] = self.handlePRA
         self.branchtable[IRET] = self.handleIRET
         self.branchtable[LD] = self.handleLD
-        self.branchtable[CMP] = self.handleCMP
         self.branchtable[JEQ] = self.handleJEQ
         self.branchtable[JNE] = self.handleJNE
 
@@ -54,6 +62,13 @@ class CPU:
         self.aluTable[MUL] = self.handleAluMUL
         self.aluTable[ADD] = self.handleAluADD
         self.aluTable[CMP] = self.handleAluCMP
+        self.aluTable[AND] = self.handleAluAND
+        self.aluTable[OR] = self.handleAluOR
+        self.aluTable[XOR] = self.handleAluXOR
+        self.aluTable[NOT] = self.handleAluNOT
+        self.aluTable[SHL] = self.handleAluSHL
+        self.aluTable[SHR] = self.handleAluSHR
+        self.aluTable[MOD] = self.handleAluMOD
 
     def load(self, program):
         """Load a program into memory."""
@@ -85,6 +100,7 @@ class CPU:
 
         opMethod = self.aluTable.get(op, None)
         if opMethod is not None:
+            # every opMethod needs to take two parameters, even if it only USES one
             opMethod(operandA, operandB)
         else:
             raise Exception("Unsupported ALU operation")
@@ -113,6 +129,37 @@ class CPU:
             self.fl |= 0b0001
         else:
             self.fl &= 0b11111110
+
+    def handleAluAND(self, operandA, operandB):
+        self.register[operandA] &= self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluOR(self, operandA, operandB):
+        self.register[operandA] |= self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluXOR(self, operandA, operandB):
+        self.register[operandA] ^= self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluNOT(self, operandA, operandB):
+        self.register[operandA] = ~self.register[operandA]
+        self.register[operandA] &= 0xFF
+
+    def handleAluSHL(self, operandA, operandB):
+        self.register[operandA] = self.register[operandA] << self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluSHR(self, operandA, operandB):
+        self.register[operandA] = self.register[operandA] >> self.register[operandB]
+        self.register[operandA] &= 0xFF
+
+    def handleAluMOD(self, operandA, operandB):
+        if self.register[operandB] == 0:
+            print("Cannot divide (or MOD) by 0!")
+            sys.exit(1)
+        self.register[operandA] = self.register[operandA] % self.register[operandB]
+        self.register[operandA] &= 0xFF
 
     def trace(self):
         """
@@ -156,6 +203,40 @@ class CPU:
         operandAIndex = self.ram[self.pc + 1]
         operandBIndex = self.ram[self.pc + 2]
         self.alu(ADD, operandAIndex, operandBIndex)
+
+    def handleAND(self):
+        operandAIndex = self.ram[self.pc + 1]
+        operandBIndex = self.ram[self.pc + 2]
+        self.alu(AND, operandAIndex, operandBIndex)
+
+    def handleOR(self):
+        operandAIndex = self.ram[self.pc + 1]
+        operandBIndex = self.ram[self.pc + 2]
+        self.alu(OR, operandAIndex, operandBIndex)
+
+    def handleXOR(self):
+        operandAIndex = self.ram[self.pc + 1]
+        operandBIndex = self.ram[self.pc + 2]
+        self.alu(XOR, operandAIndex, operandBIndex)
+
+    def handleNOT(self):
+        operandAIndex = self.ram[self.pc + 1]
+        self.alu(OR, operandAIndex, 0)
+
+    def handleSHL(self):
+        operandAIndex = self.ram[self.pc + 1]
+        operandBIndex = self.ram[self.pc + 2]
+        self.alu(SHL, operandAIndex, operandBIndex)
+
+    def handleSHR(self):
+        operandAIndex = self.ram[self.pc + 1]
+        operandBIndex = self.ram[self.pc + 2]
+        self.alu(SHR, operandAIndex, operandBIndex)
+
+    def handleMOD(self):
+        operandAIndex = self.ram[self.pc + 1]
+        operandBIndex = self.ram[self.pc + 2]
+        self.alu(MOD, operandAIndex, operandBIndex)
 
     def handlePUSH(self):
         operandIndex = self.ramRead(self.pc + 1)
