@@ -45,6 +45,7 @@ class CPU:
         self.branchtable[LD] = self.handleLD
         self.branchtable[CMP] = self.handleCMP
         self.branchtable[JEQ] = self.handleJEQ
+        self.branchtable[JNE] = self.handleJNE
 
     def load(self, program):
         """Load a program into memory."""
@@ -212,6 +213,13 @@ class CPU:
     def handleJEQ(self):
         operand = self.ramRead(self.pc + 1)
         if (self.fl >> 0) & 0b1 == 1:
+            self.pc = self.register[operand]
+        else:
+            self.pc += 2
+
+    def handleJNE(self):
+        operand = self.ramRead(self.pc + 1)
+        if (self.fl >> 0) & 0b1 == 0:
             self.pc = self.register[operand]
         else:
             self.pc += 2
