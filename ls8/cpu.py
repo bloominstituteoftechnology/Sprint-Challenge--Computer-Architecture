@@ -2,6 +2,8 @@
 
 import sys
 
+HLT = 0b0001
+
 class CPU:
     """Main CPU class."""
 
@@ -13,7 +15,6 @@ class CPU:
         self.ram = bytearray(256)
         # internal registers
         self.pc = 0 # Program Counter: address of the currently executing instruction
-        self.ir = 0 # Instruction Register: contains a copy of the currently executing instruction
         self.mar = 0 # Memory Address Register: holds the memory address we're reading or writing
         self.mdr = 0 # Memory Data Register: holds the value to write or the value just read
         self.fl = 0 # Flags: 00000LGE; L: less than, G: Greater than, E: Equal
@@ -83,4 +84,18 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        while True:
+            ir = self.ram_read(self.pc) # Instruction Register: contains a copy of the currently executing instruction
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
+
+            operands = (ir & 0b11000000) >> 6
+            alu_oper = (ir & 0b00100000) >> 5
+            sets_pc  = (ir & 0b00010000) >> 4
+            instr_id = (ir & 0b00001111)
+
+            if not sets_pc:
+                self.pc += 1 + operands
+
+            if instr_id == HLT:
+                break
