@@ -1,6 +1,7 @@
 """CPU functionality."""
 
 import sys
+import re
 
 class CPU:
     """Main CPU class."""
@@ -29,22 +30,15 @@ class CPU:
         self.mar = address
         self.ram[self.mar] = self.mdr
 
-    def load(self):
+    def load(self, path):
         """Load a program into memory."""
 
         address = 0
 
-        # For now, we've just hardcoded a program:
-
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+        with open(path) as f:
+            program = f.read()
+            program = re.findall('^[01]{8}', program, re.MULTILINE)
+            program = map(lambda code: int(code, 2), program)
 
         for instruction in program:
             self.ram[address] = instruction
