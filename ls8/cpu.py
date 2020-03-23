@@ -2,8 +2,6 @@
 
 import sys
 
-HLT = 0b0001
-
 class CPU:
     """Main CPU class."""
 
@@ -19,13 +17,13 @@ class CPU:
         self.mdr = 0 # Memory Data Register: holds the value to write or the value just read
         self.fl = 0 # Flags: 00000LGE; L: less than, G: Greater than, E: Equal
     
-    def ram_read(address):
+    def ram_read(self, address):
         """Accepts an address to read and returns the value stored there."""
         self.mar = address
         self.mdr = self.ram[self.mar]
         return self.mdr
 
-    def raw_write(value, address):
+    def raw_write(self, value, address):
         """Accepts a value and address to write the value to."""
         self.mdr = value
         self.mar = address
@@ -83,6 +81,9 @@ class CPU:
         print()
 
     def run(self):
+        HLT = 0b0001
+        LDI = 0b0010
+        PRN = 0b0111
         """Run the CPU."""
         while True:
             ir = self.ram_read(self.pc) # Instruction Register: contains a copy of the currently executing instruction
@@ -99,3 +100,9 @@ class CPU:
 
             if instr_id == HLT:
                 break
+
+            if instr_id == LDI:
+                self.reg[operand_a] = operand_b
+
+            if instr_id == PRN:
+                print(self.reg[operand_a])
