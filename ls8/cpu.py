@@ -7,7 +7,28 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        # general registers
+        self.reg = bytearray([0]*7 + [0xf4]) # [00,00,00,00,00,00,00,f4]
+        # memory
+        self.ram = bytearray(256)
+        # internal registers
+        self.pc = 0 # Program Counter: address of the currently executing instruction
+        self.ir = 0 # Instruction Register: contains a copy of the currently executing instruction
+        self.mar = 0 # Memory Address Register: holds the memory address we're reading or writing
+        self.mdr = 0 # Memory Data Register: holds the value to write or the value just read
+        self.fl = 0 # Flags: 00000LGE; L: less than, G: Greater than, E: Equal
+    
+    def ram_read(address):
+        """Accepts an address to read and returns the value stored there."""
+        self.mar = address
+        self.mdr = self.ram[self.mar]
+        return self.mdr
+
+    def raw_write(value, address):
+        """Accepts a value and address to write the value to."""
+        self.mdr = value
+        self.mar = address
+        self.ram[self.mar] = self.mdr
 
     def load(self):
         """Load a program into memory."""
