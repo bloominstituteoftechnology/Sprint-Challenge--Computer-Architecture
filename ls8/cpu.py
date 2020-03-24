@@ -10,21 +10,69 @@ class CPU:
         """Construct a new CPU."""
         # general registers
         self.reg = bytearray([0]*7 + [0xf4]) # [00,00,00,00,00,00,00,f4]
+
         # memory
         self.ram = bytearray(256)
+
         # internal registers
         self.pc = 0 # Program Counter: address of the currently executing instruction
         self.mar = 0 # Memory Address Register: holds the memory address we're reading or writing
         self.mdr = 0 # Memory Data Register: holds the value to write or the value just read
         self.fl = 0 # Flags: 00000LGE; L: less than, G: Greater than, E: Equal
-    
+
+        # cu instructions
+        CALL = 0b1010000
+        HLT = 0b00000001
+        INT = 0b01010010
+        JEQ = 0b01010101
+        JGE = 0b01011010
+        JGT = 0b01010111
+        JLE = 0b01011001
+        JLT = 0b01011000
+        JMP = 0b01010100
+        JNE = 0b01010110
+        LD = 0b10000011
+        LDI = 0b10000010
+        NOP = 0b00000000
+        POP = 0b01000110
+        PRA = 0b01001000
+        PRN = 0b01000111
+        PUSH = 0b01000101
+        RET = 0b00010001
+        ST = 0b10000100
+
+        # alu instructions
+        ADD = 0b10100000
+        AND = 0b10101000
+        CMP = 0b10100111
+        DEC = 0b01100110
+        DIV = 0b1010001
+        INC = 0b01100101
+        MOD = 0b10100100
+        MUL = 0b10100010
+        NOT = 0b01101001
+        OR = 0b10101010
+        SHL = 0b10101100
+        SHR = 0b10101101
+        SUB = 0b10100001
+        XOR = 0b10101011
+
+        # handlers
+        self.handle = {
+            ADD: self.handle_ADD,
+            HLT: self.handle_HLT,
+            LDI: self.handle_LDI,
+            MUL: self.handle_MUL,
+            PRN: self.handle_PRN,
+        }
+
     def ram_read(self, address):
         """Accepts an address to read and returns the value stored there."""
         self.mar = address
         self.mdr = self.ram[self.mar]
         return self.mdr
 
-    def raw_write(self, value, address):
+    def ram_write(self, value, address):
         """Accepts a value and address to write the value to."""
         self.mdr = value
         self.mar = address
@@ -32,7 +80,6 @@ class CPU:
 
     def load(self, path):
         """Load a program into memory."""
-
         address = 0
 
         with open(path) as f:
@@ -44,17 +91,19 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
-
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
-        MUL = 0b0010
-
-        if op == "ADD":
-            self.reg[reg_a] += self.reg[reg_b]
-        elif op == MUL:
-            self.reg[reg_a] *= self.reg[reg_b]
-        else:
+        try:
+            self.handle[op](reg_a, reg_b)
+        except KeyError:
             raise Exception("Unsupported ALU operation")
+
+    def cu(self, op, operand_a, operand_b):
+        """CU operations."""
+        try:
+            self.handle[op](operand_a, operand_b)
+        except KeyError:
+            raise Exception("Unsupported CU operation")
 
     def trace(self):
         """
@@ -77,31 +126,37 @@ class CPU:
         print()
 
     def run(self):
-        HLT = 0b0001
-        LDI = 0b0010
-        PRN = 0b0111
         """Run the CPU."""
-        while True:
+        # run program until HLT
+        self.running = True
+        while self.running:
             ir = self.ram_read(self.pc) # Instruction Register: contains a copy of the currently executing instruction
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
-            operands = (ir & 0b11000000) >> 6
+            op_count = (ir & 0b11000000) >> 6
             alu_oper = (ir & 0b00100000) >> 5
             sets_pc  = (ir & 0b00010000) >> 4
-            instr_id = (ir & 0b00001111)
 
             if not sets_pc:
-                self.pc += 1 + operands
+                self.pc += 1 + op_count
 
             if alu_oper:
-                self.alu(instr_id, operand_a, operand_b)
-            
-            elif instr_id == HLT:
-                break
+                self.alu(ir, operand_a, operand_b)
+            else:
+                self.cu(ir, operand_a, operand_b)
 
-            elif instr_id == LDI:
-                self.reg[operand_a] = operand_b
+    def handle_ADD(self, a, b):
+        self.reg[a] += self.reg[b]
 
-            elif instr_id == PRN:
-                print(self.reg[operand_a])
+    def handle_LDI(self, a, b):
+        self.reg[a] = b
+
+    def handle_HLT(self, a, b):
+        self.running = False
+
+    def handle_MUL(self, a, b):
+        self.reg[a] *= self.reg[b]
+
+    def handle_PRN(self, a, b):
+        print(self.reg[a])
