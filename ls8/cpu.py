@@ -60,12 +60,14 @@ class CPU:
         # handlers
         self.handle = {
             ADD: self.handle_ADD,
+            CALL: self.handle_CALL,
             HLT: self.handle_HLT,
             LDI: self.handle_LDI,
             MUL: self.handle_MUL,
             POP: self.handle_POP,
             PRN: self.handle_PRN,
             PUSH: self.handle_PUSH,
+            RET: self.handle_RET,
         }
 
     def ram_read(self, address):
@@ -140,8 +142,7 @@ class CPU:
             alu_oper = (ir & 0b00100000) >> 5
             sets_pc  = (ir & 0b00010000) >> 4
 
-            if not sets_pc:
-                self.pc += 1 + op_count
+            self.pc += 1 + op_count
 
             if alu_oper:
                 self.alu(ir, operand_a, operand_b)
@@ -151,6 +152,15 @@ class CPU:
     def handle_ADD(self, a, b):
         """Add values of 2 registers and store sum in the first."""
         self.reg[a] += self.reg[b]
+
+    def handle_CALL(self, a, b):
+        """Add next PC ptr to stack, set PC to address from register"""
+        self.reg[7] -= 1
+        sp = self.reg[7]
+        val = self.pc
+        self.ram_write(val, sp)
+
+        self.pc = self.reg[a]
 
     def handle_LDI(self, a, b):
         """Store a value in a register."""
@@ -180,3 +190,9 @@ class CPU:
         sp = self.reg[7] 
         val = self.reg[a]
         self.ram_write(val, sp)
+
+    def handle_RET(self, a, b):
+        """Pop the value from the top of the stack and store it in the PC."""
+        sp = self.reg[7]
+        self.pc = self.ram_read(sp)
+        self.reg[7] += 1
