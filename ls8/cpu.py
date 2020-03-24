@@ -1,7 +1,8 @@
 """CPU functionality."""
 
-import sys
 import re
+import sys
+import time
 
 class CPU:
     """Main CPU class."""
@@ -62,12 +63,15 @@ class CPU:
             ADD: self.handle_ADD,
             CALL: self.handle_CALL,
             HLT: self.handle_HLT,
+            JMP: self.handle_JMP,
             LDI: self.handle_LDI,
             MUL: self.handle_MUL,
             POP: self.handle_POP,
+            PRA: self.handle_PRA,
             PRN: self.handle_PRN,
             PUSH: self.handle_PUSH,
             RET: self.handle_RET,
+            ST: self.handle_ST,
         }
 
     def ram_read(self, address):
@@ -132,15 +136,30 @@ class CPU:
     def run(self):
         """Run the CPU."""
         # run program until HLT
+        interupt_time = time.time()
         self.running = True
         while self.running:
+            # set bit #0 of R6 to 1 every second
+            now = time.time()
+            if now - interupt_time >= 1:
+                self.reg[6] = self.reg[6] | 0b00000001
+                interupt_time = now
+
+            # handle interupts: compare R5 interrupt mask (IM) and R6 interrupt status (IS)
+            masked_interrupts = self.reg[5] & self.reg[6]
+            for i in range(8):
+                if (masked_interrupts >> i) & 1:
+                    # disable other interupts
+                    self.reg[6] = self.reg[6] & int('1'*(7-i) + '0' + '1'*(i), 2) # clear bit in IS (i.e. 01000001 → 01000000)
+                    # add to stack
+                    # jmp to vector
+
             ir = self.ram_read(self.pc) # Instruction Register: contains a copy of the currently executing instruction
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
             op_count = (ir & 0b11000000) >> 6
             alu_oper = (ir & 0b00100000) >> 5
-            sets_pc  = (ir & 0b00010000) >> 4
 
             self.pc += 1 + op_count
 
@@ -170,6 +189,10 @@ class CPU:
         """Stop the cpu run loop."""
         self.running = False
 
+    def handle_JMP(self, a, b):
+        """Jump to the address stored in the given register."""
+        self.pc = self.reg[a]
+
     def handle_MUL(self, a, b):
         """Multiply values of 2 registers and store product in the first."""
         self.reg[a] *= self.reg[b]
@@ -179,6 +202,10 @@ class CPU:
         sp = self.reg[7]
         self.reg[a] = self.ram_read(sp)
         self.reg[7] += 1
+
+    def handle_PRA(self, a, b):
+        """Print to the console the ASCII character corresponding to the value in the register."""
+        print(chr(self.reg[a]))
 
     def handle_PRN(self, a, b):
         """Print value from a register."""
@@ -196,3 +223,9 @@ class CPU:
         sp = self.reg[7]
         self.pc = self.ram_read(sp)
         self.reg[7] += 1
+
+    def handle_ST(self, a, b):
+        """Store value in registerB in the address stored in registerA."""
+        ptr = self.reg[a]
+        val = self.reg[b]
+        self.ram_write(val, ptr)
