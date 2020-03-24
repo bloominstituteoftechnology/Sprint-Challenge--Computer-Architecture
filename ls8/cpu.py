@@ -63,7 +63,9 @@ class CPU:
             HLT: self.handle_HLT,
             LDI: self.handle_LDI,
             MUL: self.handle_MUL,
+            POP: self.handle_POP,
             PRN: self.handle_PRN,
+            PUSH: self.handle_PUSH,
         }
 
     def ram_read(self, address):
@@ -147,16 +149,34 @@ class CPU:
                 self.cu(ir, operand_a, operand_b)
 
     def handle_ADD(self, a, b):
+        """Add values of 2 registers and store sum in the first."""
         self.reg[a] += self.reg[b]
 
     def handle_LDI(self, a, b):
+        """Store a value in a register."""
         self.reg[a] = b
 
     def handle_HLT(self, a, b):
+        """Stop the cpu run loop."""
         self.running = False
 
     def handle_MUL(self, a, b):
+        """Multiply values of 2 registers and store product in the first."""
         self.reg[a] *= self.reg[b]
 
+    def handle_POP(self, a, b):
+        """Pop value from top of the stack to a register and update stack pointer (R7)."""
+        sp = self.reg[7]
+        self.reg[a] = self.ram_read(sp)
+        self.reg[7] += 1
+
     def handle_PRN(self, a, b):
+        """Print value from a register."""
         print(self.reg[a])
+
+    def handle_PUSH(self, a, b):
+        """Update stack pointer (R7) and push a value from a register to top of the stack."""
+        self.reg[7] -= 1
+        sp = self.reg[7] 
+        val = self.reg[a]
+        self.ram_write(val, sp)
