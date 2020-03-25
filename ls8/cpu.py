@@ -1,5 +1,6 @@
 """CPU functionality."""
 
+import msvcrt
 import re
 import sys
 import time
@@ -66,6 +67,7 @@ class CPU:
             HLT: self.handle_HLT,
             IRET: self.handle_IRET,
             JMP: self.handle_JMP,
+            LD: self.handle_LD,
             LDI: self.handle_LDI,
             MUL: self.handle_MUL,
             POP: self.handle_POP,
@@ -141,6 +143,12 @@ class CPU:
         interupt_time = time.time()
         self.running = True
         while self.running:
+            # get keypress
+            if msvcrt.kbhit():
+                key = msvcrt.getch()[0]
+                self.ram_write(key, 0xf4)
+                self.reg[6] = self.reg[6] | 0b00000010
+            
             # set bit #0 of R6 to 1 every second
             now = time.time()
             if now - interupt_time >= 1:
@@ -203,6 +211,10 @@ class CPU:
         self.ram_write(val, sp)
 
         self.pc = self.reg[a]
+
+    def handle_LD(self, a, b):
+        """Loads registerA with the value at the memory address stored in registerB."""
+        self.reg[a] = self.ram_read(self.reg[b])
 
     def handle_LDI(self, a, b):
         """Store a value in a register."""
