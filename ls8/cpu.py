@@ -230,14 +230,6 @@ class CPU:
         """Decrement (subtract 1 from) the value in the given register."""
         self.reg[a] -= 1
 
-    def handle_LD(self, a, b):
-        """Loads registerA with the value at the memory address stored in registerB."""
-        self.reg[a] = self.ram_read(self.reg[b])
-
-    def handle_LDI(self, a, b):
-        """Store a value in a register."""
-        self.reg[a] = b
-
     def handle_HLT(self, a, b):
         """Stop the cpu run loop."""
         self.running = False
@@ -261,6 +253,14 @@ class CPU:
     def handle_JMP(self, a, b):
         """Jump to the address stored in the given register."""
         self.pc = self.reg[a]
+
+    def handle_LD(self, a, b):
+        """Loads registerA with the value at the memory address stored in registerB."""
+        self.reg[a] = self.ram_read(self.reg[b])
+
+    def handle_LDI(self, a, b):
+        """Store a value in a register."""
+        self.reg[a] = b
 
     def handle_MUL(self, a, b):
         """Multiply values of 2 registers and store product in the first."""
