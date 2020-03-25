@@ -25,6 +25,7 @@ class CPU:
         CALL = 0b1010000
         HLT = 0b00000001
         INT = 0b01010010
+        IRET = 0b00010011
         JEQ = 0b01010101
         JGE = 0b01011010
         JGT = 0b01010111
@@ -63,6 +64,7 @@ class CPU:
             ADD: self.handle_ADD,
             CALL: self.handle_CALL,
             HLT: self.handle_HLT,
+            IRET: self.handle_IRET,
             JMP: self.handle_JMP,
             LDI: self.handle_LDI,
             MUL: self.handle_MUL,
@@ -149,10 +151,18 @@ class CPU:
             masked_interrupts = self.reg[5] & self.reg[6]
             for i in range(8):
                 if (masked_interrupts >> i) & 1:
-                    # disable other interupts
                     self.reg[6] = self.reg[6] & int('1'*(7-i) + '0' + '1'*(i), 2) # clear bit in IS (i.e. 01000001 → 01000000)
                     # add to stack
+                    self._push(self.pc)
+                    self._push(self.fl)
+                    self.fl = 0
+                    for n in range(7):
+                        self._push(self.reg[n])
+                        self.reg[n] = 0 # disables interupts by clearing R5 (IM) & R6 (IS)
                     # jmp to vector
+                    iv_ptr = 0xf8+i # interupt vector pointer
+                    self.pc = self.ram_read(iv_ptr)
+
 
             ir = self.ram_read(self.pc) # Instruction Register: contains a copy of the currently executing instruction
             operand_a = self.ram_read(self.pc + 1)
@@ -168,6 +178,19 @@ class CPU:
             else:
                 self.cu(ir, operand_a, operand_b)
 
+    def _push(self, val):
+        """Push immediate value to stack"""
+        self.reg[7] -= 1
+        sp = self.reg[7]
+        self.ram_write(val, sp)
+
+    def _pop(self):
+        """Pop value from stack"""
+        sp = self.reg[7]
+        val = self.ram_read(sp)
+        self.reg[7] += 1
+        return val
+    
     def handle_ADD(self, a, b):
         """Add values of 2 registers and store sum in the first."""
         self.reg[a] += self.reg[b]
@@ -188,6 +211,13 @@ class CPU:
     def handle_HLT(self, a, b):
         """Stop the cpu run loop."""
         self.running = False
+
+    def handle_IRET(self, a, b):
+        """Return from an interrupt handler."""
+        for i in range(7):
+            self.reg[6 - i] = self._pop() # enables interupts by restoring R5 (IM) & R6 (IS)
+        self.fl = self._pop()
+        self.pc = self._pop()
 
     def handle_JMP(self, a, b):
         """Jump to the address stored in the given register."""
