@@ -64,8 +64,12 @@ class CPU:
         self.handle = {
             ADD: self.handle_ADD,
             CALL: self.handle_CALL,
+            CMP: self.handle_CMP,
+            DEC: self.handle_DEC,
             HLT: self.handle_HLT,
+            INC: self.handle_INC,
             IRET: self.handle_IRET,
+            JEQ: self.handle_JEQ,
             JMP: self.handle_JMP,
             LD: self.handle_LD,
             LDI: self.handle_LDI,
@@ -212,6 +216,20 @@ class CPU:
 
         self.pc = self.reg[a]
 
+    def handle_CMP(self, a, b):
+        """Compare the values in two registers."""
+        self.fl = 0b00000000
+        if self.reg[a] < self.reg[b]:
+            self.fl = self.fl | 0b00000100
+        if self.reg[a] > self.reg[b]:
+            self.fl = self.fl | 0b00000010
+        if self.reg[a] == self.reg[b]:
+            self.fl = self.fl | 0b00000001
+
+    def handle_DEC(self, a, b):
+        """Decrement (subtract 1 from) the value in the given register."""
+        self.reg[a] -= 1
+
     def handle_LD(self, a, b):
         """Loads registerA with the value at the memory address stored in registerB."""
         self.reg[a] = self.ram_read(self.reg[b])
@@ -224,12 +242,21 @@ class CPU:
         """Stop the cpu run loop."""
         self.running = False
 
+    def handle_INC(self, a, b):
+        """Increment (add 1 to) the value in the given register."""
+        self.reg[a] += 1
+
     def handle_IRET(self, a, b):
         """Return from an interrupt handler."""
         for i in range(7):
             self.reg[6 - i] = self._pop() # enables interupts by restoring R5 (IM) & R6 (IS)
         self.fl = self._pop()
         self.pc = self._pop()
+
+    def handle_JEQ(self, a, b):
+        """If equal flag is set, jump to the address stored in the given register."""
+        if self.fl & 0b00000001:
+            self.pc = self.reg[a]
 
     def handle_JMP(self, a, b):
         """Jump to the address stored in the given register."""
@@ -247,7 +274,7 @@ class CPU:
 
     def handle_PRA(self, a, b):
         """Print to the console the ASCII character corresponding to the value in the register."""
-        print(chr(self.reg[a]))
+        print(chr(self.reg[a]), end="")
 
     def handle_PRN(self, a, b):
         """Print value from a register."""
