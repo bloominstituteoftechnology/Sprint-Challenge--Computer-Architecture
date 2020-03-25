@@ -70,6 +70,7 @@ class CPU:
             INC: self.handle_INC,
             IRET: self.handle_IRET,
             JEQ: self.handle_JEQ,
+            JLT: self.handle_JLT,
             JMP: self.handle_JMP,
             LD: self.handle_LD,
             LDI: self.handle_LDI,
@@ -79,6 +80,7 @@ class CPU:
             PRN: self.handle_PRN,
             PUSH: self.handle_PUSH,
             RET: self.handle_RET,
+            SHL: self.handle_SHL,
             ST: self.handle_ST,
         }
 
@@ -250,6 +252,11 @@ class CPU:
         if self.fl & 0b00000001:
             self.pc = self.reg[a]
 
+    def handle_JLT(self, a, b):
+        """If less-than flag is set (true), jump to the address stored in the given register."""
+        if self.fl & 0b00000100:
+            self.pc = self.reg[a]
+
     def handle_JMP(self, a, b):
         """Jump to the address stored in the given register."""
         self.pc = self.reg[a]
@@ -292,6 +299,10 @@ class CPU:
         sp = self.reg[7]
         self.pc = self.ram_read(sp)
         self.reg[7] += 1
+
+    def handle_SHL(self, a, b):
+        """Shift the value in registerA left by the number of bits specified in registerB, filling the low bits with 0."""
+        self.reg[a] = self.reg[a] << self.reg[b]
 
     def handle_ST(self, a, b):
         """Store value in registerB in the address stored in registerA."""
