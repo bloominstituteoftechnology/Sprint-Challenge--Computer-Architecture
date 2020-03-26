@@ -176,7 +176,7 @@ class CPU:
                     # jmp to vector
                     iv_ptr = 0xf8+i # interupt vector pointer
                     self.pc = self.ram_read(iv_ptr)
-
+                    break
 
             ir = self.ram_read(self.pc) # Instruction Register: contains a copy of the currently executing instruction
             operand_a = self.ram_read(self.pc + 1)
