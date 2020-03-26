@@ -20,4 +20,6 @@ IntHandler:
     LDI R0,0xF4          ; Memory location of most recent key pressed
     LD R1,R0             ; load R1 from that memory address
     PRA R1               ; Print it
+    LDI R1,10            ; Load R1 with '\n'
+    PRA R1               ; Print it
     IRET

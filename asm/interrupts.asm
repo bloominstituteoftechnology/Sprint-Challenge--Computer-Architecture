@@ -16,4 +16,6 @@ Loop:
 IntHandler:
     LDI R0,65            ; Load R0 with 'A'
     PRA R0               ; Print it
+    LDI R0,10            ; Load R0 with '\n'
+    PRA R0               ; Print it
     IRET
