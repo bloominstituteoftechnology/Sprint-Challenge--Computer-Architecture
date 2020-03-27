@@ -84,7 +84,7 @@ class CPU:
             # if a > b, set G flag to 1
             elif self.reg[reg_a] > self.reg[reg_b]:
                 self.fl = 0b00000010
-            # if equal set E flag 1
+            # if equal set E flag
             elif self.reg[reg_a] == self.reg[reg_b]:
                 self.fl = 0b00000001
 
