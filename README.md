@@ -1,5 +1,5 @@
-# Sprint Challenge: Computer Architecture - Conditional Jumps
-
+# Sprint Challenge: Computer Architecture - Conditional Jump
+<!-- hunter smith -->
 This challenge allows you to practice the concepts and techniques learned over
 the past week and apply them in a concrete project.
 During this Sprint, you studied CPU components, number bases, bitwise
