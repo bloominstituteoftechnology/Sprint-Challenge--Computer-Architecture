@@ -1,117 +1,4 @@
 import sys
-"""
-CMP
-This is an instruction handled by the ALU.
-CMP registerA registerB
-Compare the values in two registers.
-If they are equal, set the Equal E flag to 1, otherwise set it to 0.
-If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
-If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
-=====================================================================
-JMP
-JMP register
-Jump to the address stored in the given register.
-Set the PC to the address stored in the given register.
-Machine code:
-01010100 00000rrr
-54 0r
-========================================================================
-JEQ
-JEQ register
-If equal flag is set (true), jump to the address stored in the given register.
-Machine code:
-01010101 00000rrr
-55 0r
-==========================================================================
-JNE
-JNE register
-If E flag is clear (false, 0), jump to the address stored in the given register.
-Machine code:
-01010110 00000rrr
-56 0r
-======================================================================
-10000010 # LDI R0,10
-00000000
-00001010
-10000010 # LDI R1,20
-00000001
-00010100
-10000010 # LDI R2,TEST1
-00000010
-00010011
-10100111 # CMP R0,R1
-00000000
-00000001
-01010101 # JEQ R2
-00000010
-10000010 # LDI R3,1
-00000011
-00000001
-01000111 # PRN R3
-00000011
-# TEST1 (address 19):
-10000010 # LDI R2,TEST2
-00000010
-00100000
-10100111 # CMP R0,R1
-00000000
-00000001
-01010110 # JNE R2
-00000010
-10000010 # LDI R3,2
-00000011
-00000010
-01000111 # PRN R3
-00000011
-# TEST2 (address 32):
-10000010 # LDI R1,10
-00000001
-00001010
-10000010 # LDI R2,TEST3
-00000010
-00110000
-10100111 # CMP R0,R1
-00000000
-00000001
-01010101 # JEQ R2
-00000010
-10000010 # LDI R3,3
-00000011
-00000011
-01000111 # PRN R3
-00000011
-# TEST3 (address 48):
-10000010 # LDI R2,TEST4
-00000010
-00111101
-10100111 # CMP R0,R1
-00000000
-00000001
-01010110 # JNE R2
-00000010
-10000010 # LDI R3,4
-00000011
-00000100
-01000111 # PRN R3
-00000011
-# TEST4 (address 61):
-10000010 # LDI R3,5
-00000011
-00000101
-01000111 # PRN R3
-00000011
-10000010 # LDI R2,TEST5
-00000010
-01001001
-01010100 # JMP R2
-00000010
-01000111 # PRN R3
-00000011
-# TEST5 (address 73):
-00000001 # HLT
-"""
-
-
 HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
@@ -125,17 +12,6 @@ CMP = 0b10100111
 JMP = 0b01010100
 JNE = 0b01010110
 JEQ = 0b01010101
-
-
-"""
-CMP
-This is an instruction handled by the ALU.
-CMP registerA registerB
-Compare the values in two registers.
-If they are equal, set the Equal E flag to 1, otherwise set it to 0.
-If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
-If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
-        """
 
 
 class CPU:
@@ -160,7 +36,8 @@ class CPU:
         self.branchtable[CALL] = self.handle_call
         self.branchtable[RET] = self.handle_ret
         self.branchtable[ADD] = self.handle_add
-        # SPRINT
+
+        # Sprint challenge: add CMP, JMP, JEQ and JNE
         self.branchtable[CMP] = self.handle_cmp
         self.branchtable[JMP] = self.handle_jmp
         self.branchtable[JEQ] = self.handle_jeq
@@ -302,9 +179,6 @@ class CPU:
 
             register_a = self.reg[reg_a]
             register_b = self.reg[reg_b]
-            # print(f"r_a: {register_a}")
-            # print(f"r_b: {register_b}")
-            # set flag based on register values
             if register_a == register_b:
                 self.fl = 0b00000001
             elif register_a > register_b:
@@ -313,7 +187,7 @@ class CPU:
                 self.fl = 0b00000100
 
         else:
-            raise Exception("Unsupported ALU operation")
+            raise Exception("That's wrong, yo")
 
     def trace(self):
         """
