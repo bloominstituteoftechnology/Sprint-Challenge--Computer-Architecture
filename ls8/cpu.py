@@ -219,5 +219,5 @@ class CPU:
                 running = False
             else:
                 self.branchtable[self.ram[self.pc]]()
-                # never got 'round to doing the keyboard and interrupts stretch :(
+                # never got 'round to doing the keyboard and interrupts stretch ):<
         pass
