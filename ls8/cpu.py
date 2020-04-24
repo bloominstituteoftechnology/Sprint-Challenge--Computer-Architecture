@@ -118,6 +118,14 @@ class CPU:
         address = self.ram_read(self.pc + 2)
         self.pc = self.reg[address]
     
+
+    # Jump to next register if f1 is empty:
+    def JNE_HANDLER(self):
+        if self.f1 != [0b00000001]:
+            self.JMP_HANDLER()
+        else:
+            self.pc += 2
+    
     def CALL_HANDLER(self):
         #compute pc value and push onto stack:
         self.reg[sp_address] -= 1
