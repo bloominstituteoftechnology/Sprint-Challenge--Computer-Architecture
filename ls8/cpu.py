@@ -125,6 +125,12 @@ class CPU:
             self.JMP_HANDLER()
         else:
             self.pc += 2
+    # Jump if address is equal to the register:
+    def JEQ_HANDLER(self):
+        if self.f1 == [0b00000001]:
+            self.JMP_HANDLER()
+        else:
+            self.pc += 2
     
     def CALL_HANDLER(self):
         #compute pc value and push onto stack:
@@ -204,10 +210,10 @@ class CPU:
             self.reg[reg_a] *= self.reg[reg_b]
 
         elif op == "CMP":
-            if self.reg[reg_a] == self.reg[reg_b]
+            if self.reg[reg_a] == self.reg[reg_b]:
                 self.f1 = [0b00000000]
                 
-            elif self.reg[reg_a] > self.reg[reg_b]
+            elif self.reg[reg_a] > self.reg[reg_b]:
                 self.fl = [0b00000010] #2
             elif self.reg[reg_a] < self.reg[reg_b]:
                 self.fl = [0b00000100] # 4
