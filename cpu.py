@@ -19,7 +19,7 @@ class CPU:
         # equal flag to your LS-8.
         self.f1 = [0b00000000]
         # lambda CPU to print 8
-        self.reg = [0] * 8
+        self.reg = ([0] * 7 + [0xF4])
         # Program Counter, address of the currently executing instruction
         self.pc = self.reg[0]
         #LDI = memory address2 has address of memory address 1 and separately memory address 1 has some value,
@@ -45,12 +45,18 @@ class CPU:
             0b01010100: self.JMP_HANDLER, # jump
         
         }
-    def ram_read(self, address):
-        return self.ram[address]
+    # def ram_read(self, address):
+    #     return self.ram[address]
 
-    def ram_write(self, value, address):
-        self.ram[address] = value
+    # def ram_write(self, value, address):
+    #     self.ram[address] = value
 
+# POINTER TO THE ADDRESS AND VALUE IN REGISTRY:
+
+    def ram_read(self, MAR):
+        return self.ram[MAR]
+    def ram_write(self, MDR, MAR):
+        self.ram[MAR] = MDR
 
     def CMP_HANDLER(self):
         # get values from memory
@@ -115,7 +121,7 @@ class CPU:
 
     # JUMP to the address stored in the given register:
     def JMP_HANDLER(self):
-        address = self.ram_read(self.pc + 2)
+        address = self.ram_read(self.pc + 1)
         self.pc = self.reg[address]
     
 
