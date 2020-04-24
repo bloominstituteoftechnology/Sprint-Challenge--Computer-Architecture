@@ -217,7 +217,7 @@ class CPU:
 
         elif op == "CMP":
             if self.reg[reg_a] == self.reg[reg_b]:
-                self.f1 = [0b00000000]
+                self.f1 = [0b00000001]
                 
             elif self.reg[reg_a] > self.reg[reg_b]:
                 self.fl = [0b00000010] #2
