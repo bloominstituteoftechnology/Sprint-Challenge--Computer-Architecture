@@ -39,7 +39,7 @@ class CPU:
             0b01000101: self.PUSH_HANDLER,
             0b01010000: self.CALL_HANDLER,
             0b00010001: self.RET_HANDLER,
-            0b10100111: self.CMP_HANDLER, # Compare
+            0b10100111: self.CMP_HANDLER, # Compare (ALU operation)
             0b01010101: self.JEQ_HANDLER, # If equal flag is set (true), jump to the address stored in the given register.
             0b01010110: self.JNE_HANDLER, # If E flag is clear (false, 0), jump to the address stored in the given register.
             0b01010100: self.JMP_HANDLER, # jump
@@ -50,6 +50,17 @@ class CPU:
 
     def ram_write(self, value, address):
         self.ram[address] = value
+
+
+    def CMP_HANDLER(self):
+        # get values from memory
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        # then alu compare
+        self.alu("CMP", reg_a, reg_b)
+        self.pc += 3
+
+
     def MUL_HANDLER(self):
         # get two values:
         reg_a = self.ram_read(self.pc + 1)
@@ -178,6 +189,15 @@ class CPU:
         #elif op == "SUB": etc
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+
+        elif op == "CMP":
+            if self.reg[reg_a] == self.reg[reg_b]
+                self.f1 = [0b00000000]
+                
+            elif self.reg[reg_a] > self.reg[reg_b]
+                self.fl = [0b00000010] #2
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                self.fl = [0b00000100] # 4
         else:
             raise Exception("Unsupported ALU operation")
 
