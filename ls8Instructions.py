@@ -1,0 +1,19 @@
+inst_dict = {
+    "HLT": 0x1,
+    "LDI": 0x82,
+    "PRN": 0x47,
+    "PUSH": 0x45,
+    "POP": 0x46,
+    "CALL": 0x50,
+    "RET": 0x11,
+    "JMP": 0x54,
+    "JEQ": 0x55,
+    "JNE": 0x56,
+}
+
+alu_dict = {
+    "CMP": 0xA7,
+    "MUL": 0xA2,
+    "SUB": 0xA1,
+    "ADD": 0xA0,
+}
