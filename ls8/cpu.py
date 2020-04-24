@@ -112,6 +112,11 @@ class CPU:
         self.ram[self.reg[7]] = val
         # then the pc
         self.pc += 2
+
+    # JUMP to the address stored in the given register:
+    def JMP_HANDLER(self):
+        address = self.ram_read(self.pc + 2)
+        self.pc = self.reg[address]
     
     def CALL_HANDLER(self):
         #compute pc value and push onto stack:
