@@ -11,6 +11,13 @@ class CPU:
         self.set_PC = False
         # total CPU memory
         self.ram = [0] * 256
+        # MEMORY ADDRESS REGISTRY (the address we re on) 0 by default
+        self.MAR = 0
+
+        # MEMORY DATA REGISTRY (the value we re on) 0 by default
+        self.MDR = 0
+        # equal flag to your LS-8.
+        self.f1 = [0b00000000]
         # lambda CPU to print 8
         self.reg = [0] * 8
         # Program Counter, address of the currently executing instruction
@@ -31,7 +38,12 @@ class CPU:
             0b01000110: self.POP_HANDLER,
             0b01000101: self.PUSH_HANDLER,
             0b01010000: self.CALL_HANDLER,
-            0b00010001: self.RET_HANDLER
+            0b00010001: self.RET_HANDLER,
+            0b10100111: self.CMP_HANDLER, # Compare
+            0b01010101: self.JEQ_HANDLER, # If equal flag is set (true), jump to the address stored in the given register.
+            0b01010110: self.JNE_HANDLER, # If E flag is clear (false, 0), jump to the address stored in the given register.
+            0b01010100: self.JMP_HANDLER, # jump
+        
         }
     def ram_read(self, address):
         return self.ram[address]
