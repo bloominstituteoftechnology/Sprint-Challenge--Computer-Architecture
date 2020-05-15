@@ -22,8 +22,13 @@ class CPU:
                                "69": self.handle_PUSH,
                                "70": self.handle_POP,
                                "80": self.handle_CALL,
-                               "17": self.handle_RET
+                               "17": self.handle_RET,
+                               "167": self.handle_CMP,
+                               "84": self.handle_JMP,
+                               "85": self.handle_JEQ,
+                               "86": self.handle_JNE
                                }
+        self.FL = 0
 
     def handle_HLT(self, op_a, op_b):
         sys.exit(0)
@@ -62,6 +67,23 @@ class CPU:
     def handle_RET(self, op_a, op_b):
         self.PC = self.ram[self.SP]
         self.SP += 1
+
+    def handle_CMP(self, op_a, op_b):
+        if self.reg[op_a] == self.reg[op_b]:
+            self.FL = 1
+        elif self.reg[op_a] < self.reg[op_b]:
+            self.FL = 4
+        elif self.reg[op_b] > self.reg[op_a]:
+            self.FL = 2
+
+    def handle_JMP(self, op_a, op_b):
+        pass
+
+    def handle_JEQ(self, op_a, op_b):
+        pass
+
+    def handle_JNE(self, op_a, op_b):
+        pass
 
     def load(self):
         """Load a program into memory."""
