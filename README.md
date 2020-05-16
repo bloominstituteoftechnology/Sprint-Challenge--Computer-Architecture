@@ -1,4 +1,4 @@
-# Sprint Challenge: Computer Architecture - Conditional Jumps
+# Sprint Challenge: Computer Architecture - Conditional Jumps - A. Franklin
 
 This challenge allows you to practice the concepts and techniques learned over
 the past week and apply them in a concrete project.
@@ -47,11 +47,11 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [x] Add the `CMP` instruction and `equal` flag to your LS-8.
 
-- [ ] Add the `JMP` instruction.
+- [x] Add the `JMP` instruction.
 
-- [ ] Add the `JEQ` and `JNE` instructions.
+- [x] Add the `JEQ` and `JNE` instructions.
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
