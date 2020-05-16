@@ -1,6 +1,7 @@
 """CPU functionality."""
 
 import sys
+import time
 
 
 class CPU:
@@ -71,19 +72,31 @@ class CPU:
     def handle_CMP(self, op_a, op_b):
         if self.reg[op_a] == self.reg[op_b]:
             self.FL = 1
+            self.PC += 3
         elif self.reg[op_a] < self.reg[op_b]:
             self.FL = 4
+            self.PC += 3
         elif self.reg[op_b] > self.reg[op_a]:
             self.FL = 2
+            self.PC += 3
+        else:
+            self.FL = 0
+            self.PC += 3
 
     def handle_JMP(self, op_a, op_b):
-        pass
+        self.PC = self.reg[op_a]
 
     def handle_JEQ(self, op_a, op_b):
-        pass
+        if self.FL == 1:
+            self.PC = self.reg[op_a]
+        else:
+            self.PC += 2
 
     def handle_JNE(self, op_a, op_b):
-        pass
+        if self.FL == 0:
+            self.PC = self.reg[op_a]
+        else:
+            self.PC += 2
 
     def load(self):
         """Load a program into memory."""
@@ -137,9 +150,9 @@ class CPU:
         from run() if you need help debugging.
         """
 
-        print(f"TRACE: %02X | %02X %02X %02X |" % (
+        print(f"TRACE: %02d %02d | %02d %02d %02d |" % (
             self.PC,
-            # self.fl,
+            self.FL,
             # self.ie,
             self.ram_read(self.PC),
             self.ram_read(self.PC + 1),
@@ -147,7 +160,7 @@ class CPU:
         ), end='')
 
         for i in range(8):
-            print(" %02X" % self.reg[i], end='')
+            print(" %02d" % self.reg[i], end='')
 
         print()
 
@@ -155,6 +168,7 @@ class CPU:
         """Run the CPU."""
         while True:
             # self.trace()
+            # time.sleep(0.5)
             # The instruction pointed to by the PC is fetched from RAM, decoded, and executed
             # IR = Instruction Register
             IR = self.ram[self.PC]
