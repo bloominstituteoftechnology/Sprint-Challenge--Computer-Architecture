@@ -129,7 +129,29 @@ class CPU:
         elif op == "MUL":
             value = self.reg[reg_a] * self.reg[reg_b]
             self.reg[reg_a] = value
-        # elif op == "SUB": etc
+        elif op == "AND":
+            value = self.reg[reg_a] & self.reg[reg_b]
+            self.reg[reg_a] = value
+        elif op == "OR":
+            value = self.reg[reg_a] | self.reg[reg_b]
+            self.reg[reg_a] = value
+        elif op == "XOR":
+            value = self.reg[reg_a] ^ self.reg[reg_b]
+            self.reg[reg_a] = value
+        elif op == "NOT":
+            value = self.reg[reg_a] & self.reg[reg_b]
+            self.reg[reg_a] = ~value
+        elif op == "SHL":
+            value = self.reg[reg_a] << self.reg[reg_b]
+            self.reg[reg_a] = value
+        elif op == "SHR":
+            value = self.reg[reg_a] >> self.reg[reg_b]
+            self.reg[reg_a] = value
+        elif op == "MOD":
+            if self.reg[reg_b] == 0:
+                raise ValueError("Can't divide by zero")
+            value = self.reg[reg_a] % self.reg[reg_b]
+            self.reg[reg_a] = value
         else:
             raise Exception("Unsupported ALU operation")
 
