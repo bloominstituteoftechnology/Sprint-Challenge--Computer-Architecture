@@ -1,0 +1,7 @@
+
+examples/call.ls8
+IN CPU_LOAD... examples/call.ls8
+20
+30
+36
+60
