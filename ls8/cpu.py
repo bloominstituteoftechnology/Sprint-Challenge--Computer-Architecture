@@ -29,7 +29,7 @@ class CPU:
                                "85": self.handle_JEQ,
                                "86": self.handle_JNE
                                }
-        self.FL = 0
+        self.FL = 0b00000000
 
     def handle_HLT(self, op_a, op_b):
         sys.exit(0)
@@ -71,29 +71,30 @@ class CPU:
 
     def handle_CMP(self, op_a, op_b):
         if self.reg[op_a] == self.reg[op_b]:
-            self.FL = 1
+            self.FL = 0b00000001
             self.PC += 3
         elif self.reg[op_a] < self.reg[op_b]:
-            self.FL = 4
+            self.FL = 0b00000100
             self.PC += 3
         elif self.reg[op_b] > self.reg[op_a]:
-            self.FL = 2
+            self.FL = 0b00000010
             self.PC += 3
         else:
-            self.FL = 0
+            self.FL = 0b00000000
             self.PC += 3
 
     def handle_JMP(self, op_a, op_b):
         self.PC = self.reg[op_a]
 
     def handle_JEQ(self, op_a, op_b):
-        if self.FL == 1:
+        mask = 0b00000111
+        if self.FL & mask == 1:
             self.PC = self.reg[op_a]
         else:
             self.PC += 2
 
     def handle_JNE(self, op_a, op_b):
-        if self.FL == 0:
+        if self.FL != 1:
             self.PC = self.reg[op_a]
         else:
             self.PC += 2
@@ -167,7 +168,7 @@ class CPU:
     def run(self):
         """Run the CPU."""
         while True:
-            # self.trace()
+            self.trace()
             # time.sleep(0.5)
             # The instruction pointed to by the PC is fetched from RAM, decoded, and executed
             # IR = Instruction Register
