@@ -40,10 +40,10 @@ class CPU:
         self.operand_b = None
 
         # Internal Registers
-        self.PC = 0             # PC stands for Program Counter
-        self.MAR = None         # Memory Address Register
-        self.MDR = None         # Memory Data Register
-        #           00000LGE
+        self.PC = 0             # Program counter set to 0
+        self.MAR = None         # Memory address register
+        self.MDR = None         # Memory data register
+        
         self.FL = 0b00000000    # Flags
 
         # Branch Table
@@ -210,8 +210,6 @@ class CPU:
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.PC,
-            # self.fl,
-            # self.ie,
             self.ram_read(self.PC),
             self.ram_read(self.PC + 1),
             self.ram_read(self.PC + 2)
@@ -254,6 +252,6 @@ class CPU:
 
             # if instruction is unrecognized, exit
             else:
-                print(f"Space dog did not understand that command: {IR}")
+                print(f"Did not understand that command: {IR}")
                 print(self.trace())
                 sys.exit(1)
