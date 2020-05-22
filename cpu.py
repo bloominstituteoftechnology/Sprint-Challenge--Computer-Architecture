@@ -12,6 +12,9 @@ binary_operation = {
     0b01000110: 'POP',
     0b01010000: 'CALL',
     0b00010001: 'RET',
+    0b01010100: 'JMP',
+    0b01010101: 'JEQ',
+    0b01010111: 'JNE'
 }
 
 math_operation = {
