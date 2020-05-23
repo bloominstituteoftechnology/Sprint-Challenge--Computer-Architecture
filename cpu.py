@@ -5,23 +5,23 @@ import sys
 
 # Operation Tables
 binary_operation = {
-    0b00000001: 'HLT',
-    0b10000010: 'LDI',
-    0b01000111: 'PRN',
-    0b01000101: 'PUSH',
-    0b01000110: 'POP',
-    0b01010000: 'CALL',
-    0b00010001: 'RET',
-    0b01010100: 'JMP',
-    0b01010101: 'JEQ',
-    0b01010111: 'JNE'
+    0b00000001: 'HLT',  # 1
+    0b10000010: 'LDI',  # 300
+    0b01000111: 'PRN',  # 71
+    0b01000101: 'PUSH', # 69
+    0b01000110: 'POP',  # 70
+    0b01010000: 'CALL', # 80
+    0b00010001: 'RET',  # 17
+    0b01010100: 'JMP',  # 84
+    0b01010101: 'JEQ',  # 85
+    0b01010110: 'JNE',  # 87 Was b01010111
 }
 
 math_operation = {
-    "ADD": 0b10100000,
-    "SUB": 0b10100001,
-    "MUL": 0b10100010,
-    'CMP': 0b10100111
+    "ADD": 0b10100000,  # 160
+    "SUB": 0b10100001,  # 161
+    "MUL": 0b10100010,  # 162
+    'CMP': 0b10100111   # 167
 }
 
 # Global Constants
@@ -76,14 +76,13 @@ class CPU:
         """Jump to the address stored in the given register."""
         address = self.reg[self.operand_a]
 
-        print("JUMPING")
         self.PC = address
 
     def JEQ(self):
         """If `equal` flag is set (true), jump to the address stored in the given register."""
         address = self.reg[self.operand_a]
 
-        if self.FL & 0b00000001 == 1:
+        if self.FL == 1:
             self.PC = address
         else:
             self.PC += 2
@@ -92,7 +91,7 @@ class CPU:
         """If `E` flag is clear (false, 0), jump to the address stored in the given register."""
         address = self.reg[self.operand_a]
 
-        if self.FL & 0b00000001 == 0:
+        if self.FL == 0:
             self.PC = address
         else:
             self.PC += 2
@@ -173,25 +172,24 @@ class CPU:
 
     def ALU(self, op, reg_a, reg_b):
         """ALU operations."""
-
+   
         if op == math_operation["ADD"]:
-            print("ADDING")
+            # print("ADDING")
             self.reg[reg_a] += self.reg[reg_b]
 
         elif op == math_operation["SUB"]:
-            print("SUBTRACTING")
+            # print("SUBTRACTING")
             self.reg[reg_a] -= self.reg[reg_b]
 
         elif op == math_operation["MUL"]:
-            print("MULTIPYING")
+            # print("MULTIPYING")
             self.reg[reg_a] *= self.reg[reg_b]
 
-        elif op == math_operation["CMP"]:
-            """Compare the values in two registers."""
+        elif op == math_operation["CMP"]:       # Compare the values in two registers
             valueA = self.reg[self.operand_a]
             valueB = self.reg[self.operand_b]
-
-            if valueA == valueB:
+            
+            if valueA == valueB:        # FLAG -> 0000LGE
                 self.FL = 0b00000001
 
             if valueA < valueB:
@@ -199,9 +197,10 @@ class CPU:
 
             if valueA > valueB:
                 self.FL = 0b00000010
+            print(self.FL)
         else:
             raise Exception("Unsupported ALU operation")
-
+    
     def trace(self):
         """
         Handy function to print out the CPU state. You might want to call this
@@ -233,14 +232,12 @@ class CPU:
             # store that result in IR (Instruction Register).
             # This can just be a local variable
             IR = self.ram_read(self.PC)
-
+    
             # using ram_read(), read the bytes at PC+1 and PC+2 from RAM into variables
             self.operand_a = self.ram_read(self.PC + 1)
             self.operand_b = self.ram_read(self.PC + 2)
 
-            # depending on the value of the oPCode, perform the actions needed for the instruction
-
-            # if arithmathetic bit is on, run math operation
+            # if bit is on, run math operation
             if (IR << 2) % 255 >> 7 == 1:
                 self.ALU(IR, self.operand_a, self.operand_b)
                 self.move_PC(IR)
