@@ -39,7 +39,6 @@ class CPU:
         self.pc = 0 # program counter PC
         self.flags = 0
         
-
       
         # Step 2 add ram methods
         # CPU contains two internal registers used for memory operation:
@@ -83,7 +82,7 @@ class CPU:
             sys.exit(2)
 
 
-
+    # Arithmetic logic unit
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
         
@@ -202,8 +201,8 @@ class CPU:
                 self.pc = self.reg[register_num]
 
             elif op == RET:
-                # pop returnr MA off the stack
-                # store poped MA in the PC
+                # pop return M.A off the stack
+                # store poped M.A in the PC
                 self.pc = self.ram_read(self.reg[SP])
                 self.reg[SP] += 1  
 
@@ -242,6 +241,26 @@ class CPU:
                 if not self.flags & 0b1:
                     # increment pc by 2 
                     self.pc += 2
+                # if yes
+                elif self.flags & 0B1:
+                    # read next arg from ram
+                    reg_a = self.ram_read(self.pc + 1)
+                    #set pc equal to value in register at index of arg
+                    self.pc = self.reg[reg_a]
+
+            # JNE
+            elif op == JNE:
+                # check if equal flag on
+                # if yes
+                if self.flags & 0b1:
+                    # increment pc by 2
+                    self.pc += 2
+                # if not
+                elif not self.flags & 0b0:
+                    # read next arg from ram
+                    reg_a = self.ram_read(self.pc + 1)
+                    # set pc equal to value in register at index of arg
+                    self.pc = self.reg[reg_a]
 
                 
 
