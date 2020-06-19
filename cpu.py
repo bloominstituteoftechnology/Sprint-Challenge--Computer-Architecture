@@ -2,6 +2,7 @@
 
 import sys
 
+# MAIN OPCODES
 LDI = 0b10000010
 HLT = 0b00000001
 PRN = 0b01000111
@@ -19,6 +20,16 @@ EQ = 0b00000111
 JMP = 0b01010100
 JEQ = 0b01010101
 JNE = 0b01010110
+
+# BITWISE ALU OPCODES - (stretch)
+AND = 0b10101000
+MOD = 0b10100100
+SHL = 0b10101100
+SHR = 0b10101101
+XOR = 0b10101011
+OR = 0b10101010
+NOT = 0b01101001
+
 
 class CPU:
     """Main CPU class."""
@@ -77,6 +88,24 @@ class CPU:
                 self.flag_reg[EQ] = 0b00000001
             else:
                 self.flag_reg[EQ] = 0b00000000
+        elif op == "AND":
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+        elif op == "MOD":
+            if self.reg[reg_b] == 0:
+                print("Cannot mod by value of 0")
+                self.HLT(reg_a, reg_b)
+            else:
+                self.reg[reg_a] %= self.reg[reg_b]
+        elif op == "SHL":
+            self.reg[reg_a] << self.reg[reg_b]
+        elif op == "SHR":
+            self.reg[reg_a] >> self.reg[reg_b]
+        elif op == "OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+        elif op == "NOT":
+            self.reg[reg_a] -= 0b11111111
+        elif op == "XOR":
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
