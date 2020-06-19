@@ -13,13 +13,16 @@ CALL = 0b01010000
 PUSH = 0b01000101
 SP = 0b00000111
 ADD = 0b10100000
+SUB = 0b10100001
+CMP = 0b10100111
+EQ = 0b00000111
 
 class CPU:
     """Main CPU class."""
     def __init__(self):
         self.ram = [0] * 256
         self.reg = [0] * 8
-        self.flag = 0
+        self.flag_reg = [0] * 8
         self.pc = 0
         self.running = True
         self.branch_table = {
@@ -29,10 +32,12 @@ class CPU:
             LDI : self.LDI,
             MUL : self.MUL,
             ADD : self.ADD,
+            SUB : self.SUB,
             PUSH : self.PUSH,
             POP : self.POP,
             CALL : self.CALL,
-            RET : self.RET
+            RET : self.RET,
+            CMP : self.CMP
         }
 
     def load(self):
@@ -59,6 +64,13 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "CMP":
+            if reg_a == reg_b:
+                self.flag_reg[EQ] = 0b00000001
+            else:
+                self.flag_reg[EQ] = 0b00000000
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -132,6 +144,11 @@ class CPU:
         subroutine_addr = self.ram[self.reg[SP]]
         self.reg[SP] += 1
         self.pc = subroutine_addr
+
+    def CMP(self, reg_a, reg_b):
+        reg_num1 = self.reg[reg_a]
+        reg_num2 = self.reg[reg_b]
+        self.alu("CMP", reg_num1, reg_num2)
 
     def run(self):
         while self.running:
