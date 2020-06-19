@@ -16,6 +16,7 @@ ADD = 0b10100000
 SUB = 0b10100001
 CMP = 0b10100111
 EQ = 0b00000111
+JMP = 0b01010100
 
 class CPU:
     """Main CPU class."""
@@ -37,7 +38,8 @@ class CPU:
             POP : self.POP,
             CALL : self.CALL,
             RET : self.RET,
-            CMP : self.CMP
+            CMP : self.CMP,
+            JMP : self.JMP
         }
 
     def load(self):
@@ -150,6 +152,9 @@ class CPU:
         reg_num2 = self.reg[reg_b]
         self.alu("CMP", reg_num1, reg_num2)
 
+    def JMP(self, reg_a, reg_b):
+        self.pc = self.reg[reg_a]
+        
     def run(self):
         while self.running:
             ir = self.ram_read(self.pc)
