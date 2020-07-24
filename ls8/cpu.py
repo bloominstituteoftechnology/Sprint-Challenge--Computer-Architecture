@@ -28,7 +28,9 @@ class CPU:
             0b00010001: self.RET,
             0b10100000: self.ADD,
             0b10100111: self.CMP,
-            0b01010100: self.JMP
+            0b01010100: self.JMP,
+            0b01010101: self.JEQ,
+            0b01010110: self.JNE
 
         }
 
@@ -189,3 +191,11 @@ class CPU:
     def JMP(self):
         self.pc = self.reg[self.ram_read(self.pc + 1)]
         self.pc += 2
+
+    def JEQ(self):
+        if self.flag >> 0 == 1:
+            self.JMP()
+
+    def JNE(self):
+        if self.flag >> 0 == 0:
+            self.JMP()
