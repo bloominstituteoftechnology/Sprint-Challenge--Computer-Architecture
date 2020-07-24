@@ -19,12 +19,15 @@ class CPU:
         self.mar = None # memory address register 
         self.ir = None # instruction register 
         # self.fl = None # flags
-        self.gt = None # flag greater than
-        self.lt = None # flag less than 
+        # self.gt = None # flag greater than
+        # self.lt = None # flag less than 
+
+        self.gt = 0b00000010 # flag greater than
+        self.lt = 0b00000100 # flag less than 
+
         # self.eq = None # flag equal to 
         self.eq = 0b00000001
         self.spl = None
-
         self.fl = 0b00000000
 
         # pointer location 
@@ -86,7 +89,7 @@ class CPU:
         elif op == "CMP":
             a = self.registers[reg_a]
             b = self.registers[reg_b]
-            
+
             if a == b:
                 self.fl = self.eq 
             elif a < b:
@@ -207,7 +210,7 @@ class CPU:
                 # JNE 
                 elif op == 'JNE':
                     # if equal flag = 0, jump to address in given register
-                    if self.fl != self.eq:
+                    if not self.fl == self.eq:
                         reg = self.ram[self.pc + 1]
                         val = self.registers[reg]
                         self.pc = val
