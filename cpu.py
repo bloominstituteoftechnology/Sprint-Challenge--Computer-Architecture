@@ -30,7 +30,7 @@ class CPU:
         self.spl = None
         self.spl = 8 - 1
         # change to self.ram[]
-        self.ram[self.spl] = 0xF4 #244 decimal 
+        self.registers[self.spl] = 0xF4 #244 decimal 
      
     #  self.OPCODES = {0b10000010: 'LDI', 0b01000111: 'PRN', 0b00000001: 'HLT'}
         # update opcodes 
@@ -50,8 +50,8 @@ class CPU:
                         0b01010100: 'JMP',
                         0b01010101: 'JEQ',
 
-                        0b01010000: 'CALL',
-                        0b00010001: 'RET'
+                        # 0b01010000: 'CALL',
+                        # 0b00010001: 'RET'
         }
 
 
@@ -59,10 +59,10 @@ class CPU:
         """Load a program into memory."""
         # open a file and read its contents line by line and 
         # save data into RAM
-        if len(sys.argv) < 2:
-            print("Please pass in a second filename: python3 in_and_out.py second_filename.py")
-            sys.exit()
-        filename = sys.argv[1] 
+        # if len(sys.argv) < 2:
+        #     print("Please pass in a second filename: python3 in_and_out.py second_filename.py")
+        #     sys.exit()
+        # filename = sys.argv[1] 
 
         try:
             with open(filename, 'r') as f:
@@ -95,18 +95,13 @@ class CPU:
         elif op == "CMP":
             a = self.registers[reg_a]
             b = self.registers[reg_b]
-            # self.eq = 1 if equal, 0 otherwise
-            if a == b:
-                self.eq,self.lt,self.gt = (1,0,0)
             # self.l = 1 if a < b, 0 otherwise
+            if a == b:
+                self.eq, self.lt, self.gt = (1, 0, 0)
             elif a < b:
-                self.eq,self.lt,self.gt = (0,1,0)
-            # self.g = 1 if a > b, 0 otherwise 
+                self.eq, self.lt, self.gt = (0, 1, 0)
             elif a > b:
-                self.eq,self.lt,self.gt = (0,0,1)
-            else:
-                raise Exception("unknown instruction")
-
+                self.eq, self.lt, self.gt = (0, 0, 1)
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -174,7 +169,7 @@ class CPU:
 
                 # to alu
 
-                elif op == 'ADD' or op == 'MUL':
+                elif op == 'ADD' or op == 'MUL' or op == 'CMP':
                     reg_a = self.ram[self.pc+1]
                     reg_b = self.ram[self.pc+2]
                     self.alu =(op,reg_a,reg_b)
@@ -296,5 +291,3 @@ class CPU:
         """
         self.ram[location] = value 
         pass
-
-    
