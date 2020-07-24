@@ -45,6 +45,10 @@ POP = 0b01000110
 PRN = 0b01000111
 PRA = 0b01001000
 
+equal = 0b00000001
+greater_than = 0b00000010
+less_than = 0b00000100
+
 
 class CPU:
     def __init__(self):
@@ -79,9 +83,9 @@ class CPU:
         self.pc_mutators[RET] = self.handle_ret
         self.pc_mutators[INT] = None
         self.pc_mutators[IRET] = None
-        self.pc_mutators[JMP] = lambda a: self.set_pc(a)
-        self.pc_mutators[JEQ] = lambda a: self.set_pc(a) if (self.fl is 1) else None
-        self.pc_mutators[JNE] = None
+        self.pc_mutators[JMP] = lambda a: self.set_pc(self.reg[a])
+        self.pc_mutators[JEQ] = self.handle_jeq
+        self.pc_mutators[JNE] = self.handle_jne
         self.pc_mutators[JGT] = None
         self.pc_mutators[JLT] = None
         self.pc_mutators[JLE] = None
@@ -194,7 +198,9 @@ class CPU:
 
     def alu(self, ops, a, b, num_ops):
         try:
-            if num_ops is 2:
+            if ops is CMP:
+                self.alu_ops[ops](self.reg[a], self.reg[b])
+            elif num_ops is 2:
                 self.reg[a] = self.alu_ops[ops](self.reg[a], self.reg[b])
             elif num_ops is 1:
                 self.reg[a] = self.alu_ops[ops](self.reg[a])
@@ -209,6 +215,7 @@ class CPU:
         b_or_c = 0b00110000
 
         while True:
+            # self.trace()
             IR = self.ram_read(self.pc)
             num_operands = (IR & operands) >> 6
             instruction_length = 1 + num_operands
@@ -224,10 +231,13 @@ class CPU:
                                operand_b, num_operands)
             except Exception:
                 print(
-                    f'\noperation: {IR} was not recoginized\nexiting program...\n')
+                    f'\noperation: {IR} was not recoginized at pc: {self.pc}\nexiting program...\n')
                 sys.exit(1)
-            if IR is not CALL and IR is not RET:  # handles where pc is pointing to in respective functions
+
+            # handles where pc is pointing to in respective functions
+            if IR is not CALL and IR is not RET and IR is not JMP and IR is not JNE and IR is not JEQ:
                 self.pc += instruction_length
+            # print("program_counter: ", self.pc)
 
     def handle_ldi(self, register_index, value):
         '''
@@ -262,26 +272,32 @@ class CPU:
         self.reg[self.sp] += 1
 
     def handle_cmp(self, a, b):
-        equal = 0b0001
-        greater_than = 0b0010
-        less_than = 0b0100
-
-        reg_a = self.reg[a]
-        reg_b = self.reg[b]
-
-        if reg_a is reg_b:
+        self.fl = ~self.fl # reset fl before setting
+        if a is b:
             self.set_flag(equal)
-        elif reg_a > reg_b:
+        elif a > b:
             self.set_flag(greater_than)
         else:
             self.set_flag(less_than)
 
     def set_flag(self, flag):
         self.fl = flag
-    
+
     def set_pc(self, address):
         self.pc = address
-    
+
+    def handle_jeq(self, reg_index):
+        if self.fl is equal:
+            self.set_pc(self.reg[reg_index])
+        else:
+            self.pc += 2
+
+    def handle_jne(self, reg_index):
+        if self.fl is not equal:
+            self.set_pc(self.reg[reg_index])
+        else:
+            self.pc += 2
+
 
 if __name__ == '__main__':
     cpu = CPU()
