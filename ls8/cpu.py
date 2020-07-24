@@ -192,13 +192,13 @@ class CPU:
         self.pc = self.reg[self.ram_read(self.pc + 1)]
 
     def JEQ(self):
-        if (self.flag << 0 & 1) is 1:
+        if (self.flag << 0 & 1) == 1:
             self.JMP()
         else:
             self.pc += 2
 
     def JNE(self):
-        if (self.flag << 0 & 1) is 0:
+        if (self.flag << 0 & 1) == 0:
             self.JMP()
         else:
             self.pc += 2
