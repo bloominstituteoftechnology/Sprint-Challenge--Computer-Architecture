@@ -86,14 +86,7 @@ class CPU:
         elif op == "CMP":
             a = self.registers[reg_a]
             b = self.registers[reg_b]
-            # self.l = 1 if a < b, 0 otherwise
-            # if a == b:
-            #     self.eq, self.lt, self.gt = (1, 0, 0)
-            # elif a < b:
-            #     self.eq, self.lt, self.gt = (0, 1, 0)
-            # elif a > b:
-            #     self.eq, self.lt, self.gt = (0, 0, 1)
-
+            
             if a == b:
                 self.fl = self.eq 
             elif a < b:
