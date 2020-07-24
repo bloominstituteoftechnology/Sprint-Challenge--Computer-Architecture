@@ -276,7 +276,7 @@ class CPU:
 
     def op_JEQ(self):
         # If equal flag is true
-        # jump to the address in the given register.
+        # jump to the address in the given reg
         reg_num = self.ram[self.pc+1]
         if self.FL & 0b00000001 == 1:
             self.pc = self.reg[reg_num]
@@ -285,7 +285,7 @@ class CPU:
 
     def op_JNE(self):
         # If Equals flag is false
-        # jump to the address in the given register.
+        # jump to the address in the given reg
         reg_num = self.ram[self.pc+1]
         if self.FL & 0b00000001 == 0:
             self.pc = self.reg[reg_num]
