@@ -1,5 +1,21 @@
 import sys
 
+# op_HLT = 0b00000001
+# op_LDI = 0b10000010
+# op_PRN = 0b01000111
+# op_MUL = 0b10100010
+# op_PUSH = 0b01000101
+# op_POP = 0b01000110
+# op_CALL = 0b01010000
+# op_RET = 0b00010001
+# op_ADD = 0b10100000
+# op_SUB = 0b10100001
+# op_DIV = 0b10100011
+# op_CMP = 0b10100111
+# op_JMP = 0b01010100
+# op_JEQ = 0b01010101
+
+
 class CPU:
     """Main CPU class."""
 
@@ -10,7 +26,7 @@ class CPU:
         self.pc = 0
         self.running = False
         self.SP = 7
-        # self.reg[self.SP] = 0xF4
+        self.reg[self.SP] = 0xF4
         self.FL = 0b00000000
         self.branchtable = {
             0b00000001: self.op_HLT,
@@ -26,6 +42,8 @@ class CPU:
             0b10100011: self.op_DIV,
             0b10100111: self.op_CMP,
             0b01010100: self.op_JMP,
+            0b01010101: self.op_JEQ,
+            0b01010110: self.op_JNE
         }
 
     def load(self):
@@ -33,17 +51,6 @@ class CPU:
 
         address = 0
         
-        # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010, # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111, # PRN R0
-        #     0b00000000,
-        #     0b00000001, # HLT
-        # ]
         if len(sys.argv) < 2:
             print("Please pass in a second filename: python first_filename.py second_filename.py")
             sys.exit()
@@ -68,17 +75,9 @@ class CPU:
 
         
     def ram_read(self, MAR):
-        # MAR is address
-        # return MDR or value
-        # accept the address to read
-        # and return the value stored there
         return self.ram[MAR] 
 
     def ram_write(self, MAR, MDR):
-        # MDR contains the data that
-        # was read or the data to write
-        # accept a value to write and
-        # the address to write it to
         self.ram[MAR] = MDR
 
     def alu(self, op, reg_a, reg_b=None):
@@ -97,12 +96,16 @@ class CPU:
             else:
                 self.reg[reg_a] = self.reg[reg_a] // self.reg[reg_b]
         elif op == "CMP":
-            if reg_a == reg_b:
+            # 00000LGE Flags
+            if self.reg[reg_a] == self.reg[reg_b]:
+                # set the E flag to 1
                 self.FL = 0b00000001
-            if reg_a < reg_b:
-                self.FL = 0b00000010
-            if reg_a > reg_b:
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                # set the L flag to 1
                 self.FL = 0b00000100
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                # set the G flag to 1
+                self.FL = 0b00000010
         else:
             raise Exception("Unsupported ALU operation")
     
@@ -128,7 +131,6 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        self.reg[7] = 0xF4
         
         self.running = True
 
@@ -258,24 +260,34 @@ class CPU:
         self.pc += 3
 
     def op_CMP(self):
-        '''
-        adds values using alu
-        '''
+
+        # Compares the values in two registers.
+        # increment PC by 3
         operand_a = self.ram[self.pc+1]
         operand_b = self.ram[self.pc+2]
         self.alu('CMP', operand_a, operand_b)
-
+        self.pc += 3
+    
     def op_JMP(self):
-        operand_a = self.ram[self.pc+1]
-        self.pc = self.reg[operand_a]
-        
-        
+        # Jump to the address in the given reg
+        reg_num = self.ram[self.pc+1]
+        # Set the PC to the address in the given reg
+        self.pc = self.reg[reg_num]
 
-    #  def op_MUL(self):
-    #         '''
-    #     multiplies values using alu
-    #     '''
-    #     operand_a = self.ram[self.pc+1]
-    #     operand_b = self.ram[self.pc+2]
-    #     self.alu('MUL', operand_a, operand_b)
-    #     self.pc += 3
+    def op_JEQ(self):
+        # If equal flag is true
+        # jump to the address in the given register.
+        reg_num = self.ram[self.pc+1]
+        if self.FL & 0b00000001 == 1:
+            self.pc = self.reg[reg_num]
+        else:
+            self.pc += 2
+
+    def op_JNE(self):
+        # If Equals flag is false
+        # jump to the address in the given register.
+        reg_num = self.ram[self.pc+1]
+        if self.FL & 0b00000001 == 0:
+            self.pc = self.reg[reg_num]
+        else:
+            self.pc += 2
