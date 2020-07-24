@@ -18,13 +18,14 @@ class CPU:
         self.mdr = None # memory data register 
         self.mar = None # memory address register 
         self.ir = None # instruction register 
-        self.fl = None # flags
+        # self.fl = None # flags
         self.gt = None # flag greater than
         self.lt = None # flag less than 
-        self.eq = None # flag equal to 
+        # self.eq = None # flag equal to 
+        self.eq = 0b00000001
         self.spl = None
 
-        # self.fl = 0b00000000
+        self.fl = 0b00000000
 
         # pointer location 
         self.ram = [0b0] * 0xFF #255 decimal
@@ -92,12 +93,20 @@ class CPU:
             a = self.registers[reg_a]
             b = self.registers[reg_b]
             # self.l = 1 if a < b, 0 otherwise
+            # if a == b:
+            #     self.eq, self.lt, self.gt = (1, 0, 0)
+            # elif a < b:
+            #     self.eq, self.lt, self.gt = (0, 1, 0)
+            # elif a > b:
+            #     self.eq, self.lt, self.gt = (0, 0, 1)
+
             if a == b:
-                self.eq, self.lt, self.gt = (1, 0, 0)
+                self.fl = self.eq 
             elif a < b:
-                self.eq, self.lt, self.gt = (0, 1, 0)
+                self.fl = self.lt
             elif a > b:
-                self.eq, self.lt, self.gt = (0, 0, 1)
+                self.fl = self.gt 
+
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -215,7 +224,7 @@ class CPU:
                 # JEQ 
                 elif op == 'JEQ':
                     # if equal flag = 1, jump to address in given register
-                    if self.eq == 1:
+                    if self.fl == self.eq:
                         reg = self.ram[self.pc +1]
                         val = self.registers[reg]
                         self.pc = val 
@@ -226,7 +235,7 @@ class CPU:
                 # JNE 
                 elif op == 'JNE':
                     # if equal flag = 0, jump to address in given register
-                    if self.eq == 0:
+                    if self.fl != self.eq:
                         reg = self.ram[self.pc + 1]
                         val = self.registers[reg]
                         self.pc = val
