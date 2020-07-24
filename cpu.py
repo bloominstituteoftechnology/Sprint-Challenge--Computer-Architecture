@@ -2,8 +2,6 @@
 
 import sys
 
-memory = [] # should be 256 bytes of memory 
-
 class CPU:
     """Main CPU class."""
 
@@ -27,7 +25,7 @@ class CPU:
         self.eq = None # flag equal to 
 
         # pointer location 
-        # self.spl = None
+        self.spl = None
         self.spl = 8 - 1
 
         self.ram[self.spl] = 0xF4 #244 decimal 
@@ -44,8 +42,8 @@ class CPU:
                         0b01000101: 'PUSH',
                         0b10000100: 'ST',
 
+                        # conditional jumps 
                         0b01010110: 'JNE',
-
                         0b10100111: 'CMP',
                         0b01010100: 'JMP',
                         0b01010101: 'JEQ'
@@ -128,7 +126,7 @@ class CPU:
         running = True
 
         while running: 
-            # self.trace()
+            self.trace()
             self.ir = self.ram[self.pc]
             # command = self.ram[self.pc]
             try:
@@ -189,7 +187,37 @@ class CPU:
                     self.ram[addres_a] = val_b
                     self.pc += 2
 
-                # exit 
+                # JMP
+                elif op == 'JMP':
+                    # jump to address given in the register 
+                    # set PC to that address - JUMP JUMP!
+                    self.reg = self.ram[self.pc +1 ]
+                    val = self.registers[self.reg]
+                    self.pc = val
+
+                # JEQ 
+                elif op == 'JEQ':
+                    # if equal flag = 1, jump to address in given register
+                    if self.eq == 1:
+                        self.reg = self.ram[self.pc +1]
+                        val = self.registers[self.reg]
+                        self.pc = val 
+                    # increment away if otherwise 
+                    else:
+                        self.pc += 2
+
+                # JNE 
+                elif op == 'JNE':
+                    # if equal flag = 0, jump to address in given register
+                    if self.eq == 0:
+                        self.reg = self.ram[self.pc + 1]
+                        val = self.registers[self.reg]
+                        self.pc = val
+                    # increment away if otherwise 
+                    else:
+                        self.pc += 2
+
+                # EXIT
                 elif op == 'HLT':
                     running = False 
 
