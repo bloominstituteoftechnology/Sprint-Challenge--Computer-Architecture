@@ -24,10 +24,12 @@ class CPU:
         self.lt = None # flag less than 
         self.eq = None # flag equal to 
 
+        # self.fl = 0b00000000
+
         # pointer location 
         self.spl = None
         self.spl = 8 - 1
-
+        # change to self.ram[]
         self.ram[self.spl] = 0xF4 #244 decimal 
      
     #  self.OPCODES = {0b10000010: 'LDI', 0b01000111: 'PRN', 0b00000001: 'HLT'}
@@ -46,7 +48,10 @@ class CPU:
                         0b01010110: 'JNE',
                         0b10100111: 'CMP',
                         0b01010100: 'JMP',
-                        0b01010101: 'JEQ'
+                        0b01010101: 'JEQ',
+
+                        0b01010000: 'CALL',
+                        0b00010001: 'RET'
         }
 
 
@@ -54,6 +59,11 @@ class CPU:
         """Load a program into memory."""
         # open a file and read its contents line by line and 
         # save data into RAM
+        if len(sys.argv) < 2:
+            print("Please pass in a second filename: python3 in_and_out.py second_filename.py")
+            sys.exit()
+        filename = sys.argv[1] 
+
         try:
             with open(filename, 'r') as f:
                 # lookout for blanklines and ignore them 
@@ -82,7 +92,7 @@ class CPU:
             self.registers[reg_a] *= self.registers[reg_b]
 
         # compare values in two registers 
-        elif op == 'CMP':
+        elif op == "CMP":
             a = self.registers[reg_a]
             b = self.registers[reg_b]
             # self.eq = 1 if equal, 0 otherwise
@@ -94,6 +104,8 @@ class CPU:
             # self.g = 1 if a > b, 0 otherwise 
             elif a > b:
                 self.eq,self.lt,self.gt = (0,0,1)
+            else:
+                raise Exception("unknown instruction")
 
         else:
             raise Exception("Unsupported ALU operation")
@@ -118,6 +130,21 @@ class CPU:
 
         print()
 
+    # def jmp(self, reg_num):
+    #         self.pc = self.reg[reg_num]
+
+    # def jeq(self, reg_num):
+    #     if self.fl & 1 == 1:
+    #         self.pc = self.reg[reg_num]
+    #     else:
+    #         self.pc += 2
+    
+    # def jne(self, reg_num):
+    #     if self.fl & 1 == 0:
+    #         self.pc = self.reg[reg_num]
+    #     else:
+    #         self.pc += 2 
+
     def run(self):
         """Run the CPU."""
 
@@ -126,9 +153,8 @@ class CPU:
         running = True
 
         while running: 
-            self.trace()
+            # self.trace()
             self.ir = self.ram[self.pc]
-            # command = self.ram[self.pc]
             try:
                 op = self.OPCODES[self.ir]
                 # do LDI
@@ -191,16 +217,16 @@ class CPU:
                 elif op == 'JMP':
                     # jump to address given in the register 
                     # set PC to that address - JUMP JUMP!
-                    self.reg = self.ram[self.pc +1 ]
-                    val = self.registers[self.reg]
+                    reg = self.ram[self.pc +1 ]
+                    val = self.registers[reg]
                     self.pc = val
 
                 # JEQ 
                 elif op == 'JEQ':
                     # if equal flag = 1, jump to address in given register
                     if self.eq == 1:
-                        self.reg = self.ram[self.pc +1]
-                        val = self.registers[self.reg]
+                        reg = self.ram[self.pc +1]
+                        val = self.registers[reg]
                         self.pc = val 
                     # increment away if otherwise 
                     else:
@@ -210,12 +236,38 @@ class CPU:
                 elif op == 'JNE':
                     # if equal flag = 0, jump to address in given register
                     if self.eq == 0:
-                        self.reg = self.ram[self.pc + 1]
-                        val = self.registers[self.reg]
+                        reg = self.ram[self.pc + 1]
+                        val = self.registers[reg]
                         self.pc = val
                     # increment away if otherwise 
                     else:
                         self.pc += 2
+
+                # elif op == 'JMP':
+                #     reg_num = self.ram[self.pc + 1]
+                #     self.jmp(reg_num)
+
+                # elif op == 'JEQ':
+                #     reg_num = self.ram[self.pc + 1]
+                #     self.jeq(reg_num)    
+            
+                # elif op == 'JNE':
+                #     reg_num = self.ram[self.pc + 1]
+                #     self.jne(reg_num)     
+
+                # implement call and return instructions
+
+                # CALL
+                # elif op == 'CALL':
+                #     reg = self.ram[self.pc +2]
+                #     val = self.registers[reg]
+                #     self.registers[self.spl] -= 1
+                #     self.ram[self.registers[self.spl]] = val
+                #     self.pc += 2
+                # RET 
+
+                # elif op == 'RET':
+                
 
                 # EXIT
                 elif op == 'HLT':
@@ -244,3 +296,5 @@ class CPU:
         """
         self.ram[location] = value 
         pass
+
+    
