@@ -14,8 +14,7 @@ class CPU:
 
         """Construct a new CPU."""
         self.pc = 0 # counter 
-        self.registers = [0b0] * 8
-        self.ram = [0b0] * 0xFF #255 decimal 
+        self.registers = [0b0] * 8 
         self.mdr = None # memory data register 
         self.mar = None # memory address register 
         self.ir = None # instruction register 
@@ -23,11 +22,12 @@ class CPU:
         self.gt = None # flag greater than
         self.lt = None # flag less than 
         self.eq = None # flag equal to 
+        self.spl = None
 
         # self.fl = 0b00000000
 
         # pointer location 
-        self.spl = None
+        self.ram = [0b0] * 0xFF #255 decimal
         self.spl = 8 - 1
         # change to self.ram[]
         self.registers[self.spl] = 0xF4 #244 decimal 
@@ -49,11 +49,7 @@ class CPU:
                         0b10100111: 'CMP',
                         0b01010100: 'JMP',
                         0b01010101: 'JEQ',
-
-                        # 0b01010000: 'CALL',
-                        # 0b00010001: 'RET'
         }
-
 
     def load(self,filename:str):
         """Load a program into memory."""
@@ -172,7 +168,7 @@ class CPU:
                 elif op == 'ADD' or op == 'MUL' or op == 'CMP':
                     reg_a = self.ram[self.pc+1]
                     reg_b = self.ram[self.pc+2]
-                    self.alu =(op,reg_a,reg_b)
+                    self.alu(op,reg_a,reg_b)
                     self.pc += 3
 
                 # pop
