@@ -27,7 +27,8 @@ class CPU:
             0b01010000: self.CALL,
             0b00010001: self.RET,
             0b10100000: self.ADD,
-            0b10100111: self.CMP
+            0b10100111: self.CMP,
+            0b01010100: self.JMP
 
         }
 
@@ -185,3 +186,6 @@ class CPU:
         self.pc = self.ram_read(self.reg[7])
         self.reg[7] += 1
 
+    def JMP(self):
+        self.pc = self.reg[self.ram_read(self.pc + 1)]
+        self.pc += 2
