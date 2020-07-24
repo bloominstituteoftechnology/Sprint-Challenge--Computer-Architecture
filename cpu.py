@@ -2,69 +2,146 @@
 
 import sys
 
+HLT = 0b00000001
+LDI = 0b10000010
+PRN = 0b01000111
+MUL = 0b10100010
+ADD = 0b10100000
+PUSH = 0b01000101
+POP = 0b01000110
+CMP = 0b10100111
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
+
+
 class CPU:
     """Main CPU class."""
 
     def __init__(self):
         """Construct a new CPU."""
-        self.reg = [0] * 8
-        self.PC = 0
-        self.IR = 0
-        self.MAR = 0
-        self.MDR = 0
-        self.FL = 0b00000000
-        self.IM = self.reg[5]
-        self.IS = self.reg[6]
-        self.SP = self.reg[7]
         self.ram = [0] * 256
+        self.reg = [0] * 8
+        self.pc = 0
+        self.SP = 7
+        self.reg[self.SP] = 0xf4
+        self.E = 0
+        self.L = 0
+        self.G = 0
 
     def load(self):
         """Load a program into memory."""
+
         address = 0
-        if len(sys.argv) != 2:
-            print('Wrong amount of args. \nUsage example: python ls8.py aprogram.ls8')
-            sys.exit(1)
 
-        program_file = open(sys.argv[1])
+        # For now, we've just hardcoded a program:
 
-        for line in program_file:
+        program = [
+            0b10000010,  # LDI R0,10
+            0b00000000,
+            0b00001010,
+            0b10000010,  # LDI R1,20
+            0b00000001,
+            0b00010100,
+            0b10000010,  # LDI R2,TEST1
+            0b00000010,
+            0b00010011,
+            0b10100111,  # CMP R0,R1
+            0b00000000,
+            0b00000001,
+            0b01010101,  # JEQ R2
+            0b00000010,
+            0b10000010,  # LDI R3,1
+            0b00000011,
+            0b00000001,
+            0b01000111,  # PRN R3
+            0b00000011,
+            # , TEST1 (address 19):
+            0b10000010,  # LDI R2,TEST2
+            0b00000010,
+            0b00100000,
+            0b10100111,  # CMP R0,R1
+            0b00000000,
+            0b00000001,
+            0b01010110,  # JNE R2
+            0b00000010,
+            0b10000010,  # LDI R3,2
+            0b00000011,
+            0b00000010,
+            0b01000111,  # PRN R3
+            0b00000011,
+            # , TEST2 (address 32):
+            0b10000010,  # LDI R1,10
+            0b00000001,
+            0b00001010,
+            0b10000010,  # LDI R2,TEST3
+            0b00000010,
+            0b00110000,
+            0b10100111,  # CMP R0,R1
+            0b00000000,
+            0b00000001,
+            0b01010101,  # JEQ R2
+            0b00000010,
+            0b10000010,  # LDI R3,3
+            0b00000011,
+            0b00000011,
+            0b01000111,  # PRN R3
+            0b00000011,
+            # , TEST3 (address 48):
+            0b10000010,  # LDI R2,TEST4
+            0b00000010,
+            0b00111101,
+            0b10100111,  # CMP R0,R1
+            0b00000000,
+            0b00000001,
+            0b01010110,  # JNE R2
+            0b00000010,
+            0b10000010,  # LDI R3,4
+            0b00000011,
+            0b00000100,
+            0b01000111,  # PRN R3
+            0b00000011,
+            # , TEST4 (address 61):
+            0b10000010,  # LDI R3,5
+            0b00000011,
+            0b00000101,
+            0b01000111,  # PRN R3
+            0b00000011,
+            0b10000010,  # LDI R2,TEST5
+            0b00000010,
+            0b01001001,
+            0b01010100,  # JMP R2
+            0b00000010,
+            0b01000111,  # PRN R3
+            0b00000011,
+            # , TEST5 (address 73):
+            0b00000001  # HLT
+        ]
 
-            inst = line.strip()
-            if not inst.startswith('#'):
-                inst = inst.split('#', 1)[0]
+        for instruction in program:
+            self.ram[address] = instruction
+            address += 1
 
-                inst = inst.split()[0]
-
-                inst = int(inst, 2)
-                self.ram[address] = inst
-                address += 1
-
-    # sprint challenge material
-    # Adding flag and CMP instruction to the alu
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-
         elif op == "MUL":
-            x, y = self.reg[reg_a], self.reg[reg_b]
-            ans = 0
-            while y > 0:
-                if y & 1:
-                    ans = ans + x
-                x = x << 1
-                y = y >> 1
-            print(ans)
-
+            self.reg[reg_a] *= self.reg[reg_b]
         elif op == 'CMP':
-            # this instruction is used for comparison in values in other
-            # instructions
-            x, y = self.reg[reg_a], self.reg[reg_b]
-            if x == y:
-                self.FL = 1
-            else:
-                self.FL = 0
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.E = 1
+                self.L = 0
+                self.G = 0
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                self.E = 0
+                self.L = 1
+                self.G = 0
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.E = 0
+                self.L = 0
+                self.G = 1
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -75,11 +152,12 @@ class CPU:
         """
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
-            self.PC,
-
-            self.ram_read(self.PC),
-            self.ram_read(self.PC + 1),
-            self.ram_read(self.PC + 2)
+            self.pc,
+            # self.fl,
+            # self.ie,
+            self.ram_read(self.pc),
+            self.ram_read(self.pc + 1),
+            self.ram_read(self.pc + 2)
         ), end='')
 
         for i in range(8):
@@ -87,111 +165,106 @@ class CPU:
 
         print()
 
-    def ram_read(self, address):
-        return self.ram[address]
+    def ram_read(self, key):
+        return self.ram[key]
 
-    def ram_write(self, address, value):
-        self.ram[address] = value
+    def ram_write(self, key, value):
+        self.ram[key] = value
 
     def run(self):
         """Run the CPU."""
-        op_codes = {
-            0b10000010: 'LDI',
-            0b01000111: 'PRN',
-            0b00000001: 'HLT',
-            0b10100000: 'ADD',
-            0b10100010: 'MUL',
-            0b01000101: 'PUSH',
-            0b01000110: 'POP',
-            0b01010000: 'CALL',
-            0b00010001: 'RET',
-            0b00010001: 'RET',
-            0b10100111: 'CMP',  # uses flags for comparisons in other inst
-            0b01010100: 'JMP',  # jumps to the address in the given register
-            0b01010101: 'JEQ',  # if E fl==1 jmp to address in given register
-            0b01010110: 'JNE'   # if E fl==0 jmp to address in given register
-            }
-        alu_codes = set(['ADD', 'SUB', 'MUL', 'CMP'])
+        halted = False
 
-        while True:
+        while not halted:
+            instruction = self.ram_read(self.pc)
 
-            binary_op_code = self.ram_read(self.PC)
-            op = op_codes[binary_op_code]
+            if instruction == PUSH:
+                self.reg[self.SP] -= 1
 
-            if op == 'LDI':
-                reg_num = self.ram_read(self.PC + 1)
-                value = self.ram_read(self.PC + 2)
-                self.reg[reg_num] = value
-                self.PC += 3
+                reg_num = self.ram_read(self.pc+1)
+                reg_val = self.reg[reg_num]
+                self.ram_write(self.reg[self.SP], reg_val)
+                # operand_a = self.ram_read(self.pc+1)
+                # self.ram_write(self.reg[self.SP], self.reg[operand_a])
 
-            elif op == 'PRN':
-                reg_num = self.ram_read(self.PC + 1)
-                value = self.reg[reg_num]
-                print(value)
-                self.PC += 2
+                self.pc += 2
 
-            elif op in alu_codes:
-                reg1 = self.ram_read(self.PC + 1)
-                reg2 = self.ram_read(self.PC + 2)
-                self.alu(op, reg1, reg2)
-                self.PC += 3
+            elif instruction == POP:
+                val = self.ram_read(self.reg[self.SP])
+                reg_num = self.ram_read(self.pc + 1)
+                self.reg[reg_num] = val
+                # operand_a = self.ram_read(self.pc+1)
+                # self.reg[operand_a] = self.ram_read(self.reg[self.SP])
 
-            elif op == 'PUSH':
-                self.SP -= 1
-                reg_num = self.ram_read(self.PC + 1)
-                self.ram[self.SP] = self.reg[reg_num]
-                self.PC += 2
+                self.reg[self.SP] += 1
 
-            elif op == 'POP':
-                reg_num = self.ram_read(self.PC + 1)
-                self.reg[reg_num] = self.ram[self.SP]
-                self.SP += 1
-                self.PC += 2
+                self.pc += 2
 
-            elif op == 'CALL':
-                # push address of intr after call to stack
-                self.SP -= 1
-                self.ram[self.SP] = self.PC + 2
-                # pc is set to address stored in reg, so can jump to that intr in ram
-                reg_num = self.ram_read(self.PC + 1)
-                self.PC = self.reg[reg_num]
+            elif instruction == CMP:
+                reg_num = self.ram_read(self.pc + 1)
+                value = self.ram_read(self.pc + 2)
 
-            elif op == 'RET':
-                self.PC = self.ram_read(self.SP)
-                self.SP += 1
+                self.alu('CMP', reg_num, value)
+                self.pc += 3
 
-            # Sprint Challenge Code
-            # jump to the address in the given register; set the pc to the
-            # address stored in the given register
-            elif op == 'JMP':
-                reg_num = self.ram_read(self.PC + 1)
-                self.PC = self.reg[reg_num]
+            elif instruction == JMP:
+                reg_num = self.ram_read(self.pc + 1)
+                value = self.ram_read(self.pc + 2)
 
-            # Sprint Challenge Code
-            # if the flag is set to True jump to the address in the given
-            # register; the jump is executed in the following way
-            # reg_num = self.ram_read(self.PC + 1)
-            # self.PC = self.reg[reg_num]
-            elif op == 'JEQ':
-                if self.FL == 1:
-                    reg_num = self.ram_read(self.PC + 1)
-                    self.PC = self.reg[reg_num]
+                self.pc = self.reg[reg_num]
+
+            elif instruction == JEQ:
+                reg_num = self.ram_read(self.pc + 1)
+                value = self.ram_read(self.pc + 2)
+
+                if self.E == 1:
+                    self.pc = self.reg[reg_num]
                 else:
-                    self.PC += 2
+                    self.pc += 2
 
-            # Sprint Challenge Code
-            # if the flag is set to False jump to the address in the given
-            # register; the jump is executed in the following way
-            # reg_num = self.ram_read(self.PC + 1)
-            # self.PC = self.reg[reg_num]
-            elif op == 'JNE':
-                if self.FL != 1:
-                    reg_num = self.ram_read(self.PC + 1)
-                    self.PC = self.reg[reg_num]
+            elif instruction == JNE:
+                reg_num = self.ram_read(self.pc + 1)
+                value = self.ram_read(self.pc + 2)
+
+                if self.E == 0:
+                    self.pc = self.reg[reg_num]
                 else:
-                    self.PC += 2
-            elif op == 'HLT':
-                break
+                    self.pc += 2
+
+            elif instruction == LDI:
+                operand_a = self.ram_read(self.pc+1)
+                operand_b = self.ram_read(self.pc+2)
+
+                self.reg[operand_a] = operand_b
+
+                self.pc += 3
+
+            elif instruction == PRN:
+                operand_a = self.ram_read(self.pc+1)
+                print(self.reg[operand_a])
+
+                self.pc += 2
+
+            elif instruction == HLT:
+                halted = True
+                self.pc = 0
+
+            elif instruction == MUL:
+                operand_a = self.ram_read(self.pc+1)
+                operand_b = self.ram_read(self.pc+2)
+
+                self.alu("MUL", operand_a, operand_b)
+
+                self.pc += 3
+
+            elif instruction == ADD:
+                operand_a = self.ram_read(self.pc+1)
+                operand_b = self.ram_read(self.pc+2)
+
+                self.alu("ADD", operand_a, operand_b)
+
+                self.pc += 3
+
             else:
-                print('unknown binary operation code')
-                break
+                print(f"Unknown instruction at index {self.pc}")
+                sys.exit(1)
