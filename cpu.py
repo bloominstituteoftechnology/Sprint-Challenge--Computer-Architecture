@@ -134,15 +134,15 @@ class CPU:
 
     def LDI(self, reg_a, reg_b):
         self.reg[reg_a] = reg_b
-        self.pc += 3
+        
 
     def HLT(self, reg_a, reg_b):
         self.running = False
-        sys.exit
+        
 
     def PRN(self, reg_a, reg_b):
         print(self.reg[reg_a])
-        self.pc += 2
+        
 
     def MUL(self, reg_a, reg_b):
         self.alu("MUL", reg_a, reg_b)
@@ -160,7 +160,7 @@ class CPU:
         self.reg[SP] -= 1
         top_of_stack_add = self.reg[SP]
         self.ram[top_of_stack_add] = value
-        self.pc += 2
+        
 
     def POP(self, reg_a, reg_b):
         top_of_stack_add = self.reg[SP]
@@ -168,7 +168,7 @@ class CPU:
         reg_num = self.ram[reg_a]
         self.reg[reg_num] = value
         self.reg[SP] += 1
-        self.pc += 2
+        
 
     def CALL(self, reg_a, reg_b):
         return_addr = reg_b
@@ -212,7 +212,7 @@ class CPU:
             pc_flag = (ir & 0b00010000) >> 4
             reg_num1 = self.ram[self.pc +1]
             reg_num2 = self.ram[self.pc + 2]
-            self.branch_table[ir](reg_num1, reg_num2)
+            self.table[ir](reg_num1, reg_num2)
             if pc_flag == 0:
                 move = int((ir & 0b11000000) >>6)
                 self.pc += move + 1
