@@ -54,12 +54,6 @@ class CPU:
 
     def load(self,filename:str):
         """Load a program into memory."""
-        # open a file and read its contents line by line and 
-        # save data into RAM
-        # if len(sys.argv) < 2:
-        #     print("Please pass in a second filename: python3 in_and_out.py second_filename.py")
-        #     sys.exit()
-        # filename = sys.argv[1] 
 
         try:
             with open(filename, 'r') as f:
@@ -129,21 +123,6 @@ class CPU:
             print(" %02X" % self.registers[i], end='')
 
         print()
-
-    # def jmp(self, reg_num):
-    #         self.pc = self.reg[reg_num]
-
-    # def jeq(self, reg_num):
-    #     if self.fl & 1 == 1:
-    #         self.pc = self.reg[reg_num]
-    #     else:
-    #         self.pc += 2
-    
-    # def jne(self, reg_num):
-    #     if self.fl & 1 == 0:
-    #         self.pc = self.reg[reg_num]
-    #     else:
-    #         self.pc += 2 
 
     def run(self):
         """Run the CPU."""
@@ -242,33 +221,6 @@ class CPU:
                     # increment away if otherwise 
                     else:
                         self.pc += 2
-
-                # elif op == 'JMP':
-                #     reg_num = self.ram[self.pc + 1]
-                #     self.jmp(reg_num)
-
-                # elif op == 'JEQ':
-                #     reg_num = self.ram[self.pc + 1]
-                #     self.jeq(reg_num)    
-            
-                # elif op == 'JNE':
-                #     reg_num = self.ram[self.pc + 1]
-                #     self.jne(reg_num)     
-
-                # implement call and return instructions
-
-                # CALL
-                # elif op == 'CALL':
-                #     reg = self.ram[self.pc +2]
-                #     val = self.registers[reg]
-                #     self.registers[self.spl] -= 1
-                #     self.ram[self.registers[self.spl]] = val
-                #     self.pc += 2
-                # RET 
-
-                # elif op == 'RET':
-                
-
                 # EXIT
                 elif op == 'HLT':
                     running = False 
