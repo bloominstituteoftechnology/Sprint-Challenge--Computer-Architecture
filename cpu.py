@@ -10,7 +10,7 @@ class CPU:
         self.pc = 0
         self.running = False
         self.SP = 7
-        self.reg[self.SP] = 0xF4
+        # self.reg[self.SP] = 0xF4
         self.FL = 0b00000000
         self.branchtable = {
             0b00000001: self.op_HLT,
@@ -25,6 +25,7 @@ class CPU:
             0b10100001: self.op_SUB,
             0b10100011: self.op_DIV,
             0b10100111: self.op_CMP,
+            # 0b01010100: self.op_JMP,
         }
 
     def load(self):
@@ -95,6 +96,13 @@ class CPU:
                 self.branchtable[0b00000001]() # halt
             else:
                 self.reg[reg_a] = self.reg[reg_a] // self.reg[reg_b]
+        elif op == "CMP":
+            if reg_a == reg_b:
+                self.FL = 0b00000001
+            if reg_a < reg_b:
+                self.FL = 0b00000010
+            if reg_a > reg_b:
+                self.FL = 0b00000100
         else:
             raise Exception("Unsupported ALU operation")
     
@@ -120,6 +128,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        self.reg[7] = 0xF4
         
         self.running = True
 
@@ -247,3 +256,21 @@ class CPU:
         operand_b = self.ram[self.pc+2]
         self.alu('DIV', operand_a, operand_b)
         self.pc += 3
+
+    def op_CMP(self):
+        '''
+        adds values using alu
+        '''
+        operand_a = self.ram[self.pc+1]
+        operand_b = self.ram[self.pc+2]
+        self.alu('CMP', operand_a, operand_b)
+        
+
+    #  def op_MUL(self):
+    #         '''
+    #     multiplies values using alu
+    #     '''
+    #     operand_a = self.ram[self.pc+1]
+    #     operand_b = self.ram[self.pc+2]
+    #     self.alu('MUL', operand_a, operand_b)
+    #     self.pc += 3
