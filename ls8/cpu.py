@@ -79,9 +79,9 @@ class CPU:
 
             # If they condition is met, set the bit to 1
             # Otherwise set the bit to 0
-            self.flag = self.flag | E if reg_a == reg_b else self.flag & ~E
-            self.flag = self.flag | G if reg_a > reg_b else self.flag & ~G
-            self.flag = self.flag | L if reg_a < reg_b else self.flag & ~L
+            self.flag = self.flag | E if self.reg[reg_a] == self.reg[reg_b] else self.flag & ~E
+            self.flag = self.flag | G if self.reg[reg_a] > self.reg[reg_b] else self.flag & ~G
+            self.flag = self.flag | L if self.reg[reg_a] < self.reg[reg_b] else self.flag & ~L
         #elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
@@ -190,12 +190,15 @@ class CPU:
 
     def JMP(self):
         self.pc = self.reg[self.ram_read(self.pc + 1)]
-        self.pc += 2
 
     def JEQ(self):
-        if self.flag >> 0 == 1:
+        if (self.flag << 0 & 1) is 1:
             self.JMP()
+        else:
+            self.pc += 2
 
     def JNE(self):
-        if self.flag >> 0 == 0:
+        if (self.flag << 0 & 1) is 0:
             self.JMP()
+        else:
+            self.pc += 2
