@@ -47,11 +47,11 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [x] Add the `CMP` instruction and `equal` flag to your LS-8.
 
-- [ ] Add the `JMP` instruction.
+- [x] Add the `JMP` instruction.
 
-- [ ] Add the `JEQ` and `JNE` instructions.
+- [x] Add the `JEQ` and `JNE` instructions.
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
@@ -168,7 +168,7 @@ goals may or may not be things you have learned in this module but they build on
 the material you just studied. Time allowing, stretch your limits and see if you
 can deliver on the following optional goals:
 
-- [ ] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
+- [x] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
 - [ ] Add an `ADDI` extension instruction to add an immediate value to a register
 - [ ] Add timer interrupts
 - [ ] Add keyboard interrupts

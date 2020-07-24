@@ -61,6 +61,17 @@ class CPU:
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
+        # `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
+        
+        # Bitwise ALU
+        AND = 0b10101000
+        OR = 0b10101010
+        XOR = 0b10101011
+        NOT = 0b01101001
+        SHL = 0b10101100
+        SHR = 0b10101101
+        MOD = 0b10100100
+        
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
@@ -80,6 +91,36 @@ class CPU:
 
             else:
                 self.flag = 0b00000100
+                
+        ### Sprint Challenge Stretch ###
+        
+        elif op == "AND":
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+            
+        elif op == "OR":
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+            
+        elif op == "XOR":
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+            
+        elif op == "NOT":
+            self.reg[reg_a] -= 0b11111111
+            
+        elif op == "SHL":
+            self.reg[reg_a] << self.reg[reg_b]
+            
+        elif op == "SHR":
+            self.reg[reg_a] >> self.reg[reg_b]
+            
+        elif op == "MOD":
+            if self.reg[reg_b] == 0:
+                print("Cannot mod by values of 0")
+                self.running = False # HLT
+                
+            else:
+                self.reg[reg_a] %= self.reg[reg_b]
+        
+        ################################
 
         else:
             raise Exception("Unsupported ALU operation")
