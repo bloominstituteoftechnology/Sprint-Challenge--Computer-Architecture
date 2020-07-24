@@ -195,13 +195,13 @@ class CPU:
         self.pc = self.reg[reg_a]
 
     def JEQ(self, reg_a, reg_b):
-        if self.flag_reg[EQ] == 0b00000001:
+        if self.flag[EQ] == 0b00000001:
             self.pc = self.reg[reg_a]
         else:
             self.pc += 2
 
     def JNE(self, reg_a, reg_b):
-        if self.flag_reg[EQ] == 0b00000000:
+        if self.flag[EQ] == 0b00000000:
             self.pc = self.reg[reg_a]
         else:
             self.pc += 2
