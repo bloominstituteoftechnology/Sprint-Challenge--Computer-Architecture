@@ -34,6 +34,7 @@ class CPU:
         self.branchtable["CMP"] = self.CMP
         self.branchtable["JEQ"] = self.JEQ
         self.branchtable["JNE"] = self.JNE
+        self.branchtable["ADDI"] = self.ADDI
         self.op_codes = {}
         self.op_codes["HLT"] = 0b00000001
         self.op_codes["LDI"] = 0b10000010
@@ -55,6 +56,7 @@ class CPU:
         self.op_codes["CMP"] = 0b10100111
         self.op_codes["JEQ"] = 0b01010101
         self.op_codes["JNE"] = 0b01010110
+        self.op_codes["ADDI"] = 0b10101111
 
     def load(self):
         """Load a program into memory."""
@@ -95,6 +97,8 @@ class CPU:
             self.branchtable["INC"]()
         elif self.op_codes["CMP"] is op:
             self.branchtable["CMP"]()
+        elif self.op_codes["ADDI"] is op:
+            self.branchtable["ADDI"]()
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -317,6 +321,11 @@ class CPU:
         if self.fl & 1 is 0:
             self.pc = self.reg[operand_a]
             self.advance_pc = False
+
+    def ADDI(self):
+        operand_a = self.ram_read(self.pc + 1)
+        operand_b = self.ram_read(self.pc + 2)
+        self.reg[operand_a] = self.reg[operand_a] + operand_b
 
 
 cpu = CPU()
