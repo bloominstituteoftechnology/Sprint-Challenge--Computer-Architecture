@@ -23,7 +23,8 @@ class CPU:
             0b00010001: self.op_RET,
             0b10100000: self.op_ADD,
             0b10100001: self.op_SUB,
-            0b10100011: self.op_DIV
+            0b10100011: self.op_DIV,
+            0b10100111: self.op_CMP,
         }
 
     def load(self):
