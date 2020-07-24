@@ -25,7 +25,7 @@ class CPU:
             0b10100001: self.op_SUB,
             0b10100011: self.op_DIV,
             0b10100111: self.op_CMP,
-            # 0b01010100: self.op_JMP,
+            0b01010100: self.op_JMP,
         }
 
     def load(self):
@@ -264,6 +264,11 @@ class CPU:
         operand_a = self.ram[self.pc+1]
         operand_b = self.ram[self.pc+2]
         self.alu('CMP', operand_a, operand_b)
+
+    def op_JMP(self):
+        operand_a = self.ram[self.pc+1]
+        self.pc = self.reg[operand_a]
+        
         
 
     #  def op_MUL(self):
