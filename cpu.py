@@ -1,30 +1,6 @@
 """CPU functionality."""
 
 import sys
-from glob import glob
-
-
-class Stack():
-    def __init__(self, num: int) -> None:
-        """set the size of the with the num argument"""
-        if num <= 256:
-            self.stack = [None] * num
-        else:
-            raise ValueError("STACK.size > 256")
-        return None
-
-    def push(self, value):
-        self.stack.append(value)
-        return
-
-    def pop(self):
-        if self.size() > 0:
-            return self.stack.pop()
-        else:
-            return None
-
-    def size(self):
-        return len(self.stack)
 
 
 class CPU:
@@ -45,7 +21,7 @@ class CPU:
         self.ir = 0
 
         # init the execution interupt registry
-        self.ie = 0
+        # self.ie = 0
 
         # stack pointer set to the 7th registry
         self.sp = 7
@@ -63,12 +39,14 @@ class CPU:
         self.RAM = {k: None for k in range(ram_size)}
 
         # gloabal equals flag
-        self.equals = 0b001
-        self.greater = 0b010
-        self.lessthan = 0b100
+        #self.equals = 0b001
+        #self.greater = 0b010
+        #self.lessthan = 0b100
 
         # global debugging toggle
         self.DBG = DBG
+
+        self.clock = 0
 
     def ram_read(self, address):
         return self.RAM[address]
@@ -119,95 +97,50 @@ class CPU:
     #                        Instructions Functions                           #
     ###########################################################################
 
-    # gates
-
-    def aand(self):
-        """Function takes the value of one register and &'s it then sores the
-        result in reg_a
-        """
-        # get the first register pointer
-        reg_a = self.read_ram(self.pc + 1)
-        # get the second register pointer
-        reg_b = self.read_ram(self.pc + 2)
-        # store the value of reg_a & reg_b
-        self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
-        # increment pc
-        self.pc += 3
-        return
-
-    def oor(self):
-        # get the registry pointers
-        reg_a = self.read_ram(self.pc + 1)
-        reg_b = self.ram_read(self.pc + 2)
-        # store the result of reg_a | reg_b in reg_a
-        self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
-        # increment pc
-        self.pc += 3
-        return
-
-    def nnot(self):
-        # get the register pointer
-        rp = self.read_ram(self.pc + 1)
-        # set the register equal to its not'ed self
-        self.reg[rp] = ~(self.reg[rp])
-        # increment pc
-        self.pc += 2
-        return
-
     # stacks
 
     def pop(self):
         """take the value from the top of the stack and load it into the
-        register that is specified by pc + 1
+        register that is specified byself.pc+ 1
         """
-        value = self.ram_read(self.reg[self.sp])
-        self.reg[self.ram_read(self.pc + 1)] = value
-        self.reg[self.sp] += 1
+        stack_value = self.ram_read(self.reg[SP])
+        register_number = self.ram_read(self.pc + 1)
+        self.reg[register_number] = stack_value
+        self.reg[SP] += 1
         self.pc += 2
         return
 
     def push(self):
-        """loads the args from the ram using pc + 1,2 respectivly
+        """loads the args from the ram usingself.pc+ 1,2 respectivly
         then write the value from the register to the top of the stack then
         decrement the stack and advance the pc"""
         # get the register from ram
-        reg_a = self.ram_read(self.pc + 1)
-        self.reg[self.sp] -= 1
-        self.ram_write(self.reg[self.sp], self.reg[reg_a])
-
+        self.reg[SP] -= 1
+        stack_address = self.reg[SP]
+        register_number = self.ram_read(self.pc + 1)
+        value = self.reg[register_number]
+        self.ram_write(stack_address, value)
         self.pc += 2
         return
 
     # subroutines
     def call(self):
-        # get the register of the address that we need to jump to
-        reg = self.ram_read(self.pc + 1)
-        # get the address that we are going to be changing to
-        address = self.reg[reg]
-        # decrement the stack pointer
-        self.reg[self.sp] -= 1
-        # push the address of the next instruction to the stack
-        self.ram_write(self.reg[self.sp], self.pc + 2)
-
-        self.pc = address
+        self.reg[SP] -= 1
+        stack_address = self.reg[SP]
+        returned_address = self.pc + 2
+        self.ram_write(stack_address, returned_address)
+        register_number = self.ram_read(self.pc + 1)
+        self.pc = self.reg[register_number]
         return
 
     def ret(self):
-        # pull the returna address off of the stack and store it in a var
-        address = self.ram_read(self.reg[self.sp])
-        # increment the stack pointer
-        self.reg[self.sp] += 1
-        # set the current pc == to the return address
-        self.pc = address
+        self.pc = self.ram_read(self.reg[SP])
+        self.reg[SP] += 1
         return
 
     # other operators
     def prn(self):
-        # load the register to print
-        reg_a = self.ram_read(self.pc + 1)
-        # print the register
-        print(self.reg[reg_a])
-        # advance the pc
+        print(self.reg[self.ram_read(self.pc + 1)])
         self.pc += 2
         return
 
@@ -217,8 +150,8 @@ class CPU:
         return
 
     def hlt(self):
-        self.running = False
-        # no need to adnvance the pc because the progam is finished
+        exit(1)
+        # no need to adnvance theself.pcbecause the progam is finished
         return
 
     def jmp(self) -> None:
@@ -230,15 +163,13 @@ class CPU:
         return
 
     def ldi(self):
-        reg_a = self.ram_read(self.pc + 1)
-        interger = self.ram_read(self.pc + 2)
-        self.reg[reg_a] = interger
+        self.reg[self.ram_read(self.pc + 1)] = self.ram_read(self.pc + 2)
         self.pc += 3
         return
 
     def st(self):
         """Takes the value stored in reg_a and writes it to the address that is
-        stored in reg_b then increments the pc by three.
+        stored in reg_b then increments theself.pcby three.
         """
         reg_a, reg_b = self.ram_read(self.pc + 1), self.ram_read(self.pc + 2)
         self.ram_write(self.reg[reg_b], self.reg[reg_a])
@@ -250,19 +181,21 @@ class CPU:
     def add(self):
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
-        self.reg[reg_a] += self.reg[reg_b]
+        self.alu(self.ir, reg_a, reg_b)
+        self.pc += 3
+        return
 
     def sub(self):
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
-        self.reg[reg_a] -= self.reg[reg_b]
+        self.alu(self.ir, reg_a, reg_b)
         self.pc += 3
         return
 
     def mul(self):
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
-        self.reg[reg_a] = self.reg[reg_a] * self.reg[reg_b]
+        self.alu(self.ir, reg_a, reg_b)
         self.pc += 3
         return
 
@@ -272,31 +205,31 @@ class CPU:
 
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
-        self.reg[reg_a] = self.reg[reg_a] / self.reg[reg_b]
+        self.alu(self.ir, reg_a, reg_b)
         self.pc += 3
         return
 
     def mod(self):
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
-
         self.reg[reg_a] %= self.reg[reg_b]
         self.pc += 3
         return
 
     def jeq(self):
-        # if the CMP flag is set to E
-        if self.fl & self.equals:
-            # make a jump to the address in reg
-            self.jmp()
+        if not self.fl & 0b1:
+            self.pc += 2
+        elif self.fl & 0B1:
+            reg_a = self.ram_read(self.pc + 1)
+            self.pc = self.reg[reg_a]
         return
 
     def jne(self):
-        # if the E flag is clear meaning that the fl == 0 then jump to the
-        # address held in the reg
-        if not self.fl & self.equals:
-            self.jmp()
-
+        if self.fl & 0b1:
+            self.pc += 2
+        elif not self.fl & 0b0:
+            reg_a = self.ram_read(self.pc + 1)
+            self.pc = self.reg[reg_a]
         return
 
     def shl(self):
@@ -324,30 +257,17 @@ class CPU:
         """This Function takes the regerister arguments and sets the flag register
         accordingly see the spec for a breakdown on the flags
         """
-        reg_a, reg_b = self.ram_read(self.pc + 1), self.ram_read(self.pc + 2)
-        # adding the compare operation
-        self.fl = self.fl & 0x11111000
-        if self.reg[reg_a] < self.reg[reg_b]:
-            self.fl = self.fl | self.lessthan
-        elif self.reg[reg_a] > self.reg[reg_b]:
-            self.fl = self.fl | self.greater
-        else:
-            self.fl = self.fl | self.equals
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        value_a = self.reg[reg_a]
+        value_b = self.reg[reg_b]
+        if value_a == value_b:
+            self.fl = 0b1
+        elif value_a > value_b:
+            self.fl = 0b10
+        elif value_b > value_a:
+            self.fl = 0b100
         self.pc += 3
-        return None
-
-    def inc(self):
-        # this function increments a register
-        rp = self.read_ram(self.pc + 1)
-        self.reg[rp] += 1
-        self.pc += 2
-        return
-
-    def dec(self):
-        # this function decrements a register
-        rp = self.read_ram(self.pc + 1)
-        self.reg[rp] -= 1
-        self.pc += 2
         return
 
     ###########################################################################
@@ -355,18 +275,16 @@ class CPU:
     ###########################################################################
 
     def trace(self):
-        """
-        Handy function to print out the CPU state. You might want to call this
-        from run() if you need help debugging.
-        """
+        print(f"""
+        pc: {self.pc}
+        main loop iter: {self.clock}
+        ir: {self.ir}
+       self.pc+ 1: {self.RAM[self.pc + 1]}
+       self.pc+ 2: {self.RAM[self.pc + 2]}
+        registry values:\n{self.reg}\n
+        stack(top):\n{self.ram_read(self.reg[self.sp])}
 
-        print(self.pc, self.ir, self.fl, self.ie, self.ram_read(self.pc),
-              self.ram_read(self.pc + 1), self.ram_read(self.pc + 2))
-
-        for i in range(8):
-            print(" %02X" % self.reg[i], end='')
-
-        print()
+        """)
 
     def load(self, fn):
         """Loads a .ls8 file from disk and runs it
@@ -388,30 +306,36 @@ class CPU:
     ###########################################################################
     #                              MAIN                                       #
     ###########################################################################
+    def alu(self, operation, reg_a, reg_b):
+        """ALU operations."""
+
+        if operation == self.ADD:
+            self.reg[reg_a] += self.reg[reg_b]
+        elif operation == self.SUB:
+            self.reg[reg_a] -= self.reg[reg_b]
+        elif operation == self.MUL:
+            self.reg[reg_a] *= self.reg[reg_b]
+        elif operation == self.DIV:
+            self.reg[reg_a] /= self.reg[reg_b]
+        else:
+            raise Exception("ALU operation not supported")
 
     def run(self):
         """Starts the main execution of the program"""
         self.running = True
 
         # a simple count to figure out how many times my cpu has cycled
-        clock = 0
+        self.clock = 0
 
         self.dispatch = {
-            self.SHL: self.shl,
-            self.SHR: self.shr,
             self.ADD: self.add,
             self.SUB: self.sub,
             self.MUL: self.mul,
             self.DIV: self.div,
-            self.INC: self.inc,
-            self.DEC: self.dec,
             self.JEQ: self.jeq,
             self.JNE: self.jne,
             self.CMP: self.cmp,
             self.MOD: self.mod,  # end alu instructions
-            self.AND: self.aand,
-            self.OR: self.oor,
-            self.NOT: self.nnot,  # end gate instructions
             self.LDI: self.ldi,
             self.PRN: self.prn,
             self.HLT: self.hlt,
@@ -422,26 +346,22 @@ class CPU:
             self.RET: self.ret,  # end subroutine instructions
         }
         while self.running:
-            clock += 1
+
+            self.clock += 1
             if self.DBG:
-                print("CLK: {}".format(clock))
+                print("CLK: {}".format(self.clock))
                 breakpoint()
 
-            instr = self.ram_read(self.pc)
-            self.ir = instr
-            self.dispatch[instr]()
+            self.ir = self.ram_read(self.pc)
+            self.dispatch[self.ir]()
 
         return None
 
 
 if __name__ == '__main__':
-    cpu = CPU()
-    tests = glob("./ls8/examples/*.ls8")
-    for test in tests:
-        try:
-            print("test: {}".format(test))
-            # test should be the name of the file
-            cpu.load(test)
-            cpu.run() | print("failed")
-        except Exception as e:
-            print(e)
+    try:
+        cpu = CPU(DBG=False)
+        cpu.load('sctest.ls8')
+        cpu.run()
+    except Exception as e:
+        pass
