@@ -8,28 +8,21 @@ def halt(*args):
 
 
 def ldi(*args):
-    m, r, c = args
-    cp = c.value
-    i = m[cp+1]
-    r[i] = m[cp+2]
-    c += 3
+    pc, i, val = args
+    pc.reg_write(i, val)
 
 
 def prn(*args):
-    m, r, c = args
-    cp = c.value
-    i = m[cp+1]
-    print(r[i])
-    c += 2
+    pc, i = args
+    val = pc.reg_read(i)
+    print(val)
 
 
-def mul(*args):
-    m, r, c = args
-    cp = c.value
-    i1 = m[cp+1]
-    i2 = m[cp+2]
-    r[i1] = r[i1] * r[i2]
-    c += 3
+def mul(*args, pc):
+    alu, i1, i2 = args
+    v1 = pc.reg_read(i1)
+    v2 = pc.reg_read(i2)
+    pc.reg_write(i1, v1 * v2)
 
 
 def cmp(*args):
@@ -52,22 +45,11 @@ def jne(*args):
     pass
 
 
-# Instruction Set Class
+# Instruction Set Classes
 
 class InstructionSet():
     def __init__(self, bin_or_int='int'):
         super().__init__()
-
-        instructions_set = (
-                ('10000010', ldi), # LDI
-                ('01000111', prn), # PRN
-                ('10100010', mul), # MUL
-                ('00000001', halt), # HLT
-        )
-
-        self.bin_or_int = bin_or_int
-        self.instructions = self._build_instructions(instructions_set)
-
         
     def _sbin_to_int(self, line):
         return int(line, 2)
@@ -94,12 +76,35 @@ class InstructionSet():
         return self._sbin_to_int(code) >> 6
 
 
-
     def __call__(self, code):
         try:
             return self.instructions[code]
         except KeyError:
-            raise NotImplementedError(f'Code {c} not defined')
+            raise NotImplementedError(f'Code {code} not defined')
         except:
             raise
             
+
+
+class ALUInstructionSet(InstructionSet):
+    def __init__(self, bin_or_int='int'):
+        super().__init__(bin_or_int=bin_or_int)
+        instructions_set = (
+                ('10100010', mul), # MUL
+        )
+
+        self.bin_or_int = bin_or_int
+        self.instructions = self._build_instructions(instructions_set)
+
+
+class PCInstructionSet(InstructionSet):
+    def __init__(self, bin_or_int='int'):
+        super().__init__(bin_or_int=bin_or_int)
+        instructions_set = (
+                ('10000010', ldi), # LDI
+                ('01000111', prn), # PRN
+                ('00000001', halt), # HLT
+        )
+
+        self.bin_or_int = bin_or_int
+        self.instructions = self._build_instructions(instructions_set)

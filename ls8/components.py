@@ -14,29 +14,42 @@ class Dispatcher():
         self.alu = alu 
         self.pc = pc
 
+
     def parse_code(self, code):
-        print('got code: ', code)
         op = code >> 6
         alu = (code >> 5) & 1
         pc = (code >> 4) & 1
 
-        data = (None)
+        return op, alu, pc
+
+
+    def fetch_dispatch(self, code):
+        op, alu, pc = self.parse_code(code)
+
+        data = self._request_data(op)
+        # print('Data read: ', data)
+
         if pc == 1:
-            data = self.pc(code)
+            self.pc(code, *data)
 
         if alu == 1:
-            result = self.alu(code, *data)
-            
+            result = self.alu(code, *data, pc=self.pc)
+
+        if (pc == 0) and (alu == 0):
+            signal = self.pc(code, *data)
+            return signal
 
 
-        print('ops: ', op, ' alu: ', alu, ' pc: ', pc)
-
-
-
+    def _request_data(self, op):
+        data = []
+        for _ in range(op):
+            data.append(self.pc.ram_read())
+        return data
 
 
     def __call__(self, code):
-        self.parse_code(code)
+        return self.fetch_dispatch(code)
+
 
 
 
@@ -52,6 +65,7 @@ class Cursor():
         pos = self.value
         self.value += 1
         return pos
+
 
 
 
@@ -88,9 +102,10 @@ class PC():
         self.reg = reg
 
 
-    def __call__(self, code):
+    def __call__(self, code, *args, **kwargs):
         fn = self.instructionset(code)
         return fn(self, *args, **kwargs)
+
 
     def ram_read(self):
         if self.c.value < len(self.ram):
@@ -102,9 +117,11 @@ class PC():
     def ram_write(self, idx, val):
         self.ram[int(idx)] = val
 
+
     def reg_read(self, idx):
-        return self.register[int(idx)]
-    
+        return self.reg[int(idx)]
+
+
     def reg_write(self, idx, val):
-        self.register[int(idx)] = val
+        self.reg[int(idx)] = val
     

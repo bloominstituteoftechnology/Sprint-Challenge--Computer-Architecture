@@ -1,26 +1,26 @@
 """CPU functionality."""
 
 import sys
-from instructions import InstructionSet
+from instructions import PCInstructionSet, ALUInstructionSet
 from components import PC, ALU, Dispatcher
 from parser import Parser
 
 class CPU:
     """Main CPU class."""
 
-    def __init__(self, msize=256, rsize=8, instructionset=InstructionSet(), rec_max=100):
+    def __init__(self, msize=256, rsize=8, rec_max=100):
         """Construct a new CPU."""
         
         self.rec_max = rec_max
 
         self.pc = PC(
-            instructionset=instructionset, 
+            instructionset=PCInstructionSet(), 
             ram=self._seed_list(msize), 
             reg=self._seed_list(rsize),
         )
 
         self.alu = ALU(
-            instructionset=instructionset,
+            instructionset=ALUInstructionSet(),
         )
 
         self.dispatch = Dispatcher(
@@ -69,35 +69,14 @@ class CPU:
     def run(self):
         """Run the CPU."""
 
-        # Get next item at cursor position and advance cursor
-        for _ in range(10):
+        rec = 0
+        signal = None
+        while signal is None:
             code = self.pc.ram_read()
-            self.dispatch(code)
+            signal = self.dispatch(code)
+            # print('Received signal', signal)
+            if signal:
+                break
+            rec += 1
 
-
-
-        # def _run_instruction(instruction, interrupt):  # TODO: Move runto component unit
-        #     if not interrupt:
-        #         method = self.instructionset(instruction)
-        #         signal = method(self.ram, self.reg, self.c1)
-        #         return signal
-        #     return True
-        
-        # def _check_interrupt(signal):
-        #     return signal is not None
-
-        # def _check_rec(rec):
-        #     return rec > self.rec_max
-
-        # rec = 0
-
-        # interrupt = False
-        # while not interrupt:
-        #     # print(self.ram, self.reg, self.c1, rec)
-        #     interrupt = _check_rec(rec)
-        #     interrupt = _check_interrupt(
-        #         _run_instruction(self.ram[self.pc], interrupt)
-        #         )
-        #     rec += 1
-
-        print('Program Halted Successfully.')#, rec)
+        print('Program Halted Successfully.', rec)
