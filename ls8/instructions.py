@@ -32,6 +32,26 @@ def mul(*args):
     c += 3
 
 
+def cmp(*args):
+    pass 
+
+
+def equal(*args):
+    pass
+
+
+def jmp(*args):
+    pass 
+
+
+def jeq(*args):
+    pass
+
+
+def jne(*args):
+    pass
+
+
 # Instruction Set Class
 
 class InstructionSet():
