@@ -3,16 +3,16 @@
 
 # Common instructions
 
-def halt(*args):
+def halt(*args, alu):
     return True
 
 
-def ldi(*args):
+def ldi(*args, alu):
     pc, i, val = args
     pc.reg_write(i, val)
 
 
-def prn(*args):
+def prn(*args, alu):
     pc, i = args
     val = pc.reg_read(i)
     print(val)
@@ -25,24 +25,28 @@ def mul(*args, pc):
     pc.reg_write(i1, v1 * v2)
 
 
-def cmp(*args):
-    pass 
+def cmp(*args, pc):
+    alu, i1, i2 = args
+    v1 = pc.reg_read(i1)
+    v2 = pc.reg_read(i2)
+    alu.E = int(v1 == v2)
+    alu.L = int(v1 < v2)
+    alu.G = int(v1 > v2)
 
 
-def equal(*args):
-    pass
+def jmp(*args, alu):
+    pc, i = args
+    pc.c.jump(pc.reg_read(i))
 
 
-def jmp(*args):
-    pass 
+def jeq(*args, alu):
+    if alu.E:
+        jmp(*args, alu=alu)
 
 
-def jeq(*args):
-    pass
-
-
-def jne(*args):
-    pass
+def jne(*args, alu):
+    if not alu.E:
+        jmp(*args, alu=alu)
 
 
 # Instruction Set Classes
@@ -91,6 +95,7 @@ class ALUInstructionSet(InstructionSet):
         super().__init__(bin_or_int=bin_or_int)
         instructions_set = (
                 ('10100010', mul), # MUL
+                ('10100111', cmp), # CMP
         )
 
         self.bin_or_int = bin_or_int
@@ -103,6 +108,9 @@ class PCInstructionSet(InstructionSet):
         instructions_set = (
                 ('10000010', ldi), # LDI
                 ('01000111', prn), # PRN
+                ('01010100', jmp), # JMP
+                ('01010101', jeq), # JEQ
+                ('01010110', jne), # JNE
                 ('00000001', halt), # HLT
         )
 

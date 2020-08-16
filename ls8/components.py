@@ -30,13 +30,13 @@ class Dispatcher():
         # print('Data read: ', data)
 
         if pc == 1:
-            self.pc(code, *data)
+            self.pc(code, *data, alu=self.alu)
 
         if alu == 1:
             result = self.alu(code, *data, pc=self.pc)
 
         if (pc == 0) and (alu == 0):
-            signal = self.pc(code, *data)
+            signal = self.pc(code, *data, alu=self.alu)
             return signal
 
 
@@ -58,8 +58,14 @@ class Cursor():
     def __init__(self):
         self.value = 0
 
+
     def __add__(self, x):
         self.value += x
+
+
+    def jump(self, x):
+        self.value = x
+
 
     def __call__(self):
         pos = self.value
