@@ -11,16 +11,24 @@ class Dispatcher():
     """
     def __init__(self, alu, pc):
         super().__init__()
-        self.components = {
-            'alu': alu,
-            'pc': pc,
-        }
+        self.alu = alu 
+        self.pc = pc
 
     def parse_code(self, code):
         print('got code: ', code)
         op = code >> 6
         alu = (code >> 5) & 1
         pc = (code >> 4) & 1
+
+        data = (None)
+        if pc == 1:
+            data = self.pc(code)
+
+        if alu == 1:
+            result = self.alu(code, *data)
+            
+
+
         print('ops: ', op, ' alu: ', alu, ' pc: ', pc)
 
 
