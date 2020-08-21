@@ -15,6 +15,9 @@ class CPU:
         self.register = [0] * 8
         self.running = True
         self.SP = 0xf4
+        self.Eflag = 0
+        self.Lflag = 0
+        self.Gflag = 0
 
         self.branch_table = {
             0b10000010: self.LDI,
@@ -26,6 +29,10 @@ class CPU:
             0b01000110: self.POP,
             0b00010001: self.RET,
             0b01010000: self.CALL,
+            0b10100111: self.CMP,
+            0b01010100: self.JMP,
+            0b01010110: self.JNE,
+            0b01010101: self.JEQ
         }
 
     def load(self, filename):
@@ -52,10 +59,17 @@ class CPU:
             self.register[reg_a] += self.register[reg_b]
         # elif op == "SUB": etc
         elif op == "MUL":
-            # print("reg", self.register[reg_a])
             self.register[reg_a] *= self.register[reg_b]
-            # print(self.register[reg_a])
 
+        elif op == "CMP":
+            op1 = self.register[reg_a]
+            op2 = self.register[reg_b]
+            if op1 == op2:
+                self.Eflag = 1
+            elif op1 < op2:
+                self.Lflag = 1
+            elif op1 > op2:
+                self.Gflag = 1
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -128,6 +142,29 @@ class CPU:
         ret_address = self.ram[self.SP]
         self.pc = ret_address
         self.SP += 1
+
+    def CMP(self):
+        op1 = self.ram_read(self.pc + 1)
+        op2 = self.ram_read(self.pc + 2)
+        self.alu("CMP", op1, op2)
+
+    def JEQ(self):
+        fl = self.Eflag
+        if fl == 1:
+            self.JMP()
+        else:
+            self.pc += 2
+
+    def JNE(self):
+        fl = self.Eflag
+        if fl == 0:
+            self.JMP()
+        else:
+            self.pc += 2
+
+    def JMP(self):
+        reg = self.ram_read(self.pc + 1)
+        self.pc = self.register[reg]
 
     def run(self):
         """Run the CPU."""
