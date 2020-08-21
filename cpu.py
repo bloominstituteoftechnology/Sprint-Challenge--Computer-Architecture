@@ -251,6 +251,7 @@ class CPU:
 
     def NOT(self):
         num_1 = self.reg[self.ram_read(self.pc + 1)]
+        print("num1", num_1)
 
         self.reg[self.ram_read(self.pc + 1)] = ~num_1
 
@@ -278,6 +279,8 @@ class CPU:
 
         try:
             self.reg[self.ram_read(self.pc + 1)] = (num_1 % num_2)
+
+            self.pc += 3
 
         except ZeroDivisionError:
             print('You cannot divide by zero.')
