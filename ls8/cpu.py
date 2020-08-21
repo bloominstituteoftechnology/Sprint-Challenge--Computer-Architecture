@@ -30,6 +30,7 @@ class CPU:
         self.pc = 0
         self.reg = [0] * 10
         self.FL = 0b00000000
+        self.IR = 0 # Instruction Register
         self.SP = 7
         self.branchtable = {
             CALL: self.call,
@@ -122,18 +123,29 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        self.running = True
-        while self.running:
-            if self.SP <= self.PC + 1:
-                print('Stack overflow!')
-                sys.exit(1)
-            self.IR = self.ram_read(self.PC)
-            if self.IR in self.instructions:
-                num_operations = ((self.IR & 0b11000000) >> 6) + 1
-                self.instructions[self.IR](num_operations)
+        while True:
+            ir = self.ram[self.pc]
+            reg_a = self.ram_read(self.pc + 1)
+            reg_b = self.ram_read(self.pc + 2)
+            # pc updater if no set pc given
+            update = (ir >> 6) + 1
+            # is alu? 1
+            alu_op = ((ir >> 5) & 0b1)
+            # incase pc will be set
+            set_pc = ((ir >> 4) & 0b1)
+    
+            if ir in self.branchtable:
+                if alu_op:
+                    # handle for ability to pass in type of operation 
+                    self.branchtable[ir](ir, reg_a, reg_b)
+                else:
+                    # always pass in reg_a, reg_b don't always use reg_b, can just move pc later
+                    self.branchtable[ir](reg_a, reg_b)
             else:
-                print(f'Unknown instruction {self.IR} at address {self.PC}')
-                sys.exit(1)
+                print('Unsupported command')
+            if not set_pc:
+                self.pc += update
+
 
     def trace(self):
         """
@@ -193,12 +205,12 @@ class CPU:
         # no more running, just exit
         sys.exit()
 
-    def jeq(self,ops):
-        if self.FL == 1:
-            self.MAR = self.ram_read(self.PC + 1)
-            self.PC = self.reg[self.MAR]
+    def jeq(self, reg_a, reg_b=None):
+        # if equal (fl) 'jump' to given reg
+        if self.fl & 0b1 == 1:
+            self.pc = self.reg[reg_a]
         else:
-            self.PC = self.bitwise_addition(self.PC, ops)
+            self.pc += 2
 
     def jge(self,ops):
         if self.FL == 1:
@@ -207,16 +219,13 @@ class CPU:
         else:
             self.PC = self.bitwise_addition(self.PC, ops)
 
-    def jmp(self,ops):
-        if self.FL == 1:
-            self.MAR = self.ram_read(self.PC + 1)
-            self.PC = self.reg[self.MAR]
-        else:
-            self.PC = self.bitwise_addition(self.PC, ops)
+    def jmp(self, reg_a, reg_b=None):
+        # go to stored reg
+        self.pc = self.reg[reg_a]
 
-    def jne(self,ops):
-        if self.FL != 1 and not 0:
-            self.MAR = self.ram_read(self.PC + 1)
-            self.PC = self.reg[self.MAR]
+    def jne(self, reg_a, reg_b=None):
+        # if equal (fl) is 0 go to given reg
+        if self.fl & 0b1 == 0:
+            self.pc = self.reg[reg_a]
         else:
-            self.PC = self.bitwise_addition(self.PC, ops)
+            self.pc += 2
