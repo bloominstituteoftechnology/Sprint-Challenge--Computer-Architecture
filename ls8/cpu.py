@@ -1,8 +1,6 @@
-"""CPU functionality."""
-
 import sys
 
-# re
+"""CPU functionality."""
 CALL = 0b01010000
 ADD = 0b10100000
 DIV = 0b10100011
@@ -21,7 +19,7 @@ JMP = 0b01010100
 JNE = 0b01010110
 HLT = 0b00000001
 SP = 7
-FL = 0
+
 
 class CPU:
     """Main CPU class."""
@@ -30,8 +28,9 @@ class CPU:
         """Construct a new CPU."""
         self.ram = [0] * 256
         self.pc = 0
-        self.reg = [0] * 8
-        self.FL = 0
+        self.reg = [0] * 10
+        self.FL = 0b00000000
+        self.SP = 7
         self.branchtable = {
             CALL: self.call,
             ADD : self.alu,
@@ -97,6 +96,14 @@ class CPU:
             self.reg[reg_a] *= self.reg[reg_b]
             print(f"MUL at REG[{self.pc + 1}]: {self.reg[self.pc + 1]}")
 
+        elif op == CMP:
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl = 0b00000001
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                self.fl = 0b00000100
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.fl = 0b00000010                
+
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -114,34 +121,19 @@ class CPU:
 
 
     def run(self):
-        """Run the CPU.       
-        1. read mem at PC
-        2. store result in local var
-        3. turn into hash_tables
-        """
-        
-        while True:
-            ir = self.ram[self.pc]
-            reg_a = self.ram_read(self.pc + 1)
-            reg_b = self.ram_read(self.pc + 2)
-            # pc updater if no set pc given
-            update = (ir >> 6) + 1
-            # is alu? 1
-            alu_op = ((ir >> 5) & 0b1)
-            # incase pc will be set
-            set_pc = ((ir >> 4) & 0b1)
-    
-            if ir in self.branchtable:
-                if alu_op:
-                    # handle for ability to pass in type of operation 
-                    self.branchtable[ir](ir, reg_a, reg_b)
-                else:
-                    # always pass in reg_a, reg_b don't always use reg_b, can just move pc later
-                    self.branchtable[ir](reg_a, reg_b)
+        """Run the CPU."""
+        self.running = True
+        while self.running:
+            if self.SP <= self.PC + 1:
+                print('Stack overflow!')
+                sys.exit(1)
+            self.IR = self.ram_read(self.PC)
+            if self.IR in self.instructions:
+                num_operations = ((self.IR & 0b11000000) >> 6) + 1
+                self.instructions[self.IR](num_operations)
             else:
-                print('Unsupported command')
-            if not set_pc:
-                self.pc += update
+                print(f'Unknown instruction {self.IR} at address {self.PC}')
+                sys.exit(1)
 
     def trace(self):
         """
