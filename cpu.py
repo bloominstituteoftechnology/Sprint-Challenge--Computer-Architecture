@@ -4,7 +4,9 @@ LDI = 0b10000010
 PRN = 0b01000111
 HLT = 0b00000001
 CMP = 0b10100111
-
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
 class CPU:
 	def __init__(self):
 		## set to run
@@ -16,7 +18,7 @@ class CPU:
 		# set registers
 		self.reg = [0] * 8
 		# set flag
-		self.flag = None
+		self.flag = [0] * 8 #flags register
 # set up RAM read
 	def ram_read(self, address):
 		ram_value = self.ram[address]
@@ -27,23 +29,20 @@ class CPU:
 # set up instructions ()
 
 	def hlt(self):
-		print("htl")
 		self.running = False
 
-	def ldi(self, reg_index, num_to_save):
-		num_to_save = self.ram[self.pc + 2]
-		reg_index = self.ram[self.pc + 1]
-		self.reg[reg_index] = num_to_save
+	def ldi(self, reg_index, value):
+		self.reg[reg_index] = value
 		self.pc += 3
 	
-	def prn(self, reg_index, val_to_print):
-		val_to_print = self.ram[self.pc + 1]
+	def prn(self, reg_index):
+		print(self.reg[reg_index])
 		self.pc += 2
 
 	def alu(self, cmd, reg_a, reg_b):
 		if cmd == "CMP":
+			self.flag = 0b0000000
 			# set to 0
-			self.flag = 0b00000000
 			if self.reg[reg_a] == self.reg[reg_b]:
 				# set to 1
 				self.flag = 0b00000001
@@ -53,18 +52,40 @@ class CPU:
 			elif self.reg[reg_a] > self.reg[reg_b]:
 				# set greater than flag to 1
 				self.flag = 0b00000010
+			self.pc += 3
 
-	def load(self, filename):
+	def jmp(self, reg_index):
+		self.pc = self.reg[reg_index]
+	
+	def jeq(self, reg_index):
+		# if equal flag is set to true jump to address in given reg
+		if self.flag & 1 == 1:
+			self.pc = self.reg[reg_index]
+		else:
+			self.pc +=2
+
+	def jne(self, reg_index):
+		# if E flag is CLEar (false, 0) jump to address stored in given reg
+		if self.flag & 1 == 0:
+			self.pc = self.reg[reg_index]
+		else:
+			self.pc += 2
+
+	def load(self):
+		if len(sys.argv) < 2:
+			print("error")
+		filename = sys.argv[1]
 		# load file and store into memory
 		try:
 			address = 0
 			with open(filename) as file:
 				for line in file:
 					# read file and commands stripping "#" comments and the empty lines
-					command = line.split("#")[0].strip(" ")
+					split_line = line.split('#')[0]
+					command = split_line.strip()
+					# add commands to ram
 					if command == '':
 						continue
-					# add commands to ram
 					cmd = int(command, 2)
 					# store commands in memory
 					self.ram[address] = cmd
@@ -85,22 +106,31 @@ class CPU:
 
 			elif cmd == LDI:
 				reg_index = self.ram[self.pc + 1]
-				num_to_save = self.ram[self.pc + 2]
-				self.ldi(reg_index, num_to_save)
+				value = self.ram[self.pc + 2]
+				self.ldi(reg_index, value)
 
 			elif cmd == PRN:
-				reg_value = self.ram[self.pc + 1]
-				self.prn(val_to_print)
+				reg_index = self.ram[self.pc + 1]
+				self.prn(reg_index)
 			
 			elif cmd == CMP:
 				reg_a = self.ram[self.pc + 1]
 				reg_b = self.ram[self.pc + 2]
 				self.alu("CMP", reg_a, reg_b)
+			
+			elif cmd == JMP:
+				reg_index = self.ram[self.pc + 1]
+				self.jmp(reg_index)
 
+			elif cmd == JEQ:
+				reg_index = self.ram[self.pc + 1]
+				self.jeq(reg_index)
+
+			elif cmd == JNE:
+				reg_index = self.ram[self.pc + 1]
+				self.jne(reg_index)
 
 if __name__ == "__main__":
     cpu = CPU()
-    cpu.load(filename="sctest.ls8")
+    cpu.load()
     cpu.run()
-
-
