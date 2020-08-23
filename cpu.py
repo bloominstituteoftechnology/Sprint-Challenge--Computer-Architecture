@@ -18,11 +18,11 @@ class CPU:
 		# set flag
 		self.flag = None
 # set up RAM read
-	def ram_read():
-		pass
+	def ram_read(self, address):
+		ram_value = self.ram[address]
 # set up RAM write
-	def ram_write():
-		pass
+	def ram_write(self, value, address):
+		self.ram[address] = value
 
 # def Load
 	def load(self):
