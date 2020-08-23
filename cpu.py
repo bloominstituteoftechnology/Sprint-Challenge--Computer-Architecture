@@ -81,8 +81,7 @@ class CPU:
 			with open(filename) as file:
 				for line in file:
 					# read file and commands stripping "#" comments and the empty lines
-					split_line = line.split('#')[0]
-					command = split_line.strip()
+					command = line.split('#')[0].strip("")
 					# add commands to ram
 					if command == '':
 						continue
