@@ -267,6 +267,12 @@ class CPU:
                     self.pc += 2    
 
 
+            elif instruction_r == opcodes.JNE:   # jump if E falg NOT set >> 0b100 OR 0b010
+                print(f' JNE called ')
+                if self.fl == 4 or self.fl == 2:
+                    self.pc = self.reg[op_a]
+                else:
+                    self.pc += 2    
 
 
 
