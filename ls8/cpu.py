@@ -92,6 +92,13 @@ class CPU:
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
+        bin_ops = {
+            'opcodes.AND': '&',
+            'opcodes.OR' : '|'
+
+        }
+
+
         # I removed quotes around variables
         # print(f' op  {op}')
         if op == opcodes.ADD:
@@ -111,8 +118,32 @@ class CPU:
             elif self.reg[reg_a] > self.reg[reg_b]:
                 print(f' a > b')
                 self.fl = 0b00000010     # bit 1 set to 1 if a > b    
-                    
 
+
+        elif op == opcodes.AND:
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+
+        elif op == opcodes.OR:
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]  
+
+        elif op == opcodes.XOR:
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+
+        elif op == opcodes.NOT:
+            self.reg[reg_a] = ~self.reg[reg_a]
+
+        elif op == opcodes.SHL:
+            self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]  
+
+        elif op == opcodes.SHR:
+            self.reg[reg_a] = self.reg[reg_a] >> self.reg[reg_b]                 
+
+        elif op == opcodes.MOD:
+            if self.reg[reg_b] == 0:
+                print(f' DIVIDE by ZERO ERROR') 
+                self.running = False
+            else:
+                self.reg[reg_a] =  self.reg[reg_a] % self.reg[reg_b]
          
         #elif op == "SUB": etc
         else:
@@ -231,19 +262,19 @@ class CPU:
                 self.reg[7] -= 1
                 
 
-                print(f'   self.memory[self.reg[7]]  =  self.pc + 2 ')
-                print(f' \t\t\t {self.memory[self.reg[7]]}  =  {self.pc + 2} ')
+                # print(f'   self.memory[self.reg[7]]  =  self.pc + 2 ')
+                # print(f' \t\t\t {self.memory[self.reg[7]]}  =  {self.pc + 2} ')
                 self.memory[self.reg[7]] = self.pc + 2
 
                 self.pc = self.reg[op_a]
 
             elif instruction_r == opcodes.RET:
                 print(f' RET called')
-                print(f' \t   self.pc  =   self.memory[self.reg[7]]  ')
-                print(f' \t\t{self.pc}  =   {self.memory[self.reg[7]]}  ')
+                # print(f' \t   self.pc  =   self.memory[self.reg[7]]  ')
+                # print(f' \t\t{self.pc}  =   {self.memory[self.reg[7]]}  ')
                 self.pc = self.memory[self.reg[7]]
 
-                print(f' {hex(self.reg[7])}')
+                # print(f' {hex(self.reg[7])}')
                 self.reg[7] += 1
 
         ###################   SPRINT   ##########################
@@ -261,7 +292,8 @@ class CPU:
             elif instruction_r == opcodes.JEQ:   # jump if equal flag set >> 0b1
                 print(f' JEQ called ')
                 # check if FLAG reg bit 1 set
-                if self.fl == 1:
+                #if self.fl == 1:
+                if self.check_bit(self.fl, 0) == 1:
                     self.pc = self.reg[op_a]
                 else:   # point to next command
                     self.pc += 2    
@@ -279,13 +311,38 @@ class CPU:
 
             elif instruction_r == opcodes.AND:
                 print(f' AND called ')
+                self.alu(opcodes.AND, op_a, op_b)
+                self.pc += 3
 
+            elif instruction_r == opcodes.OR:
+                print(f' OR called ')
+                self.alu(opcodes.OR, op_a, op_b)
+                self.pc += 3
 
+            elif instruction_r == opcodes.XOR:
+                print(f' XOR called ')
+                self.alu(opcodes.XOR, op_a, op_b)
+                self.pc += 3
 
+            elif instruction_r == opcodes.NOT:
+                print(f' NOT called ')
+                self.alu(opcodes.NOT, op_a, op_b)
+                self.pc += 2
 
+            elif instruction_r == opcodes.SHL:
+                print(f' SHL called ')
+                self.alu(opcodes.SHL, op_a, op_b)
+                self.pc += 3      
 
+            elif instruction_r == opcodes.SHR:
+                print(f' SHR called ')
+                self.alu(opcodes.SHR, op_a, op_b)
+                self.pc += 3                           
 
-
+            elif instruction_r == opcodes.MOD:
+                print(f' MOD called ')
+                self.alu(opcodes.MOD, op_a, op_b)
+                self.pc += 3     
 
 
       ################   CHECK BIT FUNCTION   *****************
