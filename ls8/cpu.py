@@ -461,4 +461,4 @@ class CPU:
 # cpu.load('ls8/examples/print8.ls8')
 # cpu.dump_mem('h')
 # cpu.run()
-# cpu.dump_mem('h')
+
