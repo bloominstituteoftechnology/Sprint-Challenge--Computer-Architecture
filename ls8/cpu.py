@@ -40,6 +40,10 @@ class CPU:
         self.pc = self.int_reg['PC']  # needed for trace
         # self.pc = 0
 
+        # ADDED a flag register
+        self.fl = 0b00000000
+
+
         pass
 
     # def load(self):  
@@ -79,39 +83,6 @@ class CPU:
         #     0b00000001, # HLT
         # ]
 
-        # program = [
-        #     0b10000010, # LDI R1,MULT2PRINT
-        #     0b00000001,
-        #     0b00011000,
-        #     0b10000010,# LDI R0,10
-        #     0b00000000,
-        #     0b00001010,
-        #     0b01010000,# CALL R1
-        #     0b00000001,
-        #     0b10000010, # LDI R0,15
-        #     0b00000000,
-        #     0b00001111,
-        #     0b01010000, # CALL R1
-        #     0b00000001,
-        #     0b10000010, # LDI R0,18
-        #     0b00000000,
-        #     0b00010010,
-        #     0b01010000, # CALL R1
-        #     0b00000001,
-        #     0b10000010, # LDI R0,30
-        #     0b00000000,
-        #     0b00011110,
-        #     0b01010000, # CALL R1
-        #     0b00000001,
-        #     0b00000001, # HLT
-        #     # MULT2PRINT (address 24):
-        #     0b10100000, # ADD R0,R0
-        #     0b00000000,
-        #     0b00000000,
-        #     0b01000111, # PRN R0
-        #     0b00000000,
-        #     0b00010001, # RET
-        # ]
 
         # for instruction in program:
         #     self.memory[address] = instruction
@@ -129,7 +100,20 @@ class CPU:
             self.reg[reg_a] *= self.reg[reg_b]  
             # print(f' after mul >> self.reg[reg_a] {self.reg[reg_a]}  self.reg[reg_b] {self.reg[reg_b]} ')
 
-            # print(f' after MUL >>  reg_a {self.reg[reg_a]}' )  
+            # print(f' after MUL >>  reg_a {self.reg[reg_a]}' ) 
+        elif op == opcodes.CMP:
+            if self.reg[reg_a] == self.reg[reg_b]:
+                print(f' a = b ')
+                self.fl = 0b00000001     # bit 0 set to 1 if equal
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                print(f' a < b')
+                self.fl = 0b00000100     # bit 2 set to 1 if a < b
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                print(f' a > b')
+                self.fl = 0b00000010     # bit 1 set to 1 if a > b    
+                    
+
+         
         #elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
@@ -260,6 +244,11 @@ class CPU:
 
                 print(f' {hex(self.reg[7])}')
                 self.reg[7] += 1
+
+            elif instruction_r == opcodes.CMP:
+                print(f' CMP called')
+                self.alu(opcodes.CMP, op_a, op_b)
+                self.pc += 3
 
         pass
 
