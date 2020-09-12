@@ -245,10 +245,23 @@ class CPU:
                 print(f' {hex(self.reg[7])}')
                 self.reg[7] += 1
 
+        ###################   SPRINT   ##########################
+
             elif instruction_r == opcodes.CMP:
                 print(f' CMP called')
                 self.alu(opcodes.CMP, op_a, op_b)
                 self.pc += 3
+
+
+            elif instruction_r == opcodes.JMP:   # like GOTO, 1 way no-return
+                print(f' JMP called ')
+                self.pc = self.reg[op_a]
+
+
+
+
+
+
 
         pass
 
