@@ -125,14 +125,15 @@ class CPU:
         """
 
         # changed this is %02d from 02%x so I can see mem addresses in decimal and file lines easier
-        print(f"TRACE: %02d | %02X %02X %02X || line: %02d ||" % (
+        print(f"TRACE: %02d | %02X %02X %02X || line: %02d || flag: %s   ||" % (
             self.pc,
             #self.fl,
             #self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
             self.ram_read(self.pc + 2), 
-            self.pc + 1
+            self.pc + 1,
+            bin(self.fl)
         ), end='')
 
         for i in range(8):
@@ -257,7 +258,13 @@ class CPU:
                 print(f' JMP called ')
                 self.pc = self.reg[op_a]
 
-
+            elif instruction_r == opcodes.JEQ:   # jump if equal flag set >> 0b1
+                print(f' JEQ called ')
+                # check if FLAG reg bit 1 set
+                if self.fl == 1:
+                    self.pc = self.refg[op_a]
+                else:   # point to next command
+                    self.pc += 2    
 
 
 
