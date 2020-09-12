@@ -93,7 +93,7 @@ class CPU:
         """ALU operations."""
 
         # I removed quotes around variables
-        print(f' op  {op}')
+        # print(f' op  {op}')
         if op == opcodes.ADD:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == opcodes.MUL:
@@ -262,7 +262,7 @@ class CPU:
                 print(f' JEQ called ')
                 # check if FLAG reg bit 1 set
                 if self.fl == 1:
-                    self.pc = self.refg[op_a]
+                    self.pc = self.reg[op_a]
                 else:   # point to next command
                     self.pc += 2    
 

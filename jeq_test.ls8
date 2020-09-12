@@ -1,6 +1,9 @@
+10000010 # LDI R4,  line# -1
+00000100
+00011000
 10000010 # LDI R3, compare reg 0 & reg 1
 00000011
-00010110     # verify this add (line number -1)
+00011001     # verify this add (line number -1)
 10000010 # LDI R0,20   a = b
 00000000
 00010100
@@ -23,9 +26,12 @@
 10100111 # CMP R0,R1   compare and look at debug output 
 00000000
 00000001
+01000111 # PRN R0
+00000000
+01000111 # PRN R1
+00000000
+01010101 # JEQ R4 , goto to HLT
+00000100
 00010001 # RET
 
-# output
-# a = b
-# a > b
-# a < b
+# test ends if equal after first compare
