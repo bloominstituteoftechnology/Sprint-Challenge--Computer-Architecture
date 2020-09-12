@@ -42,7 +42,7 @@ class CPU:
 
         # ADDED a flag register
         self.fl = 0b00000000
-
+        self.position = 0
 
         pass
 
@@ -269,24 +269,40 @@ class CPU:
 
             elif instruction_r == opcodes.JNE:   # jump if E falg NOT set >> 0b100 OR 0b010
                 print(f' JNE called ')
-                if self.fl == 4 or self.fl == 2:
+                # if self.fl == 4 or self.fl == 2:
+                if self.check_bit(self.fl, 0) != 1:
                     self.pc = self.reg[op_a]
                 else:
                     self.pc += 2    
 
+        ################  STRETCH   ############################
+
+            elif instruction_r == opcodes.AND:
+                print(f' AND called ')
 
 
-        pass
 
-    # def dump_mem(self):
-    #     print(f' mem size: {len(self.memory)}\n ****** DUMP  *******')
-        
-    #     for i in range(0, len(self.memory), 8):
-    #         for j in range(i, len(self.memory), 8):
-    #             end = i + 7
-    #             # print(f' i {i }  :  j {i + 8}')
-    #             print(f' {self.memory[i:end]}  mem {i } : {end} ')
-    #             break        
+
+
+
+
+
+
+      ################   CHECK BIT FUNCTION   *****************
+
+    def check_bit(self, bin_num, position):
+        if bin_num & 2**self.position != 0:
+            print(f' bit {position} set to 1')
+            return 1
+        else:
+            print(f' bit {position} set to 0')
+            return 0
+
+
+
+
+
+
 
     def dump_mem(self, base = None):
         print(f' mem size: {len(self.memory)}\n ****** DUMP  *******')
