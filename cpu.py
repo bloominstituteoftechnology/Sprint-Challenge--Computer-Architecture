@@ -54,7 +54,14 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "CMP":
+            if reg_a > reg_b:
+                self.reg[self.fl] = 2
+            elif reg_a < reg_b:
+                self.reg[self.fl] = 4
+            else:
+                self.reg[self.fl] = 1
+            
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -128,14 +135,8 @@ class CPU:
             self.pc += 2
         
         def CMP(operand_a, operand_b):
-            if self.reg[operand_a] > self.reg[operand_b]:
-                self.reg[self.fl] = 2
-            elif self.reg[operand_a] < self.reg[operand_b]:
-                self.reg[self.fl] = 4
-            else:
-                self.reg[self.fl] = 1
+            self.alu("CMP", self.reg[operand_a], self.reg[operand_b])
             self.pc += 2
-
         def JMP(operand_a, operand_b):
             self.pc = self.reg[operand_a]-1
 
