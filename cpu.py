@@ -13,6 +13,9 @@ CMP = 0b10100111
 JEQ = 0b01010101 
 JMP = 0b01010100
 JNE = 0b01010110
+EQL = 0b00000001
+LTHAN = 0b00000100
+GTHAN = 0b00000010
 
 class CPU:
     """Main CPU class."""
@@ -24,6 +27,7 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.reg[7] = 0xF4
+        self.FL = [0] * 8
 
     def load(self, filename):
         """Load a program into memory."""
@@ -51,12 +55,15 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        elif op == "SUB":
-            self.reg[reg_a] -= self.reg[reg_b]
-        elif op == "MUL":
+        elif op == "MULT":
             self.reg[reg_a] *= self.reg[reg_b]
-        elif op == "DIV":
-            self.reg[reg_a] /= self.reg[reg_b]
+        elif op == "CMP":
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.FL = EQL
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                self.FL = LTHAN
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.FL = GTHAN
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -116,6 +123,24 @@ class CPU:
             # increment the stack pointer
             self.reg[SP] += 1
             self.pc += 2
+        elif instruction == CMP:
+            self.alu("CMP", operand_a, operand_b)
+            self.pc += 3
+        elif instruction == JEQ:
+            regNum = self.ram_read(self.pc + 1)
+            if self.FL == EQL:
+                self.pc = self.reg[regNum]
+            else:
+                self.pc += 2
+        elif instruction == JNE:
+            regNum = self.ram_read(self.pc + 1)
+            if self.FL != EQL:
+                self.pc = self.reg[regNum]
+            else:
+                self.pc += 2
+        elif instruction == JMP:
+            regNum = self.ram_read(self.pc + 1)
+            self.pc = self.reg[regNum]
         else:
             print("Idk this instruction. Exiting")
             sys.exit(1)
