@@ -13,18 +13,35 @@ class CPU:
         self.reg = [0] * 8  # R0 - R7
         self.pc = 0
         self.flag = 0
+        self.running = True
+
+        #ALU units
+        self.ADD = 0b10100000
+        self.SUB = 0b10100001
+        self.MUL = 0b10100010
+        self.DIV = 0b10100011
+        self.MOD = 0b10100100
+
+        self.INC = 0b01100101
+        self.DEC = 0b01100110
+
+        self.CMP = 0b10100111
+
+        self.AND = 0b10101000
+        self.NOT = 0b01101001
+        self.OR  = 0b10101010
+        self.XOR = 0b10101011
+        self.SHL = 0b10101100
+        self.SHR = 0b10101101
 
         # branch table
-        self.running = True
         self.HLT = 0b00000001
         self.LDI = 0b10000010
         self.PRN = 0b01000111
-        self.MUL = 0b10100010
         self.PUSH = 0b01000101
         self.POP = 0b01000110
         self.RET = 0b00010001
         self.CALL = 0b01010000
-        self.CMP = 0b10100111
         self.JMP = 0b01010100
         self.JEQ = 0b01010101
         self.JNE = 0b01010110
@@ -32,7 +49,6 @@ class CPU:
             self.HLT: self.handle_HLT,
             self.LDI: self.handle_LDI,
             self.PRN: self.handle_PRN,
-            self.MUL: self.handle_MUL,
             self.PUSH: self.handle_PUSH,
             self.POP: self.handle_POP,
             self.RET: self.handle_RET,
@@ -138,7 +154,6 @@ class CPU:
             print(f"loading {filename}")
             address = 0
             with open(filename, "r") as f:
-                print(f)
                 for line in f:
                     line = line.split('#')
                     temp = line[0].strip()
@@ -153,15 +168,17 @@ class CPU:
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
-        if op == 0b10100000:  # ADD
+        if op == self.ADD:  # ADD
             self.reg[reg_a] += self.reg[reg_b]
-        elif op == 0b10100010:  # MUL
+        elif op == self.MUL:  # MUL
             self.reg[reg_a] *= self.reg[reg_b]
-        elif op == 0b10100001:  # SUB
+        elif op == self.SUB:  # SUB
             self.reg[reg_a] -= self.reg[reg_b]
-        elif op == 0b10100011:  # DIV
+        elif op == self.DIV:  # DIV
             self.reg[reg_a] /= self.reg[reg_b]
-        elif op == 0b10100111:  # CMP
+        elif op == self.MOD:
+            self.reg[reg_a] %= self.reg[reg_b]
+        elif op == self.CMP:  # CMP
             if self.reg[reg_a] < self.reg[reg_b]:
                 self.flag = 0b00000100
             elif self.reg[reg_a] > self.reg[reg_b]:
@@ -170,6 +187,18 @@ class CPU:
                 self.flag = 0b00000001
             else:
                 self.flag = 0b00000000
+        elif op == self.AND:
+            self.reg[reg_a] &= self.reg[reg_b]
+        elif op == self.OR:
+            self.reg[reg_a] |= self.reg[reg_b]
+        elif op == self.XOR:
+            self.reg[reg_a] ^= self.reg[reg_b]
+        elif op == self.NOT:
+            self.reg[reg_a] = ~self.reg[reg_b]
+        elif op == self.SHL:
+            self.reg[reg_a] <<= self.reg[reg_b]
+        elif op == self.SHR:
+            self.reg[reg_a] >>= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
