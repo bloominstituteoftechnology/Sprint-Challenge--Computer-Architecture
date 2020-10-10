@@ -123,7 +123,7 @@ class CPU:
             self.hlt = True
             sys.exit(1)
         elif IR == LDI:
-            print("LDI")
+            # print("LDI")
             self.reg[operand_a] = operand_b
             self.pc += 3
         elif IR == PRN:
