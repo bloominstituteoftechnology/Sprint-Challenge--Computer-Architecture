@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 
-"""Main."""
+"""Main execution logic"""
 
+# Imports
 import sys
 from cpu import *
 
 # Set a default input file
-fname = "./examples/stack.ls8"
+fname = "sctest.ls8"
 # Grab the command line arguments
 args  = sys.argv
 # Validate the line arguments
-fname = "sctest.ls8"
 if len(args) > 1:
     # grab the filename from the arguments
     fname = args[1]
 
+# Instantiate a CPU processing class
 cpu = CPU()
 
-cpu.read_file(fname)
-cpu.load()
-cpu.run()
+cpu.read_file(fname)    # read instruction data from a file into the class
+cpu.load()              # load the read intructions for processing
+cpu.run()               # execute the loaded program instructions

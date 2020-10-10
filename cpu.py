@@ -1,8 +1,10 @@
 """CPU functionality."""
 
+# Imports
 import sys
 from helpers import *
 
+# Define the CPU class
 class CPU:
     """Main CPU class."""
     def __init__(self):
@@ -25,8 +27,6 @@ class CPU:
             "MDR": 0,
             "FL": 0
         }
-        self.running        = True
-        self.raw_data       = []
         self.instructions   = []
     
     def hex2dec(self, hx_str):
@@ -51,7 +51,6 @@ class CPU:
 
         return ret_val
 
-    
     def read_file(self, fname):
         """
         read_file reads instructions from the passed filename and loads them
@@ -182,12 +181,12 @@ class CPU:
         ctr_ovrflw = 1
 
         # Execute while the CPU is deemed running
-        while self.running:
+        while True:
             if ctr_ovrflw > 1000000:
                 print("ERR: runaway process encountered. Terminate process")
                 break
 
-            # Read the data at the program counter ('') memory location
+            #* Read the data at the program counter ('') memory location
             #   PC: program counter
             #   IR: instruction register
             self.registers_internal["IR"] = self.ram[self.registers_internal["PC"]]
@@ -200,29 +199,14 @@ class CPU:
             instr         = self.registers_internal["IR"]
 
             #* Execute the current instruction
-            # LDI Instruction: load into register - Decimal = 130
-            if instr == 130:
-                # Attempting to access a reserved register?
-                if operand_a in [5, 6, 7]:
-                    # attempting to access a reserved register: 5, 6, 7
-                    print("ERR: attempting to access a reserved register: 5, 6, 7")
-                    break
-
-                # Operand A: register in which to load data
-                # Operand B: data to be loaded
-                self.registers[operand_a] = operand_b
-
-                # Advance the program counter 3 memory locations
-                self.registers_internal["PC"] = self.registers_internal["PC"] + 3 
-
-            # PUSH Instruction: push register value onto the stack - Decimal = 69
-            elif instr == 69:
+            # PUSH Instruction: push register value onto the stack - Binary = 1000101
+            if instr == 69:
                 self.stack_push(self.registers[operand_a])
 
                 # Advance the program counter 3 memory locations
                 self.registers_internal["PC"] = self.registers_internal["PC"] + 2 
 
-            # POP Instruction: pop the current stack value from the stack - Decimal = 70
+            # POP Instruction: pop the current stack value from the stack - Binary = 1000110
             #   and load that value into the register reference by operand A
             elif instr == 70:
                 # Pop the value
@@ -233,7 +217,7 @@ class CPU:
                 # Advance the program counter 3 memory locations
                 self.registers_internal["PC"] = self.registers_internal["PC"] + 2 
 
-            # PRN Instruction: print register - Decimal = 71
+            # PRN Instruction: print register - Binary = 1000111
             elif instr == 71:
                 # Operand A: register containing the data to print
                 print(f'{self.registers[operand_a]}')
@@ -241,13 +225,13 @@ class CPU:
                 # Advance the program counter 2 memory locations
                 self.registers_internal["PC"] = self.registers_internal["PC"] + 2
 
-            # JMP Instruction: jump to the instruction stored in ram pointed to by the - Decimal = 84
+            # JMP Instruction: jump to the instruction stored in ram pointed to by the - Binary = 1010100
             #    memory address stored in the passed register
             elif instr == 84:
                 # Operand A: register containing the memory address to execute
                 self.registers_internal["PC"] = self.registers[operand_a]               
 
-            # JEQ Instruction: if the "equal" flag is set, jump execution to the - Decimal = 85
+            # JEQ Instruction: if the "equal" flag is set, jump execution to the - Binary = 1010101
             #    memory address stored in the passed register
             elif instr == 85:
                 # Operand A: register containing the memory address to execute
@@ -260,7 +244,7 @@ class CPU:
                     # "equal" flag not set --> just advance to the next instruction
                     self.registers_internal["PC"] = self.registers_internal["PC"] + 2 
 
-            # JNE Instruction: if the "equal" flag is off, jump execution to the - Decimal = 86
+            # JNE Instruction: if the "equal" flag is off, jump execution to the - Binary = 1010110
             #    memory address stored in the passed register
             elif instr == 86:
                 # Operand A: register containing the memory address to execute
@@ -273,7 +257,22 @@ class CPU:
                     # "equal" flag is set (condition fails) --> just advance to the next instruction
                     self.registers_internal["PC"] = self.registers_internal["PC"] + 2
 
-            # MUL Instruction: Multiply registers - Decimal = 162
+            # LDI Instruction: load into register - Binary = 10000010
+            elif instr == 130:
+                # Attempting to access a reserved register?
+                if operand_a in [5, 6, 7]:
+                    # attempting to access a reserved register: 5, 6, 7
+                    print("ERR: attempting to access a reserved register: 5, 6, 7")
+                    break
+
+                # Operand A: register in which to load data
+                # Operand B: data to be loaded
+                self.registers[operand_a] = operand_b
+
+                # Advance the program counter 3 memory locations
+                self.registers_internal["PC"] = self.registers_internal["PC"] + 3 
+            
+            # MUL Instruction: Multiply registers - Binary = 10100010
             elif instr == 162:
                 # Invoke the ALU to execute register multiplication
                 self.alu("MUL", operand_a, operand_b)
@@ -281,7 +280,7 @@ class CPU:
                 # Advance the program counter 3 memory locations
                 self.registers_internal["PC"] = self.registers_internal["PC"] + 3 
 
-            # CMP Instruction: Compare values in two registers - Decimal = 167
+            # CMP Instruction: Compare values in two registers - Binary = 10100111
             elif instr == 167:
                 # Invoke the ALU to execute register comparison
                 self.alu("CMP", operand_a, operand_b)
@@ -289,12 +288,12 @@ class CPU:
                 # Advance the program counter 3 memory locations
                 self.registers_internal["PC"] = self.registers_internal["PC"] + 3 
 
-            # DBG Instruction: trip a debug breakpoint
+            # DBG Instruction: trip a debug breakpoint - Binary = 11111110
             elif instr == 254:
                 print("DEBUG STATEMENT")
                 self.registers_internal["PC"] = self.registers_internal["PC"] + 1
 
-            # HLT Instruction: halt execution - Decimal = 1
+            # HLT Instruction: halt execution - Binary = 00000001
             elif instr == 1:
                 quit()
 

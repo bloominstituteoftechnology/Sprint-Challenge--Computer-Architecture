@@ -1,6 +1,8 @@
+"""Helper functions."""
+
 def genInt(str):
     """
-    genByte takes an 8 digit binary string and returns a the integer representation
+    genByte takes an 8 digit binary string and returns the integer representation
     e.g. '00001000' returns 8
     """
     dig_map = {
@@ -28,4 +30,3 @@ def genInt(str):
         ctr = ctr + 1
 
     return num
-
