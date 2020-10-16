@@ -1,6 +1,8 @@
 """CPU functionality."""
 
 import sys
+
+ADD = 0b10100000
 HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
@@ -59,13 +61,13 @@ class CPU:
         elif op == 'MULT':
             self.reg[reg_a] *= self.reg[reg_b]
         elif op == "CMP":
-            self.FL = 0b00000000
+            self.fl = 0b00000000
             if self.reg[reg_a] == self.reg[reg_b]:
-                self.FL = 0b00000001
+                self.fl = 0b00000001
             elif self.reg[reg_a] < self.reg[reg_b]:
-                self.FL = 0b00000100
+                self.fl = 0b00000100
             elif self.reg[reg_a] > self.reg[reg_b]:
-                self.FL = 0b00000010
+                self.fl = 0b00000010
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -104,6 +106,8 @@ class CPU:
             elif ir == LDI:
                 self.reg[operand_a] = operand_b
                 self.pc += 3
+            elif ir == ADD:
+                self.alu(ir, operand_a, operand_b)
             elif ir == MUL:
                 self.alu("MUL", operand_a, operand_b)
                 self.pc += 3
@@ -117,7 +121,8 @@ class CPU:
                 self.reg[self.SP] += 1
                 self.pc +=2
             elif ir == CMP:
-                self.alu(ir, operand_a, operand_b)
+                self.alu("CMP", operand_a, operand_b)
+                print("Comparing")
             elif ir == JMP:
                 self.pc = self.reg[operand_a]
             elif ir == JEQ:
