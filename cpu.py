@@ -2,6 +2,7 @@
 
 import sys
 import os.path
+#thess are from the ls8-cheatsheet
 HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
@@ -13,7 +14,11 @@ POP = 0b01000110
 CALL = 0b01010000
 RET = 0b00010001
 ADD = 0b10100000
-
+#these are for the sprint
+CMP = 0b10100111
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
 
 class CPU:
     """Main CPU class."""
@@ -35,15 +40,19 @@ class CPU:
         self.ir = 0
         # Setup Branch Table
         self.branchtable = {}
-        self.branchtable[HLT] = self.execute_HLT
-        self.branchtable[LDI] = self.execute_LDI
-        self.branchtable[PRN] = self.execute_PRN
-        self.branchtable[MUL] = self.execute_MUL
-        self.branchtable[PUSH] = self.execute_PUSH
-        self.branchtable[POP] = self.execute_POP
-        self.branchtable[CALL] = self.execute_CALL
-        self.branchtable[ADD] = self.execute_ADD
-        self.branchtable[RET] = self.excute_RET
+        self.branchtable[HLT] = self.hlt
+        self.branchtable[LDI] = self.ldi
+        self.branchtable[PRN] = self.prn
+        self.branchtable[MUL] = self.mul
+        self.branchtable[PUSH] = self.push
+        self.branchtable[POP] = self.pop
+        self.branchtable[CALL] = self.call
+        self.branchtable[ADD] = self.add
+        self.branchtable[RET] = self.ret
+        self.branchtable[JMP] = self.jmp
+        self.branchtable[CMP] = self.cmp
+        self.branchtable[JEQ] = self.jeq
+        self.branchtable[JNE] = self.jne
 
         # Property wrapper
 
@@ -55,11 +64,25 @@ class CPU:
     def sp(self, a):
         self.reg[7] = a & 0xFF
 
+
+
+    @property
+    def operand_a(self):
+        return self.ram_read(self.pc + 1)
+
+    @property
+    def operand_b(self):
+        return self.ram_read(self.pc + 2)
+
+    @property
     def instruction_size(self):
         return ((self.ir >> 6) & 0b11) + 1
 
+    @property
     def instruction_sets_pc(self):
         return ((self.ir >> 4) & 0b0001) == 1
+
+
 
     def ram_read(self, mar):
         if mar >= 0 and mar < len(self.ram):
@@ -129,54 +152,74 @@ class CPU:
 
 
         while not self.halted:
-            self.ir = self.ram_read(self.pc) # these are info reg and program counter
-            operand_a = self.ram_read(self.pc + 1)
-            operand_b = self.ram_read(self.pc + 2)
+            #the next instruction
+            self.ir = self.ram_read(self.pc)
 
-            if not self.instruction_sets_pc():
-                self.pc += self.instruction_size()
-            self.exexute_instruction(operand_a,operand_b)
-    def exexute_instruction(self, operand_a, operand_b):
-        if self.ir in self.branchtable:
-            self.branchtable[self.ir](operand_a, operand_b)
-        else:
-            print('Error')
-            sys.exit(1)
+            # does the instruction
+            if self.ir in self.branchtable:
+                self.branchtable[self.ir]()
+            else:
+                print(f"Error: not in {self.ir} in branch table.")
+                sys.exit(1)
 
+            # add ti counter if necessary
+            if not self.instruction_sets_pc:
+                self.pc += self.instruction_size
 
-
-
-    def execute_HLT(self, a=None, b=None):
+    def hlt (self):
         self.halted = True
 
-    def execute_LDI(self, reg_num, val):
-        self.reg[reg_num] = val
+    def ldi (self):
+        self.reg[self.operand_a] = self.operand_b
 
-    def execute_PRN(self, reg_num, b=None):
-        print(self.reg[reg_num])
+    def prn(self ):
+        print(self.reg[self.operand_a])
 
-    def execute_MUL(self, reg_num, reg_num2):
-        self.reg[reg_num] *= self.reg[reg_num2]
+    def mul(self):
+        self.reg[self.operand_a] *= self.reg[self.operand_b]
 
-    def execute_PUSH(self, reg_num, b=None):
+    def push(self, reg_num, b=None):
         self.sp -= 1
         self.mdr = self.reg[reg_num]
         self.ram_write(self.sp, self.mdr)
 
-    def execute_POP(self, dest_reg_num, b=None):
+    def pop(self, dest_reg_num, b=None):
         self.mdr = self.ram_read(self.sp)
         self.reg[dest_reg_num] = self.mdr
         self.sp += 1
 
-    def execute_CALL(self, dest_reg_num, b=None):
+    def call(self, dest_reg_num, b=None):
         self.sp -=1
         self.ram_write(self.sp, self.pc + self.instruction_size())
         self.pc = self.reg[dest_reg_num]
 
-    def excute_RET(self, a=None, b=None):
+    def ret(self, a=None, b=None):
         self.mdr = self.ram_read(self.sp)
         self.pc = self.mdr
         self.sp += 1
 
-    def execute_ADD(self, reg_num, reg_num1):
-        self.reg[reg_num] += self.reg[reg_num1]
+    def add(self):
+        self.reg[self.operand_a] += self.reg[self.operand_b]
+
+    def cmp(self):
+        if self.reg[self.operand_a] < self.reg[self.operand_b]:
+            self.flag = 0b00000100 # If registerA is less than registerB, set the Less-than `L` flag to 1
+
+        elif self.reg[self.operand_a] > self.reg[self.operand_b]:
+            self.flag = 0b00000010 #If registerA is greater than registerB, set the Greater-than `G` flag to 1
+        else:
+            self.flag = 0b00000001# otherwise set it to 0.
+    def jeq(self):
+        if self.flag == 0b00000001:#If `equal` flag is set (true), jump to the address stored in the given register.
+            self.jmp()
+        else:
+            self.pc += self.instruction_size
+
+    def jmp(self):#Jump to the address stored in the given register.Set the `PC` to the address stored in the given register.
+        self.pc = self.reg[self.operand_a]
+
+    def jne(self):#If `E` flag is clear (false, 0), jump to the address stored in the given register.
+        if self .flag != 0b00000001:
+            self.jmp()
+        else:
+            self.pc += self.instruction_size

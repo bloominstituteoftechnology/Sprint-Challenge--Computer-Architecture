@@ -15,3 +15,4 @@ cpu = CPU()
 
 cpu.load(file_name)
 cpu.run()
+#to run python3 ls8.py sctest.ls8
