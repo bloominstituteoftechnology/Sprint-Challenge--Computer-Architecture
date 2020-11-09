@@ -26,7 +26,7 @@ Test2:
 LDI R1,10
 LDI R2,Test3
 CMP R0,R1
-JEQ R2      ; Jumps becuase R0 == R1
+JEQ R2      ; Jumps because R0 == R1
 LDI R3,3
 PRN R3      ; Skipped--does not print
 
@@ -49,4 +49,3 @@ PRN R3      ; Skipped-does not print
 Test5:
 
 HLT
-
