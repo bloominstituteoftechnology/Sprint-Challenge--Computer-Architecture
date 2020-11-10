@@ -7,7 +7,7 @@ JMP = 0b01010100
 JEQ = 0b01010101
 JNE = 0b01010110
 PRN = 0b01000111
-EE  = 0b00000111
+EE = 0b00000111
 
 
 class CPU:
@@ -19,6 +19,13 @@ class CPU:
         self.flag_reg = [0] * 8
         self.pc = 0
         self.FL = 0b00000000
+        self.bt = {LDI: self.LDI,
+                   CMP: self.CMP,
+                   JMP: self.JMP,
+                   JEQ: self.JEQ,
+                   JNE: self.JNE,
+                   PRN: self.PRN
+                   }
 
         self.running = True
     # store memory
@@ -63,11 +70,11 @@ class CPU:
 
     # print CPU
     def trace(self):
-         """
-        Handy function to print out the CPU state. You might want to call this
-        from run() if you need help debugging.
         """
-         print(f"TRACE: %02X | %02X %02X %02X |" % (
+       Handy function to print out the CPU state. You might want to call this
+       from run() if you need help debugging.
+       """
+        print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
             # self.fl,
             # self.ie,
@@ -76,51 +83,59 @@ class CPU:
             self.ram_read(self.pc + 2)
         ), end='')
 
-         for i in range(8):
+        for i in range(8):
             print(" %02X" % self.reg[i], end='')
 
-         print()
-    
-    def ldi(self, reg_a, reg_b):
+        print()
+
+    def LDI(self, reg_a, reg_b):
         self.reg[reg_a] = reg_b
-        
-    def prn(self, reg_a, reg_b):
+
+    def PRN(self, reg_a, reg_b):
         print(self.reg[reg_a])
-        
-    def hlt(self, reg_a, reg_b):
+
+    def HLT(self, reg_a, reg_b):
         self.running = False
-    
+
     def CMP(self, reg_a, reg_b):
         register_1 = self.reg[reg_a]
         register_2 = self.reg[reg_b]
         self.alu("CMP", register_1, register_2)
 
-    def jmp(self, reg_a, reg_b):
+    def JMP(self, reg_a, reg_b):
         self.pc = self.reg[reg_a]
 
-    def jeq(self, reg_a, reg_b):
+    def JEQ(self, reg_a, reg_b):
         if self.flag_reg[EE] == 0b000001:
             self.pc = self.reg[reg_a]
         else:
             self.pc += 2
-    
-    def jne(self, reg_a, reg_b):
+
+    def JNE(self, reg_a, reg_b):
         if self.flag_reg[EE] == 0b000000:
             self.pc = self.reg[reg_a]
         else:
             self.pc += 2
-    
+
     def run(self):
         """Run the CPU."""
-        
-        while self.running:
 
-            ir = self.ram_read(self.pc)
-            pc_flag = (ir & 0b00010000) >> 4
-            register_1 = self.ram[self.pc + 1]
-            register_2 = self.ram[self.pc + 2]
-            self.branch_table[ir](register_1, register_2)
-            if pc_flag == 0:
-                move = int((ir & 0b11000000) >> 6)
-                self.pc += move + 1
-        
+        # while self.running:
+
+            # ir = self.ram_read(self.pc)
+            # pc_flag = (ir & 0b00010000) >> 4
+            # register_1 = self.ram[self.pc + 1]
+            # register_2 = self.ram[self.pc + 2]
+            # self.bt[ir](register_1, register_2)
+            # if pc_flag == 0:
+            #     move = int((ir & 0b11000000) >> 6)
+            #     self.pc += move + 1
+           
+        while not self.running:
+                ir = self.ram_read(self.pc)
+                reg_a = self.ram_read( self.pc + 1 )
+                reg_b = self.ram_read( self.pc + 2 )
+                self.bt(ir, reg_a, reg_b)
+           
+          
+
