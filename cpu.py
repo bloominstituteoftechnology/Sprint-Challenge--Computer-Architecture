@@ -60,17 +60,17 @@ class CPU:
             # L Less-than: during a CMP, set to 1 if registerA is less than registerB, zero otherwise.
             # G Greater-than: during a CMP, set to 1 if registerA is greater than registerB, zero otherwise.
             # E Equal: during a CMP, set to 1 if registerA is equal to registerB, zero otherwise.
-            if reg_a < reg_b:
+            if self.reg[reg_a] < self.reg[reg_b]:
                 self.fl |= 0b100
             else:
                 self.fl &= 0b011
 
-            if reg_a > reg_b:
+            if self.reg[reg_a] > self.reg[reg_b]:
                 self.fl |= 0b010
             else:
                 self.fl &= 0b101
 
-            if reg_a == reg_b:
+            if self.reg[reg_a] == self.reg[reg_b]:
                 self.fl |= 0b001
             else:
                 self.fl &= 0b110
