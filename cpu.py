@@ -12,6 +12,7 @@ POP = 0b01000110
 CMP = 0b10100111
 JMP = 0b01010100
 JEQ = 0b01010101
+JNE = 0b01010110
 
 class CPU:
     """Main CPU class."""
@@ -154,6 +155,9 @@ class CPU:
                 self.pc = operand_a
             elif instruction == JEQ:
                 if self.fl & 0b1: # if equal flag is set
+                    self.pc = operand_a
+            elif instruction == JNE:
+                if not self.fl & 0b1: # if not equal
                     self.pc = operand_a
 
     def ram_read(self, MAR): # Memory Address Register
