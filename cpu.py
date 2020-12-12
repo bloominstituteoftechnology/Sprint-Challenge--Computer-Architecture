@@ -10,6 +10,7 @@ ADD = 0b10100000
 PUSH = 0b01000101
 POP = 0b01000110
 CMP = 0b10100111
+JMP = 0b01010100
 
 class CPU:
     """Main CPU class."""
@@ -147,6 +148,9 @@ class CPU:
             else:
                 print("INVALID INSTRUCTION.")
             self.pc += num_operands + 1
+        else: # sets self.pc
+            if instruction == JMP:
+                self.pc = operand_a
 
     def ram_read(self, MAR): # Memory Address Register
         return self.ram[MAR]
