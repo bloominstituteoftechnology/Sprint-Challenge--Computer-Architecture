@@ -9,6 +9,7 @@ MUL = 0b10100010
 ADD = 0b10100000
 PUSH = 0b01000101
 POP = 0b01000110
+CMP = 0b10100111
 
 class CPU:
     """Main CPU class."""
@@ -51,6 +52,26 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == MUL:
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == CMP:
+            # FL bits: 00000LGE
+            # L Less-than: during a CMP, set to 1 if registerA is less than registerB, zero otherwise.
+            # G Greater-than: during a CMP, set to 1 if registerA is greater than registerB, zero otherwise.
+            # E Equal: during a CMP, set to 1 if registerA is equal to registerB, zero otherwise.
+            if reg_a < reg_b:
+                self.fl |= 0b100
+            else:
+                self.fl &= 0b011
+
+            if reg_a > reg_b:
+                self.fl |= 0b010
+            else:
+                self.fl &= 0b101
+
+            if reg_a == reg_b:
+                self.fl |= 0b001
+            else:
+                self.fl &= 0b110
+            
         else:
             raise Exception("Unsupported ALU operation")
 
