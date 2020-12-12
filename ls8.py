@@ -8,7 +8,8 @@ from cpu import *
 cpu = CPU()
 
 try:
-    filename = sys.argv[1]
+    # filename = sys.argv[1]
+    filename = "sctest.ls8"
     with open(filename) as f:
         cpu.load(filename)
         cpu.run()
