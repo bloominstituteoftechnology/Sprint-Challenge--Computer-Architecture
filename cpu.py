@@ -152,7 +152,7 @@ class CPU:
             self.pc += num_operands + 1
         else: # sets self.pc
             if instruction == JMP:
-                self.pc = operand_a
+                self.pc = self.reg[operand_a]
             elif instruction == JEQ:
                 if self.fl & 0b1: # if equal flag is set
                     self.pc = self.reg[operand_a]
