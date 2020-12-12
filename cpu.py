@@ -155,12 +155,12 @@ class CPU:
                 self.pc = operand_a
             elif instruction == JEQ:
                 if self.fl & 0b1: # if equal flag is set
-                    self.pc = operand_a
+                    self.pc = self.reg[operand_a]
                 else:
                     self.pc += 2
             elif instruction == JNE:
                 if not self.fl & 0b1: # if not equal
-                    self.pc = operand_a
+                    self.pc = self.reg[operand_a]
                 else:
                     self.pc += 2
 
