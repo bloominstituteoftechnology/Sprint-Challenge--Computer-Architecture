@@ -93,9 +93,9 @@ class CPU:
         # * C == 1 if this instruction sets the PC
         # * DDDD Instruction identifier
         # INSTRUCTION = 0b10000010 # >> 6 --> 0b10 & 0b11 --> 0b10
-        is_alu = instruction >> 5 & 0b1               # 0 or 1
-        sets_pc = instruction >> 4 & 0b1              # 0 or 1
-        num_operands = (instruction >> 6 & 0b11) + 1  # 0, 1, 2
+        is_alu = instruction >> 5 & 0b1           # 0 or 1
+        sets_pc = instruction >> 4 & 0b1          # 0 or 1
+        num_operands = (instruction >> 6 & 0b11)  # 0, 1, 2
 
         if not sets_pc:
             if instruction == HLT:
@@ -125,7 +125,7 @@ class CPU:
                 self.alu(instruction, operand_a, operand_b)
             else:
                 print("INVALID INSTRUCTION.")
-            self.pc += num_operands
+            self.pc += num_operands + 1
 
     def ram_read(self, MAR): # Memory Address Register
         return self.ram[MAR]
