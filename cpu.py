@@ -12,6 +12,13 @@ POP  = 0b01000110
 CALL = 0b01010000
 RET  = 0b00010001
 ADD  = 0b10100000
+CMP  = 0b10100111
+JMP  = 0b01010100
+JEQ  = 0b01010101
+JNE  = 0b01010110
+SHL  = 0b10101100
+SHR  = 0b10101101
+MOD  = 0b10100100
 
 class CPU:
     """Main CPU class."""
@@ -47,7 +54,14 @@ class CPU:
         self.branchtable[POP] = self.execute_POP
         self.branchtable[CALL] = self.execute_CALL
         self.branchtable[RET] = self.execute_RET
+        self.branchtable[CMP] = self.execute_CMP
+        self.branchtable[JMP] = self.execute_JMP
+        self.branchtable[JEQ] = self.execute_JEQ
+        self.branchtable[JNE] = self.execute_JNE
         self.branchtable[ADD] = self.execute_ADD
+        self.branchtable[SHL] = self.execute_SHL
+        self.branchtable[SHR] = self.execute_SHR
+        self.branchtable[MOD] = self.execute_MOD
 
     # Property wrapper for SP (Stack Pointer)
 
@@ -195,4 +209,36 @@ class CPU:
         self.sp += 1
 
     def execute_ADD(self):
-        self.reg[self.operand_a] += self.reg[self.operand_b] 
+        self.reg[self.operand_a] += self.reg[self.operand_b]
+
+    def execute_CMP(self):
+        if self.reg[self.operand_a] < self.reg[self.operand_b]:
+            self.fl = 0b00000100
+        elif self.reg[self.operand_a] > self.reg[self.operand_b]:
+            self.fl = 0b00000010
+        else:
+            self.fl = 0b00000001
+
+    def execute_JMP(self):
+        self.pc = self.reg[self.operand_a]
+
+    def execute_JEQ(self):
+        if self.fl == 0b00000001:
+            self.execute_JMP()
+        else:
+            self.pc += self.instruction_size
+
+    def execute_JNE(self):
+        if self.fl != 0b00000001:
+            self.execute_JMP()
+        else:
+            self.pc += self.instruction_size 
+
+    def execute_SHL(self):
+        self.reg[self.operand_a] <<= self.reg[self.operand_b]
+
+    def execute_SHR(self):
+        self.reg[self.operand_a] >>= self.reg[self.operand_b]
+
+    def execute_MOD(self):
+        self.reg[self.operand_a] %= self.reg[self.operand_b]
