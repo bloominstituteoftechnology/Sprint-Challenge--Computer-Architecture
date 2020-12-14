@@ -55,6 +55,28 @@ class CPU:
         #elif op == "SUB": etc
         elif op == "MUL":
             self.reg[self.ram[reg_a]] *= self.reg[self.ram[reg_b]]
+        elif op == "CMP":
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.fl = self.fl | 1
+            if self.reg[reg_a] > self.reg[reg_b]:
+                self.fl = self.fl | 2
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.fl = self.fl | 4
+        elif op == "MOD":
+            self.reg[reg_a] %= self.reg[reg_b]
+        elif op == "XOR":
+            self.reg[reg_a] ^ self.reg[reg_b]
+        elif op == "AND":
+            self.reg[reg_a] & self.reg[reg_b]
+        elif op == "OR":
+            self.reg[reg_a] | self.reg[reg_b]
+        elif op == "NOT":
+            not self.reg[reg_a]
+        elif op == "SHL":
+            self.reg[reg_a] << self.reg[reg_b]
+        elif op == "SHR":
+            self.reg[reg_a] >> self.reg[reg_b]
+        
         else:
             raise Exception("Unsupported ALU operation")
 
