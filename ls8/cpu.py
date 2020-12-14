@@ -135,6 +135,11 @@ class CPU:
         
         self.pc+=3
 
+    def JMP(self):
+        self.pc = self.reg[self.ram[self.pc + 1]]
+        return True
+    
+
 
 
         
