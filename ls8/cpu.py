@@ -92,7 +92,6 @@ class CPU:
 
         while self.running:
             ir = self.ram_read(self.pc)
-            print("This is IR:", ir)
             self.call_stack(ir)
 
     def LDI(self):
