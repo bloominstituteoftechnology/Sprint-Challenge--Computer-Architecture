@@ -22,6 +22,9 @@ class CPU:
             0b01000101: self.PUSH,
             0b01000110: self.POP,
             0b10100111: self.CMP,
+            0b01010100: self.JMP,
+            0b01010101: self.JEQ,
+            0b01010110: self.JNE,
             
         }
         
@@ -138,6 +141,21 @@ class CPU:
     def JMP(self):
         self.pc = self.reg[self.ram[self.pc + 1]]
         return True
+    
+    def JEQ(self):
+
+        a = self.fl
+        if a == 1:
+            self.pc = self.reg[self.ram[self.pc+1]]
+        elif a == 0:
+            self.pc += 2
+
+    def JNE(self):
+        a = self.fl
+        if a == 0:
+            self.pc = self.reg[self.ram[self.pc+1]]
+        else: 
+            self.pc += 2
     
 
 
