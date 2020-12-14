@@ -25,7 +25,8 @@ class CPU:
             0b01010100: self.JMP,
             0b01010101: self.JEQ,
             0b01010110: self.JNE,
-            
+            0b01010000: self.CALL,
+            0b00010001: self.RET,
         }
         
         if func in branch_table:
@@ -177,9 +178,48 @@ class CPU:
             self.pc = self.reg[self.ram[self.pc+1]]
         else: 
             self.pc += 2
+
+    def CALL(self):
+        self.reg[self.sp] -= 1
+        self.ram[self.reg[self.sp]] = self.pc + 2
+        self.pc = self.reg[self.ram_read(self.pc + 1)]
+
+    def RET(self):
+        val = self.ram[self.reg[self.sp]] 
+        self.pc = val
+        self.reg[self.sp] += 1
     
+    def ADD(self):
+        self.alu("ADD", self.ram_read(self.pc +1 ), self.ram_read(self.pc + 2))
+        self.pc += 3
+    
+    def MOD(self):
+        self.alu('MOD', self.ram_read(self.pc +1 ), self.ram_read(self.pc +2 ))
+        self.pc += 3
 
+    def XOR(self):
+        self.alu('XOR', self.ram_read(self.pc +1 ), self.ram_read(self.pc +2 ))
+        self.pc += 3
 
+    def AND(self):
+        self.alu('AND', self.ram_read(self.pc +1 ), self.ram_read(self.pc +2 ))
+        self.pc += 3
+
+    def OR(self):
+        self.alu('OR', self.ram_read(self.pc +1 ), self.ram_read(self.pc +2 ))
+        self.pc += 3
+    
+    def NOT(self):
+        self.alu('NOT', self.ram_read(self.pc +1 ), 0)
+        self.pc += 3
+    
+    def SHL(self):
+        self.alu('SHL', self.ram_read(self.pc +1 ), self.ram_read(self.pc +2 ))
+        self.pc += 3
+
+    def SHR(self):
+        self.alu('SHR', self.ram_read(self.pc +1 ), self.ram_read(self.pc +2 ))
+        self.pc += 3
 
         
 
