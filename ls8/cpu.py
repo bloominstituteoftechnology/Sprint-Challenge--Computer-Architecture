@@ -21,6 +21,7 @@ class CPU:
             0b10100010 : self.MUL,
             0b01000101: self.PUSH,
             0b01000110: self.POP,
+            0b10100111: self.CMP,
             
         }
         
@@ -122,6 +123,19 @@ class CPU:
         self.reg[self.ram[self.pc + 1]] = value
         self.sp += 1
         self.pc += 2
+
+    def CMP(self):
+        reg_1 = self.reg[self.ram[self.pc + 1]]
+        reg_2 = self.reg[self.ram[self.pc + 2]]
+
+        if reg_1 == reg_2:
+            self.fl = 1
+        else: 
+            self.fl = 0
+        
+        self.pc+=3
+
+
 
         
 
