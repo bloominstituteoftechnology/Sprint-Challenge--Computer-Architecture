@@ -107,13 +107,12 @@ class CPU:
         pop  = 0b01000110
         call = 0b01010000
         ret  = 0b00010001
-        cmp  = 0b10100111
+        comp = 0b10100111
         jmp  = 0b01010100
         jeq  = 0b01010101
         jne  = 0b01010110
 
         while running:
-            # print(self.pc)
             command_to_execute = self.ram_read(self.pc)
             op_a = self.ram_read(self.pc + 1)
             op_b = self.ram_read(self.pc + 2)
@@ -158,7 +157,7 @@ class CPU:
                 print("Ret executed")
                 self.pc = self.ram[self.reg[self.sp]]
                 self.reg[self.sp] += 1
-            elif command_to_execute == cmp:
+            elif command_to_execute == comp:
                 print("Compare executed")
                 if self.reg[op_a] == self.reg[op_b]:
                     self.E = 1
@@ -178,13 +177,22 @@ class CPU:
                 register = self.ram[self.pc + 1]
                 address = self.reg[register]
                 self.pc = address
-                self.pc += (command_to_execute >> 6) + 1
             elif command_to_execute == jeq:
                 print("Jump if equal executed")
-                self.pc += (command_to_execute >> 6) + 1
+                register = self.ram[self.pc + 1]
+                address = self.reg[register]
+                if self.E == 1:
+                    self.pc = address
+                else:
+                    self.pc += (command_to_execute >> 6) + 1
             elif command_to_execute == jne:
                 print("Jump if NOT equal executed")
-                self.pc += (command_to_execute >> 6) + 1
+                register = self.ram[self.pc + 1]
+                address = self.reg[register]
+                if self.E != 1:
+                    self.pc = address
+                else:
+                    self.pc += (command_to_execute >> 6) + 1
             else:
                 print(f"Unkown command: {command_to_execute}")
                 self.pc += (command_to_execute >> 6) + 1
