@@ -175,6 +175,9 @@ class CPU:
                 self.pc += (command_to_execute >> 6) + 1
             elif command_to_execute == jmp:
                 print("Jump executed")
+                register = self.ram[self.pc + 1]
+                address = self.reg[register]
+                self.pc = address
                 self.pc += (command_to_execute >> 6) + 1
             elif command_to_execute == jeq:
                 print("Jump if equal executed")
