@@ -160,6 +160,18 @@ class CPU:
                 self.reg[self.sp] += 1
             elif command_to_execute == cmp:
                 print("Compare executed")
+                if self.reg[op_a] == self.reg[op_b]:
+                    self.E = 1
+                    self.L = 0
+                    self.G = 0
+                elif self.reg[op_a] < self.reg[op_b]:
+                    self.E = 0
+                    self.L = 1
+                    self.G = 0
+                else:
+                    self.E = 0
+                    self.L = 0
+                    self.G = 1
                 self.pc += (command_to_execute >> 6) + 1
             elif command_to_execute == jmp:
                 print("Jump executed")
