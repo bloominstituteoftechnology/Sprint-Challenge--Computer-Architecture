@@ -39,7 +39,6 @@ In this code challenge, you will add _conditional jumps_ (AKA _conditional branc
 Options for submission, whichever is easier for you:
 
 * Copy your source into this repo, or...
-
 * Submit a PR for the Sprint Challenge from the `Computer-Architecture` repo
   you've been using all along.
 
@@ -47,11 +46,9 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
-
-- [ ] Add the `JMP` instruction.
-
-- [ ] Add the `JEQ` and `JNE` instructions.
+- [X] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [X] Add the `JMP` instruction.
+- [X] Add the `JEQ` and `JNE` instructions.
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
@@ -168,7 +165,7 @@ goals may or may not be things you have learned in this module but they build on
 the material you just studied. Time allowing, stretch your limits and see if you
 can deliver on the following optional goals:
 
-- [ ] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
+- [X] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
 - [ ] Add an `ADDI` extension instruction to add an immediate value to a register
 - [ ] Add timer interrupts
 - [ ] Add keyboard interrupts

@@ -58,61 +58,60 @@ class CPU:
 
         #  Table for fast lookups
         self.execute = {
-            HLT: self.execute_HLT
-            LDI: self.execute_LDI
-            PRN: self.execute_PRN
+            HLT: self.execute_HLT,
+            LDI: self.execute_LDI,
+            PRN: self.execute_PRN,
 
-            PUSH: self.execute_PUSH
-            POP: self.execute_POP
+            PUSH: self.execute_PUSH,
+            POP: self.execute_POP,
 
-            CALL: self.execute_CALL
-            RET: self.execute_RET
+            CALL: self.execute_CALL,
+            RET: self.execute_RET,
 
-            ADD: self.execute_ADD
-            SUB: self.execute_SUB
-            MUL: self.execute_MUL
-            DIV: self.execute_DIV
+            ADD: self.execute_ADD,
+            SUB: self.execute_SUB,
+            MUL: self.execute_MUL,
+            DIV: self.execute_DIV,
 
-            CMP: self.execute_CMP
-            JMP: self.execute_JMP
-            JEQ: self.execute_JEQ
-            JNE: self.execute_JNE
+            CMP: self.execute_CMP,
+            JMP: self.execute_JMP,
+            JEQ: self.execute_JEQ,
+            JNE: self.execute_JNE,
 
-            AND: self.execute_AND
-            OR: self.execute_OR
-            XOR: self.execute_XOR
-            NOT: self.execute_NOT
-            SHL: self.execute_SHL
-            SHR: self.execute_SHR
-            MOD: self.execute_MOD
+            AND: self.execute_AND,
+            OR: self.execute_OR,
+            XOR: self.execute_XOR,
+            NOT: self.execute_NOT,
+            SHL: self.execute_SHL,
+            SHR: self.execute_SHR,
+            MOD: self.execute_MOD,
         }
 
 
-    def bit_mask(self):
-        return ((self.ir >> 6) & 0b11) + 1
+    # def bit_mask(self):
+    #     return ((self.ir >> 6) & 0b11) + 1
 
-    def instruction_sets_pc(self):
-        return ((self.ir >> 4) & 0b0001) == 1
+    # def instruction_sets_pc(self):
+    #     return ((self.ir >> 4) & 0b0001) == 1
 
     def load(self, filename):
         """Load a program into memory."""
 
         address = 0
         # open the file
-        with open(filename) as my_file:
+        with open(sys.argv[1]) as my_file:
             # go through each line to parse and get
             # the instruction
             for line in my_file:
                 # try and get the instruction/operand in the line
                 comment_split = line.split("#")
                 maybe_binary_number = comment_split[0].strip()
-                if maybe_binary_number = '':
+                if maybe_binary_number == '':
                     continue
                 val = int(maybe_binary_number, 2)
 
                 self.ram[address] = val
                 address += 1
-
 
     def alu(self, op, reg_a, reg_b):
         """
@@ -128,34 +127,28 @@ class CPU:
             "AND": lambda x, y: x & y,
             "OR": lambda x, y: x | y,
             "XOR": lambda x, y: x ^ y,
-            "NOT": lambda x, y: x ~ y,
+            # "NOT": lambda x, y: x ~ y,
             "SHL": lambda x, y: x << y,
             "SHR": lambda x, y: x >> y,
             "MOD": lambda x, y: x % y,
-
         }
-            try:
-                if op in ops:
-                    self.registers[reg_a] = ops[op](self.registers[reg_a], self.registers[reg_b])
-                    return self.registers[reg_a]
-                elif op = "CMP":
-                """
-                Compare the values in two registers.
+        try:
+            if op in ops:
+                self.registers[reg_a] = ops[op](self.registers[reg_a], self.registers[reg_b])
+                return self.registers[reg_a]
 
-                * If they are equal, set the Equal `E` flag to 1, otherwise set it to 0.
-                * If registerA is less than registerB, set the Less-than `L` flag to 1,
-                otherwise set it to 0.
-                * If registerA is greater than registerB, set the Greater-than `G` flag
-                to 1, otherwise set it to 0.
-                """
-                    if self.registers[reg_a] < self.registers[reg_b]:
-                        self.flag = 0b00000100
-                    elif self.registers[reg_a] < self.registers[reg_b]:
-                        self.flag = 0b00000010
-                    else:
-                        self.flag = 0b00000001
-        else:
+            elif op == "CMP":
+                self.flag &= 0x11111000  # clear all CMP flags
+                if self.registers[reg_a] < self.registers[reg_b]:
+                    self.flag = 0b00000100
+                elif self.registers[reg_a] > self.registers[reg_b]:
+                    self.flag = 0b00000010
+                else:
+                    self.flag = 0b00000001
+
+        except:
             raise Exception("Unsupported ALU operation")
+
 
     def ram_read(self, mar):                    # MAR: Memory Address Register
         return self.ram[mar]                    # holds the memory address we're reading or writing
@@ -168,13 +161,13 @@ class CPU:
         """Halt the CPU (and exit the emulator)."""
         print("HLT")
         self.halted = True
-        self.pc += self.bit_mask
+        # self.pc += self.bit_mask
 
     def execute_LDI(self, operand_a, operand_b):                     # store value in register
         """Set the value of a register to an integer."""
         print("LDI")
         self.registers[operand_a] = operand_b
-        self.pc += self.bit_mask
+        #self.pc += self.bit_mask
 
     def execute_PRN(self, operand_a, operand_b):
         """
@@ -184,7 +177,7 @@ class CPU:
         """
         print("PRN")
         print(self.registers[operand_a])
-        self.pc += self.bit_mask
+        #self.pc += self.bit_mask
 
     # ALU operations
     def execute_ADD(self, operand_a, operand_b):
@@ -237,6 +230,10 @@ class CPU:
         print("SHL")
         self.alu("SHL", operand_a, operand_b)
 
+    def execute_MOD(self, operand_a, operand_b):
+        print("MOD")
+        self.alu("MOD", operand_a, operand_b)
+
     # STACK
     def execute_PUSH(self, operand_a, operand_b):
         """
@@ -248,7 +245,7 @@ class CPU:
         print("PUSH")
         self.registers[SP] -= 1                # decrement by 1
         self.ram_write(self.registers[operand_a], self.registers[SP])
-        self.pc += self.bit_mask
+        #self.pc += self.bit_mask
 
     def execute_POP(self, operand_a, operand_b):
         """
@@ -259,7 +256,7 @@ class CPU:
         print("POP")
         self.registers[operand_a] = self.ram_read(self.registers[SP])
         self.registers[SP] += 1
-        self.pc += self.bit_mask
+        #self.pc += self.bit_mask
 
     # SUBROUTINES
     def execute_CALL(self, operand_a, operand_b):
@@ -300,22 +297,28 @@ class CPU:
         """
         If `equal` flag is set (true), jump to the address stored in the given register.
         """
-        if self.fl == 0b00000001:
+        if self.flag == 0b00000001:
             self.execute_JMP()
         else:
-            self.pc += self.bit_mask
+            self.inst_set_pc = False
 
     def execute_JNE(self, operand_a, operand_b):
-        if self.fl != 0b00000001:
+        if self.flag != 0b00000001:
             self.execute_JMP()
         else:
-            self.pc += self.bit_mask
+            self.inst_set_pc = False
+
 
     # EXECUTE CODE
     def run(self):
         """Run the CPU."""
         while not self.halted:
             self.ir = self.ram_read(self.pc)         # Instruction Register (IR)
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
+
+            bit_mask = ((self.ir >> 6) & 0b11) + 1
+            self.instruction_sets_pc = ((self.ir >> 4) & 0b1) == 1
 
             if self.ir in self.execute:
                 self.execute[self.ir](operand_a, operand_b)
@@ -324,7 +327,7 @@ class CPU:
                 sys.exit(1)
 
             if not self.instruction_sets_pc:
-                self.pc += self.bit_mask
+                self.pc += bit_mask
 
 
     def trace(self):
