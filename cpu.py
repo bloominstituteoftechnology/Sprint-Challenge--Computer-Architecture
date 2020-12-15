@@ -1,84 +1,183 @@
-"""CPU functionality."""
-
 import sys
 
+
 class CPU:
-    """Main CPU class."""
-
     def __init__(self):
-        """Construct a new CPU."""
-        self.ram = [0] * 256
-        self.reg = [0] * 8
+        self.running = False
+        self.op_size = 0
+        self.fl = {'l': 0, 'g': 0, 'e': 0}
         self.pc = 0
-        self.flag = 0b00000000
+        self.sp = 7
+        self.reg = [0] * 10
+        self.reg[self.sp] = 0xF4
+        self.ram = [0] * 256
+        self.cmds = {
+            0b10000010: self.LDI,
+            0b01000111: self.PRN,
+            0b00000001: self.HLT,
+            0b10100010: self.MUL,
+            0b01000101: self.PUSH,
+            0b01000110: self.POP,
+            0b01010000: self.CALL,
+            0b00010001: self.RET,
+            0b10100000: self.ADD,
+            0b10100111: self.CMP,
+            0b01010100: self.JMP,
+            0b01010101: self.JEQ,
+            0b01010110: self.JNE,
+            0b10101011: self.XOR,
+            0b10101000: self.AND,
+            0b10101010: self.OR,
+            0b01101001: self.NOT,
+            0b10101100: self.SHL,
+            0b10101101: self.SHR,
+            0b10100100: self.MOD
+        }
 
-    def ram_read(self, mar):
-        return self.ram[mar]
+    def LDI(self, op1, op2):
+        self.reg[op1] = op2
 
-    def ram_write(self, mdr, mar):
-        self.ram[mar] = mdr
+    def PRN(self, op1, op2):
+        print(self.reg[op1])
 
-    def load(self):
-        """Load a program into memory."""
-        address = 0
+    def HLT(self, op1, op2):
+        self.running = False
 
-        if len(sys.argv) != 2:
-            print("Need a second file name")
-            sys.exit(1)
+    def ADD(self, op1, op2):
+        self.alu('ADD', op1, op2)
 
-        try:
-            with open(sys.argv[1]) as f:
-                for line in f:
-                    line = line.strip()
-                    if line == '' or line[0] == "#":
-                        continue
+    def MUL(self, op1, op2):
+        self.alu('MUL', op1, op2)
 
-                    try:
-                        str_value = line.split("#")[0]
-                        value = int(str_value, 2)
+    def AND(self, op1, op2):
+        self.alu('AND', op1, op2)
 
-                    except ValueError:
-                        print(f"Invalid Number: {str_value}")
-                        sys.exit(1)
+    def OR(self, op1, op2):
+        self.alu('OR', op1, op2)
 
-                    self.ram[address] = value
-                    address += 1
-        except FileNotFoundError:
-            print(f"File not found: {sys.argv[1]}")
-            sys.exit(2)
+    def XOR(self, op1, op2):
+        self.alu('XOR', op1, op2)
 
+    def NOT(self, op1, op2):
+        self.alu('NOT', op1, op2)
+
+    def SHL(self, op1, op2):
+        self.alu('SHL', op1, op2)
+
+    def SHR(self, op1, op2):
+        self.alu('SHR', op1, op2)
+
+    def MOD(self, op1, op2):
+        if self.reg[op2] == 0:
+            print('Error: MOD requires non-zero values')
+            self.running = False
+        else:
+            self.alu('MOD', op1, op2)
+
+    def CMP(self, op1, op2):
+        self.alu('CMP', op1, op2)
+
+    def JMP(self, op1, op2):
+        self.pc = self.reg[op1]
+        self.op_size = 0
+
+    def JEQ(self, op1, op2):
+        if self.fl['e'] == 1:
+            self.pc = self.reg[op1]
+            self.op_size = 0
+
+    def JNE(self, op1, op2):
+        if self.fl['e'] == 0:
+            self.pc = self.reg[op1]
+            self.op_size = 0
+
+    def PUSH(self, op1, op2):
+        self.reg[self.sp] -= 1
+        self.ram_write(self.reg[self.sp], self.reg[op1])
+
+    def POP(self, op1, op2):
+        self.reg[op1] = self.ram_read(self.reg[self.sp])
+        self.reg[self.sp] += 1
+
+    def CALL(self, op1, op2):
+        self.reg[self.sp] -= 1
+        self.ram_write(self.reg[self.sp], self.pc + 2)
+
+        self.pc = self.reg[op1]
+        self.op_size = 0
+
+    def RET(self, op1, op2):
+        self.pc = self.ram_read(self.reg[self.sp])
+        self.reg[self.sp] += 1
+
+        self.op_size = 0
 
     def alu(self, op, reg_a, reg_b):
-        """ALU operations."""
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        elif op == "MUL":
-            self.reg[reg_a] *= self.reg[reg_b]
         elif op == "SUB":
             self.reg[reg_a] -= self.reg[reg_b]
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
         elif op == "DIV":
             self.reg[reg_a] /= self.reg[reg_b]
         elif op == "CMP":
-            first = self.reg[reg_a]
-            second = self.reg[reg_b]
-            if first == second:
-                self.flag = 0b00000001
-            elif first < second:
-                self.flag = 0b00000100
-            elif first > second:
-                self.flag = 0b00000010
+            if self.reg[reg_a] < self.reg[reg_b]:  # L
+                self.fl = {'l': 1, 'g': 0, 'e': 0}
+            elif self.reg[reg_a] > self.reg[reg_b]:  # G
+                self.fl = {'l': 0, 'g': 1, 'e': 0}
+            elif self.reg[reg_a] == self.reg[reg_b]:  # E
+                self.fl = {'l': 0, 'g': 0, 'e': 1}
+        elif op == 'AND':
+            self.reg[reg_a] = self.reg[reg_a] & self.reg[reg_b]
+        elif op == 'OR':
+            self.reg[reg_a] = self.reg[reg_a] | self.reg[reg_b]
+        elif op == 'XOR':
+            self.reg[reg_a] = self.reg[reg_a] ^ self.reg[reg_b]
+        elif op == 'NOT':
+            self.reg[reg_a] = self.reg[reg_a] ^ 0b11111111
+        elif op == 'SHL':
+            self.reg[reg_a] = self.reg[reg_a] << self.reg[reg_b]
+        elif op == 'SHR':
+            self.reg[reg_a] = self.reg[reg_a] >> self.reg[reg_b]
+        elif op == 'MOD':
+            self.reg[reg_a] = self.reg[reg_a] % self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
+    def load(self, filename):
+        MAR = 0
+
+        try:
+            with open(filename) as f:
+                for line in f:
+                    line = line.split('#')
+                    n = line[0].strip()
+
+                    if n == '':
+                        continue
+
+                    MDR = int(n, 2)
+
+                    self.ram_write(MAR, MDR)
+                    MAR += 1
+
+        except FileNotFoundError:
+            print(f"{sys.argv[0]}: {filename} not found")
+            sys.exit(2)
+
+    def ram_read(self, MAR):
+        return self.ram[MAR]
+
+    def ram_write(self, MAR, MDR):
+        self.ram[MAR] = MDR
+        return self.ram[MAR]
+
     def trace(self):
-        """
-        Handy function to print out the CPU state. You might want to call this
-        from run() if you need help debugging.
-        """
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
-            #self.ie,
+            # self.fl,
+            # self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
             self.ram_read(self.pc + 2)
@@ -90,80 +189,29 @@ class CPU:
         print()
 
     def run(self):
-        """Run the CPU."""
-        HLT = 0b00000001
-        LDI = 0b10000010
-        PRN = 0b01000111
-        MUL = 0b10100010
-        ADD = 0b10100000
-        SUB = 0b10100001
-        DIV = 0b10100011
-        PUSH = 0b01000101
-        POP = 0b01000110
-        CALL = 0b01010000
-        RET = 0b00010001
-        CMP = 0b10100111
-        JMP = 0b01010100
-        JEQ = 0b01010101
-        JNE = 0b01010110
+        self.load(sys.argv[1])
+        self.running = True
 
-        SP = 7
-        isRunning = True
+        op1 = self.ram_read(self.pc + 1)
+        op2 = self.ram_read(self.pc + 2)
 
-        while isRunning:
-            ir = self.ram_read(self.pc)
-            operand_a = self.ram_read(self.pc + 1)
-            operand_b = self.ram_read(self.pc + 2)
+        while self.running:
+            # FETCH
+            cmd = self.ram_read(self.pc)
 
-            if ir == HLT:
-                isRunning = False
-                self.pc = 0
-            elif ir == LDI:
-                self.reg[operand_a] = operand_b
-                self.pc += 3
-            elif ir == PRN:
-                print(int(self.reg[operand_a]))
-                self.pc += 2
-            elif ir == MUL:
-                self.alu("MUL", operand_a, operand_b)
-                self.pc += 3
-            elif ir == ADD:
-                self.alu("ADD", operand_a, operand_b)
-                self.pc += 3
-            elif ir == SUB:
-                self.alu("SUB", operand_a, operand_b)
-                self.pc += 3
-            elif ir == DIV:
-                self.alu("DIV", operand_a, operand_b)
-                self.pc += 3
-            elif ir == PUSH:
-                SP -= 1
-                self.ram_write(self.reg[operand_a], SP)
-                self.pc += 2
-            elif ir == POP:
-                self.reg[operand_a] = self.ram[SP]
-                SP += 1
-                self.pc += 2
-            elif ir == CALL:
-                return_address = self.pc + 2
-                SP -= 1
-                self.ram_write(return_address, SP)
-                self.pc = self.reg[operand_a]
-            elif ir == RET:
-                self.pc = self.ram[SP]
-                SP += 1
-            elif ir == CMP:
-                self.alu("CMP", operand_a, operand_b)
-                self.pc += 3
-            elif ir == JMP:
-                self.pc = self.reg[operand_a]
-            elif ir == JEQ:
-                if self.flag == 0b00000001:
-                    self.pc = self.reg[operand_a]
-                else:
-                    self.pc += 2
-            elif ir == JNE:
-                if self.flag != 0b00000001:
-                    self.pc = self.reg[operand_a]
-                else:
-                    self.pc += 2
+            op1 = self.ram_read(self.pc + 1)
+            op2 = self.ram_read(self.pc + 2)
+
+            self.op_size = (cmd >> 6) + 1
+
+            # DECODE
+            if cmd in self.cmds:
+
+                # EXECUTE
+                self.cmds[cmd](op1, op2)
+
+            else:
+                print(f"Invalid Instruction: {cmd:b}")
+                self.running = False
+
+            self.pc += self.op_size 
