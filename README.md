@@ -1,3 +1,9 @@
+- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+
+- [ ] Add the `JMP` instruction.
+
+- [ ] Add the `JEQ` and `JNE` instructions.
+
 # Sprint Challenge: Computer Architecture - Conditional Jumps
 
 This challenge allows you to practice the concepts and techniques learned over
@@ -47,11 +53,7 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
 
-- [ ] Add the `JMP` instruction.
-
-- [ ] Add the `JEQ` and `JNE` instructions.
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
