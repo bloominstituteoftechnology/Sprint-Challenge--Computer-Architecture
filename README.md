@@ -53,7 +53,7 @@ Your finished project must include all of the following requirements:
 
 - [ ] Add the `JEQ` and `JNE` instructions.
 
-[See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
+[See the LS-8 spec for details](https://github.com/BloomInstituteOfTechnology/Computer-Architecture/blob/master/LS8-spec.md)
 
 In your solution, it is essential that you follow best practices and produce
 clean and professional results. Schedule time to review, refine, and assess your
